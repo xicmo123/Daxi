@@ -46,16 +46,6 @@ export const eventMilestones: Milestone[] = [
   },
 ];
 
-// Placeholder only — needs a 中央氣象署開放資料平台 (CWA) API key to go live.
-// See README for the registration steps.
-export const weatherIsMock = true;
-export const hourlyForecast = [
-  { hour: "15時", temp: "33°", icon: "☀️" },
-  { hour: "18時", temp: "30°", icon: "⛅" },
-  { hour: "21時", temp: "27°", icon: "🌦️" },
-  { hour: "明日", temp: "26–34°", icon: "⛈️" },
-];
-
 export type Alert = {
   level: "block" | "warn" | "info";
   title: string;
