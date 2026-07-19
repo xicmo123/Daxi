@@ -1,0 +1,15 @@
+{
+  "name": "大溪通 — Daxi Journal",
+  "short_name": "大溪通",
+  "description": "桃園大溪周邊活動、停車、天氣路況與旅遊資訊",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#efe7d8",
+  "theme_color": "#6f2430",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
