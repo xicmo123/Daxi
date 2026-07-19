@@ -1,5 +1,5 @@
 import PageHeader from "@/components/PageHeader";
-import { hourlyForecast, trafficAlerts } from "@/lib/data";
+import { hourlyForecast, trafficAlerts, weatherIsMock } from "@/lib/data";
 
 const alertDot: Record<string, string> = {
   block: "var(--bordeaux)",
@@ -10,7 +10,18 @@ const alertDot: Record<string, string> = {
 export default function WeatherPage() {
   return (
     <div className="max-w-md mx-auto pt-2">
-      <PageHeader title="天氣路況" subtitle="大溪區・即時更新" />
+      <PageHeader title="天氣路況" subtitle="大溪區" />
+
+      {weatherIsMock ? (
+        <div className="px-5 pb-3">
+          <div
+            className="rounded-2xl p-3.5 text-[12.5px] leading-relaxed"
+            style={{ background: "var(--cognac-tint)", color: "var(--cognac-deep)" }}
+          >
+            天氣數值為示意資料，尚未串接中央氣象署 API。
+          </div>
+        </div>
+      ) : null}
 
       <div className="px-5">
         <div
@@ -46,7 +57,7 @@ export default function WeatherPage() {
         </div>
         <h2 className="font-serif text-[17px] font-semibold">交通管制公告</h2>
       </div>
-      <div className="px-5 flex flex-col gap-3 pb-8">
+      <div className="px-5 flex flex-col gap-3">
         {trafficAlerts.map((a) => (
           <div
             key={a.title}
@@ -62,6 +73,9 @@ export default function WeatherPage() {
             </div>
           </div>
         ))}
+      </div>
+      <div className="px-5 pt-3 pb-8 text-[11px]" style={{ color: "var(--ink-soft)" }}>
+        逐日交通管制尚未有公開資料源，僅列出官方已公告的開幕日管制範圍。天氣資料串接中央氣象署開放資料平台需另申請 API 金鑰。
       </div>
     </div>
   );

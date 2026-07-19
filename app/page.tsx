@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { discoverItems } from "@/lib/data";
+import { fetchDaxiParking } from "@/lib/tycgParking";
+import { getFestivalTiming } from "@/lib/festivalTiming";
+
+export const revalidate = 60;
 
 const stories = [
   { href: "/events", label: "大禧活動", tone: "bordeaux" as const },
@@ -9,13 +13,18 @@ const stories = [
   { href: "/", label: "老街美食", tone: "bordeaux" as const },
 ];
 
-const stats = [
-  { label: "氣溫", value: "32°", unit: "C" },
-  { label: "周邊車位", value: "3", unit: "/6 處尚可" },
-  { label: "交通管制", value: "2", unit: "則" },
-];
+export default async function Home() {
+  const timing = getFestivalTiming();
 
-export default function Home() {
+  let parkingSummary = "資料載入中";
+  try {
+    const lots = await fetchDaxiParking();
+    const available = lots.filter((l) => l.status !== "full").length;
+    parkingSummary = `${available}/${lots.length} 處尚可`;
+  } catch {
+    parkingSummary = "暫無法取得";
+  }
+
   return (
     <div className="max-w-md mx-auto">
       <div className="px-5 pt-4 pb-2 flex items-start justify-between">
@@ -75,44 +84,50 @@ export default function Home() {
               className="w-1.5 h-1.5 rounded-full"
               style={{ background: "var(--cognac-tint)", boxShadow: "0 0 0 3px rgba(241,228,211,0.25)" }}
             />
-            遶境進行中
+            活動期間・第 {timing.dayIndex}/{timing.totalDays} 天
           </div>
           <div className="text-[11px] tracking-[0.12em] uppercase mb-1" style={{ color: "#d8b98f" }}>
-            2026 大溪大禧
+            2026 大溪大禧・聲聲不息
           </div>
-          <h3 className="font-serif text-xl font-semibold mb-2">關聖帝君聖誕遶境</h3>
+          <h3 className="font-serif text-xl font-semibold mb-2">北管、社頭文化系列展演</h3>
           <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#e3d3c2" }}>
-            14:00 出巡，路線行經老街全區，沿線交通管制至 21:00。
+            距 8/6 遶境隨香「社頭隨香四部曲」還有 {timing.daysToProcession} 天，期間系列展演陸續登場。
           </p>
           <Link
             href="/events"
             className="inline-flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-4 py-2"
             style={{ background: "var(--paper)", color: "var(--bordeaux)" }}
           >
-            查看今日時程 →
+            查看完整時程 →
           </Link>
         </div>
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-3 gap-2.5 px-5 pt-4">
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className="rounded-2xl card-shadow p-3"
-            style={{ background: "var(--card)", border: "1px solid var(--line)" }}
-          >
-            <div className="text-[11px] mb-1" style={{ color: "var(--ink-soft)" }}>
-              {s.label}
-            </div>
-            <div className="font-serif text-lg font-semibold">
-              {s.value}
-              <span className="text-[11px] font-sans font-normal ml-0.5" style={{ color: "var(--ink-soft)" }}>
-                {s.unit}
-              </span>
-            </div>
+      <div className="grid grid-cols-2 gap-2.5 px-5 pt-4">
+        <div
+          className="rounded-2xl card-shadow p-3"
+          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+        >
+          <div className="text-[11px] mb-1" style={{ color: "var(--ink-soft)" }}>
+            大溪區公有停車場
           </div>
-        ))}
+          <div className="font-serif text-lg font-semibold">{parkingSummary}</div>
+        </div>
+        <div
+          className="rounded-2xl card-shadow p-3"
+          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+        >
+          <div className="text-[11px] mb-1" style={{ color: "var(--ink-soft)" }}>
+            距遶境隨香
+          </div>
+          <div className="font-serif text-lg font-semibold">
+            {timing.daysToProcession}
+            <span className="text-[11px] font-sans font-normal ml-0.5" style={{ color: "var(--ink-soft)" }}>
+              天（8/6）
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Discover */}

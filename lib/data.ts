@@ -1,88 +1,54 @@
 export type Status = "ok" | "mid" | "full";
 
-export type EventItem = {
+// Verified against official sources as of 2026-07-19:
+// https://daxidaxi.tycg.gov.tw/ and https://news.ltn.com.tw/news/life/breakingnews/5508842
+export const festival = {
+  name: "2026 大溪大禧",
+  theme: "聲聲不息",
+  startDate: "2026-07-18",
+  endDate: "2026-08-06",
+  sourceUrl: "https://daxidaxi.tycg.gov.tw/",
+};
+
+export type Milestone = {
+  date: string;
+  phase: "past" | "ongoing" | "upcoming";
   time: string;
   title: string;
   desc: string;
-  badges?: ("live" | "route")[];
+  badges?: ("route" | "live")[];
 };
 
-export type EventDay = {
-  id: string;
-  label: string;
-  items: EventItem[];
-};
-
-export const eventDays: EventDay[] = [
+export const eventMilestones: Milestone[] = [
   {
-    id: "d1",
-    label: "7/18（六）",
-    items: [
-      {
-        time: "18:00",
-        title: "社頭集合暖身",
-        desc: "普濟堂廣場集合，開放近距離欣賞神將裝扮。",
-      },
-      {
-        time: "19:30",
-        title: "夜巡暖場遶境",
-        desc: "中山路晚間 19:00–22:00 管制通行。",
-        badges: ["route"],
-      },
-    ],
+    date: "7/18（六）",
+    phase: "past",
+    time: "13:00–18:00",
+    title: "開幕式暨大匯演",
+    desc: "大溪天幕籃球場、老城區及普濟堂登場，集結在地社頭、藝陣團隊及北管傳習成果。當日康莊路、復興路、得勝路、中正路、和平路、登龍路及普濟路一帶交通管制，和平老街全段劃設為行人徒步區。",
+    badges: ["route"],
   },
   {
-    id: "d2",
-    label: "7/19（日）・今天",
-    items: [
-      {
-        time: "09:00",
-        title: "關聖帝君祝壽大典",
-        desc: "普濟堂內舉行祝壽儀式，開放信眾參拜。",
-      },
-      {
-        time: "14:00",
-        title: "主日遶境出巡",
-        desc: "沿線交通管制至 21:00，建議改停外圍停車場並步行前往。",
-        badges: ["live", "route"],
-      },
-      {
-        time: "19:00",
-        title: "老街封街踩街表演",
-        desc: "和平路、中央路全區徒步，社頭匯演接力登場。",
-      },
-    ],
+    date: "7/19（日）－8/5（三）",
+    phase: "ongoing",
+    time: "系列活動期間",
+    title: "北管、社頭文化、戲劇走讀、音樂展演",
+    desc: "以「聲聲不息」為主軸，串聯百年迎六月廿四慶典的系列活動陸續登場，詳細場次時間以大溪大禧官方粉專公告為準。",
+    badges: ["live"],
   },
   {
-    id: "d3",
-    label: "7/20（一）",
-    items: [
-      {
-        time: "10:00",
-        title: "謝神儀式",
-        desc: "舉行謝神與收尾儀式，活動圓滿落幕，管制解除。",
-      },
-    ],
+    date: "8/6（四）",
+    phase: "upcoming",
+    time: "全日",
+    title: "遶境隨香：社頭隨香四部曲",
+    desc: "規劃神轎、北管、神將、神龍四條主題路線，民眾可實際跟隨隊伍深入街巷，非僅在路邊觀賞。",
+    badges: ["route"],
   },
 ];
 
-export type ParkingLot = {
-  name: string;
-  meta: string;
-  status: Status;
-  statusLabel: string;
-  pct: number;
-};
-
-export const parkingLots: ParkingLot[] = [
-  { name: "中正公園地下停車場", meta: "距老街 250m・剩餘 41/230", status: "mid", statusLabel: "略滿", pct: 18 },
-  { name: "河濱停車場（月眉）", meta: "距老街 900m・接駁車・剩餘 260/400", status: "ok", statusLabel: "充裕", pct: 65 },
-  { name: "大溪國小旁停車場", meta: "距老街 400m・剩餘 0/120", status: "full", statusLabel: "已滿", pct: 0 },
-  { name: "武德殿停車場", meta: "距老街 350m・剩餘 26/100", status: "mid", statusLabel: "略滿", pct: 26 },
-  { name: "大溪橋觀光停車場", meta: "距老街 600m・剩餘 90/150", status: "ok", statusLabel: "充裕", pct: 60 },
-  { name: "員林路臨時停車場", meta: "距老街 1.1km・接駁車・剩餘 310/400", status: "ok", statusLabel: "充裕", pct: 78 },
-];
-
+// Placeholder only — needs a 中央氣象署開放資料平台 (CWA) API key to go live.
+// See README for the registration steps.
+export const weatherIsMock = true;
 export const hourlyForecast = [
   { hour: "15時", temp: "33°", icon: "☀️" },
   { hour: "18時", temp: "30°", icon: "⛅" },
@@ -96,10 +62,15 @@ export type Alert = {
   desc: string;
 };
 
+// Only the opening-day control is officially confirmed (see festival.sourceUrl).
+// Day-to-day control for the rest of the festival isn't published — that feed
+// needs a TDX (運輸資料流通服務) client id/secret to go live.
 export const trafficAlerts: Alert[] = [
-  { level: "block", title: "老街全區徒步管制", desc: "14:00–21:00・和平路、中央路禁止車輛通行" },
-  { level: "warn", title: "中山路單向管制", desc: "19:00–22:00・請改道復興路通行" },
-  { level: "info", title: "免費接駁車", desc: "月眉／員林路停車場 ↔ 老街，每 15 分鐘一班" },
+  {
+    level: "info",
+    title: "開幕日交通管制（7/18，已解除）",
+    desc: "13:00–18:00・康莊路、復興路、得勝路、中正路、和平路、登龍路、普濟路一帶管制，和平老街全段行人徒步區",
+  },
 ];
 
 export type DiscoverItem = {
