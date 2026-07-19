@@ -95,6 +95,19 @@ export const trafficAlerts: Alert[] = [
   },
 ];
 
+export type LiveCam = {
+  title: string;
+  location: string;
+  youtubeId: string;
+};
+
+export const liveCams: LiveCam[] = [
+  { title: "石門水庫", location: "大溪區・石門水庫壩區", youtubeId: "GUCaVR88ZFU" },
+  { title: "大溪老街", location: "大溪區・和平路老街", youtubeId: "XUWjAsajKXg" },
+  { title: "後慈湖", location: "大溪區・後慈湖", youtubeId: "AF550Wx7Ba0" },
+  { title: "阿姆坪薑母島", location: "大溪區・阿姆坪", youtubeId: "EUOp2LchPQM" },
+];
+
 export type DiscoverTag = "景點" | "文化" | "美食";
 
 // Tone is a function of category, not a per-item choice — keeps the color

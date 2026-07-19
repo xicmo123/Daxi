@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import LiveCams from "@/components/LiveCams";
 import { trafficAlerts } from "@/lib/data";
 import { fetchDaxiWeather, type DaxiWeather } from "@/lib/cwa";
 
@@ -71,6 +72,14 @@ export default async function WeatherPage() {
           ))}
         </div>
       ) : null}
+
+      <div className="px-5 pt-6 pb-3">
+        <div className="text-[11px] font-semibold tracking-[0.14em] uppercase mb-1" style={{ color: "var(--cognac-deep)" }}>
+          Live
+        </div>
+        <h2 className="font-serif text-[17px] font-semibold">即時影像</h2>
+      </div>
+      <LiveCams />
 
       <div className="px-5 pt-6 pb-3">
         <div className="text-[11px] font-semibold tracking-[0.14em] uppercase mb-1" style={{ color: "var(--cognac-deep)" }}>
