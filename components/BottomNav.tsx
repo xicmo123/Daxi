@@ -38,7 +38,8 @@ const tabs = [
     label: "路況",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-        <path d="M7 17a4 4 0 1 1 1.2-7.8A5 5 0 0 1 18 11a3.5 3.5 0 0 1-.5 7H7Z" />
+        <path d="M9 21 10.5 3M15 21 13.5 3" />
+        <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
       </svg>
     ),
   },

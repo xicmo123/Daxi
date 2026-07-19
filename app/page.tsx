@@ -20,9 +20,10 @@ const icon = {
       <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
     </svg>
   ),
-  cloud: (
+  road: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M7 17a4 4 0 1 1 1.2-7.8A5 5 0 0 1 18 11a3.5 3.5 0 0 1-.5 7H7Z" />
+      <path d="M9 21 10.5 3M15 21 13.5 3" />
+      <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
     </svg>
   ),
   pin: (
@@ -41,7 +42,7 @@ const icon = {
 const stories = [
   { href: "/events", label: "大禧活動", tone: "bordeaux" as const, icon: icon.mask },
   { href: "/parking", label: "停車導航", tone: "cognac" as const, icon: icon.parking },
-  { href: "/weather", label: "天氣路況", tone: "bordeaux" as const, icon: icon.cloud },
+  { href: "/weather", label: "路況", tone: "bordeaux" as const, icon: icon.road },
   { href: "/?cat=景點", label: "老街景點", tone: "cognac" as const, icon: icon.pin },
   { href: "/?cat=美食", label: "老街美食", tone: "bordeaux" as const, icon: icon.food },
 ];
