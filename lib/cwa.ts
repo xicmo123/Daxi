@@ -19,6 +19,7 @@ export type DaxiWeather = {
   apparentTemp: number;
   humidity: number;
   weatherText: string;
+  currentIcon: string;
   description: string;
   hourly: HourCard[];
 };
@@ -106,11 +107,14 @@ export async function fetchDaxiWeather(): Promise<DaxiWeather> {
     icon: weatherEmoji(tomorrowBlock?.ElementValue?.[0]?.Weather ?? "", 12),
   });
 
+  const currentWeatherText = currentBlock?.ElementValue?.[0]?.Weather ?? "";
+
   return {
     currentTemp: Number(valueAt(temperature, 0, "Temperature")),
     apparentTemp: Number(valueAt(apparent, 0, "ApparentTemperature")),
     humidity: Number(valueAt(humidity, 0, "RelativeHumidity")),
-    weatherText: currentBlock?.ElementValue?.[0]?.Weather ?? "",
+    weatherText: currentWeatherText,
+    currentIcon: weatherEmoji(currentWeatherText, now.getHours()),
     description: summaryBlock?.ElementValue?.[0]?.WeatherDescription ?? "",
     hourly,
   };

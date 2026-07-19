@@ -1,8 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import { discoverItems, discoverTagTone, type DiscoverTag } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
+import { fetchDaxiWeather } from "@/lib/cwa";
 
 export const revalidate = 60;
 
@@ -44,6 +46,12 @@ const stories = [
   { href: "/?cat=美食", label: "老街美食", tone: "bordeaux" as const, icon: icon.food },
 ];
 
+const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
+  month: "numeric",
+  day: "numeric",
+  weekday: "short",
+});
+
 export default async function Home({
   searchParams,
 }: {
@@ -55,6 +63,7 @@ export default async function Home({
 
   const timing = getFestivalTiming();
   const todaysMilestone = findTodaysMilestone();
+  const todayLabel = dateFormatter.format(new Date());
 
   let parkingSummary = "資料載入中";
   try {
@@ -65,9 +74,41 @@ export default async function Home({
     parkingSummary = "暫無法取得";
   }
 
+  let weatherChip: { icon: string; temp: number } | null = null;
+  try {
+    const weather = await fetchDaxiWeather();
+    weatherChip = { icon: weather.currentIcon, temp: weather.currentTemp };
+  } catch {
+    weatherChip = null;
+  }
+
   return (
     <div>
-      <PageHeader title="大溪通" subtitle="📍 桃園市大溪區・老街周邊" />
+      <PageHeader
+        title="大溪通"
+        subtitle="📍 桃園市大溪區・老街周邊"
+        right={
+          <Link
+            href="/weather"
+            className="flex flex-col items-end gap-0.5 rounded-xl px-2.5 py-1.5"
+            style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+          >
+            <span className="text-[11px] font-medium" style={{ color: "var(--ink-soft)" }}>
+              {todayLabel}
+            </span>
+            <span className="text-[13px] font-semibold flex items-center gap-1">
+              {weatherChip ? (
+                <>
+                  <span>{weatherChip.icon}</span>
+                  <span className="tabular-nums">{weatherChip.temp}°</span>
+                </>
+              ) : (
+                <span style={{ color: "var(--ink-soft)" }}>—</span>
+              )}
+            </span>
+          </Link>
+        }
+      />
 
       {/* Story chips */}
       <div className="flex gap-4 px-5 pt-1 pb-2 overflow-x-auto no-scrollbar">
@@ -176,21 +217,27 @@ export default async function Home({
           </Link>
         ) : null}
       </div>
-      <div className="grid grid-cols-2 gap-3 px-5 pb-8">
+      <div className="grid grid-cols-2 gap-3 px-5 pb-3">
         {filteredDiscover.map((item) => (
           <div key={item.title} className="rounded-2xl card-shadow overflow-hidden" style={{ background: "var(--card)" }}>
-            <div
-              className="h-20 flex items-end p-2.5"
-              style={{
-                background:
-                  discoverTagTone[item.tag] === "bordeaux"
-                    ? "linear-gradient(150deg, var(--bordeaux-surface), var(--bordeaux-surface-deep))"
-                    : "linear-gradient(150deg, var(--cognac-surface), var(--cognac-surface-deep))",
-              }}
-            >
+            <div className="relative h-28">
+              <Image
+                src={item.photo.src}
+                alt={item.title}
+                fill
+                sizes="(max-width: 448px) 50vw, 220px"
+                className="object-cover"
+              />
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.45) 100%)" }}
+              />
               <span
-                className="text-[10px] text-white rounded-full px-2 py-0.5"
-                style={{ background: "rgba(255,255,255,0.22)", border: "1px solid rgba(255,255,255,0.35)" }}
+                className="absolute left-2.5 bottom-2.5 text-[10px] text-white rounded-full px-2 py-0.5"
+                style={{
+                  background:
+                    discoverTagTone[item.tag] === "bordeaux" ? "var(--bordeaux)" : "var(--cognac-deep)",
+                }}
               >
                 {item.tag}
               </span>
@@ -202,6 +249,18 @@ export default async function Home({
               </p>
             </div>
           </div>
+        ))}
+      </div>
+
+      <div className="px-5 pb-8 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+        景點圖片來源：Wikimedia Commons（CC BY-SA），攝影：
+        {filteredDiscover.map((item, i) => (
+          <span key={item.title}>
+            {i > 0 ? "、" : " "}
+            <a href={item.photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              {item.title} - {item.photo.author}
+            </a>
+          </span>
         ))}
       </div>
     </div>
