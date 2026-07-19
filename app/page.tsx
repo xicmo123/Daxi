@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
@@ -53,6 +54,45 @@ const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
   weekday: "short",
 });
 
+async function WeatherChip() {
+  let weatherChip: { icon: string; temp: number } | null = null;
+  try {
+    const weather = await fetchDaxiWeather();
+    weatherChip = { icon: weather.currentIcon, temp: weather.currentTemp };
+  } catch {
+    weatherChip = null;
+  }
+
+  return weatherChip ? (
+    <>
+      <span>{weatherChip.icon}</span>
+      <span className="tabular-nums">{weatherChip.temp}°</span>
+    </>
+  ) : (
+    <span style={{ color: "var(--ink-soft)" }}>—</span>
+  );
+}
+
+function WeatherChipSkeleton() {
+  return <span className="inline-block h-[15px] w-10 rounded animate-pulse" style={{ background: "var(--line)" }} />;
+}
+
+async function ParkingStat() {
+  let parkingSummary = "暫無法取得";
+  try {
+    const lots = await fetchDaxiParking();
+    const available = lots.filter((l) => l.status !== "full").length;
+    parkingSummary = `${available}/${lots.length} 處尚可`;
+  } catch {
+    parkingSummary = "暫無法取得";
+  }
+  return <>{parkingSummary}</>;
+}
+
+function ParkingStatSkeleton() {
+  return <span className="inline-block h-[22px] w-16 rounded animate-pulse" style={{ background: "var(--line)" }} />;
+}
+
 export default async function Home({
   searchParams,
 }: {
@@ -66,23 +106,6 @@ export default async function Home({
   const todaysMilestone = findTodaysMilestone();
   const todayLabel = dateFormatter.format(new Date());
 
-  let parkingSummary = "資料載入中";
-  try {
-    const lots = await fetchDaxiParking();
-    const available = lots.filter((l) => l.status !== "full").length;
-    parkingSummary = `${available}/${lots.length} 處尚可`;
-  } catch {
-    parkingSummary = "暫無法取得";
-  }
-
-  let weatherChip: { icon: string; temp: number } | null = null;
-  try {
-    const weather = await fetchDaxiWeather();
-    weatherChip = { icon: weather.currentIcon, temp: weather.currentTemp };
-  } catch {
-    weatherChip = null;
-  }
-
   return (
     <div>
       <PageHeader
@@ -91,21 +114,16 @@ export default async function Home({
         right={
           <Link
             href="/weather"
-            className="flex flex-col items-end gap-0.5 rounded-xl px-2.5 py-1.5"
+            className="flex flex-col items-end gap-0.5 rounded-xl px-2.5 py-1.5 transition-transform active:scale-95"
             style={{ background: "var(--card)", border: "1px solid var(--line)" }}
           >
             <span className="text-[11px] font-medium" style={{ color: "var(--ink-soft)" }}>
               {todayLabel}
             </span>
             <span className="text-[13px] font-semibold flex items-center gap-1">
-              {weatherChip ? (
-                <>
-                  <span>{weatherChip.icon}</span>
-                  <span className="tabular-nums">{weatherChip.temp}°</span>
-                </>
-              ) : (
-                <span style={{ color: "var(--ink-soft)" }}>—</span>
-              )}
+              <Suspense fallback={<WeatherChipSkeleton />}>
+                <WeatherChip />
+              </Suspense>
             </span>
           </Link>
         }
@@ -114,7 +132,11 @@ export default async function Home({
       {/* Story chips */}
       <div className="flex gap-4 px-5 pt-1 pb-2 overflow-x-auto no-scrollbar">
         {stories.map((s, i) => (
-          <Link key={i} href={s.href} className="flex flex-col items-center gap-1.5 w-14 shrink-0">
+          <Link
+            key={i}
+            href={s.href}
+            className="flex flex-col items-center gap-1.5 w-14 shrink-0 transition-transform active:scale-90"
+          >
             <span
               className="w-12 h-12 rounded-full border-[1.5px] flex items-center justify-center p-3"
               style={{
@@ -138,7 +160,7 @@ export default async function Home({
           className="rounded-[22px] card-shadow overflow-hidden p-5"
           style={{
             background:
-              "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #241010 100%)",
+              "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #0c1524 100%)",
             color: "#f4ece2",
           }}
         >
@@ -169,7 +191,7 @@ export default async function Home({
           </p>
           <Link
             href="/events"
-            className="inline-flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-4 py-2"
+            className="inline-flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-4 py-2 transition-transform active:scale-95"
             style={{ background: "var(--paper)", color: "var(--bordeaux)" }}
           >
             查看完整時程 →
@@ -186,7 +208,11 @@ export default async function Home({
           <div className="text-[11px] mb-1" style={{ color: "var(--ink-soft)" }}>
             大溪區公有停車場
           </div>
-          <div className="font-serif text-lg font-semibold">{parkingSummary}</div>
+          <div className="font-serif text-lg font-semibold">
+            <Suspense fallback={<ParkingStatSkeleton />}>
+              <ParkingStat />
+            </Suspense>
+          </div>
         </div>
         <div
           className="rounded-2xl card-shadow p-3"
@@ -220,7 +246,11 @@ export default async function Home({
       </div>
       <div className="grid grid-cols-2 gap-3 px-5 pb-3">
         {filteredDiscover.map((item) => (
-          <div key={item.title} className="rounded-2xl card-shadow overflow-hidden" style={{ background: "var(--card)" }}>
+          <div
+            key={item.title}
+            className="rounded-2xl card-shadow overflow-hidden transition-transform active:scale-[0.97]"
+            style={{ background: "var(--card)" }}
+          >
             <div className="relative h-28">
               <Image
                 src={item.photo.src}

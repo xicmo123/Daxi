@@ -15,7 +15,7 @@ export default function LiveCams() {
             key={c.youtubeId}
             onClick={() => setActive(i)}
             aria-pressed={i === active}
-            className="shrink-0 text-[12.5px] font-semibold rounded-full px-3.5 py-1.5"
+            className="shrink-0 text-[12.5px] font-semibold rounded-full px-3.5 py-1.5 transition-transform active:scale-95"
             style={
               i === active
                 ? { background: "var(--bordeaux)", color: "#fff" }

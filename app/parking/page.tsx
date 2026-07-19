@@ -41,7 +41,7 @@ export default async function ParkingPage() {
               href={lot.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-2xl card-shadow p-4 flex items-center gap-3.5"
+              className="rounded-2xl card-shadow p-4 flex items-center gap-3.5 transition-transform active:scale-[0.98]"
               style={{ background: "var(--card)", border: "1px solid var(--line)" }}
             >
               <div

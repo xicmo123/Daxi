@@ -61,10 +61,12 @@ export default function BottomNav() {
               key={tab.href}
               href={tab.href}
               aria-current={active ? "page" : undefined}
-              className="flex-1 flex flex-col items-center gap-1 py-2.5"
+              className="flex-1 flex flex-col items-center gap-1 py-2.5 transition-transform active:scale-90"
               style={{ color: active ? "var(--bordeaux)" : "var(--ink-soft)" }}
             >
-              <span className="w-[22px] h-[22px]">{tab.icon}</span>
+              <span className="w-[22px] h-[22px] transition-transform" style={{ transform: active ? "scale(1.08)" : "scale(1)" }}>
+                {tab.icon}
+              </span>
               <span className={`text-[11px] ${active ? "font-semibold" : ""}`}>{tab.label}</span>
             </Link>
           );

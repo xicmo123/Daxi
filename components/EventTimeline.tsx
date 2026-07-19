@@ -78,7 +78,7 @@ export default function EventTimeline() {
                   href={item.ctaUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[12.5px] font-semibold mt-3"
+                  className="inline-flex items-center gap-1 text-[12.5px] font-semibold mt-3 transition-transform active:scale-95"
                   style={{ color: "var(--bordeaux)" }}
                 >
                   {item.ctaLabel}
