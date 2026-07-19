@@ -48,11 +48,11 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav
-      className="fixed bottom-0 inset-x-0 z-20 flex border-t"
-      style={{ borderColor: "var(--line)", background: "var(--paper)" }}
-    >
-      <div className="mx-auto flex w-full max-w-md">
+    <nav className="fixed bottom-0 inset-x-0 z-20 flex" style={{ background: "var(--paper-2)" }}>
+      <div
+        className="mx-auto flex w-full max-w-md border-t md:border-x"
+        style={{ borderColor: "var(--line)", background: "var(--paper)" }}
+      >
         {tabs.map((tab) => {
           const active = pathname === tab.href;
           return (

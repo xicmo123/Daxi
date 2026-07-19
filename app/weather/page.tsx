@@ -19,7 +19,7 @@ export default async function WeatherPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto pt-2">
+    <div className="pt-2">
       <PageHeader title="天氣路況" subtitle="大溪區" />
 
       {!weather ? (

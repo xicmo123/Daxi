@@ -1,20 +1,60 @@
 import Link from "next/link";
-import { discoverItems } from "@/lib/data";
+import PageHeader from "@/components/PageHeader";
+import { discoverItems, discoverTagTone, type DiscoverTag } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
-import { getFestivalTiming } from "@/lib/festivalTiming";
+import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 
 export const revalidate = 60;
 
+const icon = {
+  mask: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z" />
+    </svg>
+  ),
+  parking: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <rect x="4" y="4" width="16" height="16" rx="4" />
+      <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
+    </svg>
+  ),
+  cloud: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M7 17a4 4 0 1 1 1.2-7.8A5 5 0 0 1 18 11a3.5 3.5 0 0 1-.5 7H7Z" />
+    </svg>
+  ),
+  pin: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.2" />
+    </svg>
+  ),
+  food: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M6 2v8a2 2 0 0 0 4 0V2M8 10v12M18 2c-1.7 0-3 2-3 5s1.3 5 3 5v10" />
+    </svg>
+  ),
+};
+
 const stories = [
-  { href: "/events", label: "大禧活動", tone: "bordeaux" as const },
-  { href: "/parking", label: "停車導航", tone: "cognac" as const },
-  { href: "/weather", label: "天氣路況", tone: "bordeaux" as const },
-  { href: "/", label: "老街景點", tone: "cognac" as const },
-  { href: "/", label: "老街美食", tone: "bordeaux" as const },
+  { href: "/events", label: "大禧活動", tone: "bordeaux" as const, icon: icon.mask },
+  { href: "/parking", label: "停車導航", tone: "cognac" as const, icon: icon.parking },
+  { href: "/weather", label: "天氣路況", tone: "bordeaux" as const, icon: icon.cloud },
+  { href: "/?cat=景點", label: "老街景點", tone: "cognac" as const, icon: icon.pin },
+  { href: "/?cat=美食", label: "老街美食", tone: "bordeaux" as const, icon: icon.food },
 ];
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ cat?: string }>;
+}) {
+  const { cat } = await searchParams;
+  const activeCat = cat as DiscoverTag | undefined;
+  const filteredDiscover = activeCat ? discoverItems.filter((d) => d.tag === activeCat) : discoverItems;
+
   const timing = getFestivalTiming();
+  const todaysMilestone = findTodaysMilestone();
 
   let parkingSummary = "資料載入中";
   try {
@@ -26,38 +66,22 @@ export default async function Home() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="px-5 pt-4 pb-2 flex items-start justify-between">
-        <div>
-          <div className="font-serif text-2xl font-semibold tracking-wide">大溪通</div>
-          <div className="text-[13px] mt-1" style={{ color: "var(--ink-soft)" }}>
-            📍 桃園市大溪區・老街周邊
-          </div>
-        </div>
-        <div
-          className="w-9 h-9 rounded-full border flex items-center justify-center"
-          style={{ borderColor: "var(--line)" }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.7 21a2 2 0 0 1-3.4 0" />
-          </svg>
-        </div>
-      </div>
+    <div>
+      <PageHeader title="大溪通" subtitle="📍 桃園市大溪區・老街周邊" />
 
       {/* Story chips */}
       <div className="flex gap-4 px-5 pt-1 pb-2 overflow-x-auto no-scrollbar">
         {stories.map((s, i) => (
           <Link key={i} href={s.href} className="flex flex-col items-center gap-1.5 w-14 shrink-0">
             <span
-              className="w-12 h-12 rounded-full border-[1.5px] flex items-center justify-center text-sm"
+              className="w-12 h-12 rounded-full border-[1.5px] flex items-center justify-center p-3"
               style={{
                 borderColor: s.tone === "bordeaux" ? "var(--bordeaux)" : "var(--cognac)",
                 color: s.tone === "bordeaux" ? "var(--bordeaux)" : "var(--cognac-deep)",
                 background: "var(--card)",
               }}
             >
-              {s.label.slice(0, 1)}
+              {s.icon}
             </span>
             <span className="text-[10px] text-center" style={{ color: "var(--ink-soft)" }}>
               {s.label}
@@ -82,16 +106,24 @@ export default async function Home() {
           >
             <span
               className="w-1.5 h-1.5 rounded-full"
-              style={{ background: "var(--cognac-tint)", boxShadow: "0 0 0 3px rgba(241,228,211,0.25)" }}
+              style={
+                todaysMilestone
+                  ? { background: "var(--cognac-tint)", boxShadow: "0 0 0 3px rgba(241,228,211,0.25)" }
+                  : { background: "rgba(241,228,211,0.5)" }
+              }
             />
-            活動期間・第 {timing.dayIndex}/{timing.totalDays} 天
+            {todaysMilestone ? `今日登場・${todaysMilestone.title}` : `活動期間・第 ${timing.dayIndex}/${timing.totalDays} 天`}
           </div>
           <div className="text-[11px] tracking-[0.12em] uppercase mb-1" style={{ color: "#d8b98f" }}>
             2026 大溪大禧・聲聲不息
           </div>
-          <h3 className="font-serif text-xl font-semibold mb-2">北管、社頭文化系列展演</h3>
+          <h3 className="font-serif text-xl font-semibold mb-2">
+            {todaysMilestone ? todaysMilestone.title : "北管、社頭文化系列展演"}
+          </h3>
           <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#e3d3c2" }}>
-            距 8/6 遶境隨香「社頭隨香四部曲」還有 {timing.daysToProcession} 天，期間系列展演陸續登場。
+            {todaysMilestone
+              ? todaysMilestone.desc
+              : `距 8/6 遶境隨香「社頭隨香四部曲」還有 ${timing.daysToProcession} 天，期間系列展演陸續登場。`}
           </p>
           <Link
             href="/events"
@@ -131,22 +163,27 @@ export default async function Home() {
       </div>
 
       {/* Discover */}
-      <div className="px-5 pt-6 pb-2 flex items-baseline justify-between">
+      <div id="discover" className="px-5 pt-6 pb-2 flex items-baseline justify-between scroll-mt-4">
         <div>
           <div className="text-[11px] font-semibold tracking-[0.14em] uppercase mb-1" style={{ color: "var(--cognac-deep)" }}>
             Discover
           </div>
           <h2 className="font-serif text-[17px] font-semibold">順路走走</h2>
         </div>
+        {activeCat ? (
+          <Link href="/#discover" className="text-[12px] underline" style={{ color: "var(--ink-soft)" }}>
+            顯示全部
+          </Link>
+        ) : null}
       </div>
       <div className="grid grid-cols-2 gap-3 px-5 pb-8">
-        {discoverItems.map((item) => (
+        {filteredDiscover.map((item) => (
           <div key={item.title} className="rounded-2xl card-shadow overflow-hidden" style={{ background: "var(--card)" }}>
             <div
               className="h-20 flex items-end p-2.5"
               style={{
                 background:
-                  item.tone === "bordeaux"
+                  discoverTagTone[item.tag] === "bordeaux"
                     ? "linear-gradient(150deg, var(--bordeaux-surface), var(--bordeaux-surface-deep))"
                     : "linear-gradient(150deg, var(--cognac-surface), var(--cognac-surface-deep))",
               }}

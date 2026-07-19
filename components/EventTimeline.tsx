@@ -55,6 +55,17 @@ export default function EventTimeline() {
             <p className="text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
               {item.desc}
             </p>
+            {item.ctaUrl ? (
+              <a
+                href={item.ctaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[12.5px] font-semibold mt-3"
+                style={{ color: "var(--bordeaux)" }}
+              >
+                {item.ctaLabel}
+              </a>
+            ) : null}
           </div>
         );
       })}

@@ -1,9 +1,18 @@
-import { festival } from "./data";
+import { festival, eventMilestones, type Milestone } from "./data";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 function dateOnly(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+// Only single-day milestones (opening ceremony, procession day) count as
+// "live today" — the multi-week "ongoing" entry shouldn't read as breaking-news.
+export function findTodaysMilestone(now: Date = new Date()): Milestone | null {
+  const today = dateOnly(now).getTime();
+  return (
+    eventMilestones.find((m) => m.isoDate && dateOnly(new Date(m.isoDate)).getTime() === today) ?? null
+  );
 }
 
 export function getFestivalTiming(now: Date = new Date()) {

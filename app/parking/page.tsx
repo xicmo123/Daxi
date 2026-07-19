@@ -15,7 +15,7 @@ export default async function ParkingPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto pt-2">
+    <div className="pt-2">
       <PageHeader
         title="周邊停車"
         subtitle={liveDataFailed ? "即時資料暫時無法取得" : "桃園市開放資料平台・每分鐘更新"}
@@ -49,9 +49,11 @@ export default async function ParkingPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-[14px] font-semibold mb-0.5 truncate">{lot.name}</div>
-                <div className="text-[12px] truncate" style={{ color: "var(--ink-soft)" }}>
+                <div className="text-[12.5px] font-semibold mb-0.5" style={{ color: "var(--ink)" }}>
+                  {lot.isOpenAccess ? `總車位 ${lot.total}` : `剩餘 ${lot.surplus}/${lot.total}`}
+                </div>
+                <div className="text-[11.5px] truncate" style={{ color: "var(--ink-soft)" }}>
                   {lot.address}
-                  {lot.isOpenAccess ? `・總車位 ${lot.total}` : `・剩餘 ${lot.surplus}/${lot.total}`}
                 </div>
               </div>
               <span

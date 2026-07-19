@@ -35,7 +35,7 @@ function toLot(raw: RawLot): LiveParkingLot {
   } else if (pct === 0) {
     status = "full";
     statusLabel = "已滿";
-  } else if (pct !== null && pct < 30) {
+  } else if (pct !== null && pct < 15) {
     status = "mid";
     statusLabel = "略滿";
   }

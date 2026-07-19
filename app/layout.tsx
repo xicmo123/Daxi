@@ -48,7 +48,14 @@ export default function RootLayout({
             '-apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", sans-serif',
         }}
       >
-        <div className="flex-1 pb-20">{children}</div>
+        <div className="flex-1 pb-20">
+          <div
+            className="mx-auto w-full max-w-md md:border-x"
+            style={{ background: "var(--paper)", borderColor: "var(--line)" }}
+          >
+            {children}
+          </div>
+        </div>
         <BottomNav />
       </body>
     </html>
