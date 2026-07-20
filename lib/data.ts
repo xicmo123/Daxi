@@ -110,15 +110,6 @@ export const liveCams: LiveCam[] = [
 
 export type DiscoverTag = "景點" | "文化" | "美食";
 
-// Tone is a function of category, not a per-item choice — keeps the color
-// system meaningful (which two accents exist is a design constraint; which
-// category gets which one should be consistent everywhere it appears).
-export const discoverTagTone: Record<DiscoverTag, "cognac" | "bordeaux"> = {
-  景點: "bordeaux",
-  文化: "cognac",
-  美食: "cognac",
-};
-
 export type DiscoverItem = {
   title: string;
   desc: string;

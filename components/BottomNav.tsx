@@ -8,7 +8,7 @@ const tabs = [
     href: "/",
     label: "首頁",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
         <path d="M4 10 12 3l8 7" />
         <path d="M6 9v10h12V9" />
       </svg>
@@ -18,7 +18,7 @@ const tabs = [
     href: "/events",
     label: "活動",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
         <path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z" />
       </svg>
     ),
@@ -27,7 +27,7 @@ const tabs = [
     href: "/parking",
     label: "停車",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
         <rect x="4" y="4" width="16" height="16" rx="4" />
         <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
       </svg>
@@ -37,7 +37,7 @@ const tabs = [
     href: "/weather",
     label: "路況",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
         <path d="M9 21 10.5 3M15 21 13.5 3" />
         <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
       </svg>
@@ -49,11 +49,8 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-20 flex" style={{ background: "var(--paper-2)" }}>
-      <div
-        className="mx-auto flex w-full max-w-md border-t md:border-x"
-        style={{ borderColor: "var(--line)", background: "var(--paper)" }}
-      >
+    <nav className="fixed bottom-0 inset-x-0 z-20 flex glass-nav">
+      <div className="mx-auto flex w-full max-w-md border-t md:border-x" style={{ borderColor: "var(--line)" }}>
         {tabs.map((tab) => {
           const active = pathname === tab.href;
           return (
@@ -61,13 +58,11 @@ export default function BottomNav() {
               key={tab.href}
               href={tab.href}
               aria-current={active ? "page" : undefined}
-              className="flex-1 flex flex-col items-center gap-1 py-2.5 transition-transform active:scale-90"
-              style={{ color: active ? "var(--bordeaux)" : "var(--ink-soft)" }}
+              className="flex-1 flex flex-col items-center gap-1.5 py-3 transition-opacity active:opacity-70"
+              style={{ color: "var(--ink)", opacity: active ? 1 : 0.4 }}
             >
-              <span className="w-[22px] h-[22px] transition-transform" style={{ transform: active ? "scale(1.08)" : "scale(1)" }}>
-                {tab.icon}
-              </span>
-              <span className={`text-[11px] ${active ? "font-semibold" : ""}`}>{tab.label}</span>
+              <span className="w-[21px] h-[21px] transition-all duration-300 ease-out">{tab.icon}</span>
+              <span className="text-[10.5px] font-normal tracking-wide transition-all duration-300">{tab.label}</span>
             </Link>
           );
         })}

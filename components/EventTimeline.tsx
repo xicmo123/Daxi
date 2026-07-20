@@ -9,62 +9,57 @@ const phaseLabel: Record<string, string> = {
 
 export default function EventTimeline() {
   return (
-    <div className="px-5 flex flex-col gap-3 pb-4">
-      {eventMilestones.map((item) => {
+    <div className="flex flex-col pb-4 fade-in">
+      {eventMilestones.map((item, i) => {
         const muted = item.phase === "past";
+        const isLast = i === eventMilestones.length - 1;
         return (
-          <div
-            key={item.date}
-            className="rounded-2xl card-shadow overflow-hidden"
-            style={{
-              background: "var(--card)",
-              border: "1px solid var(--line)",
-              opacity: muted ? 0.75 : 1,
-            }}
-          >
-            <div className="relative h-32">
-              <Image
-                src={item.photo.src}
-                alt={item.title}
-                fill
-                sizes="(max-width: 448px) 100vw, 420px"
-                className="object-cover"
-              />
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%)" }}
-              />
+          <div key={item.date} className="flex gap-4 px-6">
+            <div className="flex flex-col items-center pt-2.5 shrink-0">
               <span
-                className="absolute right-3 top-3 text-[10.5px] font-semibold rounded-full px-2.5 py-1"
-                style={
-                  item.phase === "ongoing"
-                    ? { background: "var(--bordeaux-tint)", color: "var(--bordeaux)" }
-                    : item.phase === "upcoming"
-                      ? { background: "var(--cognac-tint)", color: "var(--cognac-deep)" }
-                      : { background: "var(--paper-2)", color: "var(--ink-soft)" }
-                }
-              >
-                {phaseLabel[item.phase]}
-              </span>
-              {item.photo.historical ? (
-                <span className="absolute left-3 top-3 text-[10px] text-white rounded-full px-2 py-0.5 bg-black/40">
-                  示意圖・舊照
-                </span>
-              ) : null}
-              <span className="absolute left-3 bottom-2.5 font-serif font-semibold text-[14px] text-white">
-                {item.date}
-              </span>
+                className="w-[7px] h-[7px] rounded-full shrink-0"
+                style={{ background: muted ? "var(--line)" : "var(--ink)", border: muted ? "1px solid var(--ink-soft)" : "none" }}
+              />
+              {!isLast ? <span className="w-px flex-1 mt-1" style={{ background: "var(--line)" }} /> : null}
             </div>
-            <div className="p-4">
+            <div className="min-w-0 flex-1 pb-10" style={{ opacity: muted ? 0.6 : 1 }}>
+              <div className="rounded-xl overflow-hidden mb-3">
+                <div className="relative h-32">
+                  <Image
+                    src={item.photo.src}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 448px) 100vw, 420px"
+                    className="object-cover"
+                    style={{ filter: "saturate(0.82) contrast(0.96)" }}
+                  />
+                  <div className="absolute inset-0" style={{ background: "rgba(122, 112, 92, 0.1)" }} />
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.5) 100%)" }}
+                  />
+                  <span className="absolute right-3 top-3 text-[10.5px] font-normal tracking-wide text-white/85">
+                    {phaseLabel[item.phase]}
+                  </span>
+                  {item.photo.historical ? (
+                    <span className="absolute left-3 top-3 text-[10px] text-white/85 rounded-full px-2 py-0.5 bg-black/30">
+                      示意圖・舊照
+                    </span>
+                  ) : null}
+                  <span className="absolute left-3 bottom-2.5 font-serif font-semibold text-[14px] text-white">
+                    {item.date}
+                  </span>
+                </div>
+              </div>
               <div className="text-[12.5px] mb-1" style={{ color: "var(--ink-soft)" }}>
                 {item.time}
               </div>
-              <h4 className="text-[14.5px] font-semibold mb-1.5">
+              <h4 className="text-[15px] font-serif font-semibold mb-1.5">
                 {item.title}
                 {item.badges?.includes("route") ? (
                   <span
-                    className="ml-1.5 text-[10.5px] font-semibold rounded-full px-2 py-0.5 align-middle"
-                    style={{ background: "var(--cognac-tint)", color: "var(--cognac-deep)" }}
+                    className="ml-2 text-[10.5px] font-normal rounded-full px-2 py-0.5 align-middle"
+                    style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
                   >
                     交通管制
                   </span>
@@ -78,8 +73,8 @@ export default function EventTimeline() {
                   href={item.ctaUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[12.5px] font-semibold mt-3 transition-transform active:scale-95"
-                  style={{ color: "var(--bordeaux)" }}
+                  className="inline-flex items-center gap-1 text-[12.5px] font-medium mt-3 transition-opacity active:opacity-60"
+                  style={{ color: "var(--ink)", borderBottom: "1px solid var(--ink)" }}
                 >
                   {item.ctaLabel}
                 </a>

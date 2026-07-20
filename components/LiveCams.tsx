@@ -9,7 +9,7 @@ export default function LiveCams() {
 
   return (
     <div>
-      <div className="flex gap-2 px-5 pb-3 overflow-x-auto no-scrollbar">
+      <div className="flex gap-2 px-6 pb-3 overflow-x-auto no-scrollbar">
         {liveCams.map((c, i) => (
           <button
             key={c.youtubeId}
@@ -26,7 +26,7 @@ export default function LiveCams() {
           </button>
         ))}
       </div>
-      <div className="px-5">
+      <div className="px-6">
         <div
           className="relative w-full overflow-hidden rounded-2xl card-shadow"
           style={{ aspectRatio: "16 / 9", background: "#000" }}

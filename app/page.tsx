@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
-import { discoverItems, discoverTagTone, type DiscoverTag } from "@/lib/data";
+import { discoverItems, type DiscoverTag } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
@@ -11,41 +11,41 @@ export const revalidate = 60;
 
 const icon = {
   mask: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
       <path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z" />
     </svg>
   ),
   parking: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
       <rect x="4" y="4" width="16" height="16" rx="4" />
       <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
     </svg>
   ),
   road: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
       <path d="M9 21 10.5 3M15 21 13.5 3" />
       <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
     </svg>
   ),
   pin: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
       <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
       <circle cx="12" cy="9.5" r="2.2" />
     </svg>
   ),
   food: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
       <path d="M6 2v8a2 2 0 0 0 4 0V2M8 10v12M18 2c-1.7 0-3 2-3 5s1.3 5 3 5v10" />
     </svg>
   ),
 };
 
 const stories = [
-  { href: "/events", label: "大禧活動", tone: "bordeaux" as const, icon: icon.mask },
-  { href: "/parking", label: "停車導航", tone: "cognac" as const, icon: icon.parking },
-  { href: "/weather", label: "路況", tone: "bordeaux" as const, icon: icon.road },
-  { href: "/?cat=景點", label: "老街景點", tone: "cognac" as const, icon: icon.pin },
-  { href: "/?cat=美食", label: "老街美食", tone: "bordeaux" as const, icon: icon.food },
+  { href: "/events", label: "大禧活動", icon: icon.mask },
+  { href: "/parking", label: "停車導航", icon: icon.parking },
+  { href: "/weather", label: "路況", icon: icon.road },
+  { href: "/?cat=景點", label: "老街景點", icon: icon.pin },
+  { href: "/?cat=美食", label: "老街美食", icon: icon.food },
 ];
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
@@ -130,24 +130,24 @@ export default async function Home({
       />
 
       {/* Story chips */}
-      <div className="flex gap-4 px-5 pt-1 pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex gap-5 px-6 pt-2 pb-4 overflow-x-auto no-scrollbar fade-in">
         {stories.map((s, i) => (
           <Link
             key={i}
             href={s.href}
-            className="flex flex-col items-center gap-1.5 w-14 shrink-0 transition-transform active:scale-90"
+            className="flex flex-col items-center gap-2 w-14 shrink-0 transition-opacity active:opacity-60"
           >
             <span
-              className="w-12 h-12 rounded-full border-[1.5px] flex items-center justify-center p-3"
+              className="w-12 h-12 rounded-full border flex items-center justify-center p-3"
               style={{
-                borderColor: s.tone === "bordeaux" ? "var(--bordeaux)" : "var(--cognac)",
-                color: s.tone === "bordeaux" ? "var(--bordeaux)" : "var(--cognac-deep)",
+                borderColor: "var(--line)",
+                color: "var(--ink)",
                 background: "var(--card)",
               }}
             >
               {s.icon}
             </span>
-            <span className="text-[10px] text-center" style={{ color: "var(--ink-soft)" }}>
+            <span className="text-[10px] text-center tracking-wide" style={{ color: "var(--ink-soft)" }}>
               {s.label}
             </span>
           </Link>
@@ -155,12 +155,12 @@ export default async function Home({
       </div>
 
       {/* Hero card */}
-      <div className="px-5 pt-3">
+      <div className="px-6 pt-3 fade-in-delay-1">
         <div
-          className="rounded-[22px] card-shadow overflow-hidden p-5"
+          className="rounded-[22px] card-shadow overflow-hidden p-6"
           style={{
             background:
-              "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #0c1524 100%)",
+              "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #0f0d0a 100%)",
             color: "#f4ece2",
           }}
         >
@@ -178,21 +178,21 @@ export default async function Home({
             />
             {todaysMilestone ? `今日登場・${todaysMilestone.title}` : `活動期間・第 ${timing.dayIndex}/${timing.totalDays} 天`}
           </div>
-          <div className="text-[11px] tracking-[0.12em] uppercase mb-1" style={{ color: "#d8b98f" }}>
+          <div className="text-[11px] tracking-[0.18em] uppercase mb-1.5" style={{ color: "rgba(242,239,233,0.6)" }}>
             2026 大溪大禧・聲聲不息
           </div>
-          <h3 className="font-serif text-xl font-semibold mb-2">
+          <h3 className="font-serif text-xl font-semibold mb-2.5">
             {todaysMilestone ? todaysMilestone.title : "北管、社頭文化系列展演"}
           </h3>
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#e3d3c2" }}>
+          <p className="text-[13px] leading-relaxed mb-5" style={{ color: "rgba(242,239,233,0.78)" }}>
             {todaysMilestone
               ? todaysMilestone.desc
               : `距 8/6 遶境隨香「社頭隨香四部曲」還有 ${timing.daysToProcession} 天，期間系列展演陸續登場。`}
           </p>
           <Link
             href="/events"
-            className="inline-flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-4 py-2 transition-transform active:scale-95"
-            style={{ background: "var(--paper)", color: "var(--bordeaux)" }}
+            className="inline-flex items-center gap-1.5 text-[13px] font-medium rounded-full px-4 py-2 transition-opacity active:opacity-70"
+            style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
           >
             查看完整時程 →
           </Link>
@@ -200,28 +200,22 @@ export default async function Home({
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-2.5 px-5 pt-4">
-        <div
-          className="rounded-2xl card-shadow p-3"
-          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
-        >
-          <div className="text-[11px] mb-1" style={{ color: "var(--ink-soft)" }}>
+      <div className="grid grid-cols-2 gap-3 px-6 pt-6 fade-in-delay-2">
+        <div className="p-4" style={{ borderTop: "1px solid var(--line)" }}>
+          <div className="text-[11px] mb-2" style={{ color: "var(--ink-soft)" }}>
             大溪區公有停車場
           </div>
-          <div className="font-serif text-lg font-semibold">
+          <div className="font-serif text-2xl font-light">
             <Suspense fallback={<ParkingStatSkeleton />}>
               <ParkingStat />
             </Suspense>
           </div>
         </div>
-        <div
-          className="rounded-2xl card-shadow p-3"
-          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
-        >
-          <div className="text-[11px] mb-1" style={{ color: "var(--ink-soft)" }}>
+        <div className="p-4" style={{ borderTop: "1px solid var(--line)" }}>
+          <div className="text-[11px] mb-2" style={{ color: "var(--ink-soft)" }}>
             距遶境隨香
           </div>
-          <div className="font-serif text-lg font-semibold">
+          <div className="font-serif text-2xl font-light">
             {timing.daysToProcession}
             <span className="text-[11px] font-sans font-normal ml-0.5" style={{ color: "var(--ink-soft)" }}>
               天（8/6）
@@ -231,9 +225,9 @@ export default async function Home({
       </div>
 
       {/* Discover */}
-      <div id="discover" className="px-5 pt-6 pb-2 flex items-baseline justify-between scroll-mt-4">
+      <div id="discover" className="px-6 pt-10 pb-4 flex items-baseline justify-between scroll-mt-4">
         <div>
-          <div className="text-[11px] font-semibold tracking-[0.14em] uppercase mb-1" style={{ color: "var(--cognac-deep)" }}>
+          <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
             Discover
           </div>
           <h2 className="font-serif text-[17px] font-semibold">順路走走</h2>
@@ -244,11 +238,11 @@ export default async function Home({
           </Link>
         ) : null}
       </div>
-      <div className="grid grid-cols-2 gap-3 px-5 pb-3">
+      <div className="grid grid-cols-2 gap-4 px-6 pb-4">
         {filteredDiscover.map((item) => (
           <div
             key={item.title}
-            className="rounded-2xl card-shadow overflow-hidden transition-transform active:scale-[0.97]"
+            className="rounded-xl overflow-hidden transition-opacity active:opacity-70"
             style={{ background: "var(--card)" }}
           >
             <div className="relative h-28">
@@ -258,22 +252,18 @@ export default async function Home({
                 fill
                 sizes="(max-width: 448px) 50vw, 220px"
                 className="object-cover"
+                style={{ filter: "saturate(0.82) contrast(0.96)" }}
               />
+              <div className="absolute inset-0" style={{ background: "rgba(122, 112, 92, 0.1)" }} />
               <div
                 className="absolute inset-0"
-                style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.45) 100%)" }}
+                style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.4) 100%)" }}
               />
-              <span
-                className="absolute left-2.5 bottom-2.5 text-[10px] text-white rounded-full px-2 py-0.5"
-                style={{
-                  background:
-                    discoverTagTone[item.tag] === "bordeaux" ? "var(--bordeaux)" : "var(--cognac-deep)",
-                }}
-              >
+              <span className="absolute left-2.5 bottom-2.5 text-[10px] font-normal tracking-wide text-white/90">
                 {item.tag}
               </span>
             </div>
-            <div className="p-3">
+            <div className="p-3.5">
               <h4 className="font-serif text-[14px] font-semibold mb-1">{item.title}</h4>
               <p className="text-[11.5px] leading-snug" style={{ color: "var(--ink-soft)" }}>
                 {item.desc}
@@ -283,7 +273,7 @@ export default async function Home({
         ))}
       </div>
 
-      <div className="px-5 pb-8 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         景點圖片來源：Wikimedia Commons（CC BY-SA），攝影：
         {filteredDiscover.map((item, i) => (
           <span key={item.title}>
