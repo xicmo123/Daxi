@@ -1,73 +1,83 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #faf8f5;
-  --paper-2: #f1eee8;
-  --ink: #2a2825;
-  --ink-soft: #8c8780;
-  --line: rgba(42, 40, 37, 0.1);
-  --card: #fdfcfa;
-  --cognac: #6b6660;
-  --cognac-deep: #4a4640;
-  --cognac-tint: #efece7;
-  --bordeaux: #2a2825;
-  --bordeaux-deep: #17140f;
-  --bordeaux-tint: #eceae5;
-  --cognac-surface: #4a4640;
-  --cognac-surface-deep: #33302b;
-  --bordeaux-surface: #2a2825;
-  --bordeaux-surface-deep: #17140f;
-  --shadow-card: 0 1px 2px rgba(42, 40, 37, 0.03), 0 6px 16px rgba(42, 40, 37, 0.04);
+  --paper: #faf9f6;
+  --paper-2: #f2f0ea;
+  --ink: #1e293b;
+  --ink-soft: #64748b;
+  --line: rgba(30, 41, 59, 0.1);
+  --card: #ffffff;
+  --cognac: #64748b;
+  --cognac-deep: #475569;
+  --cognac-tint: rgba(30, 41, 59, 0.06);
+  --bordeaux: #1e293b;
+  --bordeaux-deep: #0f172a;
+  --bordeaux-tint: rgba(30, 41, 59, 0.05);
+  --cognac-surface: #334155;
+  --cognac-surface-deep: #1e293b;
+  --bordeaux-surface: #1e293b;
+  --bordeaux-surface-deep: #0f172a;
+  --shadow-card: 0 2px 6px rgba(30, 41, 59, 0.04), 0 14px 30px rgba(30, 41, 59, 0.06);
+  --accent: #1e293b;
+  --accent-fg: #ffffff;
+  --status-ok: #6b9080;
+  --status-warn: #c08a5c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #17150f;
-    --paper-2: #1d1a15;
-    --ink: #f2efe9;
-    --ink-soft: #a39d92;
-    --line: rgba(242, 239, 233, 0.1);
-    --card: #221f19;
-    --cognac: #b3ab9e;
-    --cognac-deep: #d6cfc2;
-    --cognac-tint: rgba(179, 171, 158, 0.14);
-    --bordeaux: #f2efe9;
+    --paper: #12141a;
+    --paper-2: #171a21;
+    --ink: #eef1f5;
+    --ink-soft: #94a3b8;
+    --line: rgba(238, 241, 245, 0.1);
+    --card: #1a1d24;
+    --cognac: #94a3b8;
+    --cognac-deep: #cbd5e1;
+    --cognac-tint: rgba(148, 163, 184, 0.14);
+    --bordeaux: #eef1f5;
     --bordeaux-deep: #ffffff;
-    --bordeaux-tint: rgba(242, 239, 233, 0.1);
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.35);
+    --bordeaux-tint: rgba(238, 241, 245, 0.08);
+    --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.35);
+    --status-ok: #82ab99;
+    --status-warn: #d3a077;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper: #17150f;
-  --paper-2: #1d1a15;
-  --ink: #f2efe9;
-  --ink-soft: #a39d92;
-  --line: rgba(242, 239, 233, 0.1);
-  --card: #221f19;
-  --cognac: #b3ab9e;
-  --cognac-deep: #d6cfc2;
-  --cognac-tint: rgba(179, 171, 158, 0.14);
-  --bordeaux: #f2efe9;
+  --paper: #12141a;
+  --paper-2: #171a21;
+  --ink: #eef1f5;
+  --ink-soft: #94a3b8;
+  --line: rgba(238, 241, 245, 0.1);
+  --card: #1a1d24;
+  --cognac: #94a3b8;
+  --cognac-deep: #cbd5e1;
+  --cognac-tint: rgba(148, 163, 184, 0.14);
+  --bordeaux: #eef1f5;
   --bordeaux-deep: #ffffff;
-  --bordeaux-tint: rgba(242, 239, 233, 0.1);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.35);
+  --bordeaux-tint: rgba(238, 241, 245, 0.08);
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.35);
+  --status-ok: #82ab99;
+  --status-warn: #d3a077;
 }
 
 :root[data-theme="light"] {
-  --paper: #faf8f5;
-  --paper-2: #f1eee8;
-  --ink: #2a2825;
-  --ink-soft: #8c8780;
-  --line: rgba(42, 40, 37, 0.1);
-  --card: #fdfcfa;
-  --cognac: #6b6660;
-  --cognac-deep: #4a4640;
-  --cognac-tint: #efece7;
-  --bordeaux: #2a2825;
-  --bordeaux-deep: #17140f;
-  --bordeaux-tint: #eceae5;
-  --shadow-card: 0 1px 2px rgba(42, 40, 37, 0.03), 0 6px 16px rgba(42, 40, 37, 0.04);
+  --paper: #faf9f6;
+  --paper-2: #f2f0ea;
+  --ink: #1e293b;
+  --ink-soft: #64748b;
+  --line: rgba(30, 41, 59, 0.1);
+  --card: #ffffff;
+  --cognac: #64748b;
+  --cognac-deep: #475569;
+  --cognac-tint: rgba(30, 41, 59, 0.06);
+  --bordeaux: #1e293b;
+  --bordeaux-deep: #0f172a;
+  --bordeaux-tint: rgba(30, 41, 59, 0.05);
+  --shadow-card: 0 2px 6px rgba(30, 41, 59, 0.04), 0 14px 30px rgba(30, 41, 59, 0.06);
+  --status-ok: #6b9080;
+  --status-warn: #c08a5c;
 }
 
 @theme inline {
@@ -87,6 +97,8 @@
   --color-cognac-surface-deep: var(--cognac-surface-deep);
   --color-bordeaux-surface: var(--bordeaux-surface);
   --color-bordeaux-surface-deep: var(--bordeaux-surface-deep);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
   --font-serif: var(--font-noto-serif-tc), "Songti TC", "PMingLiU", Georgia, serif;
   --font-sans: var(--font-app-sans);
 }
@@ -103,6 +115,14 @@ body {
 
 body {
   font-family: var(--font-sans);
+  line-height: 1.75;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.3;
 }
 
 .no-scrollbar {

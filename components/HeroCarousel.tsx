@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import EventModal from "./EventModal";
+import PlaceholderIcon from "./PlaceholderIcon";
 
 const phaseLabel: Record<string, string> = {
   past: "已結束",
@@ -17,6 +18,8 @@ export type HeroSlide = {
   time: string;
   title: string;
   desc: string;
+  history?: string;
+  theme?: string;
   badges?: ("route" | "live")[];
   ctaLabel?: string;
   ctaUrl?: string;
@@ -65,7 +68,9 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     background:
                       "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #0f0d0a 100%)",
                   }}
-                />
+                >
+                  <PlaceholderIcon kind="event" />
+                </div>
               )}
               <div
                 className="absolute inset-0"

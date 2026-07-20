@@ -37,7 +37,7 @@ export default function ParallaxHero({
   }, []);
 
   return (
-    <div className="relative h-[58vh] min-h-[400px] max-h-[560px] overflow-hidden">
+    <div className="relative h-[70vh] min-h-[460px] max-h-[640px] overflow-hidden">
       <div ref={imgWrapRef} className="absolute inset-x-0 -top-[12%] -bottom-[12%] will-change-transform">
         <Image
           src={src}
@@ -49,11 +49,13 @@ export default function ParallaxHero({
           style={{ filter: "saturate(0.85) contrast(0.97)" }}
         />
       </div>
+      {/* Warm-gray atmospheric tint over the photo */}
+      <div className="absolute inset-0" style={{ background: "rgba(30,41,59,0.1)" }} />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(15,13,10,0.4) 0%, rgba(15,13,10,0.05) 28%, rgba(15,13,10,0.1) 52%, rgba(15,13,10,0.85) 100%)",
+            "linear-gradient(180deg, rgba(15,17,22,0.4) 0%, rgba(15,17,22,0.05) 28%, rgba(15,17,22,0.1) 52%, rgba(15,17,22,0.85) 100%)",
         }}
       />
       {children}

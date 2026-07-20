@@ -7,3 +7,10 @@ export const statusWeight: Record<Status, { fg: string; label: string }> = {
   mid: { fg: "var(--ink)", label: "font-medium" },
   full: { fg: "var(--ink)", label: "font-semibold" },
 };
+
+// Progress-bar fill color for live parking availability.
+export const statusBarColor: Record<Status, string> = {
+  ok: "var(--status-ok)",
+  mid: "var(--status-warn)",
+  full: "var(--status-warn)",
+};

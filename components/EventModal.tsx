@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import type { HeroSlide } from "./HeroCarousel";
+import PlaceholderIcon from "./PlaceholderIcon";
 
 const phaseLabel: Record<string, string> = {
   past: "已結束",
@@ -59,7 +60,9 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
                 background:
                   "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #0f0d0a 100%)",
               }}
-            />
+            >
+              <PlaceholderIcon kind="event" />
+            </div>
           )}
           <div
             className="absolute inset-0"
@@ -85,7 +88,7 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
 
         <div className="p-6">
           <div
-            className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-3"
+            className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-4"
             style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
           >
             <span
@@ -93,8 +96,8 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
               style={{ background: slide.phase === "upcoming" ? "var(--ink)" : "var(--ink-soft)" }}
             />
             {phaseLabel[slide.phase]}
-            {slide.time ? `・${slide.time}` : ""}
           </div>
+
           <h3 className="font-serif text-xl font-semibold mb-3">
             {slide.title}
             {slide.badges?.map((b) => (
@@ -107,6 +110,46 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
               </span>
             ))}
           </h3>
+
+          <div className="flex items-start gap-2.5 mb-4">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              className="mt-0.5 shrink-0"
+              style={{ color: "var(--ink-soft)" }}
+            >
+              <circle cx="12" cy="12" r="8.5" />
+              <path d="M12 7.5V12l3 2" />
+            </svg>
+            <div>
+              <div className="text-[10.5px] tracking-[0.15em] uppercase mb-0.5" style={{ color: "var(--ink-soft)" }}>
+                活動時間
+              </div>
+              <div className="text-[13.5px] font-medium" style={{ color: "var(--ink)" }}>
+                {slide.date}
+                {slide.time ? `・${slide.time}` : ""}
+              </div>
+            </div>
+          </div>
+
+          {slide.history || slide.theme ? (
+            <div
+              className="mb-4 pl-3.5 py-0.5"
+              style={{ borderLeft: "2px solid var(--line)" }}
+            >
+              <div className="text-[10.5px] tracking-[0.15em] uppercase mb-1" style={{ color: "var(--ink-soft)" }}>
+                {slide.history ? "歷史沿革" : "活動主軸"}
+              </div>
+              <p className="font-serif text-[13.5px] leading-relaxed" style={{ color: "var(--ink)" }}>
+                {slide.history ?? slide.theme}
+              </p>
+            </div>
+          ) : null}
+
           <p className="text-[13.5px] leading-relaxed mb-5" style={{ color: "var(--ink-soft)" }}>
             {slide.desc}
           </p>

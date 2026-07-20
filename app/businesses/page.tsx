@@ -14,7 +14,7 @@ const updatedLabel = new Intl.DateTimeFormat("zh-TW", {
 export default function BusinessesPage() {
   return (
     <div className="pt-2">
-      <PageHeader title="商家資訊" subtitle={`美食・景點・市集・${updatedLabel} 更新`} />
+      <PageHeader title="商家資訊" subtitle={`美食・市集・${updatedLabel} 更新`} />
       <Suspense fallback={null}>
         <BusinessList />
       </Suspense>
@@ -24,7 +24,7 @@ export default function BusinessesPage() {
       <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         圖片來源：Wikimedia Commons（CC BY / CC BY-SA），攝影：
         {businesses
-          .filter((b) => businessPhotos[b.placeId])
+          .filter((b) => b.tag !== "景點" && businessPhotos[b.placeId])
           .map((b, i) => (
             <span key={b.placeId}>
               {i > 0 ? "、" : " "}

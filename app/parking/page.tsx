@@ -1,7 +1,12 @@
 import PageHeader from "@/components/PageHeader";
-import { statusWeight } from "@/lib/status";
+import { statusWeight, statusBarColor } from "@/lib/status";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesParking";
+
+// Rough average walking pace (~80m/min) — a static, indicative label only.
+function walkingMinutes(distanceMeters: number): number {
+  return Math.max(1, Math.round(distanceMeters / 80));
+}
 
 export const revalidate = 60;
 
@@ -71,11 +76,34 @@ export default async function ParkingPage() {
                 </div>
                 <div className="text-[12px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
                   距老街 {row.distanceLabel}
-                  {row.kind === "private" ? "・鄰近停車場" : ""}
                 </div>
                 {row.address ? (
                   <div className="text-[11.5px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
                     {row.address}
+                  </div>
+                ) : null}
+                {row.kind === "private" ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span
+                      className="text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
+                      style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+                    >
+                      僅供位置參考
+                    </span>
+                    <span
+                      className="text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
+                      style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+                    >
+                      步行至老街約 {walkingMinutes(row.distanceMeters)} 分鐘
+                    </span>
+                  </div>
+                ) : null}
+                {row.kind === "public" && !isFull && !row.isOpenAccess ? (
+                  <div className="mt-3 h-[3px] w-full max-w-[140px] rounded-full overflow-hidden" style={{ background: "var(--line)" }}>
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${row.pct}%`, background: statusBarColor[row.status] }}
+                    />
                   </div>
                 ) : null}
               </div>
@@ -87,7 +115,7 @@ export default async function ParkingPage() {
                     </div>
                   ) : (
                     <div
-                      className={`font-serif text-3xl tracking-tight tabular-nums ${weight!.label}`}
+                      className={`font-serif text-2xl tracking-tight tabular-nums ${weight!.label}`}
                       style={{ color: weight!.fg }}
                     >
                       {row.isOpenAccess ? "開放" : `${row.pct}%`}
@@ -108,7 +136,7 @@ export default async function ParkingPage() {
                       : row.isOpenAccess
                         ? `總車位 ${row.total}`
                         : `剩餘 ${row.surplus}/${row.total}`
-                    : "無即時車位資訊"}
+                    : ""}
                 </div>
               </div>
             </a>

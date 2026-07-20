@@ -3,25 +3,31 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { businesses, type BusinessTag } from "@/lib/businesses";
+import { businesses, type Business, type BusinessTag } from "@/lib/businesses";
 import { businessPhotos } from "@/lib/businessPhotos";
+import BusinessDetailModal from "./BusinessDetailModal";
+import PlaceholderIcon from "./PlaceholderIcon";
+
+// 景點-tagged businesses live on /spots, alongside the curated highlights —
+// keep this list focused on 美食/市集 so the two pages don't duplicate content.
+const listable = businesses.filter((b) => b.tag !== "景點");
 
 const TABS: { label: string; value: BusinessTag | "全部" }[] = [
   { label: "全部", value: "全部" },
   { label: "美食", value: "美食" },
-  { label: "景點", value: "景點" },
   { label: "市集", value: "市集" },
 ];
 
 function isBusinessTag(value: string | null): value is BusinessTag {
-  return value === "美食" || value === "景點" || value === "市集";
+  return value === "美食" || value === "市集";
 }
 
 export default function BusinessList() {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("cat");
   const [active, setActive] = useState<BusinessTag | "全部">(isBusinessTag(initialCat) ? initialCat : "全部");
-  const rows = active === "全部" ? businesses : businesses.filter((b) => b.tag === active);
+  const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
+  const rows = active === "全部" ? listable : listable.filter((b) => b.tag === active);
 
   return (
     <div>
@@ -34,7 +40,7 @@ export default function BusinessList() {
             className="shrink-0 text-[12.5px] font-semibold rounded-full px-3.5 py-1.5 transition-transform active:scale-95"
             style={
               active === tab.value
-                ? { background: "var(--bordeaux)", color: "#fff" }
+                ? { background: "var(--accent)", color: "var(--accent-fg)" }
                 : { background: "var(--card)", color: "var(--ink-soft)", border: "1px solid var(--line)" }
             }
           >
@@ -43,67 +49,61 @@ export default function BusinessList() {
         ))}
       </div>
 
-      <div className="px-6 pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
+      <div className="grid grid-cols-2 gap-3 px-6 pb-10 fade-in">
         {rows.map((b, i) => {
           const photo = businessPhotos[b.placeId];
           return (
-          <a
-            key={b.placeId}
-            href={b.mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between gap-4 py-6 transition-opacity active:opacity-60"
-            style={{
-              borderBottom: "1px solid var(--line)",
-              animationDelay: `${Math.min(i, 6) * 40}ms`,
-            }}
-          >
-            {photo ? (
-              <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
-                <Image
-                  src={photo.src}
-                  alt={b.name}
-                  fill
-                  sizes="56px"
-                  className="object-cover"
-                  style={{ filter: "saturate(0.85) contrast(0.97)" }}
-                />
+            <button
+              key={b.placeId}
+              onClick={() => setOpenBusiness(b)}
+              className="text-left rounded-2xl overflow-hidden card-shadow transition-opacity active:opacity-70"
+              style={{ background: "var(--card)", animationDelay: `${Math.min(i, 8) * 40}ms` }}
+            >
+              <div className="relative w-full aspect-[4/5]">
+                {photo ? (
+                  <Image
+                    src={photo.src}
+                    alt={b.name}
+                    fill
+                    sizes="(max-width: 448px) 50vw, 220px"
+                    className="object-cover"
+                    style={{ filter: "sepia(0.06) saturate(0.85) contrast(0.97)" }}
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)",
+                    }}
+                  >
+                    <PlaceholderIcon kind={b.tag} />
+                  </div>
+                )}
               </div>
-            ) : null}
-            <div className="min-w-0 flex-1">
-              <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: "var(--ink)" }}>
-                {b.name}
-              </div>
-              <div className="text-[12px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                距老街 {b.distanceLabel}
-                {b.rating !== null ? (
-                  <>
-                    {" "}
-                    ・{b.rating.toFixed(1)} ★（{b.reviewCount.toLocaleString()} 則評論）
-                  </>
-                ) : null}
-              </div>
-              {b.address ? (
-                <div className="text-[11.5px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
-                  {b.address}
+              <div className="p-3">
+                <div className="text-[13.5px] font-serif mb-1.5 truncate" style={{ color: "var(--ink)" }}>
+                  {b.name}
                 </div>
-              ) : null}
-            </div>
-            <div className="flex flex-col items-end gap-1 shrink-0">
-              <span className="inline-flex items-center gap-1 text-[12.5px] font-medium" style={{ color: "var(--ink)" }}>
-                導航
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M7 17 17 7M9 7h8v8" />
-                </svg>
-              </span>
-              <span className="text-[10.5px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                {b.tag}
-              </span>
-            </div>
-          </a>
+                <span
+                  className="inline-flex text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
+                  style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+                >
+                  {b.tag}
+                </span>
+              </div>
+            </button>
           );
         })}
       </div>
+
+      {openBusiness ? (
+        <BusinessDetailModal
+          business={openBusiness}
+          photo={businessPhotos[openBusiness.placeId]}
+          onClose={() => setOpenBusiness(null)}
+        />
+      ) : null}
     </div>
   );
 }
