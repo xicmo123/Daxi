@@ -158,7 +158,7 @@ export default async function Home() {
           {isFestivalMode ? (
             <div
               className="inline-flex items-center gap-1.5 text-[11px] font-medium rounded-full px-3 py-1.5 mb-4"
-              style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.3)", color: "#fff" }}
+              style={{ background: "rgba(184,147,90,0.22)", border: "1px solid rgba(212,180,128,0.55)", color: "#f1e3c8" }}
             >
               🏮 {festival.name}進行中・第 {timing.dayIndex}/{timing.totalDays} 天
             </div>
@@ -233,7 +233,7 @@ export default async function Home() {
             </span>
             <span
               className="text-[10px] font-medium rounded-full px-2 py-0.5"
-              style={{ background: "var(--status-warn)", color: "#fff" }}
+              style={{ background: "var(--festival-gold)", color: "#fff" }}
             >
               LIVE
             </span>

@@ -54,7 +54,7 @@ export default function SpotsList({ lots = [] }: { lots?: LiveParkingLot[] }) {
                 </div>
                 <span
                   className="inline-flex text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
-                  style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+                  style={{ background: "var(--line)", color: "var(--ink-soft)" }}
                 >
                   {categoryLabel(b.placeId, b.googleType, b.tag)}
                 </span>
@@ -69,6 +69,7 @@ export default function SpotsList({ lots = [] }: { lots?: LiveParkingLot[] }) {
           business={openBusiness}
           photo={businessPhotos[openBusiness.placeId]}
           lots={lots}
+          onSelect={setOpenBusiness}
           onClose={() => setOpenBusiness(null)}
         />
       ) : null}

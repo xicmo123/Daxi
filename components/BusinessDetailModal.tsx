@@ -2,26 +2,39 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import type { Business } from "@/lib/businesses";
+import { businesses, type Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
+import { businessPhotos } from "@/lib/businessPhotos";
 import { placeDetails, categoryLabel } from "@/lib/placeDetails";
-import { findNearestLot, type LiveParkingLot } from "@/lib/tycgParking";
+import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import PlaceholderIcon from "./PlaceholderIcon";
+
+function nearbyBusinesses(business: Business, limit = 3) {
+  return businesses
+    .filter((b) => b.placeId !== business.placeId)
+    .map((b) => ({ business: b, distanceMeters: haversineMeters(business, b) }))
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .slice(0, limit);
+}
 
 export default function BusinessDetailModal({
   business,
   photo,
   lots = [],
+  onSelect,
   onClose,
 }: {
   business: Business;
   photo: PhotoCredit | undefined;
   lots?: LiveParkingLot[];
+  onSelect?: (b: Business) => void;
   onClose: () => void;
 }) {
   const detail = placeDetails[business.placeId];
   const nearest = findNearestLot(business, lots);
+  const nearby = nearbyBusinesses(business);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -44,11 +57,12 @@ export default function BusinessDetailModal({
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto rounded-t-[24px] sm:rounded-[24px] card-shadow"
+        className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-t-[24px] sm:rounded-[24px] card-shadow"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative h-48 shrink-0">
+        {/* Full-bleed photo — no margin, story overlaid directly on the image */}
+        <div className="relative h-64 shrink-0">
           {photo ? (
             <Image
               src={photo.src}
@@ -71,7 +85,7 @@ export default function BusinessDetailModal({
           )}
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(180deg, rgba(15,17,22,0.1) 0%, rgba(15,17,22,0.55) 100%)" }}
+            style={{ background: "linear-gradient(180deg, rgba(15,17,22,0.05) 0%, rgba(15,17,22,0.15) 45%, rgba(15,17,22,0.88) 100%)" }}
           />
           <button
             onClick={onClose}
@@ -83,35 +97,30 @@ export default function BusinessDetailModal({
               <path d="M6 6l12 12M18 6 6 18" />
             </svg>
           </button>
-          <span className="absolute left-4 bottom-3 font-serif font-semibold text-[17px] text-white">
-            {business.name}
-          </span>
+          <div className="absolute left-5 right-5 bottom-4">
+            <span
+              className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2"
+              style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
+            >
+              {categoryLabel(business.placeId, business.googleType, business.tag)}
+            </span>
+            <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
+            {detail?.story ? (
+              <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(255,255,255,0.82)" }}>
+                {detail.story}
+              </p>
+            ) : null}
+          </div>
         </div>
 
         <div className="p-6">
-          <span
-            className="inline-flex items-center text-[11px] rounded-full px-2.5 py-1 mb-4"
-            style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
-          >
-            {categoryLabel(business.placeId, business.googleType, business.tag)}
-          </span>
-
-          {detail?.story ? (
-            <p
-              className="font-serif text-[14px] leading-relaxed mb-4 pl-3.5"
-              style={{ color: "var(--ink)", borderLeft: "2px solid var(--line)" }}
-            >
-              {detail.story}
-            </p>
-          ) : null}
-
           {detail?.tags && detail.tags.length > 0 ? (
             <div className="flex flex-wrap gap-1.5 mb-4">
               {detail.tags.map((t) => (
                 <span
                   key={t}
                   className="text-[11px] tracking-wide rounded-full px-2.5 py-1"
-                  style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+                  style={{ background: "var(--line)", color: "var(--ink-soft)" }}
                 >
                   {t}
                 </span>
@@ -196,6 +205,56 @@ export default function BusinessDetailModal({
             </svg>
           </a>
         </div>
+
+        {/* Explore nearby — geographic proximity, not a curated theme */}
+        {nearby.length > 0 ? (
+          <div className="pb-6">
+            <div className="px-6 mb-3 text-[11px] tracking-[0.15em] uppercase" style={{ color: "var(--ink-soft)" }}>
+              周邊探索
+            </div>
+            <div className="flex gap-3 px-6 overflow-x-auto no-scrollbar">
+              {nearby.map(({ business: nb, distanceMeters }) => {
+                const nbPhoto = businessPhotos[nb.placeId];
+                return (
+                  <button
+                    key={nb.placeId}
+                    onClick={() => onSelect?.(nb)}
+                    className="w-28 shrink-0 text-left transition-opacity active:opacity-70"
+                  >
+                    <div className="relative w-28 h-28 rounded-xl overflow-hidden mb-1.5">
+                      {nbPhoto ? (
+                        <Image
+                          src={nbPhoto.src}
+                          alt={nb.name}
+                          fill
+                          sizes="112px"
+                          className="object-cover"
+                          style={{ filter: "sepia(0.06) saturate(0.85) contrast(0.97)" }}
+                        />
+                      ) : (
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)",
+                          }}
+                        >
+                          <PlaceholderIcon kind={nb.tag} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-[12px] font-medium truncate" style={{ color: "var(--ink)" }}>
+                      {nb.name}
+                    </div>
+                    <div className="text-[10.5px]" style={{ color: "var(--ink-soft)" }}>
+                      {formatDistance(distanceMeters)}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

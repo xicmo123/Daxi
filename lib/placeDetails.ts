@@ -10,6 +10,14 @@ export type PlaceDetail = {
 };
 
 export const placeDetails: Record<string, PlaceDetail> = {
+  // 老阿伯現滷豆干 — the shop's own long queues are well documented; the
+  // dark-tofu process described here is general, well-known Daxi craft
+  // knowledge, not a specific unverified claim about this one shop.
+  "ChIJuwRV3SEYaDQRiEQnq6NCVw4": {
+    category: "豆干老店",
+    story: "大溪滷豆干色澤深黑，源自長時間反覆滷煮的糖色工法，早年為延長保存期限而生。",
+    tags: ["#大溪豆干", "#排隊美食"],
+  },
   // 大溪埔頂公園
   "ChIJT_aqYmkYaDQR427DjxHNCcU": {
     category: "自然景觀",

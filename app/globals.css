@@ -22,6 +22,7 @@
   --accent-fg: #ffffff;
   --status-ok: #6b9080;
   --status-warn: #c08a5c;
+  --festival-gold: #b8935a;
 }
 
 @media (prefers-color-scheme: dark) {
