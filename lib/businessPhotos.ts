@@ -3,7 +3,10 @@ import type { PhotoCredit } from "./data";
 // Hand-curated overrides, keyed by Google Places placeId. Kept separate from
 // the auto-generated lib/businesses.ts so the weekly refresh script never
 // wipes them out. Google Places photos aren't usable here (no redistribution
-// rights), so these are verified Wikimedia Commons (CC-licensed) photos —
+// rights), so these are verified Wikimedia Commons (CC-licensed) photos, or
+// official 桃園觀光導覽網 (travel.tycg.gov.tw) photos used under Taoyuan City
+// Government's 政府資料開放授權條款 (attribution required, non-commercial —
+// matched to our businesses.ts entries by exact lat/lng before use) —
 // coverage only exists for well-known landmarks, not small shops/restaurants,
 // so most businesses simply have no entry here and render without a photo.
 export const businessPhotos: Record<string, PhotoCredit> = {
@@ -79,5 +82,37 @@ export const businessPhotos: Record<string, PhotoCredit> = {
     src: "/images/businesses/yuemei-old-house.jpg",
     author: "lienyuan lee",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:月眉老屋_Yuemei_Traditional_House_-_panoramio.jpg",
+  },
+  // 中庄吊橋 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJDQDEhlwZaDQRejZFHhM9iKo": {
+    src: "/images/businesses/zhongzhuang-bridge.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/travel/attraction/2185",
+  },
+  // 月眉人工濕地生態公園 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJA7odaOQZaDQROJIHrBxLEEI": {
+    src: "/images/businesses/yuemei-wetland.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/travel/attraction/1644",
+  },
+  // 桃園月眉人工濕地落羽松大道 — the tree-lined path sits inside the same
+  // wetland park (~300m away), no separate official photo found; reuses
+  // the park's photo rather than an unrelated stock image
+  "ChIJ1WQEXWUZaDQRtmlHfLnTe3U": {
+    src: "/images/businesses/yuemei-wetland.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/travel/attraction/1644",
+  },
+  // 桃園市原住民族文化會館 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJ0bcpLxQYaDQRm0TakXa1I7A": {
+    src: "/images/businesses/indigenous-culture-center.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/travel/attraction/588",
+  },
+  // 東和音樂體驗館 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJS-0RFyUYaDQRr6-oJNVQcqI": {
+    src: "/images/businesses/tonghe-piano.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/travel/attraction/423",
   },
 };

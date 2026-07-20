@@ -18,6 +18,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
     story: "大溪滷豆干色澤深黑，源自長時間反覆滷煮的糖色工法，早年為延長保存期限而生。",
     tags: ["#大溪豆干", "#排隊美食"],
   },
+  // 東和音樂體驗館 — 1960s wooden TV-cabinet maker turned piano manufacturer
+  // via a Japanese partnership; verified via 桃園觀光導覽網/觀光署開放資料.
+  "ChIJS-0RFyUYaDQRr6-oJNVQcqI": {
+    category: "木藝職人",
+    story: "1960年代從木製電視機殼起家，後與日方合作轉型製琴，見證大溪木藝產業的轉型軌跡。",
+    tags: ["#木藝職人", "#工廠觀光"],
+  },
   // 大溪埔頂公園
   "ChIJT_aqYmkYaDQR427DjxHNCcU": {
     category: "自然景觀",
