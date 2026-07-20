@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { businesses, type BusinessTag } from "@/lib/businesses";
+import { businessPhotos } from "@/lib/businessPhotos";
 
 const TABS: { label: string; value: BusinessTag | "全部" }[] = [
   { label: "全部", value: "全部" },
@@ -42,18 +44,32 @@ export default function BusinessList() {
       </div>
 
       <div className="px-6 pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
-        {rows.map((b, i) => (
+        {rows.map((b, i) => {
+          const photo = businessPhotos[b.placeId];
+          return (
           <a
             key={b.placeId}
             href={b.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-5 py-6 transition-opacity active:opacity-60"
+            className="flex items-center justify-between gap-4 py-6 transition-opacity active:opacity-60"
             style={{
               borderBottom: "1px solid var(--line)",
               animationDelay: `${Math.min(i, 6) * 40}ms`,
             }}
           >
+            {photo ? (
+              <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
+                <Image
+                  src={photo.src}
+                  alt={b.name}
+                  fill
+                  sizes="56px"
+                  className="object-cover"
+                  style={{ filter: "saturate(0.85) contrast(0.97)" }}
+                />
+              </div>
+            ) : null}
             <div className="min-w-0 flex-1">
               <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: "var(--ink)" }}>
                 {b.name}
@@ -85,7 +101,8 @@ export default function BusinessList() {
               </span>
             </div>
           </a>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
