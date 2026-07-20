@@ -5,6 +5,10 @@ import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesPar
 
 export const revalidate = 60;
 
+type Row =
+  | ({ kind: "public" } & LiveParkingLot)
+  | ({ kind: "private" } & NearbyParkingLot);
+
 export default async function ParkingPage() {
   let lots: LiveParkingLot[] = [];
   let liveDataFailed = false;
@@ -22,6 +26,11 @@ export default async function ParkingPage() {
     nearbyLots = [];
   }
 
+  const rows: Row[] = [
+    ...lots.map((l): Row => ({ kind: "public", ...l })),
+    ...nearbyLots.map((l): Row => ({ kind: "private", ...l })),
+  ].sort((a, b) => a.distanceMeters - b.distanceMeters);
+
   return (
     <div className="pt-2">
       <PageHeader
@@ -38,13 +47,15 @@ export default async function ParkingPage() {
       ) : null}
 
       <div className="px-6 pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
-        {lots.map((lot, i) => {
-          const weight = statusWeight[lot.status];
-          const isFull = lot.status === "full";
+        {rows.map((row, i) => {
+          const key = row.kind === "public" ? row.name : row.placeId;
+          const isFull = row.kind === "public" && row.status === "full";
+          const weight = row.kind === "public" ? statusWeight[row.status] : null;
+
           return (
             <a
-              key={lot.name}
-              href={isFull ? undefined : lot.mapsUrl}
+              key={key}
+              href={isFull ? undefined : row.mapsUrl}
               target={isFull ? undefined : "_blank"}
               rel={isFull ? undefined : "noopener noreferrer"}
               aria-disabled={isFull || undefined}
@@ -56,34 +67,48 @@ export default async function ParkingPage() {
             >
               <div className="min-w-0 flex-1">
                 <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: isFull ? "var(--ink-soft)" : "var(--ink)" }}>
-                  {lot.name}
+                  {row.name}
                 </div>
                 <div className="text-[12px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                  距老街 {lot.distanceLabel}
+                  距老街 {row.distanceLabel}
+                  {row.kind === "private" ? "・鄰近停車場" : ""}
                 </div>
-                <div className="text-[11.5px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
-                  {lot.address}
-                </div>
+                {row.address ? (
+                  <div className="text-[11.5px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
+                    {row.address}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-col items-end gap-1 shrink-0">
-                {isFull ? (
-                  <div className="font-serif text-lg" style={{ color: "var(--ink-soft)" }}>
-                    目前滿位
-                  </div>
+                {row.kind === "public" ? (
+                  isFull ? (
+                    <div className="font-serif text-lg" style={{ color: "var(--ink-soft)" }}>
+                      目前滿位
+                    </div>
+                  ) : (
+                    <div
+                      className={`font-serif text-3xl tracking-tight tabular-nums ${weight!.label}`}
+                      style={{ color: weight!.fg }}
+                    >
+                      {row.isOpenAccess ? "開放" : `${row.pct}%`}
+                    </div>
+                  )
                 ) : (
-                  <div
-                    className={`font-serif text-3xl tracking-tight tabular-nums ${weight.label}`}
-                    style={{ color: weight.fg }}
-                  >
-                    {lot.isOpenAccess ? "開放" : `${lot.pct}%`}
-                  </div>
+                  <span className="inline-flex items-center gap-1 text-[12.5px] font-medium" style={{ color: "var(--ink)" }}>
+                    導航
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M7 17 17 7M9 7h8v8" />
+                    </svg>
+                  </span>
                 )}
                 <div className="text-[10.5px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                  {isFull
-                    ? "建議改往鄰近停車場"
-                    : lot.isOpenAccess
-                      ? `總車位 ${lot.total}`
-                      : `剩餘 ${lot.surplus}/${lot.total}`}
+                  {row.kind === "public"
+                    ? isFull
+                      ? "建議改往鄰近停車場"
+                      : row.isOpenAccess
+                        ? `總車位 ${row.total}`
+                        : `剩餘 ${row.surplus}/${row.total}`
+                    : "無即時車位資訊"}
                 </div>
               </div>
             </a>
@@ -93,65 +118,20 @@ export default async function ParkingPage() {
 
       <div className="px-6 pb-10 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：
+        <a href="https://data.gov.tw/dataset/25940" target="_blank" rel="noopener noreferrer" className="underline">
+          桃園市路外停車資訊｜政府資料開放平臺
+        </a>
+        （公有路外停車場，含即時空位；距離以大溪老街和平路豆干街一帶為基準點）、
         <a
-          href="https://data.gov.tw/dataset/25940"
+          href="https://developers.google.com/maps/documentation/places/web-service/nearby-search"
           target="_blank"
           rel="noopener noreferrer"
           className="underline"
         >
-          桃園市路外停車資訊｜政府資料開放平臺
+          Google Maps Places API
         </a>
-        （僅列出公有路外停車場，路邊停車格未包含在內；距離以大溪老街和平路豆干街一帶為基準點）
+        （半徑 3 公里內的其他停車場，僅列出位置，車位數量與即時空位 Google 未開放查詢，請以現場狀況為準）
       </div>
-
-      {nearbyLots.length > 0 ? (
-        <>
-          <PageHeader title="鄰近私人停車場" subtitle="半徑 3 公里內・僅顯示位置，無即時車位資訊" />
-          <div className="px-6 pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
-            {nearbyLots.map((lot, i) => (
-              <a
-                key={lot.placeId}
-                href={lot.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between gap-5 py-6 transition-opacity active:opacity-60"
-                style={{
-                  borderBottom: "1px solid var(--line)",
-                  animationDelay: `${Math.min(i, 6) * 40}ms`,
-                }}
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: "var(--ink)" }}>
-                    {lot.name}
-                  </div>
-                  <div className="text-[12px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                    距老街 {lot.distanceLabel}
-                  </div>
-                  {lot.address ? (
-                    <div className="text-[11.5px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
-                      {lot.address}
-                    </div>
-                  ) : null}
-                </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
-                  <span
-                    className="inline-flex items-center gap-1 text-[12.5px] font-medium"
-                    style={{ color: "var(--ink)" }}
-                  >
-                    導航
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M7 17 17 7M9 7h8v8" />
-                    </svg>
-                  </span>
-                </div>
-              </a>
-            ))}
-          </div>
-          <div className="px-6 pb-10 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-            資料來源：Google Maps Places API（僅列出位置與距離，車位數量與即時空位 Google 未開放查詢，請以現場狀況為準）
-          </div>
-        </>
-      ) : null}
     </div>
   );
 }
