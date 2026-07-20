@@ -18,13 +18,13 @@ export default async function ParkingPage() {
     <div className="pt-2">
       <PageHeader
         title="周邊停車"
-        subtitle={liveDataFailed ? "即時資料暫時無法取得" : "距大溪老街由近到遠・每分鐘更新"}
+        subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
       />
 
       {liveDataFailed ? (
         <div className="px-6 pb-4">
           <div className="text-[13px] py-4" style={{ color: "var(--ink-soft)", borderTop: "1px solid var(--line)" }}>
-            目前無法連線至桃園市即時停車資料，請稍後重新整理頁面。
+            即時停車資料暫時整理中，請稍後再回來看看。
           </div>
         </div>
       ) : null}
@@ -32,20 +32,22 @@ export default async function ParkingPage() {
       <div className="px-6 pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
         {lots.map((lot, i) => {
           const weight = statusWeight[lot.status];
+          const isFull = lot.status === "full";
           return (
             <a
               key={lot.name}
-              href={lot.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between gap-5 py-6 transition-opacity active:opacity-60"
+              href={isFull ? undefined : lot.mapsUrl}
+              target={isFull ? undefined : "_blank"}
+              rel={isFull ? undefined : "noopener noreferrer"}
+              aria-disabled={isFull || undefined}
+              className={`flex items-center justify-between gap-5 py-6 transition-opacity ${isFull ? "cursor-default" : "active:opacity-60"}`}
               style={{
                 borderBottom: "1px solid var(--line)",
                 animationDelay: `${Math.min(i, 6) * 40}ms`,
               }}
             >
               <div className="min-w-0 flex-1">
-                <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: "var(--ink)" }}>
+                <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: isFull ? "var(--ink-soft)" : "var(--ink)" }}>
                   {lot.name}
                 </div>
                 <div className="text-[12px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
@@ -56,14 +58,24 @@ export default async function ParkingPage() {
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1 shrink-0">
-                <div
-                  className={`font-serif text-3xl tracking-tight tabular-nums ${weight.label}`}
-                  style={{ color: weight.fg }}
-                >
-                  {lot.isOpenAccess ? "開放" : `${lot.pct}%`}
-                </div>
+                {isFull ? (
+                  <div className="font-serif text-lg" style={{ color: "var(--ink-soft)" }}>
+                    目前滿位
+                  </div>
+                ) : (
+                  <div
+                    className={`font-serif text-3xl tracking-tight tabular-nums ${weight.label}`}
+                    style={{ color: weight.fg }}
+                  >
+                    {lot.isOpenAccess ? "開放" : `${lot.pct}%`}
+                  </div>
+                )}
                 <div className="text-[10.5px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                  {lot.isOpenAccess ? `總車位 ${lot.total}` : `剩餘 ${lot.surplus}/${lot.total}`}
+                  {isFull
+                    ? "建議改往鄰近停車場"
+                    : lot.isOpenAccess
+                      ? `總車位 ${lot.total}`
+                      : `剩餘 ${lot.surplus}/${lot.total}`}
                 </div>
               </div>
             </a>

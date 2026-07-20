@@ -28,7 +28,7 @@ export type Milestone = {
   badges?: ("route" | "live")[];
   ctaLabel?: string;
   ctaUrl?: string;
-  photo: PhotoCredit;
+  photo?: PhotoCredit; // omitted when no rights-cleared photo is available yet
 };
 
 export const eventMilestones: Milestone[] = [
@@ -60,6 +60,16 @@ export const eventMilestones: Milestone[] = [
       author: "阿道",
       sourceUrl: "https://commons.wikimedia.org/wiki/File:Statues_of_Guan_Yu_in_Daxi_Puji_Temple_20250514.jpg",
     },
+  },
+  {
+    date: "8/1（六）",
+    isoDate: "2026-08-01",
+    phase: "upcoming",
+    time: "10:00–18:00",
+    title: "2026大溪陀螺文化節",
+    desc: "上午於三角公園舉辦「陀螺飛揚．大溪藝響音樂會」，下午轉往大溪天幕、綜合運動場，安排陀螺技藝表演、彩繪 DIY、打陀螺教學與競賽，並同場登場大溪國際青年商會主辦的「遊木民族－大溪地方創生文化體驗日」。由大溪區公所主辦，非大溪大禧官方場次。",
+    ctaLabel: "查看大溪區公所官方公告 →",
+    ctaUrl: "https://www.daxi.tycg.gov.tw/News_Content.aspx?n=7532&s=1664839",
   },
   {
     date: "8/6（四）",

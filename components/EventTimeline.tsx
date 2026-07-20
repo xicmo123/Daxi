@@ -23,34 +23,43 @@ export default function EventTimeline() {
               {!isLast ? <span className="w-px flex-1 mt-1" style={{ background: "var(--line)" }} /> : null}
             </div>
             <div className="min-w-0 flex-1 pb-10" style={{ opacity: muted ? 0.6 : 1 }}>
-              <div className="rounded-xl overflow-hidden mb-3">
-                <div className="relative h-32">
-                  <Image
-                    src={item.photo.src}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 448px) 100vw, 420px"
-                    className="object-cover"
-                    style={{ filter: "saturate(0.82) contrast(0.96)" }}
-                  />
-                  <div className="absolute inset-0" style={{ background: "rgba(122, 112, 92, 0.1)" }} />
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.5) 100%)" }}
-                  />
-                  <span className="absolute right-3 top-3 text-[10.5px] font-normal tracking-wide text-white/85">
+              {item.photo ? (
+                <div className="rounded-xl overflow-hidden mb-3">
+                  <div className="relative h-32">
+                    <Image
+                      src={item.photo.src}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 448px) 100vw, 420px"
+                      className="object-cover"
+                      style={{ filter: "saturate(0.82) contrast(0.96)" }}
+                    />
+                    <div className="absolute inset-0" style={{ background: "rgba(122, 112, 92, 0.1)" }} />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.5) 100%)" }}
+                    />
+                    <span className="absolute right-3 top-3 text-[10.5px] font-normal tracking-wide text-white/85">
+                      {phaseLabel[item.phase]}
+                    </span>
+                    {item.photo.historical ? (
+                      <span className="absolute left-3 top-3 text-[10px] text-white/85 rounded-full px-2 py-0.5 bg-black/30">
+                        示意圖・舊照
+                      </span>
+                    ) : null}
+                    <span className="absolute left-3 bottom-2.5 font-serif font-semibold text-[14px] text-white">
+                      {item.date}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <span className="font-serif font-semibold text-[14px]">{item.date}</span>
+                  <span className="text-[10.5px] font-normal tracking-wide" style={{ color: "var(--ink-soft)" }}>
                     {phaseLabel[item.phase]}
                   </span>
-                  {item.photo.historical ? (
-                    <span className="absolute left-3 top-3 text-[10px] text-white/85 rounded-full px-2 py-0.5 bg-black/30">
-                      示意圖・舊照
-                    </span>
-                  ) : null}
-                  <span className="absolute left-3 bottom-2.5 font-serif font-semibold text-[14px] text-white">
-                    {item.date}
-                  </span>
                 </div>
-              </div>
+              )}
               <div className="text-[12.5px] mb-1" style={{ color: "var(--ink-soft)" }}>
                 {item.time}
               </div>

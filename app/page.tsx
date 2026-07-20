@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import PageHeader from "@/components/PageHeader";
-import { discoverItems, type DiscoverTag } from "@/lib/data";
+import ParallaxHero from "@/components/ParallaxHero";
+import HeroCarousel from "@/components/HeroCarousel";
+import { discoverItems, eventMilestones, type DiscoverTag } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
-import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
+import { getFestivalTiming } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
 
 export const revalidate = 60;
@@ -74,23 +75,27 @@ async function WeatherChip() {
 }
 
 function WeatherChipSkeleton() {
-  return <span className="inline-block h-[15px] w-10 rounded animate-pulse" style={{ background: "var(--line)" }} />;
+  return <span className="inline-block h-[15px] w-10 rounded skeleton" style={{ background: "var(--line)" }} />;
+}
+
+function WeatherChipSkeletonOnDark() {
+  return <span className="inline-block h-[15px] w-10 rounded skeleton" style={{ background: "rgba(255,255,255,0.3)" }} />;
 }
 
 async function ParkingStat() {
-  let parkingSummary = "暫無法取得";
+  let parkingSummary = "資料整理中";
   try {
     const lots = await fetchDaxiParking();
     const available = lots.filter((l) => l.status !== "full").length;
     parkingSummary = `${available}/${lots.length} 處尚可`;
   } catch {
-    parkingSummary = "暫無法取得";
+    parkingSummary = "資料整理中";
   }
   return <>{parkingSummary}</>;
 }
 
 function ParkingStatSkeleton() {
-  return <span className="inline-block h-[22px] w-16 rounded animate-pulse" style={{ background: "var(--line)" }} />;
+  return <span className="inline-block h-[22px] w-16 rounded skeleton" style={{ background: "var(--line)" }} />;
 }
 
 export default async function Home({
@@ -103,31 +108,57 @@ export default async function Home({
   const filteredDiscover = activeCat ? discoverItems.filter((d) => d.tag === activeCat) : discoverItems;
 
   const timing = getFestivalTiming();
-  const todaysMilestone = findTodaysMilestone();
   const todayLabel = dateFormatter.format(new Date());
+  const heroSlides = eventMilestones.map((m) => ({
+    key: m.date,
+    phase: m.phase,
+    date: m.date,
+    title: m.title,
+    desc: m.desc,
+    photoSrc: m.photo?.src,
+  }));
 
   return (
     <div>
-      <PageHeader
-        title="大溪通"
-        subtitle="📍 桃園市大溪區・老街周邊"
-        right={
+      {/* Full-bleed hero: atmosphere before information */}
+      <ParallaxHero src="/images/daxi-bridge.jpg" alt="大溪橋夜間點燈">
+        <div className="absolute top-6 right-6">
           <Link
             href="/weather"
-            className="flex flex-col items-end gap-0.5 rounded-xl px-2.5 py-1.5 transition-transform active:scale-95"
-            style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+            className="flex flex-col items-end gap-0.5 rounded-xl px-3 py-1.5 transition-opacity active:opacity-70"
+            style={{ background: "rgba(15,13,10,0.35)", border: "1px solid rgba(255,255,255,0.25)", backdropFilter: "blur(8px)" }}
           >
-            <span className="text-[11px] font-medium" style={{ color: "var(--ink-soft)" }}>
+            <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>
               {todayLabel}
             </span>
-            <span className="text-[13px] font-semibold flex items-center gap-1">
-              <Suspense fallback={<WeatherChipSkeleton />}>
+            <span className="text-[13px] font-semibold flex items-center gap-1 text-white">
+              <Suspense fallback={<WeatherChipSkeletonOnDark />}>
                 <WeatherChip />
               </Suspense>
             </span>
           </Link>
-        }
-      />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-9 text-center">
+          <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.72)" }}>
+            📍 桃園市大溪區・老街周邊
+          </div>
+          <h1 className="font-serif text-[42px] leading-tight font-semibold text-white mb-5">大溪通</h1>
+          <div className="flex flex-col items-center gap-1.5" style={{ color: "rgba(255,255,255,0.65)" }}>
+            <span className="text-[10.5px] tracking-[0.15em]">向下滑動，探索大溪</span>
+            <svg
+              className="scroll-cue"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+      </ParallaxHero>
 
       {/* Story chips */}
       <div className="flex gap-5 px-6 pt-2 pb-4 overflow-x-auto no-scrollbar fade-in">
@@ -154,49 +185,9 @@ export default async function Home({
         ))}
       </div>
 
-      {/* Hero card */}
-      <div className="px-6 pt-3 fade-in-delay-1">
-        <div
-          className="rounded-[22px] card-shadow overflow-hidden p-6"
-          style={{
-            background:
-              "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 60%, #0f0d0a 100%)",
-            color: "#f4ece2",
-          }}
-        >
-          <div
-            className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-3"
-            style={{ background: "rgba(244,236,226,0.14)", border: "1px solid rgba(244,236,226,0.3)" }}
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={
-                todaysMilestone
-                  ? { background: "var(--cognac-tint)", boxShadow: "0 0 0 3px rgba(241,228,211,0.25)" }
-                  : { background: "rgba(241,228,211,0.5)" }
-              }
-            />
-            {todaysMilestone ? `今日登場・${todaysMilestone.title}` : `活動期間・第 ${timing.dayIndex}/${timing.totalDays} 天`}
-          </div>
-          <div className="text-[11px] tracking-[0.18em] uppercase mb-1.5" style={{ color: "rgba(242,239,233,0.6)" }}>
-            2026 大溪大禧・聲聲不息
-          </div>
-          <h3 className="font-serif text-xl font-semibold mb-2.5">
-            {todaysMilestone ? todaysMilestone.title : "北管、社頭文化系列展演"}
-          </h3>
-          <p className="text-[13px] leading-relaxed mb-5" style={{ color: "rgba(242,239,233,0.78)" }}>
-            {todaysMilestone
-              ? todaysMilestone.desc
-              : `距 8/6 遶境隨香「社頭隨香四部曲」還有 ${timing.daysToProcession} 天，期間系列展演陸續登場。`}
-          </p>
-          <Link
-            href="/events"
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium rounded-full px-4 py-2 transition-opacity active:opacity-70"
-            style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
-          >
-            查看完整時程 →
-          </Link>
-        </div>
+      {/* Hero carousel: swipeable highlights from the festival timeline */}
+      <div className="pt-3 fade-in-delay-1">
+        <HeroCarousel slides={heroSlides} />
       </div>
 
       {/* Stat cards */}

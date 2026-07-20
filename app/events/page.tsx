@@ -16,14 +16,16 @@ export default function EventsPage() {
       </div>
       <div className="px-6 pb-8 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         圖片來源：Wikimedia Commons（CC BY-SA），攝影：
-        {eventMilestones.map((item, i) => (
-          <span key={item.date}>
-            {i > 0 ? "、" : " "}
-            <a href={item.photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
-              {item.title} - {item.photo.author}
-            </a>
-          </span>
-        ))}
+        {eventMilestones
+          .filter((item) => item.photo)
+          .map((item, i) => (
+            <span key={item.date}>
+              {i > 0 ? "、" : " "}
+              <a href={item.photo!.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                {item.title} - {item.photo!.author}
+              </a>
+            </span>
+          ))}
         。普濟堂聖誕慶典照片攝於 2012 年，僅供示意。
       </div>
     </div>

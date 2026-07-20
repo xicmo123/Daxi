@@ -58,10 +58,12 @@ export default function BottomNav() {
               key={tab.href}
               href={tab.href}
               aria-current={active ? "page" : undefined}
-              className="flex-1 flex flex-col items-center gap-1.5 py-3 transition-opacity active:opacity-70"
+              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
               style={{ color: "var(--ink)", opacity: active ? 1 : 0.4 }}
             >
-              <span className="w-[21px] h-[21px] transition-all duration-300 ease-out">{tab.icon}</span>
+              <span className="w-[21px] h-[21px] flex items-center justify-center transition-all duration-300 ease-out">
+                {tab.icon}
+              </span>
               <span className="text-[10.5px] font-normal tracking-wide transition-all duration-300">{tab.label}</span>
             </Link>
           );
