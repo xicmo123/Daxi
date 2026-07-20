@@ -4,12 +4,14 @@ import { useState } from "react";
 import Image from "next/image";
 import { businesses, type Business } from "@/lib/businesses";
 import { businessPhotos } from "@/lib/businessPhotos";
+import { categoryLabel } from "@/lib/placeDetails";
+import type { LiveParkingLot } from "@/lib/tycgParking";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 
 const spots = businesses.filter((b) => b.tag === "景點");
 
-export default function SpotsList() {
+export default function SpotsList({ lots = [] }: { lots?: LiveParkingLot[] }) {
   const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
 
   return (
@@ -54,7 +56,7 @@ export default function SpotsList() {
                   className="inline-flex text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
                   style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
                 >
-                  距老街 {b.distanceLabel}
+                  {categoryLabel(b.placeId, b.googleType, b.tag)}
                 </span>
               </div>
             </button>
@@ -66,6 +68,7 @@ export default function SpotsList() {
         <BusinessDetailModal
           business={openBusiness}
           photo={businessPhotos[openBusiness.placeId]}
+          lots={lots}
           onClose={() => setOpenBusiness(null)}
         />
       ) : null}

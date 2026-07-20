@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import Link from "next/link";
 import ParallaxHero from "@/components/ParallaxHero";
 import HeroCarousel from "@/components/HeroCarousel";
-import { eventMilestones } from "@/lib/data";
+import { eventMilestones, festival } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
-import { getFestivalTiming } from "@/lib/festivalTiming";
+import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
 
 export const revalidate = 60;
@@ -99,6 +99,7 @@ function ParkingStatSkeleton() {
 
 export default async function Home() {
   const timing = getFestivalTiming();
+  const isFestivalMode = timing.phase === "during";
   const todayLabel = dateFormatter.format(new Date());
   const heroSlides = eventMilestones.map((m) => ({
     key: m.date,
@@ -115,6 +116,23 @@ export default async function Home() {
     photoSrc: m.photo?.src,
     photoHistorical: m.photo?.historical,
   }));
+
+  // During the festival, open the carousel on today's milestone (or the
+  // nearest ongoing/upcoming one) instead of always the first, often
+  // already-past, slide.
+  const todaysMilestone = findTodaysMilestone();
+  const initialSlideIndex = isFestivalMode
+    ? (() => {
+        if (todaysMilestone) {
+          const idx = eventMilestones.indexOf(todaysMilestone);
+          if (idx >= 0) return idx;
+        }
+        const ongoingIdx = eventMilestones.findIndex((m) => m.phase === "ongoing");
+        if (ongoingIdx >= 0) return ongoingIdx;
+        const upcomingIdx = eventMilestones.findIndex((m) => m.phase === "upcoming");
+        return upcomingIdx >= 0 ? upcomingIdx : 0;
+      })()
+    : 0;
 
   return (
     <div>
@@ -137,9 +155,18 @@ export default async function Home() {
           </Link>
         </div>
         <div className="absolute inset-x-0 bottom-0 px-6 pb-9 text-center">
-          <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.72)" }}>
-            📍 桃園市大溪區・老街周邊
-          </div>
+          {isFestivalMode ? (
+            <div
+              className="inline-flex items-center gap-1.5 text-[11px] font-medium rounded-full px-3 py-1.5 mb-4"
+              style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.3)", color: "#fff" }}
+            >
+              🏮 {festival.name}進行中・第 {timing.dayIndex}/{timing.totalDays} 天
+            </div>
+          ) : (
+            <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.72)" }}>
+              📍 桃園市大溪區・老街周邊
+            </div>
+          )}
           <h1 className="font-serif text-[42px] leading-tight font-semibold text-white mb-5">溪遊指南</h1>
           <div className="flex flex-col items-center gap-1.5" style={{ color: "rgba(255,255,255,0.65)" }}>
             <span className="text-[10.5px] tracking-[0.15em]">向下滑動，探索大溪</span>
@@ -181,8 +208,38 @@ export default async function Home() {
 
       {/* Hero carousel: swipeable highlights from the festival timeline */}
       <div id="event-carousel" className="pt-3 fade-in-delay-1 scroll-mt-6">
-        <HeroCarousel slides={heroSlides} />
+        <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />
       </div>
+
+      {/* Live cams teaser — only surfaced while the festival is actually on */}
+      {isFestivalMode ? (
+        <div className="px-6 pt-4 fade-in-delay-1">
+          <Link
+            href="/weather"
+            className="flex items-center gap-3 rounded-2xl px-4 py-3.5 card-shadow transition-opacity active:opacity-70"
+            style={{ background: "var(--card)" }}
+          >
+            <span
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "var(--paper-2)", color: "var(--ink)" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
+                <rect x="2.5" y="6" width="13" height="12" rx="2.5" />
+                <path d="M15.5 10.5 21 7.5v9l-5.5-3Z" />
+              </svg>
+            </span>
+            <span className="flex-1 text-[13px] font-medium" style={{ color: "var(--ink)" }}>
+              現正登場・大溪老街即時影像
+            </span>
+            <span
+              className="text-[10px] font-medium rounded-full px-2 py-0.5"
+              style={{ background: "var(--status-warn)", color: "#fff" }}
+            >
+              LIVE
+            </span>
+          </Link>
+        </div>
+      ) : null}
 
       {/* Stat banner — one moment of visual weight against the quiet cards around it */}
       <div className="px-6 pt-6 fade-in-delay-2">

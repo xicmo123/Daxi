@@ -4,10 +4,20 @@ import SpotsList from "@/components/SpotsList";
 import { discoverItems } from "@/lib/data";
 import { businesses } from "@/lib/businesses";
 import { businessPhotos } from "@/lib/businessPhotos";
+import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+
+export const revalidate = 60;
 
 const creditedSpots = businesses.filter((b) => b.tag === "景點" && businessPhotos[b.placeId]);
 
-export default function SpotsPage() {
+export default async function SpotsPage() {
+  let lots: LiveParkingLot[] = [];
+  try {
+    lots = await fetchDaxiParking();
+  } catch {
+    lots = [];
+  }
+
   return (
     <div className="pt-2">
       <PageHeader title="景點" subtitle="老街周邊精選景點與順路走走" />
@@ -59,7 +69,7 @@ export default function SpotsPage() {
         </div>
         <h2 className="font-serif text-[17px] font-semibold">更多景點</h2>
       </div>
-      <SpotsList />
+      <SpotsList lots={lots} />
 
       <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         精選景點圖片來源：Wikimedia Commons（CC BY-SA），攝影：

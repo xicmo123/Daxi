@@ -102,3 +102,22 @@ export async function fetchDaxiParking(): Promise<LiveParkingLot[]> {
     .map(toLot)
     .sort((a, b) => a.distanceMeters - b.distanceMeters);
 }
+
+// "Which lot is closest to this specific shop/spot" — distinct from the
+// distances above, which are all relative to Daxi Old Street.
+export function findNearestLot(
+  point: { lat: number; lng: number },
+  lots: LiveParkingLot[]
+): { lot: LiveParkingLot; distanceMeters: number; distanceLabel: string } | null {
+  if (lots.length === 0) return null;
+  let nearest = lots[0];
+  let nearestDist = haversineMeters(point, lots[0]);
+  for (const lot of lots.slice(1)) {
+    const d = haversineMeters(point, lot);
+    if (d < nearestDist) {
+      nearest = lot;
+      nearestDist = d;
+    }
+  }
+  return { lot: nearest, distanceMeters: nearestDist, distanceLabel: formatDistance(nearestDist) };
+}

@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { businesses, type Business, type BusinessTag } from "@/lib/businesses";
 import { businessPhotos } from "@/lib/businessPhotos";
+import { categoryLabel } from "@/lib/placeDetails";
+import type { LiveParkingLot } from "@/lib/tycgParking";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 
@@ -22,7 +24,7 @@ function isBusinessTag(value: string | null): value is BusinessTag {
   return value === "美食" || value === "市集";
 }
 
-export default function BusinessList() {
+export default function BusinessList({ lots = [] }: { lots?: LiveParkingLot[] }) {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("cat");
   const [active, setActive] = useState<BusinessTag | "全部">(isBusinessTag(initialCat) ? initialCat : "全部");
@@ -89,7 +91,7 @@ export default function BusinessList() {
                   className="inline-flex text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
                   style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
                 >
-                  {b.tag}
+                  {categoryLabel(b.placeId, b.googleType, b.tag)}
                 </span>
               </div>
             </button>
@@ -101,6 +103,7 @@ export default function BusinessList() {
         <BusinessDetailModal
           business={openBusiness}
           photo={businessPhotos[openBusiness.placeId]}
+          lots={lots}
           onClose={() => setOpenBusiness(null)}
         />
       ) : null}

@@ -4,17 +4,24 @@ import { useEffect } from "react";
 import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
+import { placeDetails, categoryLabel } from "@/lib/placeDetails";
+import { findNearestLot, type LiveParkingLot } from "@/lib/tycgParking";
+import { statusBarColor } from "@/lib/status";
 import PlaceholderIcon from "./PlaceholderIcon";
 
 export default function BusinessDetailModal({
   business,
   photo,
+  lots = [],
   onClose,
 }: {
   business: Business;
   photo: PhotoCredit | undefined;
+  lots?: LiveParkingLot[];
   onClose: () => void;
 }) {
+  const detail = placeDetails[business.placeId];
+  const nearest = findNearestLot(business, lots);
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -86,8 +93,31 @@ export default function BusinessDetailModal({
             className="inline-flex items-center text-[11px] rounded-full px-2.5 py-1 mb-4"
             style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
           >
-            {business.tag}
+            {categoryLabel(business.placeId, business.googleType, business.tag)}
           </span>
+
+          {detail?.story ? (
+            <p
+              className="font-serif text-[14px] leading-relaxed mb-4 pl-3.5"
+              style={{ color: "var(--ink)", borderLeft: "2px solid var(--line)" }}
+            >
+              {detail.story}
+            </p>
+          ) : null}
+
+          {detail?.tags && detail.tags.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {detail.tags.map((t) => (
+                <span
+                  key={t}
+                  className="text-[11px] tracking-wide rounded-full px-2.5 py-1"
+                  style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          ) : null}
 
           <div className="flex flex-col gap-3 text-[13.5px]" style={{ color: "var(--ink)" }}>
             {business.address ? (
@@ -117,6 +147,41 @@ export default function BusinessDetailModal({
               </div>
             ) : null}
           </div>
+
+          {nearest ? (
+            <div
+              className="flex items-center gap-3 mt-4 rounded-xl px-3.5 py-3"
+              style={{ background: "var(--paper-2)" }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="shrink-0" style={{ color: "var(--ink-soft)" }}>
+                <rect x="4" y="4" width="16" height="16" rx="4" />
+                <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
+              </svg>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10.5px] mb-0.5" style={{ color: "var(--ink-soft)" }}>
+                  距此最近的停車場・{nearest.distanceLabel}
+                </div>
+                <div className="text-[13px] font-medium truncate" style={{ color: "var(--ink)" }}>
+                  {nearest.lot.name}
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                {nearest.lot.status === "full" ? (
+                  <span className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
+                    已滿
+                  </span>
+                ) : nearest.lot.isOpenAccess ? (
+                  <span className="text-[12px] font-medium" style={{ color: "var(--status-ok)" }}>
+                    開放中
+                  </span>
+                ) : (
+                  <span className="text-[13px] font-medium tabular-nums" style={{ color: statusBarColor[nearest.lot.status] }}>
+                    剩餘 {nearest.lot.surplus}/{nearest.lot.total}
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : null}
 
           <a
             href={business.mapsUrl}

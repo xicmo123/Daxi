@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import EventModal from "./EventModal";
 import PlaceholderIcon from "./PlaceholderIcon";
@@ -27,9 +27,9 @@ export type HeroSlide = {
   photoHistorical?: boolean;
 };
 
-export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
+export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: HeroSlide[]; initialIndex?: number }) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(initialIndex);
   const [openSlide, setOpenSlide] = useState<HeroSlide | null>(null);
 
   const onScroll = () => {
@@ -37,6 +37,14 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
     if (!el || el.clientWidth === 0) return;
     setActive(Math.round(el.scrollLeft / el.clientWidth));
   };
+
+  // Jump straight to today's or the ongoing milestone during the festival,
+  // instead of always opening on the (often already-past) first slide.
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || initialIndex === 0) return;
+    el.scrollLeft = initialIndex * el.clientWidth;
+  }, [initialIndex]);
 
   return (
     <div>

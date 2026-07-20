@@ -3,6 +3,9 @@ import PageHeader from "@/components/PageHeader";
 import BusinessList from "@/components/BusinessList";
 import { businesses, businessesGeneratedAt } from "@/lib/businesses";
 import { businessPhotos } from "@/lib/businessPhotos";
+import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+
+export const revalidate = 60;
 
 const updatedLabel = new Intl.DateTimeFormat("zh-TW", {
   month: "numeric",
@@ -11,12 +14,19 @@ const updatedLabel = new Intl.DateTimeFormat("zh-TW", {
   minute: "2-digit",
 }).format(new Date(businessesGeneratedAt));
 
-export default function BusinessesPage() {
+export default async function BusinessesPage() {
+  let lots: LiveParkingLot[] = [];
+  try {
+    lots = await fetchDaxiParking();
+  } catch {
+    lots = [];
+  }
+
   return (
     <div className="pt-2">
       <PageHeader title="商家資訊" subtitle={`美食・市集・${updatedLabel} 更新`} />
       <Suspense fallback={null}>
-        <BusinessList />
+        <BusinessList lots={lots} />
       </Suspense>
       <div className="px-6 pb-2 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：Google Maps Places API（依 Google 使用者評論數排序，每類別各取前 20 名，半徑 3 公里內；資料每週更新一次，非即時）
