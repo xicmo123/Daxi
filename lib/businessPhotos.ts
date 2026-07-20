@@ -115,4 +115,46 @@ export const businessPhotos: Record<string, PhotoCredit> = {
     author: "桃園市政府觀光旅遊局",
     sourceUrl: "https://travel.tycg.gov.tw/zh-tw/travel/attraction/423",
   },
+  // 老阿伯現滷豆干 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJuwRV3SEYaDQRiEQnq6NCVw4": {
+    src: "/images/businesses/laoabo-doufu.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/1830",
+  },
+  // 杏芳食品 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJUyeauCEYaDQRio0igIJZatg": {
+    src: "/images/businesses/xingfang-bakery.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/2894",
+  },
+  // 游記百年油飯 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJR01hKyIYaDQRQCD0hbGmyUA": {
+    src: "/images/businesses/youji-oil-rice.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/446",
+  },
+  // 大溪山水庭園餐廳 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJe219kIYXaDQRJfw1ERCEgeM": {
+    src: "/images/businesses/shanshui-restaurant.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/425",
+  },
+  // 陳師兄素肉圓 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJUzGqYiEYaDQR1LT76BztB4A": {
+    src: "/images/businesses/chenshixiong-meatball.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/543",
+  },
+  // 老地方客家菜 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJRU1SRgUYaDQRTtdqosWQG4s": {
+    src: "/images/businesses/laodifang-hakka.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/1497",
+  },
+  // 隱灶腳百年老厝餐館 — coordinates matched exactly against travel.tycg.gov.tw
+  "ChIJ7dUTVjQZaDQRxn9hBGDZyuw": {
+    src: "/images/businesses/yinzaojiao-restaurant.jpg",
+    author: "桃園市政府觀光旅遊局",
+    sourceUrl: "https://travel.tycg.gov.tw/zh-tw/consume/detail/3223",
+  },
 };
