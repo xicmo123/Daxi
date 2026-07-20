@@ -6,7 +6,8 @@
     "dev": "next dev -p 8475",
     "build": "next build",
     "start": "next start -p 8475",
-    "lint": "eslint"
+    "lint": "eslint",
+    "refresh:businesses": "node --env-file=.env.local scripts/fetch-businesses.mjs"
   },
   "dependencies": {
     "next": "16.2.10",
