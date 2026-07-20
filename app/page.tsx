@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ParallaxHero from "@/components/ParallaxHero";
 import HeroCarousel from "@/components/HeroCarousel";
-import { discoverItems, eventMilestones, type DiscoverTag } from "@/lib/data";
+import { discoverItems, eventMilestones } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
@@ -42,11 +42,11 @@ const icon = {
 };
 
 const stories = [
-  { href: "/events", label: "大禧活動", icon: icon.mask },
+  { href: "#event-carousel", label: "大禧活動", icon: icon.mask },
   { href: "/parking", label: "停車導航", icon: icon.parking },
   { href: "/weather", label: "路況", icon: icon.road },
-  { href: "/?cat=景點", label: "老街景點", icon: icon.pin },
-  { href: "/?cat=美食", label: "老街美食", icon: icon.food },
+  { href: "/businesses?cat=景點", label: "老街景點", icon: icon.pin },
+  { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food },
 ];
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
@@ -98,24 +98,21 @@ function ParkingStatSkeleton() {
   return <span className="inline-block h-[22px] w-16 rounded skeleton" style={{ background: "var(--line)" }} />;
 }
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ cat?: string }>;
-}) {
-  const { cat } = await searchParams;
-  const activeCat = cat as DiscoverTag | undefined;
-  const filteredDiscover = activeCat ? discoverItems.filter((d) => d.tag === activeCat) : discoverItems;
-
+export default async function Home() {
   const timing = getFestivalTiming();
   const todayLabel = dateFormatter.format(new Date());
   const heroSlides = eventMilestones.map((m) => ({
     key: m.date,
     phase: m.phase,
     date: m.date,
+    time: m.time,
     title: m.title,
     desc: m.desc,
+    badges: m.badges,
+    ctaLabel: m.ctaLabel,
+    ctaUrl: m.ctaUrl,
     photoSrc: m.photo?.src,
+    photoHistorical: m.photo?.historical,
   }));
 
   return (
@@ -186,7 +183,7 @@ export default async function Home({
       </div>
 
       {/* Hero carousel: swipeable highlights from the festival timeline */}
-      <div className="pt-3 fade-in-delay-1">
+      <div id="event-carousel" className="pt-3 fade-in-delay-1 scroll-mt-6">
         <HeroCarousel slides={heroSlides} />
       </div>
 
@@ -216,21 +213,14 @@ export default async function Home({
       </div>
 
       {/* Discover */}
-      <div id="discover" className="px-6 pt-10 pb-4 flex items-baseline justify-between scroll-mt-4">
-        <div>
-          <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
-            Discover
-          </div>
-          <h2 className="font-serif text-[17px] font-semibold">順路走走</h2>
+      <div id="discover" className="px-6 pt-10 pb-4 scroll-mt-4">
+        <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
+          Discover
         </div>
-        {activeCat ? (
-          <Link href="/#discover" className="text-[12px] underline" style={{ color: "var(--ink-soft)" }}>
-            顯示全部
-          </Link>
-        ) : null}
+        <h2 className="font-serif text-[17px] font-semibold">順路走走</h2>
       </div>
       <div className="grid grid-cols-2 gap-4 px-6 pb-4">
-        {filteredDiscover.map((item) => (
+        {discoverItems.map((item) => (
           <div
             key={item.title}
             className="rounded-xl overflow-hidden transition-opacity active:opacity-70"
@@ -266,7 +256,7 @@ export default async function Home({
 
       <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         景點圖片來源：Wikimedia Commons（CC BY-SA），攝影：
-        {filteredDiscover.map((item, i) => (
+        {discoverItems.map((item, i) => (
           <span key={item.title}>
             {i > 0 ? "、" : " "}
             <a href={item.photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">

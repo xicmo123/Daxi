@@ -15,11 +15,13 @@ const tabs = [
     ),
   },
   {
-    href: "/events",
-    label: "活動",
+    href: "/businesses",
+    label: "商家",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
-        <path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z" />
+        <path d="M3 9l1.5-5h15L21 9" />
+        <path d="M4 9v10h16V9" />
+        <path d="M9 19v-5h6v5" />
       </svg>
     ),
   },

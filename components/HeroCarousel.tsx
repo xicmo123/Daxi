@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import EventModal from "./EventModal";
 
 const phaseLabel: Record<string, string> = {
   past: "已結束",
@@ -14,14 +14,20 @@ export type HeroSlide = {
   key: string;
   phase: "past" | "ongoing" | "upcoming";
   date: string;
+  time: string;
   title: string;
   desc: string;
+  badges?: ("route" | "live")[];
+  ctaLabel?: string;
+  ctaUrl?: string;
   photoSrc?: string;
+  photoHistorical?: boolean;
 };
 
 export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [openSlide, setOpenSlide] = useState<HeroSlide | null>(null);
 
   const onScroll = () => {
     const el = trackRef.current;
@@ -38,8 +44,9 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       >
         {slides.map((s) => (
           <div key={s.key} className="w-full shrink-0 snap-center px-6">
-            <div
-              className="rounded-[22px] card-shadow overflow-hidden relative h-[300px] p-6 flex flex-col justify-end"
+            <button
+              onClick={() => setOpenSlide(s)}
+              className="w-full text-left rounded-[22px] card-shadow overflow-hidden relative h-[300px] p-6 flex flex-col justify-end transition-opacity active:opacity-90"
               style={{ color: "#f4ece2" }}
             >
               {s.photoSrc ? (
@@ -91,15 +98,14 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 >
                   {s.desc}
                 </p>
-                <Link
-                  href="/events"
-                  className="inline-flex items-center gap-1.5 text-[13px] font-medium rounded-full px-4 py-2 transition-opacity active:opacity-70"
+                <span
+                  className="inline-flex items-center gap-1.5 text-[13px] font-medium rounded-full px-4 py-2"
                   style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
                 >
-                  查看完整時程 →
-                </Link>
+                  查看詳情 →
+                </span>
               </div>
-            </div>
+            </button>
           </div>
         ))}
       </div>
@@ -112,6 +118,8 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           />
         ))}
       </div>
+
+      {openSlide ? <EventModal slide={openSlide} onClose={() => setOpenSlide(null)} /> : null}
     </div>
   );
 }

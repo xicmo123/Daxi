@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { businesses, type BusinessTag } from "@/lib/businesses";
 
 const TABS: { label: string; value: BusinessTag | "全部" }[] = [
@@ -10,8 +11,14 @@ const TABS: { label: string; value: BusinessTag | "全部" }[] = [
   { label: "市集", value: "市集" },
 ];
 
+function isBusinessTag(value: string | null): value is BusinessTag {
+  return value === "美食" || value === "景點" || value === "市集";
+}
+
 export default function BusinessList() {
-  const [active, setActive] = useState<BusinessTag | "全部">("全部");
+  const searchParams = useSearchParams();
+  const initialCat = searchParams.get("cat");
+  const [active, setActive] = useState<BusinessTag | "全部">(isBusinessTag(initialCat) ? initialCat : "全部");
   const rows = active === "全部" ? businesses : businesses.filter((b) => b.tag === active);
 
   return (
