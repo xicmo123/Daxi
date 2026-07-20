@@ -62,4 +62,22 @@ export const businessPhotos: Record<string, PhotoCredit> = {
     sourceUrl:
       "https://commons.wikimedia.org/wiki/File:天主教方濟生活園區_St_Francis_Xavier_Church_at_Daxi_-_panoramio.jpg",
   },
+  // 大漢溪山豬湖生態親水園區
+  "ChIJgYuMHPAZaDQRGLuAoxbKEBc": {
+    src: "/images/businesses/shanzhuhu-lake.jpg",
+    author: "lienyuan lee",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:山豬湖_Shanzhu_Lake_-_panoramio.jpg",
+  },
+  // 大溪河濱公園 — same 瑞興里 stretch of the Dahan River the park sits on
+  "ChIJzRhetRcYaDQRF1DpSokjfjM": {
+    src: "/images/businesses/dahan-river-zhongzhuang.jpg",
+    author: "氏子",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:流經中庄的大嵙崁溪.jpg",
+  },
+  // 月眉休閒農業區
+  "ChIJW-1AA7gZaDQRfAhvuPXyygU": {
+    src: "/images/businesses/yuemei-old-house.jpg",
+    author: "lienyuan lee",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:月眉老屋_Yuemei_Traditional_House_-_panoramio.jpg",
+  },
 };

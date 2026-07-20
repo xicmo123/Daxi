@@ -25,6 +25,11 @@ export type Milestone = {
   time: string;
   title: string;
   desc: string;
+  // Historical background, shown when this milestone ties into an
+  // established local tradition. Falls back to `theme` when there's no
+  // deeper history to tell (e.g. a one-off, non-official program).
+  history?: string;
+  theme?: string;
   badges?: ("route" | "live")[];
   ctaLabel?: string;
   ctaUrl?: string;
@@ -39,6 +44,8 @@ export const eventMilestones: Milestone[] = [
     time: "13:00–18:00",
     title: "開幕式暨大匯演",
     desc: "大溪天幕籃球場、老城區及普濟堂登場，集結在地社頭、藝陣團隊及北管傳習成果。當日康莊路、復興路、得勝路、中正路、和平路、登龍路及普濟路一帶交通管制，和平老街全段劃設為行人徒步區。",
+    history:
+      "大溪迎六月廿四（關聖帝君聖誕）已有百年歷史，是大溪最盛大的民俗慶典之一。開幕式集結歷年傳承的社頭陣頭與北管技藝，揭開整個慶典的序幕。",
     badges: ["route"],
     photo: {
       src: "/images/puji-temple.jpg",
@@ -52,6 +59,7 @@ export const eventMilestones: Milestone[] = [
     time: "系列活動期間",
     title: "北管、社頭文化、戲劇走讀、音樂展演",
     desc: "以「聲聲不息」為主軸，串聯百年迎六月廿四慶典的系列活動陸續登場，詳細場次時間以大溪大禧官方粉專公告為準。",
+    theme: "以「聲聲不息」為主軸，呈現北管、社頭文化與音樂展演如何在當代持續傳唱大溪百年迎六月廿四的慶典精神。",
     badges: ["live"],
     ctaLabel: "前往官方粉專看最新場次 →",
     ctaUrl: "https://www.facebook.com/DaxiCulFes/",
@@ -68,8 +76,15 @@ export const eventMilestones: Milestone[] = [
     time: "10:00–18:00",
     title: "2026大溪陀螺文化節",
     desc: "上午於三角公園舉辦「陀螺飛揚．大溪藝響音樂會」，下午轉往大溪天幕、綜合運動場，安排陀螺技藝表演、彩繪 DIY、打陀螺教學與競賽，並同場登場大溪國際青年商會主辦的「遊木民族－大溪地方創生文化體驗日」。由大溪區公所主辦，非大溪大禧官方場次。",
+    theme: "扣連大溪木藝工藝傳統，將老街常見的童玩陀螺轉化為結合音樂會、手作體驗與競賽的地方年度活動。",
     ctaLabel: "查看大溪區公所官方公告 →",
     ctaUrl: "https://www.daxi.tycg.gov.tw/News_Content.aspx?n=7532&s=1664839",
+    photo: {
+      src: "/images/top-spinning-plaque.jpg",
+      author: "Outlookxp",
+      sourceUrl: "https://commons.wikimedia.org/wiki/File:大溪福仁宮一代陀螺王匾額.jpg",
+      historical: true,
+    },
   },
   {
     date: "8/6（四）",
@@ -78,6 +93,8 @@ export const eventMilestones: Milestone[] = [
     time: "全日",
     title: "遶境隨香：社頭隨香四部曲",
     desc: "規劃神轎、北管、神將、神龍四條主題路線，民眾可實際跟隨隊伍深入街巷，非僅在路邊觀賞。",
+    history:
+      "大溪普濟堂關聖帝君聖誕遶境已有百年歷史，融合社頭、北管與藝陣等民俗陣頭文化，是桃園重要的無形文化資產之一。",
     badges: ["route"],
     photo: {
       src: "/images/guanyu-birthday-celebration.jpg",
