@@ -5,7 +5,7 @@ const SOURCE_URL =
 
 // Daxi Old Street reference point (和平路豆干街一帶), used as the "distance from"
 // center for every parking lot.
-const OLD_STREET_CENTER = { lat: 24.884952, lng: 121.288238 };
+export const OLD_STREET_CENTER = { lat: 24.884952, lng: 121.288238 };
 
 type RawLot = {
   parkName: string;
@@ -33,7 +33,7 @@ export type LiveParkingLot = {
   mapsUrl: string;
 };
 
-function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+export function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 6371000;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
   const dLat = toRad(b.lat - a.lat);
@@ -44,7 +44,7 @@ function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng:
   return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
 }
 
-function formatDistance(meters: number): string {
+export function formatDistance(meters: number): string {
   if (meters < 1000) return `${Math.round(meters / 10) * 10}m`;
   return `${(meters / 1000).toFixed(1)}km`;
 }
