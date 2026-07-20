@@ -71,7 +71,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex glass-nav">
+    <nav className="fixed bottom-0 inset-x-0 z-20 flex glass-nav">
       <div className="mx-auto flex w-full max-w-md border-t md:border-x" style={{ borderColor: "var(--line)" }}>
         {tabs.map((tab) => {
           const active = pathname === tab.href;
