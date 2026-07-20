@@ -7,51 +7,61 @@ const tabs = [
   {
     href: "/",
     label: "首頁",
+    // 豆干 — two stacked tofu cubes
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-        <path d="M4 10 12 3l8 7" />
-        <path d="M6 9v10h12V9" />
+        <rect x="5" y="9" width="8" height="8" rx="1" />
+        <rect x="11" y="13" width="8" height="8" rx="1" />
       </svg>
     ),
   },
   {
     href: "/spots",
     label: "景點",
+    // 舞龍舞獅 — a lion-dance head
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-        <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
-        <circle cx="12" cy="9.5" r="2.2" />
+        <circle cx="12" cy="14" r="6.5" />
+        <circle cx="9.3" cy="13" r="0.9" fill="currentColor" stroke="none" />
+        <circle cx="14.7" cy="13" r="0.9" fill="currentColor" stroke="none" />
+        <path d="M8.5 10c1.5-1.8 5.5-1.8 7 0" />
+        <path d="M12 3.5c-1.6 1.3-1.6 3.4 0 4.7 1.6-1.3 1.6-3.4 0-4.7Z" />
       </svg>
     ),
   },
   {
     href: "/businesses",
     label: "商家",
+    // 木藝 — a log's growth-ring cross-section
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-        <path d="M3 9l1.5-5h15L21 9" />
-        <path d="M4 9v10h16V9" />
-        <path d="M9 19v-5h6v5" />
+        <circle cx="12" cy="12" r="8.5" />
+        <circle cx="12" cy="12" r="5" />
+        <circle cx="12" cy="12" r="1.3" />
       </svg>
     ),
   },
   {
     href: "/parking",
     label: "停車",
+    // 陀螺 — a spinning top
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-        <rect x="4" y="4" width="16" height="16" rx="4" />
-        <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
+        <rect x="10.5" y="2.5" width="3" height="2.5" rx="0.5" />
+        <path d="M7 7.5h10l-1.7 4.5h-6.6L7 7.5Z" />
+        <path d="M9.3 12h5.4L12 20.5 9.3 12Z" />
       </svg>
     ),
   },
   {
     href: "/weather",
     label: "路況",
+    // 水庫 — mountains cradling rippled water
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-        <path d="M9 21 10.5 3M15 21 13.5 3" />
-        <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
+        <path d="M3 12.5 7 6l3.5 4.5L14.5 5 21 12.5" />
+        <path d="M3 16.5c1.8-1.3 3.6-1.3 5.4 0s3.6 1.3 5.4 0 3.6-1.3 5.4 0" />
+        <path d="M3 19.5c1.8-1.3 3.6-1.3 5.4 0s3.6 1.3 5.4 0 3.6-1.3 5.4 0" />
       </svg>
     ),
   },
@@ -61,7 +71,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-20 flex glass-nav">
+    <nav className="flex glass-nav">
       <div className="mx-auto flex w-full max-w-md border-t md:border-x" style={{ borderColor: "var(--line)" }}>
         {tabs.map((tab) => {
           const active = pathname === tab.href;

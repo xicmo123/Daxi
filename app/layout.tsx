@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Serif_TC } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import StreetSketchBanner from "@/components/StreetSketchBanner";
 
 const notoSerifTC = Noto_Serif_TC({
   variable: "--font-noto-serif-tc",
@@ -48,7 +49,7 @@ export default function RootLayout({
             '-apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", sans-serif',
         }}
       >
-        <div className="flex-1 pb-20">
+        <div className="flex-1 pb-36">
           <div
             className="mx-auto w-full max-w-md md:border-x"
             style={{ background: "var(--paper)", borderColor: "var(--line)" }}
@@ -56,7 +57,12 @@ export default function RootLayout({
             {children}
           </div>
         </div>
-        <BottomNav />
+        <div className="fixed bottom-0 inset-x-0 z-20">
+          <div className="mx-auto w-full max-w-md md:border-x" style={{ borderColor: "var(--line)" }}>
+            <StreetSketchBanner />
+          </div>
+          <BottomNav />
+        </div>
       </body>
     </html>
   );
