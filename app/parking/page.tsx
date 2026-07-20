@@ -143,11 +143,6 @@ export default async function ParkingPage() {
                       <path d="M7 17 17 7M9 7h8v8" />
                     </svg>
                   </span>
-                  {lot.openNow !== null ? (
-                    <span className="text-[10.5px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                      {lot.openNow ? "營業中" : "非營業時間"}
-                    </span>
-                  ) : null}
                 </div>
               </a>
             ))}
