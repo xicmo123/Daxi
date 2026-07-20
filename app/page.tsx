@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import ParallaxHero from "@/components/ParallaxHero";
 import HeroCarousel from "@/components/HeroCarousel";
-import { discoverItems, eventMilestones } from "@/lib/data";
+import { eventMilestones } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
@@ -45,7 +44,7 @@ const stories = [
   { href: "#event-carousel", label: "大禧活動", icon: icon.mask },
   { href: "/parking", label: "停車導航", icon: icon.parking },
   { href: "/weather", label: "路況", icon: icon.road },
-  { href: "/businesses?cat=景點", label: "老街景點", icon: icon.pin },
+  { href: "/spots", label: "老街景點", icon: icon.pin },
   { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food },
 ];
 
@@ -95,7 +94,7 @@ async function ParkingStat() {
 }
 
 function ParkingStatSkeleton() {
-  return <span className="inline-block h-[22px] w-16 rounded skeleton" style={{ background: "var(--line)" }} />;
+  return <span className="inline-block h-[22px] w-16 rounded skeleton" style={{ background: "rgba(255,255,255,0.2)" }} />;
 }
 
 export default async function Home() {
@@ -108,6 +107,8 @@ export default async function Home() {
     time: m.time,
     title: m.title,
     desc: m.desc,
+    history: m.history,
+    theme: m.theme,
     badges: m.badges,
     ctaLabel: m.ctaLabel,
     ctaUrl: m.ctaUrl,
@@ -139,7 +140,7 @@ export default async function Home() {
           <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.72)" }}>
             📍 桃園市大溪區・老街周邊
           </div>
-          <h1 className="font-serif text-[42px] leading-tight font-semibold text-white mb-5">大溪通</h1>
+          <h1 className="font-serif text-[42px] leading-tight font-semibold text-white mb-5">溪遊指南</h1>
           <div className="flex flex-col items-center gap-1.5" style={{ color: "rgba(255,255,255,0.65)" }}>
             <span className="text-[10.5px] tracking-[0.15em]">向下滑動，探索大溪</span>
             <svg
@@ -157,25 +158,21 @@ export default async function Home() {
         </div>
       </ParallaxHero>
 
-      {/* Story chips */}
-      <div className="flex gap-5 px-6 pt-2 pb-4 overflow-x-auto no-scrollbar fade-in">
+      {/* Quick actions — one calm row instead of a busy icon grid */}
+      <div className="flex justify-between px-6 pt-6 pb-2 fade-in">
         {stories.map((s, i) => (
           <Link
             key={i}
             href={s.href}
-            className="flex flex-col items-center gap-2 w-14 shrink-0 transition-opacity active:opacity-60"
+            className="flex flex-col items-center gap-2 transition-opacity active:opacity-60"
           >
             <span
-              className="w-12 h-12 rounded-full border flex items-center justify-center p-3"
-              style={{
-                borderColor: "var(--line)",
-                color: "var(--ink)",
-                background: "var(--card)",
-              }}
+              className="w-14 h-14 rounded-full flex items-center justify-center card-shadow"
+              style={{ background: "var(--card)", color: "var(--ink)" }}
             >
               {s.icon}
             </span>
-            <span className="text-[10px] text-center tracking-wide" style={{ color: "var(--ink-soft)" }}>
+            <span className="text-[11px] font-medium tracking-wide text-center" style={{ color: "var(--ink-soft)" }}>
               {s.label}
             </span>
           </Link>
@@ -187,84 +184,38 @@ export default async function Home() {
         <HeroCarousel slides={heroSlides} />
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-3 px-6 pt-6 fade-in-delay-2">
-        <div className="p-4" style={{ borderTop: "1px solid var(--line)" }}>
-          <div className="text-[11px] mb-2" style={{ color: "var(--ink-soft)" }}>
-            大溪區公有停車場
+      {/* Stat banner — one moment of visual weight against the quiet cards around it */}
+      <div className="px-6 pt-6 fade-in-delay-2">
+        <div
+          className="rounded-2xl card-shadow px-6 py-5 flex items-center justify-between"
+          style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
+        >
+          <div>
+            <div className="text-[11px] mb-1.5" style={{ color: "rgba(255,255,255,0.6)" }}>
+              大溪區公有停車場
+            </div>
+            <div className="font-serif text-[26px] font-light leading-none">
+              <Suspense fallback={<ParkingStatSkeleton />}>
+                <ParkingStat />
+              </Suspense>
+            </div>
           </div>
-          <div className="font-serif text-2xl font-light">
-            <Suspense fallback={<ParkingStatSkeleton />}>
-              <ParkingStat />
-            </Suspense>
-          </div>
-        </div>
-        <div className="p-4" style={{ borderTop: "1px solid var(--line)" }}>
-          <div className="text-[11px] mb-2" style={{ color: "var(--ink-soft)" }}>
-            距遶境隨香
-          </div>
-          <div className="font-serif text-2xl font-light">
-            {timing.daysToProcession}
-            <span className="text-[11px] font-sans font-normal ml-0.5" style={{ color: "var(--ink-soft)" }}>
-              天（8/6）
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Discover */}
-      <div id="discover" className="px-6 pt-10 pb-4 scroll-mt-4">
-        <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
-          Discover
-        </div>
-        <h2 className="font-serif text-[17px] font-semibold">順路走走</h2>
-      </div>
-      <div className="grid grid-cols-2 gap-4 px-6 pb-4">
-        {discoverItems.map((item) => (
-          <div
-            key={item.title}
-            className="rounded-xl overflow-hidden transition-opacity active:opacity-70"
-            style={{ background: "var(--card)" }}
-          >
-            <div className="relative h-28">
-              <Image
-                src={item.photo.src}
-                alt={item.title}
-                fill
-                sizes="(max-width: 448px) 50vw, 220px"
-                className="object-cover"
-                style={{ filter: "saturate(0.82) contrast(0.96)" }}
-              />
-              <div className="absolute inset-0" style={{ background: "rgba(122, 112, 92, 0.1)" }} />
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.4) 100%)" }}
-              />
-              <span className="absolute left-2.5 bottom-2.5 text-[10px] font-normal tracking-wide text-white/90">
-                {item.tag}
+          <div className="w-px self-stretch mx-5" style={{ background: "rgba(255,255,255,0.16)" }} />
+          <div className="text-right">
+            <div className="text-[11px] mb-1.5" style={{ color: "rgba(255,255,255,0.6)" }}>
+              距遶境隨香
+            </div>
+            <div className="font-serif text-[26px] font-light leading-none">
+              {timing.daysToProcession}
+              <span className="text-[11px] font-sans font-normal ml-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
+                天（8/6）
               </span>
             </div>
-            <div className="p-3.5">
-              <h4 className="font-serif text-[14px] font-semibold mb-1">{item.title}</h4>
-              <p className="text-[11.5px] leading-snug" style={{ color: "var(--ink-soft)" }}>
-                {item.desc}
-              </p>
-            </div>
           </div>
-        ))}
+        </div>
       </div>
 
-      <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-        景點圖片來源：Wikimedia Commons（CC BY-SA），攝影：
-        {discoverItems.map((item, i) => (
-          <span key={item.title}>
-            {i > 0 ? "、" : " "}
-            <a href={item.photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
-              {item.title} - {item.photo.author}
-            </a>
-          </span>
-        ))}
-      </div>
+      <div className="pb-10" />
     </div>
   );
 }
