@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
-import { eventMilestones } from "@/lib/data";
+import { readSlides } from "@/lib/carousel";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
 
-export const revalidate = 60;
+// Carousel content is now admin-editable — force-dynamic so edits show up
+// immediately instead of waiting out a 60s ISR window (same as /businesses, /spots).
+export const dynamic = "force-dynamic";
 
 const icon = {
   mask: (
@@ -96,8 +98,9 @@ export default async function Home() {
   const timing = getFestivalTiming();
   const isFestivalMode = timing.phase === "during";
   const todayLabel = dateFormatter.format(new Date());
-  const heroSlides = eventMilestones.map((m) => ({
-    key: m.date,
+  const slides = await readSlides();
+  const heroSlides = slides.map((m) => ({
+    key: m.id,
     phase: m.phase,
     date: m.date,
     time: m.time,
@@ -115,16 +118,16 @@ export default async function Home() {
   // During the festival, open the carousel on today's milestone (or the
   // nearest ongoing/upcoming one) instead of always the first, often
   // already-past, slide.
-  const todaysMilestone = findTodaysMilestone();
+  const todaysMilestone = findTodaysMilestone(slides);
   const initialSlideIndex = isFestivalMode
     ? (() => {
         if (todaysMilestone) {
-          const idx = eventMilestones.indexOf(todaysMilestone);
+          const idx = slides.indexOf(todaysMilestone);
           if (idx >= 0) return idx;
         }
-        const ongoingIdx = eventMilestones.findIndex((m) => m.phase === "ongoing");
+        const ongoingIdx = slides.findIndex((m) => m.phase === "ongoing");
         if (ongoingIdx >= 0) return ongoingIdx;
-        const upcomingIdx = eventMilestones.findIndex((m) => m.phase === "upcoming");
+        const upcomingIdx = slides.findIndex((m) => m.phase === "upcoming");
         return upcomingIdx >= 0 ? upcomingIdx : 0;
       })()
     : 0;

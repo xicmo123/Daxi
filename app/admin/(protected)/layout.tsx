@@ -18,9 +18,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className="sticky top-0 z-10 flex items-center justify-between px-6 py-4"
         style={{ background: "var(--paper)", borderBottom: "1px solid var(--line)" }}
       >
-        <Link href="/admin" className="font-serif text-[17px] font-bold" style={{ color: "var(--ink)" }}>
-          大溪通後台
-        </Link>
+        <div className="flex items-center gap-5">
+          <Link href="/admin" className="font-serif text-[17px] font-bold" style={{ color: "var(--ink)" }}>
+            大溪通後台
+          </Link>
+          <Link href="/admin/carousel" className="text-[12.5px] font-medium" style={{ color: "var(--ink-soft)" }}>
+            輪播管理
+          </Link>
+        </div>
         <div className="flex items-center gap-4">
           <Link href="/" target="_blank" className="text-[12.5px] underline" style={{ color: "var(--ink-soft)" }}>
             查看網站
