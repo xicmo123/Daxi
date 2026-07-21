@@ -16,12 +16,12 @@ export default function PageHeader({
     <div className="relative px-6 pt-10 pb-8 text-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="/images/old-street-sketch.jpg"
+          src="/images/old-street-sketch-2.jpg"
           alt=""
           fill
           sizes="448px"
           className="object-cover"
-          style={{ objectPosition: "center 35%" }}
+          style={{ objectPosition: "center 20%" }}
         />
         <div className="absolute inset-0" style={{ background: "var(--paper)", opacity: 0.62 }} />
       </div>
