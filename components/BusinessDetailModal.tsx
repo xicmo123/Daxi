@@ -37,7 +37,7 @@ export default function BusinessDetailModal({
   onSelect?: (b: Business) => void;
   onClose: () => void;
 }) {
-  const nearest = findNearestLot(business, lots);
+  const nearest = findNearestLot(business, lots, business.placeId);
   const nearby = nearbyBusinesses(business, allBusinesses);
 
   useEffect(() => {
@@ -193,7 +193,8 @@ export default function BusinessDetailModal({
               </svg>
               <div className="min-w-0 flex-1">
                 <div className="text-[10.5px] mb-0.5" style={{ color: "var(--ink-soft)" }}>
-                  距此最近的停車場・{nearest.distanceLabel}
+                  距此最近的停車場・直線距離 {nearest.distanceLabel}
+                  {nearest.crossesRiver ? "・需過橋" : ""}
                 </div>
                 <div className="text-[13px] font-medium truncate" style={{ color: "var(--ink)" }}>
                   {nearest.lot.name}

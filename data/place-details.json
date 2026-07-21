@@ -122,5 +122,15 @@
   },
   "ChIJETB2Z6wXaDQRKdaKMX5mD9c": {
     "tags": []
+  },
+  "custom-mruejuqv6c96": {
+    "category": "美食",
+    "story": "多多真可愛",
+    "tags": [],
+    "reservation": {
+      "mode": "slots",
+      "contactType": "phone",
+      "contactValue": "0925090705"
+    }
   }
 }
