@@ -47,7 +47,11 @@ export async function POST(request: NextRequest) {
   const filename = `admin-${safeId}.jpg`;
   await fs.writeFile(path.join(IMAGES_DIR, filename), resized);
 
-  const src = `/images/businesses/${filename}`;
+  // Served via a route handler, not the raw /images/businesses/ static path —
+  // this custom Next.js build 404-caches public/ files first requested
+  // before they exist on disk (see the route handler for details), which a
+  // freshly-uploaded photo always is on its first render.
+  const src = `/api/uploads/businesses/${filename}`;
   await savePhoto(placeId, {
     src,
     author: typeof author === "string" && author.trim() ? author.trim() : undefined,
@@ -65,9 +69,12 @@ export async function DELETE(request: NextRequest) {
   const existing = photos[placeId];
   await removePhoto(placeId);
 
-  if (existing?.src?.startsWith("/images/businesses/admin-")) {
-    const filePath = path.join(process.cwd(), "public", existing.src);
-    await fs.unlink(filePath).catch(() => {});
+  if (existing?.src?.startsWith("/api/uploads/businesses/admin-")) {
+    const filename = existing.src.slice("/api/uploads/businesses/".length);
+    await fs.unlink(path.join(IMAGES_DIR, filename)).catch(() => {});
+  } else if (existing?.src?.startsWith("/images/businesses/admin-")) {
+    // Legacy path from before the route-handler switch — still clean it up.
+    await fs.unlink(path.join(process.cwd(), "public", existing.src)).catch(() => {});
   }
 
   return NextResponse.json({ ok: true });
