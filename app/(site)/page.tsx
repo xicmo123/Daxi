@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import ParallaxHero from "@/components/ParallaxHero";
 import HeroCarousel from "@/components/HeroCarousel";
-import { eventMilestones, festival } from "@/lib/data";
+import { eventMilestones } from "@/lib/data";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
@@ -77,10 +76,6 @@ function WeatherChipSkeleton() {
   return <span className="inline-block h-[15px] w-10 rounded skeleton" style={{ background: "var(--line)" }} />;
 }
 
-function WeatherChipSkeletonOnDark() {
-  return <span className="inline-block h-[15px] w-10 rounded skeleton" style={{ background: "rgba(255,255,255,0.3)" }} />;
-}
-
 async function ParkingStat() {
   let parkingSummary = "資料整理中";
   try {
@@ -136,57 +131,29 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Full-bleed hero: atmosphere before information */}
-      <ParallaxHero src="/images/daxi-bridge.jpg" alt="大溪橋夜間點燈">
-        <div className="absolute top-6 right-6">
-          <Link
-            href="/weather"
-            className="flex flex-col items-end gap-0.5 rounded-xl px-3 py-1.5 transition-opacity active:opacity-70"
-            style={{ background: "rgba(15,13,10,0.35)", border: "1px solid rgba(255,255,255,0.25)", backdropFilter: "blur(8px)" }}
-          >
-            <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>
-              {todayLabel}
-            </span>
-            <span className="text-[13px] font-semibold flex items-center gap-1 text-white">
-              <Suspense fallback={<WeatherChipSkeletonOnDark />}>
-                <WeatherChip />
-              </Suspense>
-            </span>
-          </Link>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-9 text-center">
-          {isFestivalMode ? (
-            <div
-              className="inline-flex items-center gap-1.5 text-[11px] font-medium rounded-full px-3 py-1.5 mb-4"
-              style={{ background: "rgba(184,147,90,0.22)", border: "1px solid rgba(212,180,128,0.55)", color: "#f1e3c8" }}
-            >
-              🏮 {festival.name}進行中・第 {timing.dayIndex}/{timing.totalDays} 天
-            </div>
-          ) : (
-            <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.72)" }}>
-              📍 桃園市大溪區・老街周邊
-            </div>
-          )}
-          <h1 className="font-serif text-[42px] leading-tight font-semibold text-white mb-5">溪遊指南</h1>
-          <div className="flex flex-col items-center gap-1.5" style={{ color: "rgba(255,255,255,0.65)" }}>
-            <span className="text-[10.5px] tracking-[0.15em]">向下滑動，探索大溪</span>
-            <svg
-              className="scroll-cue"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </div>
-        </div>
-      </ParallaxHero>
+      {/* Date + weather, plain text — no card, no hero image */}
+      <div className="flex items-center justify-between px-6 pt-6 pb-1 fade-in">
+        <span className="text-[13px]" style={{ color: "var(--ink-soft)" }}>
+          {todayLabel}
+        </span>
+        <Link
+          href="/weather"
+          className="text-[13px] font-medium flex items-center gap-1 transition-opacity active:opacity-60"
+          style={{ color: "var(--ink)" }}
+        >
+          <Suspense fallback={<WeatherChipSkeleton />}>
+            <WeatherChip />
+          </Suspense>
+        </Link>
+      </div>
+
+      {/* Hero carousel: swipeable highlights from the festival timeline — now the first real content on the page */}
+      <div id="event-carousel" className="pt-2 fade-in scroll-mt-6">
+        <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />
+      </div>
 
       {/* Quick actions — one calm row instead of a busy icon grid */}
-      <div className="flex justify-between px-6 pt-6 pb-2 fade-in">
+      <div className="flex justify-between px-6 pt-5 pb-2 fade-in-delay-1">
         {stories.map((s, i) => (
           <Link
             key={i}
@@ -204,11 +171,6 @@ export default async function Home() {
             </span>
           </Link>
         ))}
-      </div>
-
-      {/* Hero carousel: swipeable highlights from the festival timeline */}
-      <div id="event-carousel" className="pt-3 fade-in-delay-1 scroll-mt-6">
-        <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />
       </div>
 
       {/* Live cams teaser — only surfaced while the festival is actually on */}
