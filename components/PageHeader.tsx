@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 
+// No background image of its own — the whole app now has a fixed sketch
+// wallpaper behind it (see SiteLayout), so a second image here would just
+// double up on top of that.
 export default function PageHeader({
   eyebrow,
   title,
@@ -13,18 +15,7 @@ export default function PageHeader({
   right?: ReactNode;
 }) {
   return (
-    <div className="relative px-6 pt-10 pb-8 text-center overflow-hidden">
-      <div className="absolute inset-0">
-        <Image
-          src="/images/old-street-sketch-2.jpg"
-          alt=""
-          fill
-          sizes="448px"
-          className="object-cover"
-          style={{ objectPosition: "center 20%" }}
-        />
-        <div className="absolute inset-0" style={{ background: "var(--paper)", opacity: 0.62 }} />
-      </div>
+    <div className="relative px-6 pt-10 pb-8 text-center">
       <div className="relative">
         {eyebrow ? (
           <div

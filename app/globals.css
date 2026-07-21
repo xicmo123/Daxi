@@ -23,6 +23,7 @@
   --status-ok: #6b9080;
   --status-warn: #c08a5c;
   --festival-gold: #b8935a;
+  --wallpaper-fade-opacity: 0.85;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,6 +43,7 @@
     --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.35);
     --status-ok: #82ab99;
     --status-warn: #d3a077;
+    --wallpaper-fade-opacity: 0.88;
   }
 }
 
@@ -61,6 +63,7 @@
   --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.35);
   --status-ok: #82ab99;
   --status-warn: #d3a077;
+  --wallpaper-fade-opacity: 0.88;
 }
 
 :root[data-theme="light"] {
@@ -79,6 +82,7 @@
   --shadow-card: 0 2px 6px rgba(30, 41, 59, 0.04), 0 14px 30px rgba(30, 41, 59, 0.06);
   --status-ok: #6b9080;
   --status-warn: #c08a5c;
+  --wallpaper-fade-opacity: 0.85;
 }
 
 @theme inline {
