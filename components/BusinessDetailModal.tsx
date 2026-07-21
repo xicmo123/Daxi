@@ -8,6 +8,7 @@ import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import PlaceholderIcon from "./PlaceholderIcon";
+import ReservationBooking from "./ReservationBooking";
 
 function nearbyBusinesses(business: Business, all: Business[], limit = 3) {
   return all
@@ -108,6 +109,14 @@ export default function BusinessDetailModal({
             >
               {categoryLabel(detail?.category, business.googleType, business.tag)}
             </span>
+            {business.businessStatus && business.businessStatus !== "OPERATIONAL" ? (
+              <span
+                className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                style={{ background: "rgba(224,90,70,0.28)", color: "#ffd9d0" }}
+              >
+                {business.businessStatus === "CLOSED_PERMANENTLY" ? "已歇業" : "暫停營業"}
+              </span>
+            ) : null}
             <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
             {detail?.story ? (
               <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(255,255,255,0.82)" }}>
@@ -118,6 +127,10 @@ export default function BusinessDetailModal({
         </div>
 
         <div className="p-6">
+          {detail?.reservation ? (
+            <ReservationBooking placeId={business.placeId} reservation={detail.reservation} />
+          ) : null}
+
           {detail?.tags && detail.tags.length > 0 ? (
             <div className="flex flex-wrap gap-1.5 mb-4">
               {detail.tags.map((t) => (

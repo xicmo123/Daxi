@@ -3,10 +3,21 @@
 // runtime via lib/placesStore.ts. This file only keeps the pure display
 // helpers so client components can format a label without needing the
 // server-only data layer.
+// mode "inquiry" (Phase 1): outbound "ask to reserve" contact link.
+// mode "slots" (Phase 2): in-app time-slot picker backed by lib/reservations.ts;
+// contactType/contactValue become an optional backup contact.
+export type ReservationDetail = {
+  mode: "inquiry" | "slots";
+  contactType?: "phone" | "line" | "form";
+  contactValue?: string;
+  note?: string;
+};
+
 export type PlaceDetail = {
   category?: string;
   story?: string;
   tags?: string[];
+  reservation?: ReservationDetail;
 };
 
 // Google's own place-type classification, translated — a safe, non-invented

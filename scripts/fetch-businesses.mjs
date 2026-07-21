@@ -68,7 +68,7 @@ async function searchNearby(includedTypes, apiKey) {
       "Content-Type": "application/json",
       "X-Goog-Api-Key": apiKey,
       "X-Goog-FieldMask":
-        "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.primaryType,places.location",
+        "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.primaryType,places.location,places.businessStatus",
     },
     body: JSON.stringify({
       includedTypes,
@@ -97,6 +97,7 @@ function toBusiness(p, tag) {
     address: p.formattedAddress ?? null,
     tag,
     googleType: p.primaryType ?? null,
+    businessStatus: p.businessStatus ?? null,
     rating: p.rating ?? null,
     reviewCount: p.userRatingCount ?? 0,
     lat,
@@ -152,6 +153,7 @@ export type Business = {
   address: string | null;
   tag: BusinessTag;
   googleType: string | null;
+  businessStatus: "OPERATIONAL" | "CLOSED_TEMPORARILY" | "CLOSED_PERMANENTLY" | null;
   rating: number | null;
   reviewCount: number;
   lat: number;

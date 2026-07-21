@@ -6,6 +6,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { businesses as googleBusinesses, type Business, type BusinessTag } from "./businesses";
 import type { PhotoCredit } from "./data";
+import type { PlaceDetail } from "./placeDetails";
 import { haversineMeters, formatDistance, OLD_STREET_CENTER } from "./tycgParking";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -13,11 +14,7 @@ const PHOTOS_PATH = path.join(DATA_DIR, "business-photos.json");
 const DETAILS_PATH = path.join(DATA_DIR, "place-details.json");
 const CUSTOM_PATH = path.join(DATA_DIR, "custom-places.json");
 
-export type PlaceDetail = {
-  category?: string;
-  story?: string;
-  tags?: string[];
-};
+export type { PlaceDetail };
 
 export type CustomPlaceInput = {
   name: string;
@@ -71,6 +68,7 @@ function customToBusiness(c: CustomPlaceRecord): Business {
     address: c.address,
     tag: c.tag,
     googleType: null,
+    businessStatus: null,
     rating: null,
     reviewCount: 0,
     lat: c.lat,
