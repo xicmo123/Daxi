@@ -13,6 +13,7 @@ const DATA_DIR = path.join(process.cwd(), "data");
 const PHOTOS_PATH = path.join(DATA_DIR, "business-photos.json");
 const DETAILS_PATH = path.join(DATA_DIR, "place-details.json");
 const CUSTOM_PATH = path.join(DATA_DIR, "custom-places.json");
+const DELETED_PATH = path.join(DATA_DIR, "deleted-places.json");
 
 export type { PlaceDetail };
 
@@ -60,6 +61,14 @@ export async function readCustomPlaces(): Promise<CustomPlaceRecord[]> {
   return readJson(CUSTOM_PATH, []);
 }
 
+// Google-sourced places can't be deleted from lib/businesses.ts (it's
+// regenerated wholesale by the weekly refresh script), so "delete" for one
+// of those is an exclusion list applied at read time here — it keeps the
+// place gone even after the next refresh re-fetches it from Google.
+export async function readDeletedIds(): Promise<string[]> {
+  return readJson(DELETED_PATH, []);
+}
+
 function customToBusiness(c: CustomPlaceRecord): Business {
   const distanceMeters = Math.round(haversineMeters(OLD_STREET_CENTER, c));
   return {
@@ -81,10 +90,12 @@ function customToBusiness(c: CustomPlaceRecord): Business {
 }
 
 // The full place list every page/component renders from: Google-sourced
-// businesses plus whatever's been hand-added through the admin backend.
+// businesses plus whatever's been hand-added through the admin backend,
+// minus anything an admin has permanently deleted.
 export async function getAllPlaces(): Promise<Business[]> {
-  const custom = await readCustomPlaces();
-  return [...googleBusinesses, ...custom.map(customToBusiness)];
+  const [custom, deletedIds] = await Promise.all([readCustomPlaces(), readDeletedIds()]);
+  const deleted = new Set(deletedIds);
+  return [...googleBusinesses, ...custom.map(customToBusiness)].filter((p) => !deleted.has(p.placeId));
 }
 
 // Public-facing pages should use this instead of getAllPlaces() — it drops
@@ -153,4 +164,24 @@ export async function deleteCustomPlace(placeId: string): Promise<boolean> {
     await writeJson(DETAILS_PATH, details);
   }
   return true;
+}
+
+export async function deleteGooglePlace(placeId: string): Promise<void> {
+  const deletedIds = await readDeletedIds();
+  if (!deletedIds.includes(placeId)) {
+    deletedIds.push(placeId);
+    await writeJson(DELETED_PATH, deletedIds);
+  }
+  await removePhoto(placeId);
+  const details = await readDetails();
+  if (details[placeId]) {
+    delete details[placeId];
+    await writeJson(DETAILS_PATH, details);
+  }
+}
+
+export async function restoreGooglePlace(placeId: string): Promise<void> {
+  const deletedIds = await readDeletedIds();
+  const next = deletedIds.filter((id) => id !== placeId);
+  if (next.length !== deletedIds.length) await writeJson(DELETED_PATH, next);
 }

@@ -242,7 +242,10 @@ export default function PlaceEditForm({
   };
 
   const remove = async () => {
-    if (!confirm(`確定要刪除「${place.name}」嗎？此動作無法復原。`)) return;
+    const warning = isCustom
+      ? `確定要刪除「${place.name}」嗎？此動作無法復原。`
+      : `確定要刪除「${place.name}」嗎？這是 Google 商家資料，刪除後即使每週排程重新抓取，這筆項目也不會再出現。`;
+    if (!confirm(warning)) return;
     setDeleting(true);
     setError(null);
     try {
@@ -724,16 +727,14 @@ export default function PlaceEditForm({
         >
           {saving ? "儲存中…" : "儲存"}
         </button>
-        {isCustom ? (
-          <button
-            onClick={remove}
-            disabled={deleting}
-            className="text-[13px] font-medium underline disabled:opacity-50"
-            style={{ color: "var(--status-warn)" }}
-          >
-            {deleting ? "刪除中…" : "刪除這個項目"}
-          </button>
-        ) : null}
+        <button
+          onClick={remove}
+          disabled={deleting}
+          className="text-[13px] font-medium underline disabled:opacity-50"
+          style={{ color: "var(--status-warn)" }}
+        >
+          {deleting ? "刪除中…" : "刪除這個項目"}
+        </button>
       </div>
     </div>
   );

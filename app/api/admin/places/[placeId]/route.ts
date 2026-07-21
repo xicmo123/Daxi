@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveDetail, updateCustomPlace, deleteCustomPlace, isCustomPlaceId } from "@/lib/placesStore";
+import { saveDetail, updateCustomPlace, deleteCustomPlace, deleteGooglePlace, isCustomPlaceId } from "@/lib/placesStore";
 import type { BusinessTag } from "@/lib/businesses";
 import type { ReservationDetail } from "@/lib/placeDetails";
 
@@ -61,10 +61,16 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ placeId: string }> }) {
   const { placeId } = await params;
-  if (!isCustomPlaceId(placeId)) {
-    return NextResponse.json({ error: "只能刪除自訂項目，Google 商家資料由每週排程管理" }, { status: 400 });
+
+  if (isCustomPlaceId(placeId)) {
+    const ok = await deleteCustomPlace(placeId);
+    if (!ok) return NextResponse.json({ error: "找不到這個自訂項目" }, { status: 404 });
+    return NextResponse.json({ ok: true });
   }
-  const ok = await deleteCustomPlace(placeId);
-  if (!ok) return NextResponse.json({ error: "找不到這個自訂項目" }, { status: 404 });
+
+  // Google-sourced places aren't removable from lib/businesses.ts (it's
+  // regenerated weekly), so this adds the placeId to a permanent exclusion
+  // list instead — it stays gone even after the next refresh.
+  await deleteGooglePlace(placeId);
   return NextResponse.json({ ok: true });
 }

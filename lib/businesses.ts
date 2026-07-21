@@ -23,7 +23,7 @@ export type Business = {
   mapsUrl: string;
 };
 
-export const businessesGeneratedAt = "2026-07-21T08:20:04.796Z";
+export const businessesGeneratedAt = "2026-07-21T08:33:55.203Z";
 
 export const businesses: Business[] = [
   {
