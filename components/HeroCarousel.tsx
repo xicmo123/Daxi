@@ -46,6 +46,18 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
     el.scrollLeft = initialIndex * el.clientWidth;
   }, [initialIndex]);
 
+  // Auto-advance every 3s; paused while the detail modal is open.
+  useEffect(() => {
+    if (slides.length <= 1 || openSlide) return;
+    const id = setInterval(() => {
+      const el = trackRef.current;
+      if (!el || el.clientWidth === 0) return;
+      const next = (Math.round(el.scrollLeft / el.clientWidth) + 1) % slides.length;
+      el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+    }, 3000);
+    return () => clearInterval(id);
+  }, [slides.length, openSlide]);
+
   return (
     <div>
       <div
@@ -57,7 +69,7 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
           <div key={s.key} className="w-full shrink-0 snap-center px-6">
             <button
               onClick={() => setOpenSlide(s)}
-              className="w-full text-left rounded-[22px] card-shadow overflow-hidden relative h-[300px] p-6 flex flex-col justify-end transition-opacity active:opacity-90"
+              className="w-full text-left rounded-[22px] card-shadow overflow-hidden relative h-[225px] p-5 flex flex-col justify-end transition-opacity active:opacity-90"
               style={{ color: "#f4ece2" }}
             >
               {s.photoSrc ? (
@@ -89,7 +101,7 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
               />
               <div className="relative">
                 <div
-                  className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-3"
+                  className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-2"
                   style={{ background: "rgba(244,236,226,0.14)", border: "1px solid rgba(244,236,226,0.3)" }}
                 >
                   <span
@@ -98,13 +110,13 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
                   />
                   {s.date}・{phaseLabel[s.phase]}
                 </div>
-                <h3 className="font-serif text-xl font-semibold mb-2.5">{s.title}</h3>
+                <h3 className="font-serif text-lg font-semibold mb-1.5">{s.title}</h3>
                 <p
-                  className="text-[13px] leading-relaxed mb-5"
+                  className="text-[12.5px] leading-snug mb-3"
                   style={{
                     color: "rgba(242,239,233,0.78)",
                     display: "-webkit-box",
-                    WebkitLineClamp: 2,
+                    WebkitLineClamp: 1,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
                   }}
@@ -112,7 +124,7 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
                   {s.desc}
                 </p>
                 <span
-                  className="inline-flex items-center gap-1.5 text-[13px] font-medium rounded-full px-4 py-2"
+                  className="inline-flex items-center gap-1.5 text-[12.5px] font-medium rounded-full px-3.5 py-1.5"
                   style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
                 >
                   查看詳情 →
