@@ -2,16 +2,15 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import { businesses, type Business } from "@/lib/businesses";
+import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
-import { businessPhotos } from "@/lib/businessPhotos";
-import { placeDetails, categoryLabel } from "@/lib/placeDetails";
+import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import PlaceholderIcon from "./PlaceholderIcon";
 
-function nearbyBusinesses(business: Business, limit = 3) {
-  return businesses
+function nearbyBusinesses(business: Business, all: Business[], limit = 3) {
+  return all
     .filter((b) => b.placeId !== business.placeId)
     .map((b) => ({ business: b, distanceMeters: haversineMeters(business, b) }))
     .sort((a, b) => a.distanceMeters - b.distanceMeters)
@@ -21,19 +20,24 @@ function nearbyBusinesses(business: Business, limit = 3) {
 export default function BusinessDetailModal({
   business,
   photo,
+  detail,
+  allBusinesses,
+  photos,
   lots = [],
   onSelect,
   onClose,
 }: {
   business: Business;
   photo: PhotoCredit | undefined;
+  detail: PlaceDetail | undefined;
+  allBusinesses: Business[];
+  photos: Record<string, PhotoCredit>;
   lots?: LiveParkingLot[];
   onSelect?: (b: Business) => void;
   onClose: () => void;
 }) {
-  const detail = placeDetails[business.placeId];
   const nearest = findNearestLot(business, lots);
-  const nearby = nearbyBusinesses(business);
+  const nearby = nearbyBusinesses(business, allBusinesses);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -102,7 +106,7 @@ export default function BusinessDetailModal({
               className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2"
               style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
             >
-              {categoryLabel(business.placeId, business.googleType, business.tag)}
+              {categoryLabel(detail?.category, business.googleType, business.tag)}
             </span>
             <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
             {detail?.story ? (
@@ -214,7 +218,7 @@ export default function BusinessDetailModal({
             </div>
             <div className="flex gap-3 px-6 overflow-x-auto no-scrollbar">
               {nearby.map(({ business: nb, distanceMeters }) => {
-                const nbPhoto = businessPhotos[nb.placeId];
+                const nbPhoto = photos[nb.placeId];
                 return (
                   <button
                     key={nb.placeId}

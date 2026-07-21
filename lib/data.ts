@@ -2,8 +2,8 @@ export type Status = "ok" | "mid" | "full";
 
 export type PhotoCredit = {
   src: string;
-  author: string;
-  sourceUrl: string;
+  author?: string;
+  sourceUrl?: string; // omitted for admin-uploaded photos with no external source
   historical?: boolean; // photo predates the 2026 event, shown as illustrative only
 };
 

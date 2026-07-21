@@ -2,15 +2,16 @@ import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import SpotsList from "@/components/SpotsList";
 import { discoverItems } from "@/lib/data";
-import { businesses } from "@/lib/businesses";
-import { businessPhotos } from "@/lib/businessPhotos";
+import { getAllPlaces, readPhotos, readDetails } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 
-export const revalidate = 60;
-
-const creditedSpots = businesses.filter((b) => b.tag === "景點" && businessPhotos[b.placeId]);
+export const dynamic = "force-dynamic";
 
 export default async function SpotsPage() {
+  const [allPlaces, photos, details] = await Promise.all([getAllPlaces(), readPhotos(), readDetails()]);
+  const spots = allPlaces.filter((b) => b.tag === "景點");
+  const creditedSpots = spots.filter((b) => photos[b.placeId]?.author);
+
   let lots: LiveParkingLot[] = [];
   try {
     lots = await fetchDaxiParking();
@@ -69,7 +70,7 @@ export default async function SpotsPage() {
         </div>
         <h2 className="font-serif text-[17px] font-semibold">更多景點</h2>
       </div>
-      <SpotsList lots={lots} />
+      <SpotsList spots={spots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} />
 
       <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         精選景點圖片來源：Wikimedia Commons（CC BY-SA），攝影：
@@ -87,9 +88,15 @@ export default async function SpotsPage() {
             {creditedSpots.map((b, i) => (
               <span key={b.placeId}>
                 {i > 0 ? "、" : ""}
-                <a href={businessPhotos[b.placeId].sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
-                  {b.name} - {businessPhotos[b.placeId].author}
-                </a>
+                {photos[b.placeId].sourceUrl ? (
+                  <a href={photos[b.placeId].sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                    {b.name} - {photos[b.placeId].author}
+                  </a>
+                ) : (
+                  <>
+                    {b.name} - {photos[b.placeId].author}
+                  </>
+                )}
               </span>
             ))}
           </>
