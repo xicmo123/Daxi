@@ -103,6 +103,14 @@ export default function AdminList({ rows }: { rows: Row[] }) {
                 {isCustom ? " ・ 自訂項目" : ""}
               </div>
             </div>
+            {detail?.hidden ? (
+              <span
+                className="text-[10.5px] shrink-0 rounded-full px-2 py-0.5"
+                style={{ background: "var(--line)", color: "var(--ink-soft)" }}
+              >
+                已隱藏
+              </span>
+            ) : null}
             {!photo ? (
               <span className="text-[10.5px] shrink-0" style={{ color: "var(--status-warn)" }}>
                 無照片

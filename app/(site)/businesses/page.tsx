@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import PageHeader from "@/components/PageHeader";
 import BusinessList from "@/components/BusinessList";
 import { businessesGeneratedAt } from "@/lib/businesses";
-import { getAllPlaces, readPhotos, readDetails } from "@/lib/placesStore";
+import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +18,7 @@ export default async function BusinessesPage() {
   const [allPlaces, photos, details] = await Promise.all([getAllPlaces(), readPhotos(), readDetails()]);
   // 景點-tagged places live on /spots, alongside the curated highlights —
   // keep this list focused on 美食/市集 so the two pages don't duplicate content.
-  const listable = allPlaces.filter((b) => b.tag !== "景點");
+  const listable = filterVisiblePlaces(allPlaces, details).filter((b) => b.tag !== "景點");
 
   let lots: LiveParkingLot[] = [];
   try {

@@ -33,13 +33,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
-  const { name, address, tag, lat, lng, category, story, tags, reservation } = body;
+  const { name, address, tag, lat, lng, category, story, tags, reservation, hidden } = body;
 
   await saveDetail(placeId, {
     category: typeof category === "string" && category.trim() ? category.trim() : undefined,
     story: typeof story === "string" && story.trim() ? story.trim() : undefined,
     tags: Array.isArray(tags) ? tags.filter((t) => typeof t === "string" && t.trim()) : undefined,
     reservation: parseReservation(reservation),
+    hidden: hidden === true ? true : undefined,
   });
 
   if (isCustomPlaceId(placeId)) {

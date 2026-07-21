@@ -57,6 +57,7 @@ export default function PlaceEditForm({
   const [category, setCategory] = useState(detail?.category ?? "");
   const [story, setStory] = useState(detail?.story ?? "");
   const [tagsText, setTagsText] = useState((detail?.tags ?? []).join(", "));
+  const [hidden, setHidden] = useState(Boolean(detail?.hidden));
 
   const [reservationEnabled, setReservationEnabled] = useState(Boolean(detail?.reservation));
   const [reservationMode, setReservationMode] = useState<ReservationDetail["mode"]>(
@@ -108,6 +109,7 @@ export default function PlaceEditForm({
             .split(",")
             .map((t) => t.trim())
             .filter(Boolean),
+          hidden,
           reservation: reservationEnabled
             ? {
                 mode: reservationMode,
@@ -417,6 +419,21 @@ export default function PlaceEditForm({
             </div>
           ) : null}
         </div>
+      </section>
+
+      {/* Soft-hide — for Google-sourced places whose data is inaccurate but
+          whose location/nav link you still want kept around */}
+      <section className="mb-8">
+        <h2 className="text-[13px] font-semibold mb-1" style={{ color: "var(--ink)" }}>
+          顯示狀態
+        </h2>
+        <p className="text-[11.5px] mb-3" style={{ color: "var(--ink-soft)" }}>
+          隱藏後不會出現在 App 前台的任何列表或周邊探索，但地圖座標與 Google 導航連結會保留，可隨時取消隱藏
+        </p>
+        <label className="flex items-center gap-2 text-[13px]" style={{ color: "var(--ink)" }}>
+          <input type="checkbox" checked={hidden} onChange={(e) => setHidden(e.target.checked)} />
+          隱藏此項目（不會出現在 App 前台）
+        </label>
       </section>
 
       {/* Curated overlay */}

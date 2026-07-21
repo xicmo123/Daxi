@@ -2,13 +2,14 @@ import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import SpotsList from "@/components/SpotsList";
 import { discoverItems } from "@/lib/data";
-import { getAllPlaces, readPhotos, readDetails } from "@/lib/placesStore";
+import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 
 export const dynamic = "force-dynamic";
 
 export default async function SpotsPage() {
-  const [allPlaces, photos, details] = await Promise.all([getAllPlaces(), readPhotos(), readDetails()]);
+  const [rawPlaces, photos, details] = await Promise.all([getAllPlaces(), readPhotos(), readDetails()]);
+  const allPlaces = filterVisiblePlaces(rawPlaces, details);
   const spots = allPlaces.filter((b) => b.tag === "景點");
   const creditedSpots = spots.filter((b) => photos[b.placeId]?.author);
 

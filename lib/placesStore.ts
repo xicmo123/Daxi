@@ -69,6 +69,7 @@ function customToBusiness(c: CustomPlaceRecord): Business {
     tag: c.tag,
     googleType: null,
     businessStatus: null,
+    phone: null,
     rating: null,
     reviewCount: 0,
     lat: c.lat,
@@ -84,6 +85,16 @@ function customToBusiness(c: CustomPlaceRecord): Business {
 export async function getAllPlaces(): Promise<Business[]> {
   const custom = await readCustomPlaces();
   return [...googleBusinesses, ...custom.map(customToBusiness)];
+}
+
+// Public-facing pages should use this instead of getAllPlaces() — it drops
+// places an admin has soft-hidden (inaccurate Google data, etc.) while
+// keeping their lat/lng and Maps nav link intact for anything that still
+// references them (cross-links, the weekly refresh script). Admin pages
+// keep using getAllPlaces() directly so a hidden place can still be found
+// and un-hidden.
+export function filterVisiblePlaces(places: Business[], details: Record<string, PlaceDetail>): Business[] {
+  return places.filter((p) => !details[p.placeId]?.hidden);
 }
 
 export async function savePhoto(placeId: string, photo: PhotoCredit): Promise<void> {

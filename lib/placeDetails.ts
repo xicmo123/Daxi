@@ -18,6 +18,10 @@ export type PlaceDetail = {
   story?: string;
   tags?: string[];
   reservation?: ReservationDetail;
+  // Soft-hide: keeps the underlying place (lat/lng, Google Maps nav link)
+  // intact for cross-links and the weekly refresh script, just excludes it
+  // from the public-facing lists when Google's data for it is inaccurate.
+  hidden?: boolean;
 };
 
 // Google's own place-type classification, translated — a safe, non-invented

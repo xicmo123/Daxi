@@ -162,6 +162,14 @@ export default function BusinessDetailModal({
               </svg>
               <span>距老街 {business.distanceLabel}</span>
             </div>
+            {business.phone ? (
+              <a href={`tel:${business.phone}`} className="flex items-center gap-2.5 transition-opacity active:opacity-60">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="shrink-0" style={{ color: "var(--ink-soft)" }}>
+                  <path d="M4.5 4.5h4l1.5 4.5-2.5 1.5a11 11 0 0 0 5.5 5.5l1.5-2.5 4.5 1.5v4a1 1 0 0 1-1.1 1C10.7 19.2 4.8 13.3 3.5 6.1A1 1 0 0 1 4.5 4.5Z" />
+                </svg>
+                <span>{business.phone}</span>
+              </a>
+            ) : null}
             {business.rating !== null ? (
               <div className="flex items-center gap-2.5">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="shrink-0" style={{ color: "var(--ink-soft)" }}>
