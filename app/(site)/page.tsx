@@ -58,6 +58,17 @@ const icon = {
       <path d="M8 13.8h8" />
     </svg>
   ),
+  announcement: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6.5 20.2V5.8a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v14.4" />
+      <path d="M4.8 20.2h14.4" />
+      <path d="M9.2 8h5.6" />
+      <path d="M9.2 11.2h5.6" />
+      <path d="M9.2 14.4h3.4" />
+      <path d="M17.5 8.2h1.1a1.4 1.4 0 0 1 1.4 1.4v7.2" />
+      <path d="M4 16.8V9.6a1.4 1.4 0 0 1 1.4-1.4h1.1" />
+    </svg>
+  ),
 };
 
 const stories = [
@@ -66,6 +77,7 @@ const stories = [
   { href: "/weather", label: "路況", icon: icon.road },
   { href: "/spots", label: "老街景點", icon: icon.pin },
   { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food },
+  { href: "/announcements", label: "區公所公告", icon: icon.announcement },
 ];
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
@@ -233,13 +245,13 @@ export default async function Home() {
         </div>
       ) : null}
 
-      {/* Quick actions — one calm row instead of a busy icon grid */}
-      <div className="flex justify-between px-6 pt-5 pb-2 fade-in-delay-1">
+      {/* Quick actions */}
+      <div className="grid grid-cols-3 gap-x-4 gap-y-4 px-6 pt-5 pb-2 fade-in-delay-1">
         {stories.map((s, i) => (
           <Link
             key={i}
             href={s.href}
-            className="flex flex-col items-center gap-2 transition-opacity active:opacity-60"
+            className="flex min-w-0 flex-col items-center gap-2 transition-opacity active:opacity-60"
           >
             <span
               className="w-14 h-14 rounded-full flex items-center justify-center card-shadow"
@@ -247,7 +259,7 @@ export default async function Home() {
             >
               {s.icon}
             </span>
-            <span className="text-[11px] font-medium tracking-wide text-center" style={{ color: "var(--ink-soft)" }}>
+            <span className="text-center text-[11px] font-medium leading-tight tracking-wide" style={{ color: "var(--ink-soft)" }}>
               {s.label}
             </span>
           </Link>
