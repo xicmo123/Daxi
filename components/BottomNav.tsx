@@ -17,6 +17,21 @@ const tabs = [
     ),
   },
   {
+    href: "/events",
+    label: "活動",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 5.8h8" />
+        <path d="M9 4.1h6" />
+        <path d="M8.6 7.3c-1.2 1.3-1.8 3.1-1.8 5s.6 3.7 1.8 5" />
+        <path d="M15.4 7.3c1.2 1.3 1.8 3.1 1.8 5s-.6 3.7-1.8 5" />
+        <path d="M9 18.2h6" />
+        <path d="M12 5.8v12.4" />
+        <path d="M4.6 9.1l.6 1.1 1.1.6-1.1.6-.6 1.1-.6-1.1-1.1-.6 1.1-.6Z" />
+      </svg>
+    ),
+  },
+  {
     href: "/spots",
     label: "景點",
     icon: (
@@ -52,18 +67,6 @@ const tabs = [
       </svg>
     ),
   },
-  {
-    href: "/weather",
-    label: "即時",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="7" width="10.5" height="8.5" rx="2.3" />
-        <path d="m14.5 10 5.5-2.8v8.6L14.5 13" />
-        <path d="M7.2 19h5.6" />
-        <path d="M10 15.5V19" />
-      </svg>
-    ),
-  },
 ];
 
 export default function BottomNav() {
@@ -93,7 +96,7 @@ export default function BottomNav() {
         }}
       >
         {tabs.map((tab) => {
-          const active = pathname === tab.href;
+          const active = pathname === tab.href || (tab.href === "/parking" && pathname === "/weather");
           return (
             <Link
               key={tab.href}

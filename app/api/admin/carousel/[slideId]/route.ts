@@ -9,7 +9,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
-  const { date, isoDate, phase, time, title, desc, history, theme, badges, ctaLabel, ctaUrl } = body;
+  const { date, isoDate, phase, time, title, desc, history, theme, badges, ctaLabel, ctaUrl, showInCarousel } = body;
 
   if (phase !== undefined && !VALID_PHASES.includes(phase as CarouselSlide["phase"])) {
     return NextResponse.json({ error: "phase 須為 past/ongoing/upcoming" }, { status: 400 });
@@ -27,6 +27,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (Array.isArray(badges)) update.badges = badges.filter((b) => VALID_BADGES.includes(b));
   if (typeof ctaLabel === "string") update.ctaLabel = ctaLabel.trim() || undefined;
   if (typeof ctaUrl === "string") update.ctaUrl = ctaUrl.trim() || undefined;
+  if (typeof showInCarousel === "boolean") update.showInCarousel = showInCarousel;
 
   const slide = await updateSlide(slideId, update);
   if (!slide) return NextResponse.json({ error: "找不到這個輪播項目" }, { status: 404 });

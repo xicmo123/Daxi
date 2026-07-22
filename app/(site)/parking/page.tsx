@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import Link from "next/link";
 import { statusWeight, statusBarColor } from "@/lib/status";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesParking";
@@ -40,6 +41,34 @@ export default async function ParkingPage() {
         title="周邊停車"
         subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
       />
+
+      <div className="px-6 pb-4 fade-in">
+        <Link
+          href="/weather"
+          className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 transition-opacity active:opacity-70"
+          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+        >
+          <span className="flex items-center gap-3 min-w-0">
+            <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="4" y="7" width="10.5" height="8.5" rx="2.3" />
+                <path d="m14.5 10 5.5-2.8v8.6L14.5 13" />
+              </svg>
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[13.5px] font-medium" style={{ color: "var(--ink)" }}>
+                即時影像與天氣路況
+              </span>
+              <span className="block text-[11.5px] truncate" style={{ color: "var(--ink-soft)" }}>
+                出發前確認現場狀態
+              </span>
+            </span>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: "var(--ink-soft)" }}>
+            <path d="m9 5 7 7-7 7" />
+          </svg>
+        </Link>
+      </div>
 
       {!liveDataFailed && lots.length > 0 ? (
         <div className="px-6 pb-5 fade-in">

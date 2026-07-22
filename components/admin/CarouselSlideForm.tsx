@@ -27,6 +27,7 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isEdit = Boolean(slide);
 
+  const [showInCarousel, setShowInCarousel] = useState(slide ? slide.showInCarousel !== false : false);
   const [date, setDate] = useState(slide?.date ?? "");
   const [isoDate, setIsoDate] = useState(slide?.isoDate ?? "");
   const [phase, setPhase] = useState<CarouselSlide["phase"]>(slide?.phase ?? "upcoming");
@@ -55,6 +56,7 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
   };
 
   const body = () => ({
+    showInCarousel,
     date,
     isoDate: isoDate || undefined,
     phase,
@@ -97,7 +99,7 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
           setError(data.error ?? "建立失敗");
           return;
         }
-        router.push(`/admin/carousel/${data.slide.id}`);
+        router.push(`/admin/events/${data.slide.id}`);
         router.refresh();
       }
     } finally {
@@ -161,7 +163,7 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
         setError(data.error ?? "刪除失敗");
         return;
       }
-      router.push("/admin/carousel");
+      router.push("/admin/events");
       router.refresh();
     } finally {
       setDeleting(false);
@@ -171,18 +173,18 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
   return (
     <div>
       <button
-        onClick={() => router.push("/admin/carousel")}
+        onClick={() => router.push("/admin/events")}
         className="text-[12.5px] mb-4 underline"
         style={{ color: "var(--ink-soft)" }}
       >
-        ← 返回輪播列表
+        ← 返回活動列表
       </button>
 
       <h1 className="font-serif text-xl font-bold mb-1" style={{ color: "var(--ink)" }}>
-        {isEdit ? slide!.title : "新增輪播項目"}
+        {isEdit ? slide!.title : "新增活動"}
       </h1>
       <p className="text-[12px] mb-6" style={{ color: "var(--ink-soft)" }}>
-        顯示於首頁最上方的活動輪播
+        活動會顯示在前台活動頁；可另外勾選放到首頁輪播
       </p>
 
       {isEdit ? (
@@ -258,6 +260,25 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
           基本資料
         </h2>
         <div className="flex flex-col gap-3">
+          <label
+            className="flex items-start gap-2 rounded-lg px-3 py-3 text-[12.5px]"
+            style={{ ...inputStyle }}
+          >
+            <input
+              type="checkbox"
+              checked={showInCarousel}
+              onChange={(e) => setShowInCarousel(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span>
+              <span className="block font-medium" style={{ color: "var(--ink)" }}>
+                放在首頁輪播
+              </span>
+              <span className="block text-[11.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+                取消勾選後，活動仍會保留在活動頁，但不會出現在首頁輪播。
+              </span>
+            </span>
+          </label>
           <div className="flex gap-3">
             <div className="flex-1">
               <label className="text-[11.5px] block mb-1" style={{ color: "var(--ink-soft)" }}>
@@ -430,7 +451,7 @@ export default function CarouselSlideForm({ slide }: { slide?: CarouselSlide }) 
           className="text-[13.5px] font-medium rounded-lg px-5 py-2.5 transition-opacity active:opacity-80 disabled:opacity-50"
           style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
         >
-          {saving ? "儲存中…" : isEdit ? "儲存" : "建立，接著上傳照片"}
+          {saving ? "儲存中…" : isEdit ? "儲存" : "建立活動，接著上傳照片"}
         </button>
         {isEdit ? (
           <button

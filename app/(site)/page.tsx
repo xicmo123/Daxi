@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
-import { readSlides } from "@/lib/carousel";
+import { isSlideInCarousel, readSlides } from "@/lib/carousel";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
@@ -61,7 +61,7 @@ const icon = {
 };
 
 const stories = [
-  { href: "#event-carousel", label: "大禧活動", icon: icon.festival },
+  { href: "/events", label: "大禧活動", icon: icon.festival },
   { href: "/parking", label: "停車導航", icon: icon.parking },
   { href: "/weather", label: "路況", icon: icon.road },
   { href: "/spots", label: "老街景點", icon: icon.pin },
@@ -175,7 +175,8 @@ export default async function Home() {
   const timing = getFestivalTiming();
   const isFestivalMode = timing.phase === "during";
   const todayLabel = dateFormatter.format(new Date());
-  const slides = await readSlides();
+  const allSlides = await readSlides();
+  const slides = allSlides.filter(isSlideInCarousel);
   const heroSlides = slides.map((m) => ({
     key: m.id,
     phase: m.phase,
@@ -242,9 +243,11 @@ export default async function Home() {
       </Suspense>
 
       {/* Hero carousel: swipeable highlights from the festival timeline — now the first real content on the page */}
-      <div id="event-carousel" className="pt-5 fade-in scroll-mt-6">
-        <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />
-      </div>
+      {heroSlides.length > 0 ? (
+        <div id="event-carousel" className="pt-5 fade-in scroll-mt-6">
+          <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />
+        </div>
+      ) : null}
 
       {/* Quick actions — one calm row instead of a busy icon grid */}
       <div className="flex justify-between px-6 pt-5 pb-2 fade-in-delay-1">

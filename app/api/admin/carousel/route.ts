@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
-  const { date, isoDate, phase, time, title, desc, history, theme, badges, ctaLabel, ctaUrl } = body;
+  const { date, isoDate, phase, time, title, desc, history, theme, badges, ctaLabel, ctaUrl, showInCarousel } = body;
 
   if (typeof date !== "string" || !date.trim()) {
     return NextResponse.json({ error: "date 為必填" }, { status: 400 });
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
   }
 
   const slide = await createSlide({
+    showInCarousel: showInCarousel === true,
     date: date.trim(),
     isoDate: typeof isoDate === "string" && isoDate.trim() ? isoDate.trim() : undefined,
     phase: phase as CarouselSlide["phase"],

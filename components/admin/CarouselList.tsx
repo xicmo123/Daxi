@@ -46,18 +46,18 @@ export default function CarouselList({ slides }: { slides: CarouselSlide[] }) {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="font-serif text-xl font-bold" style={{ color: "var(--ink)" }}>
-            輪播管理
+            活動管理
           </h1>
           <p className="text-[12px] mt-1" style={{ color: "var(--ink-soft)" }}>
-            首頁最上方的活動輪播，由上到下依序顯示
+            管理前台活動頁內容；勾選後才會顯示在首頁輪播
           </p>
         </div>
         <Link
-          href="/admin/carousel/new"
+          href="/admin/events/new"
           className="text-[13px] font-medium rounded-lg px-4 py-2 transition-opacity active:opacity-80 shrink-0"
           style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
         >
-          + 新增輪播項目
+          + 新增活動
         </Link>
       </div>
 
@@ -71,12 +71,13 @@ export default function CarouselList({ slides }: { slides: CarouselSlide[] }) {
             <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>
               {s.photo ? <Image src={s.photo.src} alt={s.title} fill sizes="56px" className="object-cover" /> : null}
             </div>
-            <Link href={`/admin/carousel/${s.id}`} className="min-w-0 flex-1">
+            <Link href={`/admin/events/${s.id}`} className="min-w-0 flex-1">
               <div className="text-[13.5px] font-medium truncate" style={{ color: "var(--ink)" }}>
                 {s.title}
               </div>
               <div className="text-[11.5px] truncate" style={{ color: "var(--ink-soft)" }}>
                 {s.date} ・ {phaseLabel[s.phase]}
+                {s.showInCarousel === false ? " ・ 不在首頁輪播" : " ・ 首頁輪播"}
                 {!s.photo ? " ・ 無照片" : ""}
               </div>
             </Link>
@@ -113,7 +114,7 @@ export default function CarouselList({ slides }: { slides: CarouselSlide[] }) {
         ))}
         {slides.length === 0 ? (
           <p className="text-[13px] py-8 text-center" style={{ color: "var(--ink-soft)" }}>
-            尚未新增任何輪播項目
+            尚未新增任何活動
           </p>
         ) : null}
       </div>

@@ -18,6 +18,7 @@ export type CarouselPhoto = {
 export type CarouselSlide = {
   id: string;
   order: number;
+  showInCarousel?: boolean;
   date: string;
   isoDate?: string; // set only for single-day slides (drives "today's" auto-select)
   phase: "past" | "ongoing" | "upcoming";
@@ -53,6 +54,10 @@ async function writeJson(filePath: string, data: unknown) {
 export async function readSlides(): Promise<CarouselSlide[]> {
   const slides = await readJson<CarouselSlide[]>(SLIDES_PATH, []);
   return [...slides].sort((a, b) => a.order - b.order);
+}
+
+export function isSlideInCarousel(slide: CarouselSlide): boolean {
+  return slide.showInCarousel !== false;
 }
 
 export async function getSlide(id: string): Promise<CarouselSlide | null> {
