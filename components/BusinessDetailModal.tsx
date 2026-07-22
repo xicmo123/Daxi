@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import type React from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
@@ -120,22 +121,22 @@ export default function BusinessDetailModal({
     };
   }, [onClose]);
 
-  return (
+  const modal = (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={business.name}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-5 fade-in"
       style={{ background: "rgba(15,17,22,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-t-[24px] sm:rounded-[24px] card-shadow"
+        className="w-full max-w-md max-h-[84vh] overflow-y-auto rounded-[24px] card-shadow"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Full-bleed photo — no margin, story overlaid directly on the image */}
-        <div className="relative h-64 shrink-0">
+        {/* Full-bleed photo with identity only; richer story sits in the card body. */}
+        <div className="relative h-48 shrink-0">
           {photo ? (
             <Image
               src={photo.src}
@@ -186,15 +187,21 @@ export default function BusinessDetailModal({
               </span>
             ) : null}
             <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
-            {detail?.story ? (
-              <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(255,255,255,0.82)" }}>
-                {detail.story}
-              </p>
-            ) : null}
           </div>
         </div>
 
         <div className="p-6">
+          {detail?.story ? (
+            <div className="mb-5 rounded-xl px-4 py-3" style={{ background: "var(--paper-2)", border: "1px solid var(--line)" }}>
+              <div className="mb-1 text-[10.5px] tracking-[0.16em] uppercase" style={{ color: "var(--ink-soft)" }}>
+                推薦重點
+              </div>
+              <p className="font-serif text-[14px] leading-relaxed" style={{ color: "var(--ink)" }}>
+                {detail.story}
+              </p>
+            </div>
+          ) : null}
+
           {detail?.reservation ? (
             <ReservationBooking placeId={business.placeId} reservation={detail.reservation} />
           ) : null}
@@ -372,4 +379,7 @@ export default function BusinessDetailModal({
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(modal, document.body);
 }

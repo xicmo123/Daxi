@@ -114,16 +114,23 @@ export default function BottomNav() {
                 justifyContent: "center",
                 gap: 4,
                 textDecoration: "none",
+                position: "relative",
               }}
             >
               <span
-                className="w-[22px] h-[22px] flex items-center justify-center transition-all duration-300 ease-out"
+                aria-hidden
+                className="absolute top-1.5 h-0.5 w-5 rounded-full transition-opacity duration-300"
+                style={{ background: "var(--daxi-red)", opacity: active ? 1 : 0 }}
+              />
+              <span
+                className="w-[22px] h-[22px] rounded-full flex items-center justify-center transition-all duration-300 ease-out"
                 style={{
-                  width: 22,
-                  height: 22,
+                  width: 28,
+                  height: 28,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  background: active ? "var(--daxi-red-soft)" : "transparent",
                   transform: active ? "scale(1.08)" : "scale(1)",
                 }}
               >

@@ -97,22 +97,6 @@ function WeatherChipSkeleton() {
   return <span className="inline-block h-[15px] w-10 rounded skeleton" style={{ background: "var(--line)" }} />;
 }
 
-async function ParkingStat() {
-  let summary = "資料整理中";
-  try {
-    const lots = await fetchDaxiParking();
-    const availability = parkingSummary(lots);
-    summary = availability.availableStalls > 0 ? `剩 ${availability.availableStalls} 格` : `${availability.openLots.length}/${lots.length} 處尚可`;
-  } catch {
-    summary = "資料整理中";
-  }
-  return <>{summary}</>;
-}
-
-function ParkingStatSkeleton() {
-  return <span className="inline-block h-[22px] w-16 rounded skeleton" style={{ background: "rgba(255,255,255,0.2)" }} />;
-}
-
 async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
   let weatherLabel = "天氣整理中";
   let parkingLabel = "停車整理中";
@@ -300,38 +284,7 @@ export default async function Home() {
         </div>
       ) : null}
 
-      {/* Stat banner — one moment of visual weight against the quiet cards around it */}
-      <div className="px-6 pt-6 fade-in-delay-2">
-        <div
-          className="rounded-2xl card-shadow px-6 py-5 flex items-center justify-between"
-          style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
-        >
-          <div>
-            <div className="text-[11px] mb-1.5" style={{ color: "rgba(255,255,255,0.6)" }}>
-              大溪區公有停車場
-            </div>
-            <div className="font-serif text-[26px] font-light leading-none">
-              <Suspense fallback={<ParkingStatSkeleton />}>
-                <ParkingStat />
-              </Suspense>
-            </div>
-          </div>
-          <div className="w-px self-stretch mx-5" style={{ background: "rgba(255,255,255,0.16)" }} />
-          <div className="text-right">
-            <div className="text-[11px] mb-1.5" style={{ color: "rgba(255,255,255,0.6)" }}>
-              距遶境隨香
-            </div>
-            <div className="font-serif text-[26px] font-light leading-none">
-              {timing.daysToProcession}
-              <span className="text-[11px] font-sans font-normal ml-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
-                天（8/6）
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pb-10" />
+      <div className="pb-8" />
     </div>
   );
 }
