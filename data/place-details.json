@@ -29,7 +29,8 @@
     "tags": [
       "#國定古蹟",
       "#閩南建築"
-    ]
+    ],
+    "featured": true
   },
   "ChIJAcbxQSIYaDQRY-uNQ8Xq704": {
     "category": "自然景觀",
@@ -132,5 +133,20 @@
       "contactType": "phone",
       "contactValue": "0925090705"
     }
+  },
+  "custom-mrvmxfhwp74k": {
+    "category": "削磨時光木育空間",
+    "tags": [],
+    "contact": {
+      "phone": "0981353486",
+      "website": "https://laidbackwoodcraft.com/"
+    },
+    "reservation": {
+      "mode": "inquiry",
+      "contactType": "phone",
+      "contactValue": "0981353486",
+      "note": "需提前一週預約"
+    },
+    "featured": true
   }
 }
