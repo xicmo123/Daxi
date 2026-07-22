@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import type { ReservationDetail } from "@/lib/placeDetails";
 import type { SlotWithAvailability } from "@/lib/reservations";
 
@@ -131,20 +132,43 @@ function SlotBooking({ placeId, reservation }: { placeId: string; reservation: R
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap gap-1.5 mb-3">
+          <div className="grid gap-2 mb-3">
             {upcoming.map((s) => (
               <button
                 key={s.id}
                 type="button"
                 onClick={() => setSelectedSlotId(s.id)}
-                className="text-[12px] font-medium rounded-lg px-2.5 py-1.5 transition-opacity active:opacity-80"
+                className="overflow-hidden rounded-xl text-left transition-opacity active:opacity-80"
                 style={
                   selectedSlotId === s.id
-                    ? { background: "var(--accent)", color: "var(--accent-fg)" }
+                    ? { background: "var(--card)", color: "var(--ink)", border: "1.5px solid var(--accent)" }
                     : { background: "var(--card)", color: "var(--ink)", border: "1px solid var(--line)" }
                 }
               >
-                {dateFormatter.format(new Date(`${s.date}T00:00:00`))} {s.time}・剩 {s.remaining}
+                <div className="flex gap-3 p-2.5">
+                  <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-lg" style={{ background: "var(--paper-2)" }}>
+                    {s.imageSrc ? (
+                      <Image src={s.imageSrc} alt={s.title ?? "課程縮圖"} fill className="object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-[10.5px]" style={{ color: "var(--ink-soft)" }}>
+                        課程
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1 py-0.5">
+                    <div className="text-[13px] font-semibold leading-snug" style={{ color: "var(--ink)" }}>
+                      {s.title ?? "可預約時段"}
+                    </div>
+                    <div className="mt-1 text-[12px]" style={{ color: "var(--ink-soft)" }}>
+                      {dateFormatter.format(new Date(`${s.date}T00:00:00`))} {s.time} ・ 剩 {s.remaining}
+                    </div>
+                    {s.note ? (
+                      <div className="mt-1 line-clamp-2 text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+                        {s.note}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
               </button>
             ))}
           </div>

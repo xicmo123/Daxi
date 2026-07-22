@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
-  const { placeId, date, time, capacity, note } = body;
+  const { placeId, title, imageSrc, date, time, capacity, note } = body;
   if (typeof placeId !== "string" || !placeId.trim()) {
     return NextResponse.json({ error: "placeId 為必填" }, { status: 400 });
   }
@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
 
   const slot = await createSlot({
     placeId,
+    title: typeof title === "string" && title.trim() ? title.trim() : undefined,
+    imageSrc: typeof imageSrc === "string" && imageSrc.trim() ? imageSrc.trim() : undefined,
     date,
     time,
     capacity,

@@ -50,6 +50,7 @@ export default function PlaceEditForm({
 }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const slotImageInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(place.name);
   const [address, setAddress] = useState(place.address ?? "");
@@ -76,10 +77,13 @@ export default function PlaceEditForm({
   const [contactValue, setContactValue] = useState(detail?.reservation?.contactValue ?? "");
   const [reservationNote, setReservationNote] = useState(detail?.reservation?.note ?? "");
 
+  const [slotTitle, setSlotTitle] = useState("");
   const [slotDate, setSlotDate] = useState("");
   const [slotTime, setSlotTime] = useState("");
   const [slotCapacity, setSlotCapacity] = useState("4");
   const [slotNote, setSlotNote] = useState("");
+  const [slotImageSrc, setSlotImageSrc] = useState("");
+  const [slotImageUploading, setSlotImageUploading] = useState(false);
   const [slotBusy, setSlotBusy] = useState(false);
   const [slotError, setSlotError] = useState<string | null>(null);
   const [bookingBusyId, setBookingBusyId] = useState<string | null>(null);
@@ -191,6 +195,10 @@ export default function PlaceEditForm({
   const addSlot = async () => {
     setSlotError(null);
     const capacity = Number(slotCapacity);
+    if (!slotTitle.trim()) {
+      setSlotError("請填寫商品 / 課程名稱");
+      return;
+    }
     if (!slotDate || !slotTime) {
       setSlotError("請選擇日期與時間");
       return;
@@ -206,6 +214,8 @@ export default function PlaceEditForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           placeId: place.placeId,
+          title: slotTitle.trim(),
+          imageSrc: slotImageSrc.trim() || undefined,
           date: slotDate,
           time: slotTime,
           capacity,
@@ -217,13 +227,34 @@ export default function PlaceEditForm({
         setSlotError(data.error ?? "新增時段失敗");
         return;
       }
+      setSlotTitle("");
       setSlotDate("");
       setSlotTime("");
       setSlotCapacity("4");
       setSlotNote("");
+      setSlotImageSrc("");
       router.refresh();
     } finally {
       setSlotBusy(false);
+    }
+  };
+
+  const uploadSlotImage = async (file: File) => {
+    setSlotImageUploading(true);
+    setSlotError(null);
+    try {
+      const form = new FormData();
+      form.append("placeId", place.placeId);
+      form.append("file", file);
+      const res = await fetch("/api/admin/reservations/thumbnail", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSlotError(data.error ?? "縮圖上傳失敗");
+        return;
+      }
+      setSlotImageSrc(data.src);
+    } finally {
+      setSlotImageUploading(false);
     }
   };
 
@@ -668,48 +699,91 @@ export default function PlaceEditForm({
             {reservationMode === "slots" ? (
               <div className="mt-2 pt-4" style={{ borderTop: "1px solid var(--line)" }}>
                 <h3 className="text-[12.5px] font-semibold mb-3" style={{ color: "var(--ink)" }}>
-                  時段管理
+                  商品 / 課程管理
                 </h3>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  <input
-                    type="date"
-                    value={slotDate}
-                    onChange={(e) => setSlotDate(e.target.value)}
-                    className="rounded-lg px-3 py-2 text-[13px] outline-none"
-                    style={inputStyle}
-                  />
-                  <input
-                    type="time"
-                    value={slotTime}
-                    onChange={(e) => setSlotTime(e.target.value)}
-                    className="rounded-lg px-3 py-2 text-[13px] outline-none"
-                    style={inputStyle}
-                  />
-                  <input
-                    type="number"
-                    min={1}
-                    value={slotCapacity}
-                    onChange={(e) => setSlotCapacity(e.target.value)}
-                    placeholder="名額"
-                    className="w-20 rounded-lg px-3 py-2 text-[13px] outline-none"
-                    style={inputStyle}
-                  />
-                  <input
-                    value={slotNote}
-                    onChange={(e) => setSlotNote(e.target.value)}
-                    placeholder="備註（選填）"
-                    className="flex-1 min-w-[120px] rounded-lg px-3 py-2 text-[13px] outline-none"
-                    style={inputStyle}
-                  />
-                  <button
-                    type="button"
-                    onClick={addSlot}
-                    disabled={slotBusy}
-                    className="text-[12.5px] font-medium rounded-lg px-4 py-2 transition-opacity active:opacity-70 disabled:opacity-50"
-                    style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
-                  >
-                    新增時段
-                  </button>
+                <div
+                  className="mb-4 overflow-hidden rounded-xl"
+                  style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+                >
+                  <div className="relative h-36" style={{ background: "var(--paper-2)" }}>
+                    {slotImageSrc ? (
+                      <Image src={slotImageSrc} alt="課程縮圖預覽" fill className="object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
+                        尚未上傳課程縮圖
+                      </div>
+                    )}
+                    <input
+                      ref={slotImageInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadSlotImage(file);
+                        e.target.value = "";
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => slotImageInputRef.current?.click()}
+                      disabled={slotImageUploading}
+                      className="absolute bottom-3 right-3 rounded-full px-3 py-1.5 text-[12px] font-semibold transition-opacity active:opacity-80 disabled:opacity-50"
+                      style={{ background: "rgba(255,255,255,0.88)", color: "var(--ink)" }}
+                    >
+                      {slotImageUploading ? "上傳中…" : slotImageSrc ? "更換縮圖" : "上傳縮圖"}
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-3 p-3">
+                    <input
+                      value={slotTitle}
+                      onChange={(e) => setSlotTitle(e.target.value)}
+                      placeholder="商品 / 課程名稱"
+                      className="rounded-lg px-3 py-2 text-[13px] outline-none"
+                      style={inputStyle}
+                    />
+                    <div className="grid grid-cols-3 gap-2">
+                      <input
+                        type="date"
+                        value={slotDate}
+                        onChange={(e) => setSlotDate(e.target.value)}
+                        className="rounded-lg px-3 py-2 text-[13px] outline-none"
+                        style={inputStyle}
+                      />
+                      <input
+                        type="time"
+                        value={slotTime}
+                        onChange={(e) => setSlotTime(e.target.value)}
+                        className="rounded-lg px-3 py-2 text-[13px] outline-none"
+                        style={inputStyle}
+                      />
+                      <input
+                        type="number"
+                        min={1}
+                        value={slotCapacity}
+                        onChange={(e) => setSlotCapacity(e.target.value)}
+                        placeholder="名額"
+                        className="rounded-lg px-3 py-2 text-[13px] outline-none"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <input
+                      value={slotNote}
+                      onChange={(e) => setSlotNote(e.target.value)}
+                      placeholder="說明 / 備註（選填）"
+                      className="rounded-lg px-3 py-2 text-[13px] outline-none"
+                      style={inputStyle}
+                    />
+                    <button
+                      type="button"
+                      onClick={addSlot}
+                      disabled={slotBusy}
+                      className="text-[12.5px] font-medium rounded-lg px-4 py-2.5 transition-opacity active:opacity-70 disabled:opacity-50"
+                      style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
+                    >
+                      {slotBusy ? "新增中…" : "新增商品 / 課程"}
+                    </button>
+                  </div>
                 </div>
                 {slotError ? (
                   <div className="text-[11.5px] mb-2" style={{ color: "var(--status-warn)" }}>
@@ -718,26 +792,46 @@ export default function PlaceEditForm({
                 ) : null}
 
                 {slots.length > 0 ? (
-                  <div className="flex flex-col gap-1.5 mb-4">
+                  <div className="grid gap-3 mb-4">
                     {slots.map((s) => (
                       <div
                         key={s.id}
-                        className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-[12.5px]"
-                        style={{ background: "var(--paper-2)" }}
+                        className="overflow-hidden rounded-xl"
+                        style={{ background: "var(--card)", border: "1px solid var(--line)" }}
                       >
-                        <div style={{ color: "var(--ink)" }}>
-                          {s.date} {s.time} ・ 剩餘 {s.remaining}/{s.capacity}
-                          {s.note ? <span style={{ color: "var(--ink-soft)" }}> ・ {s.note}</span> : null}
+                        <div className="flex gap-3 p-3">
+                          <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-lg" style={{ background: "var(--paper-2)" }}>
+                            {s.imageSrc ? (
+                              <Image src={s.imageSrc} alt={s.title ?? "課程縮圖"} fill className="object-cover" />
+                            ) : (
+                              <div className="absolute inset-0 flex items-center justify-center text-[10.5px]" style={{ color: "var(--ink-soft)" }}>
+                                無縮圖
+                              </div>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[13px] font-semibold leading-snug" style={{ color: "var(--ink)" }}>
+                              {s.title ?? "未命名商品 / 課程"}
+                            </div>
+                            <div className="mt-1 text-[12px]" style={{ color: "var(--ink-soft)" }}>
+                              {s.date} {s.time} ・ 剩餘 {s.remaining}/{s.capacity}
+                            </div>
+                            {s.note ? (
+                              <div className="mt-1 line-clamp-2 text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+                                {s.note}
+                              </div>
+                            ) : null}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeSlot(s.id)}
+                            disabled={slotBusy}
+                            className="self-start text-[11.5px] underline shrink-0 disabled:opacity-50"
+                            style={{ color: "var(--status-warn)" }}
+                          >
+                            刪除
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => removeSlot(s.id)}
-                          disabled={slotBusy}
-                          className="text-[11.5px] underline shrink-0 disabled:opacity-50"
-                          style={{ color: "var(--status-warn)" }}
-                        >
-                          刪除
-                        </button>
                       </div>
                     ))}
                   </div>

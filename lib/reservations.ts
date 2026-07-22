@@ -11,6 +11,8 @@ const BOOKINGS_PATH = path.join(DATA_DIR, "bookings.json");
 export type ReservationSlot = {
   id: string;
   placeId: string;
+  title?: string;
+  imageSrc?: string;
   date: string; // YYYY-MM-DD
   time: string; // HH:mm
   capacity: number;
@@ -72,11 +74,21 @@ export async function listSlotsForPlace(placeId: string, opts: { upcomingOnly?: 
     .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 }
 
-export async function createSlot(input: { placeId: string; date: string; time: string; capacity: number; note?: string }): Promise<ReservationSlot> {
+export async function createSlot(input: {
+  placeId: string;
+  title?: string;
+  imageSrc?: string;
+  date: string;
+  time: string;
+  capacity: number;
+  note?: string;
+}): Promise<ReservationSlot> {
   const slots = await readSlots();
   const slot: ReservationSlot = {
     id: `slot-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
     placeId: input.placeId,
+    title: input.title,
+    imageSrc: input.imageSrc,
     date: input.date,
     time: input.time,
     capacity: input.capacity,
