@@ -16,7 +16,7 @@ export default async function AnnouncementsPage() {
           target="_blank"
           rel="noreferrer"
           className="mb-4 flex items-center justify-between rounded-xl px-4 py-3 text-[12.5px] transition-opacity active:opacity-70"
-          style={{ background: "rgba(143, 48, 39, 0.08)", border: "1px solid rgba(143, 48, 39, 0.16)", color: "var(--ink)" }}
+          style={{ background: "var(--daxi-red-soft)", border: "1px solid var(--line)", color: "var(--ink)" }}
         >
           <span>資料來源：桃園市大溪區公所</span>
           <span aria-hidden="true">↗</span>
@@ -36,7 +36,7 @@ export default async function AnnouncementsPage() {
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <span
                     className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold tracking-wide"
-                    style={{ background: "rgba(143, 48, 39, 0.1)", color: "var(--daxi-red)" }}
+                    style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
                   >
                     官方公告
                   </span>
@@ -79,7 +79,7 @@ export default async function AnnouncementsPage() {
               target="_blank"
               rel="noreferrer"
               className="mt-5 inline-flex rounded-full px-4 py-2 text-[13px] font-semibold transition-opacity active:opacity-70"
-              style={{ background: "var(--daxi-red)", color: "white" }}
+              style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
             >
               前往區公所官網
             </a>

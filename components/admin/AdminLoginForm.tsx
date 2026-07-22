@@ -99,8 +99,8 @@ function LoginForm() {
             padding: "12px 16px",
             fontSize: 14,
             fontWeight: 700,
-            background: loading || !password ? "#c9b9a6" : "#923428",
-            color: "#fffaf1",
+            background: loading || !password ? "#94a3b8" : "#1e293b",
+            color: "#f8fafc",
             cursor: loading || !password ? "not-allowed" : "pointer",
           }}
         >

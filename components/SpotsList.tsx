@@ -213,15 +213,6 @@ export default function SpotsList({
                 </svg>
                 {b.distanceLabel}
               </div>
-              <div
-                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md"
-                style={{ background: "rgba(15,23,42,0.18)", color: "#fff" }}
-                aria-hidden
-              >
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M20.8 8.8c0 5.4-8.8 10-8.8 10s-8.8-4.6-8.8-10a4.8 4.8 0 0 1 8.8-2.7 4.8 4.8 0 0 1 8.8 2.7Z" />
-                </svg>
-              </div>
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <h3 className="font-serif text-[24px] font-bold leading-tight text-white">
                   {b.name}

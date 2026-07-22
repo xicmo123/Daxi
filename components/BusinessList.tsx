@@ -11,6 +11,33 @@ import { experienceTags } from "@/lib/experience";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 
+const tabIcon = {
+  全部: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4.5" y="4.5" width="6.5" height="6.5" rx="1.3" />
+      <rect x="13" y="4.5" width="6.5" height="6.5" rx="1.3" />
+      <rect x="4.5" y="13" width="6.5" height="6.5" rx="1.3" />
+      <rect x="13" y="13" width="6.5" height="6.5" rx="1.3" />
+    </svg>
+  ),
+  美食: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5.5 12.2h13a6.5 6.5 0 0 1-13 0Z" />
+      <path d="M8.2 18.7h7.6" />
+      <path d="M7.3 9.2 16.8 4" />
+      <path d="M10.1 9.2 19.5 4" />
+    </svg>
+  ),
+  市集: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 9.5 6 4.5h12l1.5 5" />
+      <path d="M4.5 9.5v9.8h15V9.5" />
+      <path d="M4.5 9.5a2.6 2.6 0 0 0 5 1.3 2.6 2.6 0 0 0 5 0 2.6 2.6 0 0 0 5-1.3" />
+      <path d="M10 19.3v-5.5h4v5.5" />
+    </svg>
+  ),
+} as const;
+
 const TABS: { label: string; value: BusinessTag | "全部" }[] = [
   { label: "全部", value: "全部" },
   { label: "美食", value: "美食" },
@@ -96,19 +123,10 @@ export default function BusinessList({
           )}
           <div
             className="absolute left-2.5 top-2.5 max-w-[150px] rounded-md px-2 py-1 text-[11px] font-bold leading-none"
-            style={{ background: "var(--daxi-red)", color: "#fff" }}
+            style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
           >
             {promo}
           </div>
-          <span
-            className="absolute right-2.5 bottom-2.5 flex h-8 w-8 items-center justify-center rounded-full"
-            style={{ background: "rgba(255,255,255,0.86)", color: "var(--ink)" }}
-            aria-hidden
-          >
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M20.8 8.8c0 5.4-8.8 10-8.8 10s-8.8-4.6-8.8-10a4.8 4.8 0 0 1 8.8-2.7 4.8 4.8 0 0 1 8.8 2.7Z" />
-            </svg>
-          </span>
         </div>
         <div className="pt-2.5">
           <h3 className="truncate text-[17px] font-black leading-tight" style={{ color: "var(--ink)" }}>
@@ -132,42 +150,38 @@ export default function BusinessList({
 
   return (
     <div>
-      <div className="px-6 pb-5">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-3">
+      <div className="flex items-center justify-between gap-2 px-6 pb-5">
+        <div className="flex min-w-0 gap-2 overflow-x-auto no-scrollbar">
           {TABS.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setActive(tab.value)}
               aria-pressed={active === tab.value}
-              className="shrink-0 rounded-full px-4 py-2 text-[14px] font-black transition-transform active:scale-95"
+              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-black transition-transform active:scale-95"
               style={
                 active === tab.value
                   ? { background: "var(--paper-2)", color: "var(--ink)" }
                   : { background: "var(--card)", color: "var(--ink-soft)", border: "1px solid var(--line)" }
               }
             >
-              {tab.value === "全部" ? "🛍️ " : tab.value === "美食" ? "🍜 " : "🎁 "}
+              <span className="h-4 w-4 shrink-0">{tabIcon[tab.value as keyof typeof tabIcon]}</span>
               {tab.label}
             </button>
           ))}
         </div>
-        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortKey)}
+          aria-label="排序方式"
+          className="shrink-0 rounded-full px-3 py-2 text-[13px] font-bold outline-none"
+          style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
+        >
           {SORTS.map((s) => (
-            <button
-              key={s.value}
-              type="button"
-              onClick={() => setSort(s.value)}
-              className="shrink-0 rounded-full px-4 py-1.5 text-[13px] font-bold transition-transform active:scale-95"
-              style={
-                sort === s.value
-                  ? { background: "var(--accent)", color: "var(--accent-fg)" }
-                  : { background: "var(--paper-2)", color: "var(--ink)" }
-              }
-            >
+            <option key={s.value} value={s.value}>
               {s.label}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       <div className="flex flex-col gap-9 pb-10 fade-in">
