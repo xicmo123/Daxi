@@ -70,24 +70,6 @@ export default async function ParkingPage() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              {[
-                { label: "尚可", value: `${summary.openLots.length}/${lots.length}` },
-                { label: "已滿", value: `${summary.fullCount}` },
-                { label: "附近補充", value: `${nearbyLots.length}` },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-lg px-3 py-2"
-                  style={{ background: "rgba(255,255,255,0.11)" }}
-                >
-                  <div className="text-[10.5px]" style={{ color: "rgba(255,255,255,0.62)" }}>
-                    {item.label}
-                  </div>
-                  <div className="text-[15px] font-semibold tabular-nums">{item.value}</div>
-                </div>
-              ))}
-            </div>
             {summary.recommended ? (
               <a
                 href={summary.recommended.mapsUrl}
