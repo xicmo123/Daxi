@@ -215,7 +215,7 @@ export default async function Home() {
           Daxi Today
         </div>
         <h1 className="font-serif text-[25px] font-bold leading-tight" style={{ color: "var(--ink)" }}>
-          今天在大溪，先看現場狀態
+          今日大溪，先掌握即時動態
         </h1>
       </div>
 
