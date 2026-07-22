@@ -220,9 +220,7 @@ button:focus-visible {
 }
 
 .glass-nav {
-  background: color-mix(in srgb, var(--paper) 78%, transparent);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: var(--paper);
 }
 
 @keyframes skeleton-pulse {
