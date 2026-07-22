@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { HeroSlide } from "./HeroCarousel";
 import PlaceholderIcon from "./PlaceholderIcon";
@@ -29,21 +30,21 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
     };
   }, [onClose]);
 
-  return (
+  const modal = (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={slide.title}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-5 fade-in"
       style={{ background: "rgba(15,13,10,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto rounded-t-[24px] sm:rounded-[24px] card-shadow"
+        className="w-full max-w-md max-h-[82vh] overflow-y-auto rounded-[24px] card-shadow"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative h-44 shrink-0">
+        <div className="relative h-40 sm:h-44 shrink-0">
           {slide.photoSrc ? (
             <Image
               src={slide.photoSrc}
@@ -168,4 +169,7 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(modal, document.body);
 }
