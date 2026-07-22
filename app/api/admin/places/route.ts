@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
-  const { name, address, tag, lat, lng, category, story, tags, contact } = body;
+  const { name, address, tag, lat, lng, category, story, tags, contact, recommendedParkingName } = body;
   const parsedContact = parseContact(contact);
 
   if (typeof name !== "string" || !name.trim()) {
@@ -42,12 +42,13 @@ export async function POST(request: NextRequest) {
     lng,
   });
 
-  if (category || story || (Array.isArray(tags) && tags.length > 0) || parsedContact) {
+  if (category || story || (Array.isArray(tags) && tags.length > 0) || parsedContact || recommendedParkingName) {
     await saveDetail(record.placeId, {
       category: typeof category === "string" && category.trim() ? category.trim() : undefined,
       story: typeof story === "string" && story.trim() ? story.trim() : undefined,
       tags: Array.isArray(tags) ? tags.filter((t) => typeof t === "string" && t.trim()) : undefined,
       contact: parsedContact,
+      recommendedParkingName: typeof recommendedParkingName === "string" && recommendedParkingName.trim() ? recommendedParkingName.trim() : undefined,
     });
   }
 

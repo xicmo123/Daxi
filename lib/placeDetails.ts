@@ -26,6 +26,9 @@ export type PlaceDetail = {
   tags?: string[];
   contact?: PlaceContact;
   reservation?: ReservationDetail;
+  // Optional admin override for the parking lot shown in the place detail.
+  // Falls back to automatic nearest-lot detection when omitted.
+  recommendedParkingName?: string;
   // Manual editorial pick for public "featured recommendation" sections.
   featured?: boolean;
   // Soft-hide: keeps the underlying place (lat/lng, Google Maps nav link)

@@ -56,6 +56,20 @@ export default function BusinessDetailModal({
   onClose: () => void;
 }) {
   const nearest = findNearestLot(business, lots, business.placeId);
+  const recommendedLot = detail?.recommendedParkingName
+    ? lots.find((lot) => lot.name === detail.recommendedParkingName)
+    : undefined;
+  const parking = recommendedLot
+    ? {
+        lot: recommendedLot,
+        distanceMeters: haversineMeters(business, recommendedLot),
+        distanceLabel: formatDistance(haversineMeters(business, recommendedLot)),
+        crossesRiver: false,
+        isManual: true,
+      }
+    : nearest
+      ? { ...nearest, isManual: false }
+      : null;
   const nearby = nearbyBusinesses(business, allBusinesses);
   const decisionTags = experienceTags(business, detail);
   const displayPhone = detail?.contact?.phone?.trim() || business.phone || undefined;
@@ -277,7 +291,7 @@ export default function BusinessDetailModal({
             </div>
           ) : null}
 
-          {nearest ? (
+          {parking ? (
             <div
               className="flex items-center gap-3 mt-4 rounded-xl px-3.5 py-3"
               style={{ background: "var(--paper-2)" }}
@@ -288,25 +302,25 @@ export default function BusinessDetailModal({
               </svg>
               <div className="min-w-0 flex-1">
                 <div className="text-[10.5px] mb-0.5" style={{ color: "var(--ink-soft)" }}>
-                  距此最近的停車場・直線距離 {nearest.distanceLabel}
-                  {nearest.crossesRiver ? "・需過橋" : ""}
+                  {parking.isManual ? "推薦停車場" : "距此最近的停車場"}・直線距離 {parking.distanceLabel}
+                  {parking.crossesRiver ? "・需過橋" : ""}
                 </div>
                 <div className="text-[13px] font-medium truncate" style={{ color: "var(--ink)" }}>
-                  {nearest.lot.name}
+                  {parking.lot.name}
                 </div>
               </div>
               <div className="text-right shrink-0">
-                {nearest.lot.status === "full" ? (
+                {parking.lot.status === "full" ? (
                   <span className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
                     已滿
                   </span>
-                ) : nearest.lot.isOpenAccess ? (
+                ) : parking.lot.isOpenAccess ? (
                   <span className="text-[12px] font-medium" style={{ color: "var(--status-ok)" }}>
                     開放中
                   </span>
                 ) : (
-                  <span className="text-[13px] font-medium tabular-nums" style={{ color: statusBarColor[nearest.lot.status] }}>
-                    剩餘 {nearest.lot.surplus}/{nearest.lot.total}
+                  <span className="text-[13px] font-medium tabular-nums" style={{ color: statusBarColor[parking.lot.status] }}>
+                    剩餘 {parking.lot.surplus}/{parking.lot.total}
                   </span>
                 )}
               </div>

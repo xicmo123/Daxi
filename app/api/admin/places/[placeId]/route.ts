@@ -45,7 +45,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
-  const { name, address, tag, lat, lng, category, story, tags, contact, reservation, hidden, featured } = body;
+  const { name, address, tag, lat, lng, category, story, tags, contact, reservation, recommendedParkingName, hidden, featured } = body;
 
   await saveDetail(placeId, {
     category: typeof category === "string" && category.trim() ? category.trim() : undefined,
@@ -53,6 +53,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     tags: Array.isArray(tags) ? tags.filter((t) => typeof t === "string" && t.trim()) : undefined,
     contact: parseContact(contact),
     reservation: parseReservation(reservation),
+    recommendedParkingName: typeof recommendedParkingName === "string" && recommendedParkingName.trim() ? recommendedParkingName.trim() : undefined,
     featured: featured === true ? true : undefined,
     hidden: hidden === true ? true : undefined,
   });

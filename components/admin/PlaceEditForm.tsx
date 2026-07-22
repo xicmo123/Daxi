@@ -7,6 +7,7 @@ import type { Business, BusinessTag } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import type { PlaceDetail, ReservationDetail } from "@/lib/placeDetails";
 import type { Booking, ReservationSlot, SlotWithAvailability } from "@/lib/reservations";
+import type { LiveParkingLot } from "@/lib/tycgParking";
 
 const TAGS: BusinessTag[] = ["美食", "景點", "市集"];
 
@@ -37,6 +38,7 @@ export default function PlaceEditForm({
   isCustom,
   slots,
   bookings,
+  parkingLots,
 }: {
   place: Business;
   photo: PhotoCredit | undefined;
@@ -44,6 +46,7 @@ export default function PlaceEditForm({
   isCustom: boolean;
   slots: SlotWithAvailability[];
   bookings: (Booking & { slot: ReservationSlot | null })[];
+  parkingLots: LiveParkingLot[];
 }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +64,7 @@ export default function PlaceEditForm({
   const [contactFacebook, setContactFacebook] = useState(detail?.contact?.facebook ?? "");
   const [contactInstagram, setContactInstagram] = useState(detail?.contact?.instagram ?? "");
   const [contactWebsite, setContactWebsite] = useState(detail?.contact?.website ?? "");
+  const [recommendedParkingName, setRecommendedParkingName] = useState(detail?.recommendedParkingName ?? "");
   const [hidden, setHidden] = useState(Boolean(detail?.hidden));
   const [featured, setFeatured] = useState(Boolean(detail?.featured));
 
@@ -120,6 +124,7 @@ export default function PlaceEditForm({
             instagram: contactInstagram.trim() || undefined,
             website: contactWebsite.trim() || undefined,
           },
+          recommendedParkingName: recommendedParkingName.trim() || undefined,
           featured,
           hidden,
           reservation: reservationEnabled
@@ -556,6 +561,29 @@ export default function PlaceEditForm({
             />
           </div>
         </div>
+      </section>
+
+      {/* Place-specific parking */}
+      <section className="mb-8">
+        <h2 className="text-[13px] font-semibold mb-1" style={{ color: "var(--ink)" }}>
+          推薦停車場
+        </h2>
+        <p className="text-[11.5px] mb-3" style={{ color: "var(--ink-soft)" }}>
+          遊客點進詳情頁時會優先顯示這個停車場；留空則由系統依座標自動判斷最近停車場
+        </p>
+        <select
+          value={recommendedParkingName}
+          onChange={(e) => setRecommendedParkingName(e.target.value)}
+          className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+          style={inputStyle}
+        >
+          <option value="">自動判斷最近停車場</option>
+          {parkingLots.map((lot) => (
+            <option key={`${lot.name}-${lot.lat}-${lot.lng}`} value={lot.name}>
+              {lot.name.replace(/\(桃交\)/g, "")}（距老街 {lot.distanceLabel}）
+            </option>
+          ))}
+        </select>
       </section>
 
       {/* Reservation inquiry — Phase 1: outbound contact link, not an in-app booking flow */}

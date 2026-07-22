@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { BusinessTag } from "@/lib/businesses";
+import type { LiveParkingLot } from "@/lib/tycgParking";
 
 const TAGS: BusinessTag[] = ["美食", "景點", "市集"];
 
@@ -12,7 +13,7 @@ const inputStyle = {
   color: "var(--ink)",
 } as const;
 
-export default function NewPlaceForm() {
+export default function NewPlaceForm({ parkingLots }: { parkingLots: LiveParkingLot[] }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -26,6 +27,7 @@ export default function NewPlaceForm() {
   const [contactFacebook, setContactFacebook] = useState("");
   const [contactInstagram, setContactInstagram] = useState("");
   const [contactWebsite, setContactWebsite] = useState("");
+  const [recommendedParkingName, setRecommendedParkingName] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,6 +57,7 @@ export default function NewPlaceForm() {
             instagram: contactInstagram.trim() || undefined,
             website: contactWebsite.trim() || undefined,
           },
+          recommendedParkingName: recommendedParkingName.trim() || undefined,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -224,6 +227,27 @@ export default function NewPlaceForm() {
               style={inputStyle}
             />
           </div>
+        </div>
+        <div className="pt-2">
+          <h2 className="text-[13px] font-semibold mb-1" style={{ color: "var(--ink)" }}>
+            推薦停車場
+          </h2>
+          <p className="text-[11.5px] mb-3" style={{ color: "var(--ink-soft)" }}>
+            留空會依座標自動判斷；若現場比較適合停特定停車場，請在這裡指定
+          </p>
+          <select
+            value={recommendedParkingName}
+            onChange={(e) => setRecommendedParkingName(e.target.value)}
+            className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+            style={inputStyle}
+          >
+            <option value="">自動判斷最近停車場</option>
+            {parkingLots.map((lot) => (
+              <option key={`${lot.name}-${lot.lat}-${lot.lng}`} value={lot.name}>
+                {lot.name.replace(/\(桃交\)/g, "")}（距老街 {lot.distanceLabel}）
+              </option>
+            ))}
+          </select>
         </div>
 
         {error ? (
