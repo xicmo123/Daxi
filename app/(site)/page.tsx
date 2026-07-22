@@ -12,38 +12,56 @@ import { parkingSummary } from "@/lib/experience";
 export const dynamic = "force-dynamic";
 
 const icon = {
-  mask: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
-      <path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z" />
+  festival: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 5.8h8" />
+      <path d="M9 4.1h6" />
+      <path d="M8.5 7.2c-1.2 1.3-1.8 3.1-1.8 5s.6 3.7 1.8 5" />
+      <path d="M15.5 7.2c1.2 1.3 1.8 3.1 1.8 5s-.6 3.7-1.8 5" />
+      <path d="M9 18.2h6" />
+      <path d="M10 20h4" />
+      <path d="M12 5.8v12.4" />
+      <path d="M4.5 8.6l.7 1.4 1.4.7-1.4.7-.7 1.4-.7-1.4-1.4-.7 1.4-.7Z" />
+      <path d="M19.3 12.8l.5 1 .9.5-.9.5-.5 1-.5-1-.9-.5.9-.5Z" />
     </svg>
   ),
   parking: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
-      <rect x="4" y="4" width="16" height="16" rx="4" />
-      <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4.5" y="4" width="15" height="15" rx="4" />
+      <path d="M10 15.8V8.2h3.1a2.45 2.45 0 1 1 0 4.9H10" />
+      <path d="M17.5 18.7 19.3 21l1.8-2.3" />
+      <circle cx="19.3" cy="17.4" r="1.1" />
     </svg>
   ),
   road: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
-      <path d="M9 21 10.5 3M15 21 13.5 3" />
-      <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8.2 21c1.8-3.4 1.8-5.6.2-8.2-1.5-2.4-1.2-5.5 1.1-9.8" />
+      <path d="M15.7 21c-1.6-3.2-1.5-5.6.3-8.3 1.6-2.5 1.2-5.6-1.4-9.7" />
+      <path d="M12 4.8v2M12 10.1v2M12 15.4v2" />
     </svg>
   ),
   pin: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
-      <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
-      <circle cx="12" cy="9.5" r="2.2" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 7.2 9 5.3l6 2.4 4.5-1.9v12l-4.5 1.9-6-2.4-4.5 1.9Z" />
+      <path d="M9 5.3v12" />
+      <path d="M15 7.7v12" />
+      <path d="M12 14s2.8-2.7 2.8-5a2.8 2.8 0 1 0-5.6 0c0 2.3 2.8 5 2.8 5Z" />
+      <circle cx="12" cy="9" r="0.9" />
     </svg>
   ),
   food: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
-      <path d="M6 2v8a2 2 0 0 0 4 0V2M8 10v12M18 2c-1.7 0-3 2-3 5s1.3 5 3 5v10" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5.5 12.2h13a6.5 6.5 0 0 1-13 0Z" />
+      <path d="M8.2 18.7h7.6" />
+      <path d="M7.3 9.2 16.8 4" />
+      <path d="M10.1 9.2 19.5 4" />
+      <path d="M8 13.8h8" />
     </svg>
   ),
 };
 
 const stories = [
-  { href: "#event-carousel", label: "大禧活動", icon: icon.mask },
+  { href: "#event-carousel", label: "大禧活動", icon: icon.festival },
   { href: "/parking", label: "停車導航", icon: icon.parking },
   { href: "/weather", label: "路況", icon: icon.road },
   { href: "/spots", label: "老街景點", icon: icon.pin },
