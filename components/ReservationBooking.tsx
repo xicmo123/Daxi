@@ -19,6 +19,9 @@ function InquiryCta({ reservation }: { reservation: ReservationDetail }) {
         <div className="text-[13.5px] font-semibold">
           {reservation.contactType === "phone" ? "電話預約詢問" : "線上預約詢問"}
         </div>
+        <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+          非即時保留座位，請等店家回覆確認
+        </div>
         {reservation.note ? (
           <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
             {reservation.note}
@@ -101,14 +104,21 @@ function SlotBooking({ placeId, reservation }: { placeId: string; reservation: R
   return (
     <div className="rounded-xl px-4 py-4 mb-4" style={{ background: "var(--paper-2)" }}>
       <div className="text-[13.5px] font-semibold mb-0.5" style={{ color: "var(--ink)" }}>
-        選擇時段預約
+        送出預約申請
       </div>
       {reservation.note ? (
-        <div className="text-[11px] mb-3" style={{ color: "var(--ink-soft)" }}>
-          {reservation.note}
-        </div>
+        <>
+          <div className="text-[11px]" style={{ color: "var(--ink-soft)" }}>
+            {reservation.note}
+          </div>
+          <div className="text-[11px] mb-3" style={{ color: "var(--ink-soft)" }}>
+            送出後需等店家電話確認，尚未代表座位已保留
+          </div>
+        </>
       ) : (
-        <div className="mb-3" />
+        <div className="text-[11px] mb-3" style={{ color: "var(--ink-soft)" }}>
+          送出後需等店家電話確認，尚未代表座位已保留
+        </div>
       )}
 
       {slots === null ? (

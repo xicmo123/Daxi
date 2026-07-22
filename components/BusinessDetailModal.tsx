@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
+import type React from "react";
 import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
+import { experienceTags } from "@/lib/experience";
 import PlaceholderIcon from "./PlaceholderIcon";
 import ReservationBooking from "./ReservationBooking";
 
@@ -17,6 +19,21 @@ function nearbyBusinesses(business: Business, all: Business[], limit = 3) {
     .sort((a, b) => a.distanceMeters - b.distanceMeters)
     .slice(0, limit);
 }
+
+function normalizeExternalUrl(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  if (trimmed.startsWith("@")) return `https://www.instagram.com/${trimmed.slice(1)}`;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+type ContactLink = {
+  label: string;
+  href: string;
+  external: boolean;
+  icon: React.ReactNode;
+};
 
 export default function BusinessDetailModal({
   business,
@@ -39,6 +56,57 @@ export default function BusinessDetailModal({
 }) {
   const nearest = findNearestLot(business, lots, business.placeId);
   const nearby = nearbyBusinesses(business, allBusinesses);
+  const decisionTags = experienceTags(business, detail);
+  const displayPhone = detail?.contact?.phone?.trim() || business.phone || undefined;
+  const contactLinks: ContactLink[] = [];
+  if (displayPhone) {
+    contactLinks.push({
+      label: "電話",
+      href: `tel:${displayPhone}`,
+      external: false,
+      icon: (
+        <path d="M4.5 4.5h4l1.5 4.5-2.5 1.5a11 11 0 0 0 5.5 5.5l1.5-2.5 4.5 1.5v4a1 1 0 0 1-1.1 1C10.7 19.2 4.8 13.3 3.5 6.1A1 1 0 0 1 4.5 4.5Z" />
+      ),
+    });
+  }
+  const facebookUrl = normalizeExternalUrl(detail?.contact?.facebook);
+  if (facebookUrl) {
+    contactLinks.push({
+      label: "FB",
+      href: facebookUrl,
+      external: true,
+      icon: <path d="M14 8h2V5h-2.4C10.9 5 10 6.7 10 8.6V11H8v3h2v5h3v-5h2.4l.6-3h-3V8.8c0-.5.2-.8 1-.8Z" />,
+    });
+  }
+  const instagramUrl = normalizeExternalUrl(detail?.contact?.instagram);
+  if (instagramUrl) {
+    contactLinks.push({
+      label: "IG",
+      href: instagramUrl,
+      external: true,
+      icon: (
+        <>
+          <rect x="5" y="5" width="14" height="14" rx="4" />
+          <circle cx="12" cy="12" r="3.2" />
+          <path d="M16.5 7.8h.01" />
+        </>
+      ),
+    });
+  }
+  const websiteUrl = normalizeExternalUrl(detail?.contact?.website);
+  if (websiteUrl) {
+    contactLinks.push({
+      label: "官網",
+      href: websiteUrl,
+      external: true,
+      icon: (
+        <>
+          <circle cx="12" cy="12" r="8" />
+          <path d="M4 12h16M12 4a12 12 0 0 1 0 16M12 4a12 12 0 0 0 0 16" />
+        </>
+      ),
+    });
+  }
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -131,13 +199,13 @@ export default function BusinessDetailModal({
             <ReservationBooking placeId={business.placeId} reservation={detail.reservation} />
           ) : null}
 
-          {detail?.tags && detail.tags.length > 0 ? (
+          {decisionTags.length > 0 ? (
             <div className="flex flex-wrap gap-1.5 mb-4">
-              {detail.tags.map((t) => (
+              {decisionTags.map((t) => (
                 <span
                   key={t}
                   className="text-[11px] tracking-wide rounded-full px-2.5 py-1"
-                  style={{ background: "var(--line)", color: "var(--ink-soft)" }}
+                  style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
                 >
                   {t}
                 </span>
@@ -162,12 +230,12 @@ export default function BusinessDetailModal({
               </svg>
               <span>距老街 {business.distanceLabel}</span>
             </div>
-            {business.phone ? (
-              <a href={`tel:${business.phone}`} className="flex items-center gap-2.5 transition-opacity active:opacity-60">
+            {displayPhone ? (
+              <a href={`tel:${displayPhone}`} className="flex items-center gap-2.5 transition-opacity active:opacity-60">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="shrink-0" style={{ color: "var(--ink-soft)" }}>
                   <path d="M4.5 4.5h4l1.5 4.5-2.5 1.5a11 11 0 0 0 5.5 5.5l1.5-2.5 4.5 1.5v4a1 1 0 0 1-1.1 1C10.7 19.2 4.8 13.3 3.5 6.1A1 1 0 0 1 4.5 4.5Z" />
                 </svg>
-                <span>{business.phone}</span>
+                <span>{displayPhone}</span>
               </a>
             ) : null}
             {business.rating !== null ? (
@@ -181,6 +249,26 @@ export default function BusinessDetailModal({
               </div>
             ) : null}
           </div>
+
+          {contactLinks.length > 0 ? (
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              {contactLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
+                  className="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-[12.5px] font-semibold transition-opacity active:opacity-80"
+                  style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                    {link.icon}
+                  </svg>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          ) : null}
 
           {nearest ? (
             <div
@@ -222,8 +310,8 @@ export default function BusinessDetailModal({
             href={business.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-1.5 text-[13px] font-medium transition-opacity active:opacity-60"
-            style={{ color: "var(--ink)", borderBottom: "1px solid var(--ink)" }}
+            className="mt-6 flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-[13px] font-semibold transition-opacity active:opacity-80"
+            style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
           >
             開啟導航
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

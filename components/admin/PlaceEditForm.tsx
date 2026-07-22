@@ -57,7 +57,12 @@ export default function PlaceEditForm({
   const [category, setCategory] = useState(detail?.category ?? "");
   const [story, setStory] = useState(detail?.story ?? "");
   const [tagsText, setTagsText] = useState((detail?.tags ?? []).join(", "));
+  const [contactPhone, setContactPhone] = useState(detail?.contact?.phone ?? "");
+  const [contactFacebook, setContactFacebook] = useState(detail?.contact?.facebook ?? "");
+  const [contactInstagram, setContactInstagram] = useState(detail?.contact?.instagram ?? "");
+  const [contactWebsite, setContactWebsite] = useState(detail?.contact?.website ?? "");
   const [hidden, setHidden] = useState(Boolean(detail?.hidden));
+  const [featured, setFeatured] = useState(Boolean(detail?.featured));
 
   const [reservationEnabled, setReservationEnabled] = useState(Boolean(detail?.reservation));
   const [reservationMode, setReservationMode] = useState<ReservationDetail["mode"]>(
@@ -109,6 +114,13 @@ export default function PlaceEditForm({
             .split(",")
             .map((t) => t.trim())
             .filter(Boolean),
+          contact: {
+            phone: contactPhone.trim() || undefined,
+            facebook: contactFacebook.trim() || undefined,
+            instagram: contactInstagram.trim() || undefined,
+            website: contactWebsite.trim() || undefined,
+          },
+          featured,
           hidden,
           reservation: reservationEnabled
             ? {
@@ -431,8 +443,12 @@ export default function PlaceEditForm({
           顯示狀態
         </h2>
         <p className="text-[11.5px] mb-3" style={{ color: "var(--ink-soft)" }}>
-          隱藏後不會出現在 App 前台的任何列表或周邊探索，但地圖座標與 Google 導航連結會保留，可隨時取消隱藏
+          可控制這筆資料是否出現在前台，以及是否排入首頁面的精選推薦區
         </p>
+        <label className="flex items-center gap-2 mb-2 text-[13px]" style={{ color: "var(--ink)" }}>
+          <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+          前台精選推薦（景點頁／商家頁的推薦區會優先顯示）
+        </label>
         <label className="flex items-center gap-2 text-[13px]" style={{ color: "var(--ink)" }}>
           <input type="checkbox" checked={hidden} onChange={(e) => setHidden(e.target.checked)} />
           隱藏此項目（不會出現在 App 前台）
@@ -475,6 +491,66 @@ export default function PlaceEditForm({
             <input
               value={tagsText}
               onChange={(e) => setTagsText(e.target.value)}
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Frontend detail contact */}
+      <section className="mb-8">
+        <h2 className="text-[13px] font-semibold mb-1" style={{ color: "var(--ink)" }}>
+          前台聯絡資訊
+        </h2>
+        <p className="text-[11.5px] mb-3" style={{ color: "var(--ink-soft)" }}>
+          只會顯示在遊客點進商家／景點詳情後，列表卡片不會顯示
+        </p>
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className="text-[11.5px] block mb-1" style={{ color: "var(--ink-soft)" }}>
+              電話
+            </label>
+            <input
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              placeholder="03-1234567"
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+          </div>
+          <div>
+            <label className="text-[11.5px] block mb-1" style={{ color: "var(--ink-soft)" }}>
+              Facebook
+            </label>
+            <input
+              value={contactFacebook}
+              onChange={(e) => setContactFacebook(e.target.value)}
+              placeholder="https://www.facebook.com/..."
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+          </div>
+          <div>
+            <label className="text-[11.5px] block mb-1" style={{ color: "var(--ink-soft)" }}>
+              Instagram
+            </label>
+            <input
+              value={contactInstagram}
+              onChange={(e) => setContactInstagram(e.target.value)}
+              placeholder="https://www.instagram.com/... 或 @account"
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+          </div>
+          <div>
+            <label className="text-[11.5px] block mb-1" style={{ color: "var(--ink-soft)" }}>
+              官方網站
+            </label>
+            <input
+              value={contactWebsite}
+              onChange={(e) => setContactWebsite(e.target.value)}
+              placeholder="https://..."
               className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
               style={inputStyle}
             />

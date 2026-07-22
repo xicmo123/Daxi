@@ -1,88 +1,126 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #faf9f6;
-  --paper-2: #f2f0ea;
-  --ink: #1e293b;
-  --ink-soft: #64748b;
-  --line: rgba(30, 41, 59, 0.1);
-  --card: #ffffff;
-  --cognac: #64748b;
-  --cognac-deep: #475569;
-  --cognac-tint: rgba(30, 41, 59, 0.06);
-  --bordeaux: #1e293b;
-  --bordeaux-deep: #0f172a;
-  --bordeaux-tint: rgba(30, 41, 59, 0.05);
-  --cognac-surface: #334155;
-  --cognac-surface-deep: #1e293b;
-  --bordeaux-surface: #1e293b;
-  --bordeaux-surface-deep: #0f172a;
-  --shadow-card: 0 2px 6px rgba(30, 41, 59, 0.04), 0 14px 30px rgba(30, 41, 59, 0.06);
-  --accent: #1e293b;
-  --accent-fg: #ffffff;
-  --status-ok: #6b9080;
-  --status-warn: #c08a5c;
-  --festival-gold: #b8935a;
-  --wallpaper-fade-opacity: 0.85;
+  --paper: #fbfaf6;
+  --paper-2: #eef3ef;
+  --ink: #202923;
+  --ink-soft: #6d786f;
+  --line: rgba(32, 41, 35, 0.12);
+  --card: #fffdf8;
+  --cognac: #b7782d;
+  --cognac-deep: #8d5520;
+  --cognac-tint: rgba(183, 120, 45, 0.12);
+  --bordeaux: #923428;
+  --bordeaux-deep: #652017;
+  --bordeaux-tint: rgba(146, 52, 40, 0.1);
+  --cognac-surface: #b7782d;
+  --cognac-surface-deep: #7b4b1d;
+  --bordeaux-surface: #923428;
+  --bordeaux-surface-deep: #4b1712;
+  --shadow-card: 0 2px 8px rgba(62, 45, 27, 0.05), 0 16px 34px rgba(62, 45, 27, 0.1);
+  --accent: #923428;
+  --accent-fg: #fffaf2;
+  --status-ok: #2f7b72;
+  --status-warn: #bd7a2a;
+  --festival-gold: #b7782d;
+  --daxi-red: #923428;
+  --daxi-red-soft: rgba(146, 52, 40, 0.1);
+  --wood-gold: #b7782d;
+  --river-teal: #2f7b72;
+  --river-teal-soft: rgba(47, 123, 114, 0.12);
+  --wallpaper-fade-opacity: 0.89;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #12141a;
-    --paper-2: #171a21;
-    --ink: #eef1f5;
-    --ink-soft: #94a3b8;
-    --line: rgba(238, 241, 245, 0.1);
-    --card: #1a1d24;
-    --cognac: #94a3b8;
-    --cognac-deep: #cbd5e1;
-    --cognac-tint: rgba(148, 163, 184, 0.14);
-    --bordeaux: #eef1f5;
-    --bordeaux-deep: #ffffff;
-    --bordeaux-tint: rgba(238, 241, 245, 0.08);
-    --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.35);
-    --status-ok: #82ab99;
-    --status-warn: #d3a077;
-    --wallpaper-fade-opacity: 0.88;
+    --paper: #121714;
+    --paper-2: #19211d;
+    --ink: #f4f1e8;
+    --ink-soft: #a9b5aa;
+    --line: rgba(244, 241, 232, 0.12);
+    --card: #1c241f;
+    --cognac: #d7a35c;
+    --cognac-deep: #f0c781;
+    --cognac-tint: rgba(215, 163, 92, 0.16);
+    --bordeaux: #f09a86;
+    --bordeaux-deep: #ffd2c7;
+    --bordeaux-tint: rgba(240, 154, 134, 0.12);
+    --cognac-surface: #d7a35c;
+    --cognac-surface-deep: #8d5d28;
+    --bordeaux-surface: #b94b3b;
+    --bordeaux-surface-deep: #5b1d16;
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
+    --accent: #b94b3b;
+    --accent-fg: #fffaf2;
+    --status-ok: #72b7a9;
+    --status-warn: #d7a35c;
+    --daxi-red: #f09a86;
+    --daxi-red-soft: rgba(240, 154, 134, 0.14);
+    --wood-gold: #d7a35c;
+    --river-teal: #72b7a9;
+    --river-teal-soft: rgba(114, 183, 169, 0.15);
+    --wallpaper-fade-opacity: 0.9;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper: #12141a;
-  --paper-2: #171a21;
-  --ink: #eef1f5;
-  --ink-soft: #94a3b8;
-  --line: rgba(238, 241, 245, 0.1);
-  --card: #1a1d24;
-  --cognac: #94a3b8;
-  --cognac-deep: #cbd5e1;
-  --cognac-tint: rgba(148, 163, 184, 0.14);
-  --bordeaux: #eef1f5;
-  --bordeaux-deep: #ffffff;
-  --bordeaux-tint: rgba(238, 241, 245, 0.08);
-  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.35);
-  --status-ok: #82ab99;
-  --status-warn: #d3a077;
-  --wallpaper-fade-opacity: 0.88;
+  --paper: #121714;
+  --paper-2: #19211d;
+  --ink: #f4f1e8;
+  --ink-soft: #a9b5aa;
+  --line: rgba(244, 241, 232, 0.12);
+  --card: #1c241f;
+  --cognac: #d7a35c;
+  --cognac-deep: #f0c781;
+  --cognac-tint: rgba(215, 163, 92, 0.16);
+  --bordeaux: #f09a86;
+  --bordeaux-deep: #ffd2c7;
+  --bordeaux-tint: rgba(240, 154, 134, 0.12);
+  --cognac-surface: #d7a35c;
+  --cognac-surface-deep: #8d5d28;
+  --bordeaux-surface: #b94b3b;
+  --bordeaux-surface-deep: #5b1d16;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
+  --accent: #b94b3b;
+  --accent-fg: #fffaf2;
+  --status-ok: #72b7a9;
+  --status-warn: #d7a35c;
+  --daxi-red: #f09a86;
+  --daxi-red-soft: rgba(240, 154, 134, 0.14);
+  --wood-gold: #d7a35c;
+  --river-teal: #72b7a9;
+  --river-teal-soft: rgba(114, 183, 169, 0.15);
+  --wallpaper-fade-opacity: 0.9;
 }
 
 :root[data-theme="light"] {
-  --paper: #faf9f6;
-  --paper-2: #f2f0ea;
-  --ink: #1e293b;
-  --ink-soft: #64748b;
-  --line: rgba(30, 41, 59, 0.1);
-  --card: #ffffff;
-  --cognac: #64748b;
-  --cognac-deep: #475569;
-  --cognac-tint: rgba(30, 41, 59, 0.06);
-  --bordeaux: #1e293b;
-  --bordeaux-deep: #0f172a;
-  --bordeaux-tint: rgba(30, 41, 59, 0.05);
-  --shadow-card: 0 2px 6px rgba(30, 41, 59, 0.04), 0 14px 30px rgba(30, 41, 59, 0.06);
-  --status-ok: #6b9080;
-  --status-warn: #c08a5c;
-  --wallpaper-fade-opacity: 0.85;
+  --paper: #fbfaf6;
+  --paper-2: #eef3ef;
+  --ink: #202923;
+  --ink-soft: #6d786f;
+  --line: rgba(32, 41, 35, 0.12);
+  --card: #fffdf8;
+  --cognac: #b7782d;
+  --cognac-deep: #8d5520;
+  --cognac-tint: rgba(183, 120, 45, 0.12);
+  --bordeaux: #923428;
+  --bordeaux-deep: #652017;
+  --bordeaux-tint: rgba(146, 52, 40, 0.1);
+  --cognac-surface: #b7782d;
+  --cognac-surface-deep: #7b4b1d;
+  --bordeaux-surface: #923428;
+  --bordeaux-surface-deep: #4b1712;
+  --shadow-card: 0 2px 8px rgba(62, 45, 27, 0.05), 0 16px 34px rgba(62, 45, 27, 0.1);
+  --accent: #923428;
+  --accent-fg: #fffaf2;
+  --status-ok: #2f7b72;
+  --status-warn: #bd7a2a;
+  --daxi-red: #923428;
+  --daxi-red-soft: rgba(146, 52, 40, 0.1);
+  --wood-gold: #b7782d;
+  --river-teal: #2f7b72;
+  --river-teal-soft: rgba(47, 123, 114, 0.12);
+  --wallpaper-fade-opacity: 0.89;
 }
 
 @theme inline {
@@ -104,6 +142,8 @@
   --color-bordeaux-surface-deep: var(--bordeaux-surface-deep);
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
+  --color-river-teal: var(--river-teal);
+  --color-river-teal-soft: var(--river-teal-soft);
   --font-serif: var(--font-noto-serif-tc), "Songti TC", "PMingLiU", Georgia, serif;
   --font-sans: var(--font-app-sans);
 }
@@ -205,4 +245,3 @@ button:focus-visible {
     opacity: 0.75;
   }
 }
-

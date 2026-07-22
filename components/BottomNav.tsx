@@ -55,7 +55,7 @@ const tabs = [
   },
   {
     href: "/weather",
-    label: "路況",
+    label: "即時",
     // 水庫 — mountains cradling rippled water
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
@@ -71,8 +71,28 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-20 flex glass-nav">
-      <div className="mx-auto flex w-full max-w-md border-t md:border-x" style={{ borderColor: "var(--line)" }}>
+    <nav
+      className="fixed bottom-0 inset-x-0 z-20 flex glass-nav"
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 20,
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        className="mx-auto flex w-full max-w-md border-t md:border-x"
+        style={{
+          borderColor: "var(--line)",
+          display: "grid",
+          gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
+          width: "100%",
+          maxWidth: "28rem",
+        }}
+      >
         {tabs.map((tab) => {
           const active = pathname === tab.href;
           return (
@@ -81,15 +101,38 @@ export default function BottomNav() {
               href={tab.href}
               aria-current={active ? "page" : undefined}
               className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-              style={{ color: "var(--ink)", opacity: active ? 1 : 0.4 }}
+              style={{
+                color: active ? "var(--daxi-red)" : "var(--ink)",
+                opacity: active ? 1 : 0.54,
+                minHeight: 56,
+                padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+                textDecoration: "none",
+              }}
             >
               <span
                 className="w-[21px] h-[21px] flex items-center justify-center transition-all duration-300 ease-out"
-                style={{ transform: active ? "scale(1.08)" : "scale(1)" }}
+                style={{
+                  width: 21,
+                  height: 21,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transform: active ? "scale(1.08)" : "scale(1)",
+                }}
               >
                 {tab.icon}
               </span>
-              <span className="text-[10.5px] font-normal tracking-wide transition-all duration-300">{tab.label}</span>
+              <span
+                className="text-[10.5px] font-normal tracking-wide transition-all duration-300"
+                style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}
+              >
+                {tab.label}
+              </span>
             </Link>
           );
         })}

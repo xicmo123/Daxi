@@ -21,7 +21,7 @@ const TABS: { label: string; value: BusinessTag | "全部" }[] = [
   { label: "市集", value: "市集" },
 ];
 
-export default function AdminList({ rows }: { rows: Row[] }) {
+export default function AdminList({ rows, pendingBookings }: { rows: Row[]; pendingBookings: number }) {
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<BusinessTag | "全部">("全部");
 
@@ -33,6 +33,10 @@ export default function AdminList({ rows }: { rows: Row[] }) {
       return true;
     });
   }, [rows, query, tab]);
+
+  const missingPhotos = rows.filter((r) => !r.photo).length;
+  const hiddenRows = rows.filter((r) => r.detail?.hidden).length;
+  const featuredRows = rows.filter((r) => r.detail?.featured).length;
 
   return (
     <div>
@@ -47,6 +51,31 @@ export default function AdminList({ rows }: { rows: Row[] }) {
         >
           + 新增自訂項目
         </Link>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
+        {[
+          { label: "待確認預約", value: pendingBookings, tone: pendingBookings > 0 ? "hot" : "calm" },
+          { label: "前台精選", value: featuredRows, tone: featuredRows > 0 ? "hot" : "calm" },
+          { label: "缺照片", value: missingPhotos, tone: missingPhotos > 0 ? "warn" : "calm" },
+          { label: "已隱藏", value: hiddenRows, tone: "calm" },
+        ].map((item) => (
+          <div
+            key={item.label}
+            className="rounded-xl px-3 py-3"
+            style={{
+              background: item.tone === "hot" ? "var(--daxi-red-soft)" : "var(--paper)",
+              border: "1px solid var(--line)",
+            }}
+          >
+            <div className="text-[11px] mb-1" style={{ color: item.tone === "hot" ? "var(--daxi-red)" : "var(--ink-soft)" }}>
+              {item.label}
+            </div>
+            <div className="font-serif text-[22px] leading-none" style={{ color: "var(--ink)" }}>
+              {item.value}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="flex gap-3 mb-4">
@@ -109,6 +138,14 @@ export default function AdminList({ rows }: { rows: Row[] }) {
                 style={{ background: "var(--line)", color: "var(--ink-soft)" }}
               >
                 已隱藏
+              </span>
+            ) : null}
+            {detail?.featured ? (
+              <span
+                className="text-[10.5px] shrink-0 rounded-full px-2 py-0.5"
+                style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
+              >
+                精選
               </span>
             ) : null}
             {!photo ? (

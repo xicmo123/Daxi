@@ -5,6 +5,7 @@ import { readSlides } from "@/lib/carousel";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
+import { parkingSummary } from "@/lib/experience";
 
 // Carousel content is now admin-editable — force-dynamic so edits show up
 // immediately instead of waiting out a 60s ISR window (same as /businesses, /spots).
@@ -79,19 +80,77 @@ function WeatherChipSkeleton() {
 }
 
 async function ParkingStat() {
-  let parkingSummary = "資料整理中";
+  let summary = "資料整理中";
   try {
     const lots = await fetchDaxiParking();
-    const available = lots.filter((l) => l.status !== "full").length;
-    parkingSummary = `${available}/${lots.length} 處尚可`;
+    const availability = parkingSummary(lots);
+    summary = availability.availableStalls > 0 ? `剩 ${availability.availableStalls} 格` : `${availability.openLots.length}/${lots.length} 處尚可`;
   } catch {
-    parkingSummary = "資料整理中";
+    summary = "資料整理中";
   }
-  return <>{parkingSummary}</>;
+  return <>{summary}</>;
 }
 
 function ParkingStatSkeleton() {
   return <span className="inline-block h-[22px] w-16 rounded skeleton" style={{ background: "rgba(255,255,255,0.2)" }} />;
+}
+
+async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
+  let weatherLabel = "天氣整理中";
+  let parkingLabel = "停車整理中";
+  let parkingHrefLabel = "查看";
+
+  try {
+    const weather = await fetchDaxiWeather();
+    weatherLabel = `${weather.currentIcon} ${weather.currentTemp}°・${weather.weatherText || "大溪區"}`;
+  } catch {
+    weatherLabel = "天氣整理中";
+  }
+
+  try {
+    const lots = await fetchDaxiParking();
+    const summary = parkingSummary(lots);
+    parkingLabel = summary.recommended
+      ? `建議 ${summary.recommended.name.replace(/\(桃交\)/g, "")}`
+      : "公有停車場偏滿";
+    parkingHrefLabel = summary.availableStalls > 0 ? `剩 ${summary.availableStalls} 格` : "看替代";
+  } catch {
+    parkingLabel = "停車整理中";
+  }
+
+  return (
+    <div className="grid grid-cols-3 gap-2 px-6 pt-4 fade-in-delay-1">
+      {[
+        { href: "#event-carousel", label: "下一站", value: nextTitle },
+        { href: "/parking", label: parkingHrefLabel, value: parkingLabel },
+        { href: "/weather", label: "即時", value: weatherLabel },
+      ].map((item) => (
+        <Link
+          key={item.label}
+          href={item.href}
+          className="min-h-[76px] rounded-xl px-3 py-3 transition-opacity active:opacity-70"
+          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+        >
+          <div className="text-[10.5px] font-semibold mb-1" style={{ color: "var(--daxi-red)" }}>
+            {item.label}
+          </div>
+          <div className="text-[12.5px] leading-snug line-clamp-2" style={{ color: "var(--ink)" }}>
+            {item.value}
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function TodayStatusSkeleton() {
+  return (
+    <div className="grid grid-cols-3 gap-2 px-6 pt-4">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="h-[76px] rounded-xl skeleton" style={{ background: "var(--line)" }} />
+      ))}
+    </div>
+  );
 }
 
 export default async function Home() {
@@ -119,6 +178,7 @@ export default async function Home() {
   // nearest ongoing/upcoming one) instead of always the first, often
   // already-past, slide.
   const todaysMilestone = findTodaysMilestone(slides);
+  const nextMilestone = todaysMilestone ?? slides.find((m) => m.phase === "ongoing") ?? slides.find((m) => m.phase === "upcoming") ?? slides[0];
   const initialSlideIndex = isFestivalMode
     ? (() => {
         if (todaysMilestone) {
@@ -150,8 +210,21 @@ export default async function Home() {
         </Link>
       </div>
 
+      <div className="px-6 pt-2 fade-in">
+        <div className="text-[11px] font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--daxi-red)" }}>
+          Daxi Today
+        </div>
+        <h1 className="font-serif text-[25px] font-bold leading-tight" style={{ color: "var(--ink)" }}>
+          今天在大溪，先看現場狀態
+        </h1>
+      </div>
+
+      <Suspense fallback={<TodayStatusSkeleton />}>
+        <TodayStatusCards nextTitle={nextMilestone?.title ?? "大溪大禧活動"} />
+      </Suspense>
+
       {/* Hero carousel: swipeable highlights from the festival timeline — now the first real content on the page */}
-      <div id="event-carousel" className="pt-2 fade-in scroll-mt-6">
+      <div id="event-carousel" className="pt-5 fade-in scroll-mt-6">
         <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />
       </div>
 

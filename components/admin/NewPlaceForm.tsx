@@ -22,6 +22,10 @@ export default function NewPlaceForm() {
   const [category, setCategory] = useState("");
   const [story, setStory] = useState("");
   const [tagsText, setTagsText] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactFacebook, setContactFacebook] = useState("");
+  const [contactInstagram, setContactInstagram] = useState("");
+  const [contactWebsite, setContactWebsite] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +49,12 @@ export default function NewPlaceForm() {
             .split(",")
             .map((t) => t.trim())
             .filter(Boolean),
+          contact: {
+            phone: contactPhone.trim() || undefined,
+            facebook: contactFacebook.trim() || undefined,
+            instagram: contactInstagram.trim() || undefined,
+            website: contactWebsite.trim() || undefined,
+          },
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -176,6 +186,44 @@ export default function NewPlaceForm() {
             className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
             style={inputStyle}
           />
+        </div>
+        <div className="pt-2">
+          <h2 className="text-[13px] font-semibold mb-1" style={{ color: "var(--ink)" }}>
+            前台聯絡資訊
+          </h2>
+          <p className="text-[11.5px] mb-3" style={{ color: "var(--ink-soft)" }}>
+            只會顯示在遊客點進詳情後
+          </p>
+          <div className="flex flex-col gap-3">
+            <input
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              placeholder="電話"
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+            <input
+              value={contactFacebook}
+              onChange={(e) => setContactFacebook(e.target.value)}
+              placeholder="Facebook 連結"
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+            <input
+              value={contactInstagram}
+              onChange={(e) => setContactInstagram(e.target.value)}
+              placeholder="Instagram 連結或 @account"
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+            <input
+              value={contactWebsite}
+              onChange={(e) => setContactWebsite(e.target.value)}
+              placeholder="官方網站"
+              className="w-full rounded-lg px-3 py-2 text-[13.5px] outline-none"
+              style={inputStyle}
+            />
+          </div>
         </div>
 
         {error ? (

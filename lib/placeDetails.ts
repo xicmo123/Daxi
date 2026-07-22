@@ -13,11 +13,21 @@ export type ReservationDetail = {
   note?: string;
 };
 
+export type PlaceContact = {
+  phone?: string;
+  facebook?: string;
+  instagram?: string;
+  website?: string;
+};
+
 export type PlaceDetail = {
   category?: string;
   story?: string;
   tags?: string[];
+  contact?: PlaceContact;
   reservation?: ReservationDetail;
+  // Manual editorial pick for public "featured recommendation" sections.
+  featured?: boolean;
   // Soft-hide: keeps the underlying place (lat/lng, Google Maps nav link)
   // intact for cross-links and the weekly refresh script, just excludes it
   // from the public-facing lists when Google's data for it is inaccurate.

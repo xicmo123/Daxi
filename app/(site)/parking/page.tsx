@@ -2,12 +2,9 @@ import PageHeader from "@/components/PageHeader";
 import { statusWeight, statusBarColor } from "@/lib/status";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesParking";
+import { parkingSummary, walkTimeLabel } from "@/lib/experience";
 
 // Rough average walking pace (~80m/min) — a static, indicative label only.
-function walkingMinutes(distanceMeters: number): number {
-  return Math.max(1, Math.round(distanceMeters / 80));
-}
-
 export const revalidate = 60;
 
 type Row =
@@ -35,6 +32,7 @@ export default async function ParkingPage() {
     ...lots.map((l): Row => ({ kind: "public", ...l })),
     ...nearbyLots.map((l): Row => ({ kind: "private", ...l })),
   ].sort((a, b) => a.distanceMeters - b.distanceMeters);
+  const summary = parkingSummary(lots);
 
   return (
     <div className="pt-2">
@@ -42,6 +40,71 @@ export default async function ParkingPage() {
         title="周邊停車"
         subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
       />
+
+      {!liveDataFailed && lots.length > 0 ? (
+        <div className="px-6 pb-5 fade-in">
+          <div
+            className="rounded-xl px-4 py-4"
+            style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-[11px] mb-1" style={{ color: "rgba(255,255,255,0.66)" }}>
+                  現在建議
+                </div>
+                <div className="font-serif text-[20px] font-semibold leading-snug">
+                  {summary.recommended ? summary.recommended.name : "公有停車場偏滿"}
+                </div>
+                <div className="text-[12px] mt-1" style={{ color: "rgba(255,255,255,0.72)" }}>
+                  {summary.recommended
+                    ? `距老街 ${summary.recommended.distanceLabel}・步行約 ${walkTimeLabel(summary.recommended.distanceMeters)}`
+                    : "先查看下方鄰近停車場，或改搭接駁/步行進入老街"}
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="font-serif text-[26px] leading-none">
+                  {summary.availableStalls}
+                </div>
+                <div className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.66)" }}>
+                  即時剩餘格
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {[
+                { label: "尚可", value: `${summary.openLots.length}/${lots.length}` },
+                { label: "已滿", value: `${summary.fullCount}` },
+                { label: "附近補充", value: `${nearbyLots.length}` },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-lg px-3 py-2"
+                  style={{ background: "rgba(255,255,255,0.11)" }}
+                >
+                  <div className="text-[10.5px]" style={{ color: "rgba(255,255,255,0.62)" }}>
+                    {item.label}
+                  </div>
+                  <div className="text-[15px] font-semibold tabular-nums">{item.value}</div>
+                </div>
+              ))}
+            </div>
+            {summary.recommended ? (
+              <a
+                href={summary.recommended.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[13px] font-semibold transition-opacity active:opacity-80"
+                style={{ background: "#fff", color: "var(--accent)" }}
+              >
+                導航到建議停車場
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M7 17 17 7M9 7h8v8" />
+                </svg>
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
 
       {liveDataFailed ? (
         <div className="px-6 pb-4">
@@ -94,7 +157,7 @@ export default async function ParkingPage() {
                       className="text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
                       style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
                     >
-                      步行至老街約 {walkingMinutes(row.distanceMeters)} 分鐘
+                      步行至老街約 {walkTimeLabel(row.distanceMeters)}
                     </span>
                   </div>
                 ) : null}
@@ -122,7 +185,10 @@ export default async function ParkingPage() {
                     </div>
                   )
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-[12.5px] font-medium" style={{ color: "var(--ink)" }}>
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12.5px] font-semibold"
+                    style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
+                  >
                     導航
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M7 17 17 7M9 7h8v8" />

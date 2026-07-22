@@ -29,7 +29,7 @@ export default async function BusinessesPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="商家資訊" subtitle={`美食・市集・${updatedLabel} 更新`} />
+      <PageHeader title="商家" subtitle={`美食・市集・${updatedLabel} 更新`} />
       <Suspense fallback={null}>
         <BusinessList businesses={listable} photos={photos} details={details} lots={lots} />
       </Suspense>

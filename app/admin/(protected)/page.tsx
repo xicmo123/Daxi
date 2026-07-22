@@ -1,10 +1,11 @@
 import { getAllPlaces, readPhotos, readDetails, isCustomPlaceId } from "@/lib/placesStore";
+import { readBookings } from "@/lib/reservations";
 import AdminList from "@/components/admin/AdminList";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const [places, photos, details] = await Promise.all([getAllPlaces(), readPhotos(), readDetails()]);
+  const [places, photos, details, bookings] = await Promise.all([getAllPlaces(), readPhotos(), readDetails(), readBookings()]);
 
   const rows = places.map((p) => ({
     place: p,
@@ -13,5 +14,5 @@ export default async function AdminDashboard() {
     isCustom: isCustomPlaceId(p.placeId),
   }));
 
-  return <AdminList rows={rows} />;
+  return <AdminList rows={rows} pendingBookings={bookings.filter((b) => b.status === "pending").length} />;
 }

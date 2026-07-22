@@ -55,13 +55,11 @@
     "ctaLabel": "查看大溪區公所官方公告 →",
     "ctaUrl": "https://www.daxi.tycg.gov.tw/News_Content.aspx?n=7532&s=1664839",
     "photo": {
-      "src": "/images/top-spinning-plaque.jpg",
-      "author": "Outlookxp",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File:大溪福仁宮一代陀螺王匾額.jpg",
-      "historical": true
+      "src": "/api/uploads/carousel/slide-seed-3.jpg"
     },
     "createdAt": "2026-07-21T00:00:00.000Z",
-    "updatedAt": "2026-07-21T00:00:00.000Z"
+    "updatedAt": "2026-07-22T04:29:35.895Z",
+    "badges": []
   },
   {
     "id": "slide-seed-4",
