@@ -33,6 +33,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin" className="font-serif text-[17px] font-bold" style={{ color: "#2f261f", fontSize: 17, fontWeight: 700, textDecoration: "none" }}>
             大溪通後台
           </Link>
+          <Link href="/admin" className="text-[12.5px] font-medium" style={{ color: "#766a5d", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+            景點/商家管理
+          </Link>
           <Link href="/admin/events" className="text-[12.5px] font-medium" style={{ color: "#766a5d", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
             活動管理
           </Link>
