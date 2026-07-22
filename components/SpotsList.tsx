@@ -51,7 +51,8 @@ export default function SpotsList({
             </div>
             <h2 className="font-serif text-[17px] font-semibold">精選推薦</h2>
           </div>
-          <div className="flex flex-col gap-4 px-6 pb-8 fade-in">
+          <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8 fade-in">
+            <div className="flex gap-4 px-6">
             {featuredRows.map((b, i) => {
               const photo = photos[b.placeId];
               const tags = experienceTags(b, details[b.placeId]);
@@ -59,7 +60,7 @@ export default function SpotsList({
                 <button
                   key={`featured-${b.placeId}`}
                   onClick={() => setOpenBusiness(b)}
-                  className="group relative h-[190px] w-full overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99]"
+                  className="group relative h-[210px] w-[82%] max-w-[330px] shrink-0 snap-center overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99]"
                   style={{
                     background: "var(--card)",
                     boxShadow: "0 14px 34px rgba(15, 23, 42, 0.12)",
@@ -99,6 +100,14 @@ export default function SpotsList({
                   >
                     {b.distanceLabel}
                   </div>
+                  {featuredRows.length > 1 ? (
+                    <div
+                      className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md"
+                      style={{ background: "rgba(15,23,42,0.2)", color: "#fff" }}
+                    >
+                      {i + 1}/{featuredRows.length}
+                    </div>
+                  ) : null}
                   <div className="absolute inset-x-0 bottom-0 p-5">
                     <h3 className="font-serif text-[24px] font-bold leading-tight text-white">{b.name}</h3>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -119,6 +128,7 @@ export default function SpotsList({
                 </button>
               );
             })}
+            </div>
           </div>
         </>
       ) : null}
