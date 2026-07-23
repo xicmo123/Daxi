@@ -8,7 +8,7 @@ export default async function AnnouncementsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="區公所公告" subtitle="同步大溪區公所最新消息" tint="violet" />
+      <PageHeader title="區公所公告" subtitle="同步大溪區公所最新消息" tint="river" />
 
       <div className="px-6 pb-24 fade-in">
         <a

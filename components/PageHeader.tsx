@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 
-export type PageTint = "coral" | "teal" | "gold" | "violet";
+export type PageTint = "wood" | "moss" | "river";
 
 const tintBg: Record<PageTint, string> = {
-  coral: "linear-gradient(160deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)",
-  teal: "linear-gradient(160deg, var(--block-teal) 0%, var(--block-teal-deep) 100%)",
-  gold: "linear-gradient(160deg, var(--block-gold) 0%, var(--block-gold-deep) 100%)",
-  violet: "linear-gradient(160deg, var(--block-violet) 0%, var(--block-violet-deep) 100%)",
+  wood: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
+  moss: "linear-gradient(160deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
+  river: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
 };
 
 // Solid color-block banner behind the title, chicTrip-style — each section

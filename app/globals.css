@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
-/* chicTrip-inspired palette — warm coral-orange accent on a cream base,
-   swapped in for the previous muted navy "quiet literary" set. Token names
-   kept as-is (daxi-red, wood-gold, river-teal, festival-gold, accent)
+/* Three-tone earthy palette, per spec: wood brown #7A4E2E, moss green
+   #5C7F45, river blue #4E88A8 — replacing the chicTrip coral set. Token
+   names kept as-is (daxi-red, wood-gold, river-teal, festival-gold, accent)
    since components already reference them; only the values change. */
 :root {
   --paper: #fdf8f2;
-  --paper-2: #f7ebdc;
+  --paper-2: #f3e9d8;
   --ink: #2b2420;
-  --ink-soft: #8a7360;
+  --ink-soft: #7d6a58;
   --line: rgba(43, 36, 32, 0.12);
   --card: #ffffff;
-  --cognac: #8a7360;
+  --cognac: #7d6a58;
   --cognac-deep: #5c4736;
   --cognac-tint: rgba(43, 36, 32, 0.06);
   --bordeaux: #2b2420;
@@ -21,102 +21,113 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 3px 10px rgba(255, 107, 74, 0.08), 0 16px 34px rgba(43, 36, 32, 0.1);
-  --accent: #ff6b4a;
+  --shadow-card: 0 3px 10px rgba(122, 78, 46, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --accent: #7a4e2e;
   --accent-fg: #ffffff;
-  --status-ok: #6a9c5c;
-  --status-warn: #d98a3d;
-  --festival-gold: #e2a04f;
-  --daxi-red: #ff6b4a;
-  --daxi-red-soft: rgba(255, 107, 74, 0.16);
-  --wood-gold: #cf9a45;
-  --river-teal: #3f9184;
-  --river-teal-soft: rgba(63, 145, 132, 0.14);
+  --status-ok: #5c7f45;
+  --status-warn: #b5793a;
+  --festival-gold: #5c7f45;
+  --daxi-red: #7a4e2e;
+  --daxi-red-soft: rgba(122, 78, 46, 0.16);
+  --wood-gold: #a9754a;
+  --river-teal: #4e88a8;
+  --river-teal-soft: rgba(78, 136, 168, 0.16);
   --wallpaper-fade-opacity: 0.96;
 
-  /* Saturated "color block" surfaces — chicTrip-style solid banners/cards,
-     not theme-dependent so they stay vivid in dark mode too. */
-  --block-coral: #ff6b4a;
-  --block-coral-deep: #e8532f;
-  --block-teal: #2f8577;
-  --block-teal-deep: #21675c;
-  --block-gold: #e0982e;
-  --block-gold-deep: #c47f1d;
-  --block-violet: #8b6fd9;
-  --block-violet-deep: #7255c4;
+  /* Solid "color block" surfaces — banners/cards use these directly rather
+     than a tinted wash. Fixed (not redefined in the dark overrides below)
+     except where a lighter variant is needed for contrast on a dark page. */
+  --block-wood: #7a4e2e;
+  --block-wood-deep: #5c3a21;
+  --block-moss: #5c7f45;
+  --block-moss-deep: #476234;
+  --block-river: #4e88a8;
+  --block-river-deep: #396a86;
   --block-fg: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #1c1512;
-    --paper-2: #241b15;
-    --ink: #f6ece0;
-    --ink-soft: #c2ac97;
-    --line: rgba(246, 236, 224, 0.12);
-    --card: #2a1f18;
-    --cognac: #c2ac97;
+    --paper: #1a1611;
+    --paper-2: #221c15;
+    --ink: #f2ebe0;
+    --ink-soft: #bfae9c;
+    --line: rgba(242, 235, 224, 0.12);
+    --card: #262019;
+    --cognac: #bfae9c;
     --cognac-deep: #e6d3bd;
-    --cognac-tint: rgba(194, 172, 151, 0.14);
-    --bordeaux: #f6ece0;
+    --cognac-tint: rgba(191, 174, 156, 0.14);
+    --bordeaux: #f2ebe0;
     --bordeaux-deep: #ffffff;
-    --bordeaux-tint: rgba(246, 236, 224, 0.08);
+    --bordeaux-tint: rgba(242, 235, 224, 0.08);
     --cognac-surface: #4a392b;
     --cognac-surface-deep: #2a1f18;
     --bordeaux-surface: #3a2c21;
     --bordeaux-surface-deep: #201811;
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
-    --accent: #ff8a65;
-    --accent-fg: #1c1512;
-    --status-ok: #8fc17f;
-    --status-warn: #e2a45f;
-    --daxi-red: #ff8a65;
-    --daxi-red-soft: rgba(255, 138, 101, 0.16);
-    --wood-gold: #e0b268;
-    --river-teal: #5cb3a2;
-    --river-teal-soft: rgba(92, 179, 162, 0.16);
+    --accent: #b5854f;
+    --accent-fg: #1a1611;
+    --status-ok: #85a56c;
+    --status-warn: #cf9c5c;
+    --daxi-red: #b5854f;
+    --daxi-red-soft: rgba(181, 133, 79, 0.2);
+    --wood-gold: #cba572;
+    --river-teal: #74b0cf;
+    --river-teal-soft: rgba(116, 176, 207, 0.2);
     --wallpaper-fade-opacity: 0.94;
+    --block-wood: #a06f43;
+    --block-wood-deep: #7a4e2e;
+    --block-moss: #78a05d;
+    --block-moss-deep: #5c7f45;
+    --block-river: #6fabc9;
+    --block-river-deep: #4e88a8;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper: #1c1512;
-  --paper-2: #241b15;
-  --ink: #f6ece0;
-  --ink-soft: #c2ac97;
-  --line: rgba(246, 236, 224, 0.12);
-  --card: #2a1f18;
-  --cognac: #c2ac97;
+  --paper: #1a1611;
+  --paper-2: #221c15;
+  --ink: #f2ebe0;
+  --ink-soft: #bfae9c;
+  --line: rgba(242, 235, 224, 0.12);
+  --card: #262019;
+  --cognac: #bfae9c;
   --cognac-deep: #e6d3bd;
-  --cognac-tint: rgba(194, 172, 151, 0.14);
-  --bordeaux: #f6ece0;
+  --cognac-tint: rgba(191, 174, 156, 0.14);
+  --bordeaux: #f2ebe0;
   --bordeaux-deep: #ffffff;
-  --bordeaux-tint: rgba(246, 236, 224, 0.08);
+  --bordeaux-tint: rgba(242, 235, 224, 0.08);
   --cognac-surface: #4a392b;
   --cognac-surface-deep: #2a1f18;
   --bordeaux-surface: #3a2c21;
   --bordeaux-surface-deep: #201811;
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
-  --accent: #ff8a65;
-  --accent-fg: #1c1512;
-  --status-ok: #8fc17f;
-  --status-warn: #e2a45f;
-  --daxi-red: #ff8a65;
-  --daxi-red-soft: rgba(255, 138, 101, 0.16);
-  --wood-gold: #e0b268;
-  --river-teal: #5cb3a2;
-  --river-teal-soft: rgba(92, 179, 162, 0.16);
+  --accent: #b5854f;
+  --accent-fg: #1a1611;
+  --status-ok: #85a56c;
+  --status-warn: #cf9c5c;
+  --daxi-red: #b5854f;
+  --daxi-red-soft: rgba(181, 133, 79, 0.2);
+  --wood-gold: #cba572;
+  --river-teal: #74b0cf;
+  --river-teal-soft: rgba(116, 176, 207, 0.2);
   --wallpaper-fade-opacity: 0.94;
+  --block-wood: #a06f43;
+  --block-wood-deep: #7a4e2e;
+  --block-moss: #78a05d;
+  --block-moss-deep: #5c7f45;
+  --block-river: #6fabc9;
+  --block-river-deep: #4e88a8;
 }
 
 :root[data-theme="light"] {
   --paper: #fdf8f2;
-  --paper-2: #f7ebdc;
+  --paper-2: #f3e9d8;
   --ink: #2b2420;
-  --ink-soft: #8a7360;
+  --ink-soft: #7d6a58;
   --line: rgba(43, 36, 32, 0.12);
   --card: #ffffff;
-  --cognac: #8a7360;
+  --cognac: #7d6a58;
   --cognac-deep: #5c4736;
   --cognac-tint: rgba(43, 36, 32, 0.06);
   --bordeaux: #2b2420;
@@ -126,28 +137,23 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 3px 10px rgba(255, 107, 74, 0.08), 0 16px 34px rgba(43, 36, 32, 0.1);
-  --accent: #ff6b4a;
+  --shadow-card: 0 3px 10px rgba(122, 78, 46, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --accent: #7a4e2e;
   --accent-fg: #ffffff;
-  --status-ok: #6a9c5c;
-  --status-warn: #d98a3d;
-  --daxi-red: #ff6b4a;
-  --daxi-red-soft: rgba(255, 107, 74, 0.16);
-  --wood-gold: #cf9a45;
-  --river-teal: #3f9184;
-  --river-teal-soft: rgba(63, 145, 132, 0.14);
+  --status-ok: #5c7f45;
+  --status-warn: #b5793a;
+  --daxi-red: #7a4e2e;
+  --daxi-red-soft: rgba(122, 78, 46, 0.16);
+  --wood-gold: #a9754a;
+  --river-teal: #4e88a8;
+  --river-teal-soft: rgba(78, 136, 168, 0.16);
   --wallpaper-fade-opacity: 0.96;
-
-  /* Saturated "color block" surfaces — chicTrip-style solid banners/cards,
-     not theme-dependent so they stay vivid in dark mode too. */
-  --block-coral: #ff6b4a;
-  --block-coral-deep: #e8532f;
-  --block-teal: #2f8577;
-  --block-teal-deep: #21675c;
-  --block-gold: #e0982e;
-  --block-gold-deep: #c47f1d;
-  --block-violet: #8b6fd9;
-  --block-violet-deep: #7255c4;
+  --block-wood: #7a4e2e;
+  --block-wood-deep: #5c3a21;
+  --block-moss: #5c7f45;
+  --block-moss-deep: #476234;
+  --block-river: #4e88a8;
+  --block-river-deep: #396a86;
   --block-fg: #ffffff;
 }
 

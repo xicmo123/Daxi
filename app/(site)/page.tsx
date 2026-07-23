@@ -51,16 +51,15 @@ const icon = {
 // (活動/景點/商家/停車 are already bottom tabs — repeating them here just
 // doubles the same targets on the first screen).
 const stories = [
-  { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food, block: "coral" as const },
-  { href: "/weather", label: "路況", icon: icon.road, block: "teal" as const },
-  { href: "/announcements", label: "區公所公告", icon: icon.announcement, block: "violet" as const },
+  { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food, block: "wood" as const },
+  { href: "/weather", label: "路況", icon: icon.road, block: "river" as const },
+  { href: "/announcements", label: "區公所公告", icon: icon.announcement, block: "moss" as const },
 ];
 
-const blockGradient: Record<"coral" | "teal" | "gold" | "violet", string> = {
-  coral: "linear-gradient(135deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)",
-  teal: "linear-gradient(135deg, var(--block-teal) 0%, var(--block-teal-deep) 100%)",
-  gold: "linear-gradient(135deg, var(--block-gold) 0%, var(--block-gold-deep) 100%)",
-  violet: "linear-gradient(135deg, var(--block-violet) 0%, var(--block-violet-deep) 100%)",
+const blockGradient: Record<"wood" | "moss" | "river", string> = {
+  wood: "linear-gradient(135deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
+  moss: "linear-gradient(135deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
+  river: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
 };
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
@@ -118,9 +117,9 @@ async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
   return (
     <div className="grid grid-cols-1 gap-2 safe-page-x pt-4 fade-in-delay-1 min-[380px]:grid-cols-3 sm:gap-3 lg:grid-cols-3">
       {[
-        { href: "#event-carousel", label: "下一站", value: nextTitle, block: "violet" as const },
-        { href: "/parking", label: parkingHrefLabel, value: parkingLabel, block: "teal" as const },
-        { href: "/weather", label: "即時", value: weatherLabel, block: "gold" as const },
+        { href: "#event-carousel", label: "下一站", value: nextTitle, block: "moss" as const },
+        { href: "/parking", label: parkingHrefLabel, value: parkingLabel, block: "river" as const },
+        { href: "/weather", label: "即時", value: weatherLabel, block: "wood" as const },
       ].map((item) => (
         <Link
           key={item.label}

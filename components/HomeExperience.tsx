@@ -90,7 +90,7 @@ export default function HomeExperience({
       <div
         className="safe-page-x pt-6 pb-5 fade-in"
         style={{
-          background: "linear-gradient(160deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)",
+          background: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
           borderBottomLeftRadius: 28,
           borderBottomRightRadius: 28,
         }}
@@ -135,7 +135,7 @@ export default function HomeExperience({
                 className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
                 style={{
                   background: mode === opt.value ? "#ffffff" : "transparent",
-                  color: mode === opt.value ? "var(--block-coral-deep)" : "rgba(255,255,255,0.9)",
+                  color: mode === opt.value ? "var(--block-wood-deep)" : "rgba(255,255,255,0.9)",
                 }}
               >
                 {opt.label}
@@ -168,7 +168,7 @@ export default function HomeExperience({
           href="/parking"
           onClick={() => trackClick("map_card", "map", "地圖導覽", mode)}
           className="flex items-center gap-3 rounded-2xl px-4 py-3.5 card-shadow transition-opacity active:opacity-70"
-          style={{ background: "linear-gradient(135deg, var(--block-teal) 0%, var(--block-teal-deep) 100%)" }}
+          style={{ background: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)" }}
         >
           <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -270,8 +270,8 @@ export default function HomeExperience({
                 style={{
                   background:
                     i % 2 === 0
-                      ? "linear-gradient(135deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)"
-                      : "linear-gradient(135deg, var(--block-gold) 0%, var(--block-gold-deep) 100%)",
+                      ? "linear-gradient(135deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)"
+                      : "linear-gradient(135deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
                 }}
               >
                 <span

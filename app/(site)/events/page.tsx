@@ -24,7 +24,7 @@ export default async function EventsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="活動" subtitle="大溪大禧與老街周邊活動" tint="violet" />
+      <PageHeader title="活動" subtitle="大溪大禧與老街周邊活動" tint="moss" />
       <EventsList events={events} />
     </div>
   );
