@@ -84,95 +84,107 @@ export default function HomeExperience({
 
   return (
     <div>
-      {/* 1. Greeting + town name + notification bell */}
-      <div className="flex items-center justify-between safe-page-x pt-6 pb-1 fade-in">
-        <div>
-          <div className="text-[13px]" style={{ color: "var(--ink-soft)" }}>
-            {greeting}
+      {/* Hero color-block banner: greeting/bell + mode toggle + search all
+          sit on one solid coral panel, chicTrip-style, instead of blending
+          into the page background. */}
+      <div
+        className="safe-page-x pt-6 pb-5 fade-in"
+        style={{
+          background: "linear-gradient(160deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)",
+          borderBottomLeftRadius: 28,
+          borderBottomRightRadius: 28,
+        }}
+      >
+        {/* 1. Greeting + town name + notification bell */}
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[13px]" style={{ color: "rgba(255,255,255,0.8)" }}>
+              {greeting}
+            </div>
+            <div className="text-[18px] font-bold" style={{ color: "var(--block-fg)" }}>
+              {townName}
+            </div>
           </div>
-          <div className="font-serif text-[17px] font-bold" style={{ color: "var(--ink)" }}>
-            {townName}
+          <Link
+            href="/announcements"
+            aria-label="通知"
+            className="relative w-9 h-9 rounded-full flex items-center justify-center transition-opacity active:opacity-70"
+            style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 10.5a6 6 0 0 1 12 0c0 3.5 1 5 1.6 5.8H4.4C5 15.5 6 14 6 10.5Z" />
+              <path d="M10.2 19.5a1.9 1.9 0 0 0 3.6 0" />
+            </svg>
+            {hasRecentAnnouncement ? (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: "#fff" }} aria-hidden />
+            ) : null}
+          </Link>
+        </div>
+
+        {/* 2. Explore / Local mode toggle */}
+        <div className="pt-4">
+          <div className="inline-flex p-1 rounded-full" style={{ background: "rgba(255,255,255,0.18)" }}>
+            {([
+              { value: "explore" as const, label: "探索模式" },
+              { value: "local" as const, label: "在地模式" },
+            ]).map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setModeAndPersist(opt.value)}
+                className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
+                style={{
+                  background: mode === opt.value ? "#ffffff" : "transparent",
+                  color: mode === opt.value ? "var(--block-coral-deep)" : "rgba(255,255,255,0.9)",
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
         </div>
-        <Link
-          href="/announcements"
-          aria-label="通知"
-          className="relative w-9 h-9 rounded-full flex items-center justify-center transition-opacity active:opacity-60"
-          style={{ background: "var(--card)", color: "var(--ink)" }}
-        >
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 10.5a6 6 0 0 1 12 0c0 3.5 1 5 1.6 5.8H4.4C5 15.5 6 14 6 10.5Z" />
-            <path d="M10.2 19.5a1.9 1.9 0 0 0 3.6 0" />
-          </svg>
-          {hasRecentAnnouncement ? (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: "var(--daxi-red)" }} aria-hidden />
-          ) : null}
-        </Link>
+
+        {/* 3. Search bar */}
+        <form onSubmit={onSearch} className="pt-3">
+          <div className="flex items-center gap-2 rounded-full px-4 py-2.5" style={{ background: "#ffffff" }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ color: "var(--ink-soft)" }}>
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m20 20-4.3-4.3" />
+            </svg>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="搜尋景點、店家、活動"
+              className="flex-1 bg-transparent text-[13px] outline-none"
+              style={{ color: "var(--ink)" }}
+            />
+          </div>
+        </form>
       </div>
 
-      {/* 2. Explore / Local mode toggle */}
-      <div className="safe-page-x pt-3 fade-in">
-        <div className="inline-flex p-1 rounded-full" style={{ background: "var(--card)", border: "1px solid var(--line)" }}>
-          {([
-            { value: "explore" as const, label: "探索模式" },
-            { value: "local" as const, label: "在地模式" },
-          ]).map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => setModeAndPersist(opt.value)}
-              className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
-              style={{
-                background: mode === opt.value ? "var(--daxi-red)" : "transparent",
-                color: mode === opt.value ? "#fff" : "var(--ink-soft)",
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Search bar */}
-      <form onSubmit={onSearch} className="safe-page-x pt-3 fade-in">
-        <div className="flex items-center gap-2 rounded-full px-4 py-2.5" style={{ background: "var(--card)", border: "1px solid var(--line)" }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ color: "var(--ink-soft)" }}>
-            <circle cx="10.5" cy="10.5" r="6.5" />
-            <path d="m20 20-4.3-4.3" />
-          </svg>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜尋景點、店家、活動"
-            className="flex-1 bg-transparent text-[13px] outline-none"
-            style={{ color: "var(--ink)" }}
-          />
-        </div>
-      </form>
-
-      {/* 4. Map nav card */}
-      <div className="safe-page-x pt-3 fade-in">
+      {/* 4. Map nav card — solid teal block */}
+      <div className="safe-page-x pt-4 fade-in">
         <Link
           href="/parking"
           onClick={() => trackClick("map_card", "map", "地圖導覽", mode)}
           className="flex items-center gap-3 rounded-2xl px-4 py-3.5 card-shadow transition-opacity active:opacity-70"
-          style={{ background: "var(--card)" }}
+          style={{ background: "linear-gradient(135deg, var(--block-teal) 0%, var(--block-teal-deep) 100%)" }}
         >
-          <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+          <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 5.2 4.5 6.9v12.4L9 17.6l6 2.5 4.5-1.7V6l-4.5 1.7-6-2.5Z" />
               <path d="M9 5.2v12.4M15 7.7V20" />
             </svg>
           </span>
           <span className="flex-1">
-            <span className="block text-[13px] font-medium" style={{ color: "var(--ink)" }}>
+            <span className="block text-[13px] font-medium" style={{ color: "var(--block-fg)" }}>
               地圖導覽
             </span>
-            <span className="block text-[11.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+            <span className="block text-[11.5px] mt-0.5" style={{ color: "rgba(255,255,255,0.8)" }}>
               景點與停車位置一覽
             </span>
           </span>
-          <span className="shrink-0 text-[10px] font-medium rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+          <span className="shrink-0 text-[10px] font-medium rounded-full px-2.5 py-1" style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}>
             支援離線快取
           </span>
         </Link>
@@ -245,8 +257,8 @@ export default function HomeExperience({
               查看全部
             </Link>
           </div>
-          <div className="flex flex-col gap-2 safe-page-x">
-            {visibleCoupons.map((c) => (
+          <div className="flex flex-col gap-2.5 safe-page-x">
+            {visibleCoupons.map((c, i) => (
               <button
                 key={c.id}
                 type="button"
@@ -254,12 +266,17 @@ export default function HomeExperience({
                   trackClick("coupon", c.id, c.title, mode);
                   setOpenCoupon(c);
                 }}
-                className="flex items-center gap-3 rounded-xl px-3.5 py-3 card-shadow text-left transition-opacity active:opacity-70"
-                style={{ background: "var(--card)" }}
+                className="flex items-center gap-3 rounded-2xl px-3.5 py-3 card-shadow text-left transition-opacity active:opacity-70"
+                style={{
+                  background:
+                    i % 2 === 0
+                      ? "linear-gradient(135deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)"
+                      : "linear-gradient(135deg, var(--block-gold) 0%, var(--block-gold-deep) 100%)",
+                }}
               >
                 <span
                   className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
+                  style={{ background: "rgba(255,255,255,0.22)", color: "var(--block-fg)" }}
                   aria-hidden
                 >
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -268,14 +285,14 @@ export default function HomeExperience({
                   </svg>
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--ink)" }}>
+                  <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--block-fg)" }}>
                     {c.title}
                   </div>
-                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
+                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.82)" }}>
                     {c.businessName}
                   </div>
                 </div>
-                <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+                <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "rgba(255,255,255,0.22)", color: "var(--block-fg)" }}>
                   掃碼核銷
                 </span>
               </button>

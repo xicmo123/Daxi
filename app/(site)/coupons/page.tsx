@@ -20,7 +20,7 @@ export default async function CouponsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="優惠券" subtitle="到店出示核銷碼，店員掃碼即可使用" />
+      <PageHeader title="優惠券" subtitle="到店出示核銷碼，店員掃碼即可使用" tint="coral" />
       <div className="pb-10">
         <CouponList coupons={rows} />
       </div>

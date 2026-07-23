@@ -40,6 +40,7 @@ export default async function ParkingPage() {
       <PageHeader
         title="周邊停車"
         subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
+        tint="teal"
       />
 
       <div className="safe-page-x pb-4 fade-in">

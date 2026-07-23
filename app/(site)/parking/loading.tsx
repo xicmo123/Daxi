@@ -19,7 +19,7 @@ function LotSkeleton() {
 export default function Loading() {
   return (
     <div className="pt-2">
-      <PageHeader title="周邊停車" subtitle="距大溪老街由近到遠・每分鐘更新" />
+      <PageHeader title="周邊停車" subtitle="距大溪老街由近到遠・每分鐘更新" tint="teal" />
       <div className="px-6 pb-10" style={{ borderTop: "1px solid var(--line)" }}>
         {Array.from({ length: 5 }).map((_, i) => (
           <LotSkeleton key={i} />

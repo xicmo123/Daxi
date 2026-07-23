@@ -33,6 +33,18 @@
   --river-teal: #3f9184;
   --river-teal-soft: rgba(63, 145, 132, 0.14);
   --wallpaper-fade-opacity: 0.96;
+
+  /* Saturated "color block" surfaces — chicTrip-style solid banners/cards,
+     not theme-dependent so they stay vivid in dark mode too. */
+  --block-coral: #ff6b4a;
+  --block-coral-deep: #e8532f;
+  --block-teal: #2f8577;
+  --block-teal-deep: #21675c;
+  --block-gold: #e0982e;
+  --block-gold-deep: #c47f1d;
+  --block-violet: #8b6fd9;
+  --block-violet-deep: #7255c4;
+  --block-fg: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -125,6 +137,18 @@
   --river-teal: #3f9184;
   --river-teal-soft: rgba(63, 145, 132, 0.14);
   --wallpaper-fade-opacity: 0.96;
+
+  /* Saturated "color block" surfaces — chicTrip-style solid banners/cards,
+     not theme-dependent so they stay vivid in dark mode too. */
+  --block-coral: #ff6b4a;
+  --block-coral-deep: #e8532f;
+  --block-teal: #2f8577;
+  --block-teal-deep: #21675c;
+  --block-gold: #e0982e;
+  --block-gold-deep: #c47f1d;
+  --block-violet: #8b6fd9;
+  --block-violet-deep: #7255c4;
+  --block-fg: #ffffff;
 }
 
 @theme inline {

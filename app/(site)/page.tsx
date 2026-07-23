@@ -51,10 +51,17 @@ const icon = {
 // (活動/景點/商家/停車 are already bottom tabs — repeating them here just
 // doubles the same targets on the first screen).
 const stories = [
-  { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food },
-  { href: "/weather", label: "路況", icon: icon.road },
-  { href: "/announcements", label: "區公所公告", icon: icon.announcement },
+  { href: "/businesses?cat=美食", label: "老街美食", icon: icon.food, block: "coral" as const },
+  { href: "/weather", label: "路況", icon: icon.road, block: "teal" as const },
+  { href: "/announcements", label: "區公所公告", icon: icon.announcement, block: "violet" as const },
 ];
+
+const blockGradient: Record<"coral" | "teal" | "gold" | "violet", string> = {
+  coral: "linear-gradient(135deg, var(--block-coral) 0%, var(--block-coral-deep) 100%)",
+  teal: "linear-gradient(135deg, var(--block-teal) 0%, var(--block-teal-deep) 100%)",
+  gold: "linear-gradient(135deg, var(--block-gold) 0%, var(--block-gold-deep) 100%)",
+  violet: "linear-gradient(135deg, var(--block-violet) 0%, var(--block-violet-deep) 100%)",
+};
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
   month: "numeric",
@@ -111,20 +118,20 @@ async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
   return (
     <div className="grid grid-cols-1 gap-2 safe-page-x pt-4 fade-in-delay-1 min-[380px]:grid-cols-3 sm:gap-3 lg:grid-cols-3">
       {[
-        { href: "#event-carousel", label: "下一站", value: nextTitle },
-        { href: "/parking", label: parkingHrefLabel, value: parkingLabel },
-        { href: "/weather", label: "即時", value: weatherLabel },
+        { href: "#event-carousel", label: "下一站", value: nextTitle, block: "violet" as const },
+        { href: "/parking", label: parkingHrefLabel, value: parkingLabel, block: "teal" as const },
+        { href: "/weather", label: "即時", value: weatherLabel, block: "gold" as const },
       ].map((item) => (
         <Link
           key={item.label}
           href={item.href}
           className="min-h-[70px] rounded-xl px-3 py-3 transition-opacity active:opacity-70 sm:min-h-[76px] lg:px-4"
-          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+          style={{ background: blockGradient[item.block] }}
         >
-          <div className="text-[10.5px] font-semibold mb-1" style={{ color: "var(--daxi-red)" }}>
+          <div className="text-[10.5px] font-semibold mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>
             {item.label}
           </div>
-          <div className="text-[12.5px] leading-snug line-clamp-2" style={{ color: "var(--ink)" }}>
+          <div className="text-[12.5px] leading-snug line-clamp-2" style={{ color: "var(--block-fg)" }}>
             {item.value}
           </div>
         </Link>
@@ -284,7 +291,7 @@ export default async function Home() {
           >
             <span
               className="w-13 h-13 rounded-full flex items-center justify-center card-shadow sm:h-14 sm:w-14"
-              style={{ background: "var(--card)", color: "var(--ink)" }}
+              style={{ background: blockGradient[s.block], color: "var(--block-fg)" }}
             >
               {s.icon}
             </span>

@@ -21,7 +21,7 @@ export default async function SpotsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="景點" subtitle="老街周邊景點與順路走走" />
+      <PageHeader title="景點" subtitle="老街周邊景點與順路走走" tint="gold" />
 
       <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} />
 
