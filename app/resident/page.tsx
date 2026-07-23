@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { listUpcomingOutages, type Outage } from "@/lib/outages";
+import { listActiveResidentSlides } from "@/lib/residentCarousel";
+import ResidentCarousel from "@/components/ResidentCarousel";
 
 export const dynamic = "force-dynamic";
 
@@ -132,6 +134,11 @@ async function AnnouncementPreview() {
   );
 }
 
+async function AnnouncementCarousel() {
+  const slides = await listActiveResidentSlides();
+  return <ResidentCarousel slides={slides} />;
+}
+
 export default function ResidentHome() {
   const todayLabel = dateFormatter.format(new Date());
 
@@ -171,6 +178,8 @@ export default function ResidentHome() {
           里民服務、區公所公告、停水停電通知，一站看完
         </p>
       </div>
+
+      <AnnouncementCarousel />
 
       <div className="grid grid-cols-2 gap-3 safe-page-x pt-4 fade-in-delay-1">
         {quickLinks.map((q) => (
