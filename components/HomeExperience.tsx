@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trackClick } from "@/lib/trackClient";
+import { writeIdentity } from "@/lib/identity";
 import type { CouponWithBusiness } from "./CouponList";
 import CouponRedeemModal from "./CouponRedeemModal";
 import PlaceholderIcon from "./PlaceholderIcon";
@@ -19,23 +20,10 @@ export type FeedSpot = {
   photoSrc?: string;
 };
 
-export type HomeMode = "explore" | "local";
-
-const MODE_STORAGE_KEY = "daxi-home-mode";
-
-function sortSpots(spots: FeedSpot[], mode: HomeMode): FeedSpot[] {
-  if (mode === "local") {
-    return [...spots].sort((a, b) => a.distanceMeters - b.distanceMeters);
-  }
-  return [...spots].sort((a, b) => Number(b.featured) - Number(a.featured));
-}
-
-function sortCoupons(coupons: CouponWithBusiness[], mode: HomeMode): CouponWithBusiness[] {
-  if (mode === "local") {
-    return [...coupons].sort((a, b) => a.businessName.localeCompare(b.businessName, "zh-Hant"));
-  }
-  return coupons;
-}
+// Tag used only for click-tracking context, not for reordering content
+// anymore — "我是大溪人" now navigates to the separate /resident section
+// (see IdentityGate) rather than re-sorting this page in place.
+const TRACK_TAG = "tourist";
 
 export default function HomeExperience({
   townName,
@@ -49,17 +37,14 @@ export default function HomeExperience({
   coupons: CouponWithBusiness[];
 }) {
   const router = useRouter();
-  // Server-rendered HTML always starts on "explore" — reading localStorage
-  // synchronously here (rather than via an effect) avoids a render just to
-  // restore last session's choice, at the cost of not restoring it before
-  // the first paint. Good enough for a session-scoped preference.
-  const [mode, setMode] = useState<HomeMode>("explore");
   const [query, setQuery] = useState("");
   const [openCoupon, setOpenCoupon] = useState<CouponWithBusiness | null>(null);
+  const [switching, setSwitching] = useState(false);
 
-  const setModeAndPersist = (next: HomeMode) => {
-    setMode(next);
-    window.localStorage.setItem(MODE_STORAGE_KEY, next);
+  const goResident = () => {
+    setSwitching(true);
+    writeIdentity("resident");
+    router.push("/resident");
   };
 
   const greeting = useMemo(() => {
@@ -71,28 +56,32 @@ export default function HomeExperience({
     return "晚安";
   }, []);
 
-  const visibleSpots = useMemo(() => sortSpots(spots, mode).slice(0, 8), [spots, mode]);
-  const visibleCoupons = useMemo(() => sortCoupons(coupons, mode).slice(0, 6), [coupons, mode]);
+  const visibleSpots = useMemo(
+    () => [...spots].sort((a, b) => Number(b.featured) - Number(a.featured)).slice(0, 8),
+    [spots]
+  );
+  const visibleCoupons = useMemo(() => coupons.slice(0, 6), [coupons]);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
     if (!q) return;
-    trackClick("map_card", "search", q, mode);
+    trackClick("map_card", "search", q, TRACK_TAG);
     router.push(`/search?q=${encodeURIComponent(q)}`);
   };
 
   return (
     <div>
-      {/* Hero color-block banner: greeting/bell + mode toggle + search all
+      {/* Hero color-block banner: greeting/bell + identity switcher + search all
           sit on one solid coral panel, chicTrip-style, instead of blending
           into the page background. */}
       <div
         className="safe-page-x pt-6 pb-5 fade-in"
         style={{
-          background: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
+          background: "linear-gradient(160deg, rgba(215,160,107,0.94) 0%, rgba(184,129,76,0.92) 100%)",
           borderBottomLeftRadius: 28,
           borderBottomRightRadius: 28,
+          boxShadow: "var(--shadow-float)",
         }}
       >
         {/* 1. Greeting + town name + notification bell */}
@@ -121,26 +110,26 @@ export default function HomeExperience({
           </Link>
         </div>
 
-        {/* 2. Explore / Local mode toggle */}
+        {/* 2. Identity switcher — 我是遊客 stays here; 我是大溪人 leaves for
+            the separate /resident section entirely (different nav, different
+            content), not just a re-sort of this page. */}
         <div className="pt-4">
           <div className="inline-flex p-1 rounded-full" style={{ background: "rgba(255,255,255,0.18)" }}>
-            {([
-              { value: "explore" as const, label: "探索模式" },
-              { value: "local" as const, label: "在地模式" },
-            ]).map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setModeAndPersist(opt.value)}
-                className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
-                style={{
-                  background: mode === opt.value ? "#ffffff" : "transparent",
-                  color: mode === opt.value ? "var(--block-wood-deep)" : "rgba(43,36,32,0.72)",
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
+            <span
+              className="px-4 py-1.5 rounded-full text-[12.5px] font-medium"
+              style={{ background: "#ffffff", color: "var(--block-wood-deep)" }}
+            >
+              我是遊客
+            </span>
+            <button
+              type="button"
+              onClick={goResident}
+              disabled={switching}
+              className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
+              style={{ background: "transparent", color: "rgba(43,36,32,0.72)", opacity: switching ? 0.6 : 1 }}
+            >
+              {switching ? "切換中…" : "我是大溪人"}
+            </button>
           </div>
         </div>
 
@@ -166,36 +155,36 @@ export default function HomeExperience({
       <div className="safe-page-x pt-4 fade-in">
         <Link
           href="/parking"
-          onClick={() => trackClick("map_card", "map", "地圖導覽", mode)}
-          className="flex items-center gap-3 rounded-2xl px-4 py-3.5 card-shadow transition-opacity active:opacity-70"
-          style={{ background: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)" }}
+          onClick={() => trackClick("map_card", "map", "地圖導覽", TRACK_TAG)}
+          className="flex items-center gap-3 rounded-2xl border px-4 py-3.5 card-shadow transition-opacity active:opacity-70"
+          style={{ background: "var(--card)", borderColor: "var(--line)" }}
         >
-          <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}>
+          <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 5.2 4.5 6.9v12.4L9 17.6l6 2.5 4.5-1.7V6l-4.5 1.7-6-2.5Z" />
               <path d="M9 5.2v12.4M15 7.7V20" />
             </svg>
           </span>
           <span className="flex-1">
-            <span className="block text-[13px] font-medium" style={{ color: "var(--block-fg)" }}>
+            <span className="block text-[13px] font-semibold" style={{ color: "var(--ink)" }}>
               地圖導覽
             </span>
-            <span className="block text-[11.5px] mt-0.5" style={{ color: "rgba(43,36,32,0.7)" }}>
+            <span className="block text-[11.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
               景點與停車位置一覽
             </span>
           </span>
-          <span className="shrink-0 text-[10px] font-medium rounded-full px-2.5 py-1" style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}>
+          <span className="shrink-0 text-[10px] font-medium rounded-full px-2.5 py-1" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
             支援離線快取
           </span>
         </Link>
       </div>
 
-      {/* 5. Featured spots — horizontal cards, reordered by mode */}
+      {/* 5. Featured spots — horizontal cards */}
       {visibleSpots.length > 0 ? (
         <div className="pt-5 fade-in">
           <div className="flex items-center justify-between safe-page-x mb-2">
             <div className="text-[11px] font-semibold tracking-[0.18em] uppercase" style={{ color: "var(--daxi-red)" }}>
-              {mode === "explore" ? "熱門景點" : "順路景點"}
+              熱門景點
             </div>
             <Link href="/spots" className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
               查看全部
@@ -206,7 +195,7 @@ export default function HomeExperience({
               <Link
                 key={s.placeId}
                 href="/spots"
-                onClick={() => trackClick("spot", s.placeId, s.name, mode)}
+                onClick={() => trackClick("spot", s.placeId, s.name, TRACK_TAG)}
                 className="group relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden card-shadow transition-transform active:scale-[0.98]"
                 style={{ background: "var(--card)" }}
               >
@@ -229,7 +218,7 @@ export default function HomeExperience({
                 )}
                 <div
                   className="absolute inset-0"
-                  style={{ background: "linear-gradient(180deg, rgba(15,23,42,0.02) 0%, rgba(15,23,42,0.15) 45%, rgba(15,23,42,0.88) 100%)" }}
+                  style={{ background: "linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,0.08) 48%, rgba(15,23,42,0.74) 100%)" }}
                 />
                 <div className="absolute inset-x-0 bottom-0 p-2.5">
                   <div className="text-[12.5px] font-semibold leading-tight text-white truncate">{s.name}</div>
@@ -263,20 +252,23 @@ export default function HomeExperience({
                 key={c.id}
                 type="button"
                 onClick={() => {
-                  trackClick("coupon", c.id, c.title, mode);
+                  trackClick("coupon", c.id, c.title, TRACK_TAG);
                   setOpenCoupon(c);
                 }}
-                className="flex items-center gap-3 rounded-2xl px-3.5 py-3 card-shadow text-left transition-opacity active:opacity-70"
-                style={{
-                  background:
-                    i % 2 === 0
-                      ? "linear-gradient(135deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)"
-                      : "linear-gradient(135deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
-                }}
+                className="relative flex items-center gap-3 overflow-hidden rounded-2xl border px-3.5 py-3 card-shadow text-left transition-opacity active:opacity-70"
+                style={{ background: "var(--card)", borderColor: "var(--line)" }}
               >
                 <span
+                  className="absolute inset-y-3 left-0 w-1 rounded-r-full"
+                  style={{ background: i % 2 === 0 ? "var(--block-wood)" : "var(--block-moss)" }}
+                  aria-hidden
+                />
+                <span
                   className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: "rgba(255,255,255,0.22)", color: "var(--block-fg)" }}
+                  style={{
+                    background: i % 2 === 0 ? "var(--daxi-red-soft)" : "rgba(111,169,155,0.18)",
+                    color: i % 2 === 0 ? "var(--daxi-red)" : "var(--status-ok)",
+                  }}
                   aria-hidden
                 >
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -285,14 +277,14 @@ export default function HomeExperience({
                   </svg>
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--block-fg)" }}>
+                  <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--ink)" }}>
                     {c.title}
                   </div>
-                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "rgba(43,36,32,0.7)" }}>
+                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
                     {c.businessName}
                   </div>
                 </div>
-                <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "rgba(255,255,255,0.22)", color: "var(--block-fg)" }}>
+                <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
                   掃碼核銷
                 </span>
               </button>

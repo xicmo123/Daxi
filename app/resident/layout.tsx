@@ -1,15 +1,12 @@
 import Image from "next/image";
-import BottomNav from "@/components/BottomNav";
-import IdentityGate from "@/components/IdentityGate";
+import ResidentBottomNav from "@/components/ResidentBottomNav";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+// Separate layout/segment from app/(site) — residents get their own bottom
+// nav and page set entirely, not just a reordered tourist home. Shares the
+// wallpaper treatment for brand consistency but nothing else from SiteLayout.
+export default function ResidentLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <IdentityGate />
-
-      {/* Fixed wallpaper — stays put behind scrolling content, faded so it
-          never competes with foreground text/cards. Aligned to the same
-          max-w-md column as the app itself, not the full browser viewport. */}
       <div className="fixed inset-0 flex justify-center pointer-events-none" aria-hidden>
         <div className="relative w-full max-w-md overflow-hidden md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
           <Image
@@ -29,7 +26,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
       </div>
-      <BottomNav />
+      <ResidentBottomNav />
     </>
   );
 }

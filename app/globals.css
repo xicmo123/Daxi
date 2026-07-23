@@ -25,7 +25,8 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 3px 10px rgba(160, 106, 58, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --shadow-card: 0 1px 2px rgba(43, 36, 32, 0.05), 0 10px 24px rgba(43, 36, 32, 0.08);
+  --shadow-float: 0 12px 32px rgba(43, 36, 32, 0.1);
   --accent: #a06a3a;
   --accent-fg: #ffffff;
   --accent-fg-soft: rgba(255, 255, 255, 0.85);
@@ -70,7 +71,8 @@
     --cognac-surface-deep: #2a1f18;
     --bordeaux-surface: #3a2c21;
     --bordeaux-surface-deep: #201811;
-    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 26px rgba(0, 0, 0, 0.28);
+    --shadow-float: 0 14px 34px rgba(0, 0, 0, 0.34);
     --accent: #d7a06b;
     --accent-fg: #1a1611;
     --accent-fg-soft: rgba(43, 36, 32, 0.72);
@@ -102,7 +104,8 @@
   --cognac-surface-deep: #2a1f18;
   --bordeaux-surface: #3a2c21;
   --bordeaux-surface-deep: #201811;
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 26px rgba(0, 0, 0, 0.28);
+  --shadow-float: 0 14px 34px rgba(0, 0, 0, 0.34);
   --accent: #d7a06b;
   --accent-fg: #1a1611;
   --accent-fg-soft: rgba(43, 36, 32, 0.72);
@@ -133,7 +136,8 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 3px 10px rgba(160, 106, 58, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --shadow-card: 0 1px 2px rgba(43, 36, 32, 0.05), 0 10px 24px rgba(43, 36, 32, 0.08);
+  --shadow-float: 0 12px 32px rgba(43, 36, 32, 0.1);
   --accent: #a06a3a;
   --accent-fg: #ffffff;
   --accent-fg-soft: rgba(255, 255, 255, 0.85);
@@ -264,7 +268,9 @@ button:focus-visible {
 }
 
 .glass-nav {
-  background: var(--paper);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 @keyframes skeleton-pulse {

@@ -56,10 +56,10 @@ const stories = [
   { href: "/announcements", label: "區公所公告", icon: icon.announcement, block: "moss" as const },
 ];
 
-const blockGradient: Record<"wood" | "moss" | "river", string> = {
-  wood: "linear-gradient(135deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
-  moss: "linear-gradient(135deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
-  river: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
+const blockAccent: Record<"wood" | "moss" | "river", string> = {
+  wood: "var(--block-wood)",
+  moss: "var(--block-moss)",
+  river: "var(--river-teal)",
 };
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
@@ -124,13 +124,14 @@ async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
         <Link
           key={item.label}
           href={item.href}
-          className="min-h-[70px] rounded-xl px-3 py-3 transition-opacity active:opacity-70 sm:min-h-[76px] lg:px-4"
-          style={{ background: blockGradient[item.block] }}
+          className="relative min-h-[70px] overflow-hidden rounded-xl border px-3 py-3 transition-opacity active:opacity-70 sm:min-h-[76px] lg:px-4"
+          style={{ background: "var(--card)", borderColor: "var(--line)", boxShadow: "var(--shadow-card)" }}
         >
-          <div className="text-[10.5px] font-semibold mb-1" style={{ color: "rgba(43,36,32,0.72)" }}>
+          <span className="absolute inset-x-3 top-0 h-0.5 rounded-b-full" style={{ background: blockAccent[item.block] }} aria-hidden />
+          <div className="text-[10.5px] font-semibold mb-1" style={{ color: blockAccent[item.block] }}>
             {item.label}
           </div>
-          <div className="text-[12.5px] leading-snug line-clamp-2" style={{ color: "var(--block-fg)" }}>
+          <div className="text-[12.5px] leading-snug line-clamp-2" style={{ color: "var(--ink)" }}>
             {item.value}
           </div>
         </Link>
@@ -289,8 +290,12 @@ export default async function Home() {
             className="flex min-w-0 flex-col items-center gap-2 transition-opacity active:opacity-60"
           >
             <span
-              className="w-13 h-13 rounded-full flex items-center justify-center card-shadow sm:h-14 sm:w-14"
-              style={{ background: blockGradient[s.block], color: "var(--block-fg)" }}
+              className="w-13 h-13 rounded-full border flex items-center justify-center card-shadow sm:h-14 sm:w-14"
+              style={{
+                background: "var(--card)",
+                borderColor: "var(--line)",
+                color: blockAccent[s.block],
+              }}
             >
               {s.icon}
             </span>
