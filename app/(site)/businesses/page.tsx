@@ -33,10 +33,10 @@ export default async function BusinessesPage() {
       <Suspense fallback={null}>
         <BusinessList businesses={listable} photos={photos} details={details} lots={lots} />
       </Suspense>
-      <div className="px-6 pb-2 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="safe-page-x pb-2 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：Google Maps Places API（依 Google 使用者評論數排序，每類別各取前 20 名，半徑 3 公里內；資料每週更新一次，非即時）
       </div>
-      <div className="px-6 pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="safe-page-x pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         圖片來源：Wikimedia Commons（CC BY / CC BY-SA），攝影：
         {listable
           .filter((b) => photos[b.placeId]?.author)

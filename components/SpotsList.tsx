@@ -45,14 +45,14 @@ export default function SpotsList({
     <div>
       {featuredRows.length > 0 ? (
         <>
-          <div className="px-6 pt-1 pb-4 fade-in">
+          <div className="safe-page-x pt-1 pb-4 fade-in">
             <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
               Featured
             </div>
             <h2 className="font-serif text-[17px] font-semibold">精選推薦</h2>
           </div>
           <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8 fade-in">
-            <div className="flex gap-4 px-6">
+            <div className="flex gap-4 safe-page-x">
             {featuredRows.map((b, i) => {
               const photo = photos[b.placeId];
               const tags = experienceTags(b, details[b.placeId]);
@@ -60,7 +60,7 @@ export default function SpotsList({
                 <button
                   key={`featured-${b.placeId}`}
                   onClick={() => setOpenBusiness(b)}
-                  className="group relative h-[210px] w-[82%] max-w-[330px] shrink-0 snap-center overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99]"
+                  className="group relative h-[210px] w-[82%] max-w-[330px] shrink-0 snap-center overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99] sm:h-[240px] sm:max-w-[390px] lg:h-[280px]"
                   style={{
                     background: "var(--card)",
                     boxShadow: "0 14px 34px rgba(15, 23, 42, 0.12)",
@@ -72,7 +72,7 @@ export default function SpotsList({
                       src={photo.src}
                       alt={b.name}
                       fill
-                      sizes="(max-width: 448px) 100vw, 448px"
+                      sizes="(max-width: 768px) 82vw, (max-width: 1200px) 390px, 430px"
                       className="object-cover transition-transform duration-500 group-active:scale-[1.02]"
                       style={{ filter: "saturate(0.9) contrast(0.98)" }}
                     />
@@ -133,14 +133,14 @@ export default function SpotsList({
         </>
       ) : null}
 
-      <div className="px-6 pt-2 pb-4 fade-in">
+      <div className="safe-page-x pt-2 pb-4 fade-in">
         <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
           More
         </div>
         <h2 className="font-serif text-[17px] font-semibold">全部景點</h2>
       </div>
 
-      <div className="px-6 pb-4 fade-in">
+      <div className="safe-page-x pb-4 fade-in">
         <label
           className="flex items-center gap-3 rounded-full px-4 py-3"
           style={{ background: "var(--card)", border: "1px solid var(--line)" }}
@@ -162,7 +162,7 @@ export default function SpotsList({
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 px-6 pb-10 fade-in">
+      <div className="grid grid-cols-1 gap-4 safe-page-x pb-10 fade-in md:grid-cols-2 lg:grid-cols-3">
         {rows.map((b, i) => {
           const photo = photos[b.placeId];
           const tags = experienceTags(b, details[b.placeId]);
@@ -170,7 +170,7 @@ export default function SpotsList({
             <button
               key={b.placeId}
               onClick={() => setOpenBusiness(b)}
-              className="group relative h-[224px] w-full overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99]"
+              className="group relative h-[224px] w-full overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99] sm:h-[250px] md:h-[230px] lg:h-[250px]"
               style={{
                 background: "var(--card)",
                 boxShadow: "0 14px 34px rgba(15, 23, 42, 0.12)",
@@ -182,7 +182,7 @@ export default function SpotsList({
                   src={photo.src}
                   alt={b.name}
                   fill
-                  sizes="(max-width: 448px) 100vw, 448px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-active:scale-[1.02]"
                   style={{ filter: "saturate(0.9) contrast(0.98)" }}
                 />

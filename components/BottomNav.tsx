@@ -86,13 +86,13 @@ export default function BottomNav() {
       }}
     >
       <div
-        className="mx-auto flex w-full max-w-md border-t md:border-x"
+        className="mx-auto flex w-full max-w-md border-t md:max-w-3xl md:border-x lg:max-w-5xl"
         style={{
           borderColor: "var(--line)",
           display: "grid",
           gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
           width: "100%",
-          maxWidth: "28rem",
+          maxWidth: "64rem",
         }}
       >
         {tabs.map((tab) => {

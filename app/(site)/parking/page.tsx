@@ -42,7 +42,7 @@ export default async function ParkingPage() {
         subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
       />
 
-      <div className="px-6 pb-4 fade-in">
+      <div className="safe-page-x pb-4 fade-in">
         <Link
           href="/weather"
           className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 transition-opacity active:opacity-70"
@@ -71,7 +71,7 @@ export default async function ParkingPage() {
       </div>
 
       {!liveDataFailed && lots.length > 0 ? (
-        <div className="px-6 pb-5 fade-in">
+        <div className="safe-page-x pb-5 fade-in">
           <div
             className="rounded-xl px-4 py-4"
             style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
@@ -118,14 +118,14 @@ export default async function ParkingPage() {
       ) : null}
 
       {liveDataFailed ? (
-        <div className="px-6 pb-4">
+        <div className="safe-page-x pb-4">
           <div className="text-[13px] py-4" style={{ color: "var(--ink-soft)", borderTop: "1px solid var(--line)" }}>
             即時停車資料暫時整理中，請稍後再回來看看。
           </div>
         </div>
       ) : null}
 
-      <div className="px-6 pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
+      <div className="safe-page-x pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
         {rows.map((row, i) => {
           const key = row.kind === "public" ? row.name : row.placeId;
           const isFull = row.kind === "public" && row.status === "full";
@@ -221,7 +221,7 @@ export default async function ParkingPage() {
         })}
       </div>
 
-      <div className="px-6 pb-10 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="safe-page-x pb-10 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：
         <a href="https://data.gov.tw/dataset/25940" target="_blank" rel="noopener noreferrer" className="underline">
           桃園市路外停車資訊｜政府資料開放平臺

@@ -33,7 +33,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
     .filter((section) => (activeFilter === "all" ? section.rows.length > 0 : section.value === activeFilter));
 
   return (
-    <div className="px-6 pb-10 fade-in">
+    <div className="safe-page-x pb-10 fade-in">
       <div className="mb-5 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {filters.map((filter) => (
           <button
@@ -64,7 +64,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
                 {section.rows.length} 個活動
               </span>
             </div>
-            <div className="flex flex-col gap-5">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
               {section.rows.map((event) => (
                 <button
                   key={event.key}
@@ -78,7 +78,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
                         src={event.photoSrc}
                         alt={event.title}
                         fill
-                        sizes="(max-width: 448px) 100vw, 420px"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover"
                         style={{ filter: "saturate(0.9) contrast(0.98)" }}
                       />

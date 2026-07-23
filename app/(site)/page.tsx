@@ -103,7 +103,7 @@ async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-2 px-6 pt-4 fade-in-delay-1">
+    <div className="grid grid-cols-1 gap-2 safe-page-x pt-4 fade-in-delay-1 min-[380px]:grid-cols-3 sm:gap-3 lg:grid-cols-3">
       {[
         { href: "#event-carousel", label: "下一站", value: nextTitle },
         { href: "/parking", label: parkingHrefLabel, value: parkingLabel },
@@ -112,7 +112,7 @@ async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
         <Link
           key={item.label}
           href={item.href}
-          className="min-h-[76px] rounded-xl px-3 py-3 transition-opacity active:opacity-70"
+          className="min-h-[70px] rounded-xl px-3 py-3 transition-opacity active:opacity-70 sm:min-h-[76px] lg:px-4"
           style={{ background: "var(--card)", border: "1px solid var(--line)" }}
         >
           <div className="text-[10.5px] font-semibold mb-1" style={{ color: "var(--daxi-red)" }}>
@@ -180,7 +180,7 @@ export default async function Home() {
   return (
     <div>
       {/* Date + weather, plain text — no card, no hero image */}
-      <div className="flex items-center justify-between px-6 pt-6 pb-1 fade-in">
+      <div className="flex items-center justify-between safe-page-x pt-6 pb-1 fade-in">
         <span className="text-[13px]" style={{ color: "var(--ink-soft)" }}>
           {todayLabel}
         </span>
@@ -195,11 +195,11 @@ export default async function Home() {
         </Link>
       </div>
 
-      <div className="px-6 pt-2 fade-in">
+      <div className="safe-page-x pt-2 fade-in">
         <div className="text-[11px] font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--daxi-red)" }}>
           Daxi Today
         </div>
-        <h1 className="font-serif text-[25px] font-bold leading-tight" style={{ color: "var(--ink)" }}>
+        <h1 className="font-serif text-[25px] font-bold leading-tight sm:text-[30px] lg:text-[36px]" style={{ color: "var(--ink)" }}>
           臺灣十大觀光小城 - 大溪
         </h1>
       </div>
@@ -216,7 +216,7 @@ export default async function Home() {
       ) : null}
 
       {/* Quick actions */}
-      <div className="grid grid-cols-3 gap-x-4 gap-y-4 px-6 pt-5 pb-2 fade-in-delay-1">
+      <div className="grid grid-cols-3 gap-x-3 gap-y-4 safe-page-x pt-5 pb-2 fade-in-delay-1 sm:gap-x-6 lg:max-w-2xl">
         {stories.map((s, i) => (
           <Link
             key={i}
@@ -224,7 +224,7 @@ export default async function Home() {
             className="flex min-w-0 flex-col items-center gap-2 transition-opacity active:opacity-60"
           >
             <span
-              className="w-14 h-14 rounded-full flex items-center justify-center card-shadow"
+              className="w-13 h-13 rounded-full flex items-center justify-center card-shadow sm:h-14 sm:w-14"
               style={{ background: "var(--card)", color: "var(--ink)" }}
             >
               {s.icon}
@@ -238,7 +238,7 @@ export default async function Home() {
 
       {/* Live cams teaser — only surfaced while the festival is actually on */}
       {isFestivalMode ? (
-        <div className="px-6 pt-4 fade-in-delay-1">
+        <div className="safe-page-x pt-4 fade-in-delay-1">
           <Link
             href="/weather"
             className="flex items-center gap-3 rounded-2xl px-4 py-3.5 card-shadow transition-opacity active:opacity-70"

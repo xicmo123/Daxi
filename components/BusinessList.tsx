@@ -95,10 +95,10 @@ export default function BusinessList({
       <button
         key={`${b.placeId}-${i}`}
         onClick={() => setOpenBusiness(b)}
-        className="w-[190px] shrink-0 text-left transition-transform active:scale-[0.98]"
+        className="w-[72vw] max-w-[220px] shrink-0 text-left transition-transform active:scale-[0.98] sm:w-[210px] md:w-full md:max-w-none"
       >
         <div
-          className="relative h-[126px] w-full overflow-hidden rounded-2xl"
+          className="relative h-[132px] w-full overflow-hidden rounded-2xl sm:h-[142px] md:h-[158px]"
           style={{ background: "var(--card)", border: "1px solid var(--line)" }}
         >
           {photo ? (
@@ -106,7 +106,7 @@ export default function BusinessList({
               src={photo.src}
               alt={b.name}
               fill
-              sizes="190px"
+              sizes="(max-width: 768px) 72vw, (max-width: 1200px) 33vw, 260px"
               className="object-cover"
               style={{ filter: "saturate(0.96) contrast(0.98)" }}
             />
@@ -150,8 +150,8 @@ export default function BusinessList({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-2 px-6 pb-5">
-        <div className="flex min-w-0 gap-2 overflow-x-auto no-scrollbar">
+      <div className="flex flex-col gap-3 safe-page-x pb-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 gap-2 overflow-x-auto pb-1 no-scrollbar sm:pb-0">
           {TABS.map((tab) => (
             <button
               key={tab.value}
@@ -173,7 +173,7 @@ export default function BusinessList({
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
           aria-label="排序方式"
-          className="shrink-0 rounded-full px-3 py-2 text-[13px] font-bold outline-none"
+          className="w-full shrink-0 rounded-full px-3 py-2 text-[13px] font-bold outline-none sm:w-auto"
           style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
         >
           {SORTS.map((s) => (
@@ -187,8 +187,8 @@ export default function BusinessList({
       <div className="flex flex-col gap-9 pb-10 fade-in">
         {sections.map((section) => (
           <section key={section.title}>
-            <div className="mb-4 flex items-center justify-between px-6">
-              <h2 className="text-[25px] font-black tracking-normal" style={{ color: "var(--ink)" }}>
+            <div className="mb-4 flex items-center justify-between safe-page-x">
+              <h2 className="text-[22px] font-black tracking-normal sm:text-[25px]" style={{ color: "var(--ink)" }}>
                 {section.title}
               </h2>
               <span
@@ -201,7 +201,7 @@ export default function BusinessList({
                 </svg>
               </span>
             </div>
-            <div className="flex gap-4 overflow-x-auto px-6 pb-1 no-scrollbar">
+            <div className="flex gap-4 overflow-x-auto safe-page-x pb-1 no-scrollbar md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
               {section.rows.map(renderCard)}
             </div>
           </section>

@@ -43,7 +43,7 @@ export default function CarouselList({ slides }: { slides: CarouselSlide[] }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-5">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-serif text-xl font-bold" style={{ color: "var(--ink)" }}>
             活動管理
@@ -65,7 +65,7 @@ export default function CarouselList({ slides }: { slides: CarouselSlide[] }) {
         {slides.map((s, i) => (
           <div
             key={s.id}
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5"
+            className="flex flex-wrap items-center gap-3 rounded-xl px-3 py-2.5 sm:flex-nowrap"
             style={{ background: "var(--paper)", border: "1px solid var(--line)" }}
           >
             <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>
@@ -81,7 +81,7 @@ export default function CarouselList({ slides }: { slides: CarouselSlide[] }) {
                 {!s.photo ? " ・ 無照片" : ""}
               </div>
             </Link>
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="ml-auto flex items-center gap-1 shrink-0">
               <button
                 onClick={() => move(s.id, "up")}
                 disabled={busyId === s.id || i === 0}

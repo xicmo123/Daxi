@@ -66,10 +66,10 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
         className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
       >
         {slides.map((s) => (
-          <div key={s.key} className="w-full shrink-0 snap-center px-6">
+          <div key={s.key} className="w-full shrink-0 snap-center safe-page-x">
             <button
               onClick={() => setOpenSlide(s)}
-              className="w-full text-left rounded-[22px] card-shadow overflow-hidden relative h-[225px] p-5 flex flex-col justify-end transition-opacity active:opacity-90"
+              className="relative flex h-[215px] w-full flex-col justify-end overflow-hidden rounded-[22px] p-5 text-left transition-opacity active:opacity-90 card-shadow sm:h-[260px] lg:h-[340px] lg:p-7"
               style={{ color: "#f4ece2" }}
             >
               {s.photoSrc ? (
@@ -77,7 +77,7 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
                   src={s.photoSrc}
                   alt={s.title}
                   fill
-                  sizes="(max-width: 448px) 100vw, 420px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 768px, 1024px"
                   className="object-cover"
                   style={{ filter: "saturate(0.85) contrast(0.97)" }}
                 />
@@ -110,7 +110,7 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
                   />
                   {s.date}・{phaseLabel[s.phase]}
                 </div>
-                <h3 className="font-serif text-lg font-semibold mb-1.5">{s.title}</h3>
+                <h3 className="font-serif text-lg font-semibold mb-1.5 sm:text-2xl lg:text-[30px]">{s.title}</h3>
                 <p
                   className="text-[12.5px] leading-snug mb-3"
                   style={{

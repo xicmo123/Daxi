@@ -8,7 +8,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           never competes with foreground text/cards. Aligned to the same
           max-w-md column as the app itself, not the full browser viewport. */}
       <div className="fixed inset-0 flex justify-center pointer-events-none" aria-hidden>
-        <div className="relative w-full max-w-md overflow-hidden md:border-x" style={{ borderColor: "var(--line)" }}>
+        <div className="relative w-full max-w-md overflow-hidden md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
           <Image
             src="/images/old-street-sketch-2.jpg"
             alt=""
@@ -22,7 +22,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       <div className="relative z-10 flex-1 pb-20">
-        <div className="mx-auto w-full max-w-md md:border-x" style={{ borderColor: "var(--line)" }}>
+        <div className="mx-auto w-full max-w-md md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
           {children}
         </div>
       </div>

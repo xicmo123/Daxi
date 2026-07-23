@@ -140,23 +140,23 @@ export default function BusinessDetailModal({
       role="dialog"
       aria-modal="true"
       aria-label={business.name}
-      className="fixed inset-0 z-50 flex items-center justify-center p-5 fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 fade-in sm:p-5"
       style={{ background: "rgba(15,17,22,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md max-h-[84vh] overflow-y-auto rounded-[24px] card-shadow"
+        className="w-full max-w-md max-h-[88svh] overflow-y-auto rounded-[22px] card-shadow sm:max-w-lg sm:rounded-[24px] lg:max-w-2xl"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Full-bleed photo with identity only; richer story sits in the card body. */}
-        <div className="relative h-48 shrink-0">
+        <div className="relative h-48 shrink-0 sm:h-56 lg:h-64">
           {photo ? (
             <Image
               src={photo.src}
               alt={business.name}
               fill
-              sizes="(max-width: 448px) 100vw, 420px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 544px, 672px"
               className="object-cover"
               style={{ filter: "sepia(0.06) saturate(0.85) contrast(0.97)" }}
             />
@@ -204,7 +204,7 @@ export default function BusinessDetailModal({
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-5 sm:p-6 lg:p-7">
           {detail?.story ? (
             <div className="mb-5 rounded-xl px-4 py-3" style={{ background: "var(--paper-2)", border: "1px solid var(--line)" }}>
               <div className="mb-1 text-[10.5px] tracking-[0.16em] uppercase" style={{ color: "var(--ink-soft)" }}>
@@ -272,7 +272,7 @@ export default function BusinessDetailModal({
           </div>
 
           {contactLinks.length > 0 ? (
-            <div className="mt-5 grid grid-cols-2 gap-2">
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {contactLinks.map((link) => (
                 <a
                   key={link.label}
@@ -293,7 +293,7 @@ export default function BusinessDetailModal({
 
           {parking ? (
             <div
-              className="flex items-center gap-3 mt-4 rounded-xl px-3.5 py-3"
+              className="mt-4 flex flex-col gap-3 rounded-xl px-3.5 py-3 sm:flex-row sm:items-center"
               style={{ background: "var(--paper-2)" }}
             >
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="shrink-0" style={{ color: "var(--ink-soft)" }}>
@@ -309,7 +309,7 @@ export default function BusinessDetailModal({
                   {parking.lot.name}
                 </div>
               </div>
-              <div className="text-right shrink-0">
+              <div className="shrink-0 text-left sm:text-right">
                 {parking.lot.status === "full" ? (
                   <span className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
                     已滿
@@ -344,10 +344,10 @@ export default function BusinessDetailModal({
         {/* Explore nearby — geographic proximity, not a curated theme */}
         {nearby.length > 0 ? (
           <div className="pb-6">
-            <div className="px-6 mb-3 text-[11px] tracking-[0.15em] uppercase" style={{ color: "var(--ink-soft)" }}>
+            <div className="px-5 mb-3 text-[11px] tracking-[0.15em] uppercase sm:px-6" style={{ color: "var(--ink-soft)" }}>
               周邊探索
             </div>
-            <div className="flex gap-3 px-6 overflow-x-auto no-scrollbar">
+            <div className="flex gap-3 overflow-x-auto px-5 no-scrollbar sm:px-6">
               {nearby.map(({ business: nb, distanceMeters }) => {
                 const nbPhoto = photos[nb.placeId];
                 return (

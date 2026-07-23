@@ -35,22 +35,22 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
       role="dialog"
       aria-modal="true"
       aria-label={slide.title}
-      className="fixed inset-0 z-50 flex items-center justify-center p-5 fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 fade-in sm:p-5"
       style={{ background: "rgba(15,13,10,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md max-h-[82vh] overflow-y-auto rounded-[24px] card-shadow"
+        className="w-full max-w-md max-h-[88svh] overflow-y-auto rounded-[22px] card-shadow sm:max-w-lg sm:rounded-[24px] lg:max-w-2xl"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative h-40 sm:h-44 shrink-0">
+        <div className="relative h-40 shrink-0 sm:h-52 lg:h-60">
           {slide.photoSrc ? (
             <Image
               src={slide.photoSrc}
               alt={slide.title}
               fill
-              sizes="(max-width: 448px) 100vw, 420px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 544px, 672px"
               className="object-cover"
               style={{ filter: "saturate(0.85) contrast(0.97)" }}
             />
@@ -87,7 +87,7 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
           <span className="absolute left-4 bottom-3 font-serif font-semibold text-[15px] text-white">{slide.date}</span>
         </div>
 
-        <div className="p-6">
+        <div className="p-5 sm:p-6 lg:p-7">
           <div
             className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-4"
             style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
