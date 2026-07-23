@@ -51,11 +51,13 @@ async function writeJson(filePath: string, data: unknown) {
 }
 
 export async function readSlots(): Promise<ReservationSlot[]> {
-  return readJson(SLOTS_PATH, []);
+  const slots = await readJson<unknown>(SLOTS_PATH, []);
+  return Array.isArray(slots) ? (slots as ReservationSlot[]) : [];
 }
 
 export async function readBookings(): Promise<Booking[]> {
-  return readJson(BOOKINGS_PATH, []);
+  const bookings = await readJson<unknown>(BOOKINGS_PATH, []);
+  return Array.isArray(bookings) ? (bookings as Booking[]) : [];
 }
 
 function booked(slotId: string, bookings: Booking[]): number {

@@ -52,7 +52,8 @@ async function writeJson(filePath: string, data: unknown) {
 }
 
 export async function readSlides(): Promise<CarouselSlide[]> {
-  const slides = await readJson<CarouselSlide[]>(SLIDES_PATH, []);
+  const data = await readJson<unknown>(SLIDES_PATH, []);
+  const slides = Array.isArray(data) ? (data as CarouselSlide[]) : [];
   return [...slides].sort((a, b) => a.order - b.order);
 }
 

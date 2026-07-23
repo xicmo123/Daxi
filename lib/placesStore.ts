@@ -58,7 +58,8 @@ export async function readDetails(): Promise<Record<string, PlaceDetail>> {
 }
 
 export async function readCustomPlaces(): Promise<CustomPlaceRecord[]> {
-  return readJson(CUSTOM_PATH, []);
+  const custom = await readJson<unknown>(CUSTOM_PATH, []);
+  return Array.isArray(custom) ? (custom as CustomPlaceRecord[]) : [];
 }
 
 // Google-sourced places can't be deleted from lib/businesses.ts (it's
@@ -66,7 +67,8 @@ export async function readCustomPlaces(): Promise<CustomPlaceRecord[]> {
 // of those is an exclusion list applied at read time here — it keeps the
 // place gone even after the next refresh re-fetches it from Google.
 export async function readDeletedIds(): Promise<string[]> {
-  return readJson(DELETED_PATH, []);
+  const deletedIds = await readJson<unknown>(DELETED_PATH, []);
+  return Array.isArray(deletedIds) ? deletedIds.filter((id): id is string => typeof id === "string") : [];
 }
 
 function customToBusiness(c: CustomPlaceRecord): Business {
