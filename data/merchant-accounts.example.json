@@ -1,0 +1,4 @@
+{
+  "_comment": "Copy to merchant-accounts.json (gitignored) and fill in real placeIds/passcodes. Never commit real passcodes.",
+  "REPLACE_WITH_GOOGLE_PLACE_ID": { "passcode": "REPLACE_WITH_PASSCODE", "businessName": "店家名稱" }
+}

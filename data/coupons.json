@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cp-doufu-01",
+    "placeId": "ChIJuwRV3SEYaDQRiEQnq6NCVw4",
+    "title": "現滷豆干買5送1",
+    "desc": "任選現滷豆干系列 5 包送 1 包，每人每日限用一次",
+    "redeemMethod": "scan",
+    "validUntil": "2026-08-31",
+    "active": true,
+    "updatedAt": "2026-07-20T02:00:00.000Z"
+  },
+  {
+    "id": "cp-tina-01",
+    "placeId": "ChIJe219kIYXaDQRSxfVBOBkgaQ",
+    "title": "平日午間套餐 88 折",
+    "desc": "週一至週五 11:00-14:00 用餐，套餐類品項現折 88 折",
+    "redeemMethod": "scan",
+    "validUntil": "2026-09-30",
+    "active": true,
+    "updatedAt": "2026-07-18T05:30:00.000Z"
+  },
+  {
+    "id": "cp-douhua-01",
+    "placeId": "ChIJ41uO6hIYaDQR8dtlUzyilAQ",
+    "title": "豆花加料免費一次",
+    "desc": "出示核銷碼，任一豆花品項加料一份免費（湯圓/紅豆/花生擇一）",
+    "redeemMethod": "scan",
+    "validUntil": "2026-08-15",
+    "active": true,
+    "updatedAt": "2026-07-15T09:00:00.000Z"
+  }
+]

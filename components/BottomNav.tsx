@@ -67,6 +67,16 @@ const tabs = [
       </svg>
     ),
   },
+  {
+    href: "/coupons",
+    label: "優惠券",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4.5 9.8a2.2 2.2 0 0 0 0-3.6V5.5a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v.7a2.2 2.2 0 0 0 0 3.6v3.4a2.2 2.2 0 0 0 0 3.6v.7a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-.7a2.2 2.2 0 0 0 0-3.6Z" />
+        <path d="M9.5 5v14" strokeDasharray="1.6 1.8" />
+      </svg>
+    ),
+  },
 ];
 
 export default function BottomNav() {

@@ -1,11 +1,17 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
+import HomeExperience, { type FeedSpot } from "@/components/HomeExperience";
+import type { CouponWithBusiness } from "@/components/CouponList";
 import { isSlideInCarousel, readSlides } from "@/lib/carousel";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
-import { parkingSummary } from "@/lib/experience";
+import { parkingSummary, walkTimeLabel } from "@/lib/experience";
+import { fetchDaxiAnnouncements } from "@/lib/announcements";
+import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStore";
+import { categoryLabel } from "@/lib/placeDetails";
+import { listActiveCoupons } from "@/lib/coupons";
 
 // Carousel content is now admin-editable — force-dynamic so edits show up
 // immediately instead of waiting out a 60s ISR window (same as /businesses, /spots).
@@ -137,6 +143,50 @@ function TodayStatusSkeleton() {
   );
 }
 
+async function HomeFeed() {
+  const [rawPlaces, details, activeCoupons] = await Promise.all([getAllPlaces(), readDetails(), listActiveCoupons()]);
+  const places = filterVisiblePlaces(rawPlaces, details);
+  const byId = new Map(places.map((p) => [p.placeId, p]));
+
+  const spotPlaces = places.filter((p) => p.tag === "景點");
+  const spots: FeedSpot[] = spotPlaces.map((p) => ({
+    placeId: p.placeId,
+    name: p.name,
+    category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
+    walkTime: walkTimeLabel(p.distanceMeters),
+    distanceMeters: p.distanceMeters,
+    featured: Boolean(details[p.placeId]?.featured),
+  }));
+
+  const coupons: CouponWithBusiness[] = activeCoupons
+    .map((c): CouponWithBusiness | null => {
+      const place = byId.get(c.placeId);
+      if (!place) return null;
+      return { ...c, businessName: place.name, distanceLabel: place.distanceLabel };
+    })
+    .filter((c): c is CouponWithBusiness => c !== null);
+
+  let hasRecentAnnouncement = false;
+  try {
+    const [latest] = await fetchDaxiAnnouncements(1);
+    hasRecentAnnouncement = Boolean(latest && new Date().getTime() - latest.publishedAt < 7 * 24 * 60 * 60 * 1000);
+  } catch {
+    hasRecentAnnouncement = false;
+  }
+
+  return <HomeExperience townName="大溪 Daxi" hasRecentAnnouncement={hasRecentAnnouncement} spots={spots} coupons={coupons} />;
+}
+
+function HomeFeedSkeleton() {
+  return (
+    <div className="safe-page-x pt-6">
+      <div className="h-9 w-40 rounded-full skeleton mb-4" style={{ background: "var(--line)" }} />
+      <div className="h-11 rounded-full skeleton mb-3" style={{ background: "var(--line)" }} />
+      <div className="h-16 rounded-2xl skeleton" style={{ background: "var(--line)" }} />
+    </div>
+  );
+}
+
 export default async function Home() {
   const timing = getFestivalTiming();
   const isFestivalMode = timing.phase === "during";
@@ -179,10 +229,16 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Date + weather, plain text — no card, no hero image */}
+      {/* Greeting + town name + notification bell, mode switch, search,
+          map card, spot/coupon feed — reorders itself client-side by
+          explore/local mode. Data is fetched here on the server. */}
+      <Suspense fallback={<HomeFeedSkeleton />}>
+        <HomeFeed />
+      </Suspense>
+
       <div className="flex items-center justify-between safe-page-x pt-6 pb-1 fade-in">
-        <span className="text-[13px]" style={{ color: "var(--ink-soft)" }}>
-          {todayLabel}
+        <span className="text-[11px] font-semibold tracking-[0.18em] uppercase" style={{ color: "var(--daxi-red)" }}>
+          Daxi Today · {todayLabel}
         </span>
         <Link
           href="/weather"
@@ -195,11 +251,8 @@ export default async function Home() {
         </Link>
       </div>
 
-      <div className="safe-page-x pt-2 fade-in">
-        <div className="text-[11px] font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--daxi-red)" }}>
-          Daxi Today
-        </div>
-        <h1 className="font-serif text-[25px] font-bold leading-tight sm:text-[30px] lg:text-[36px]" style={{ color: "var(--ink)" }}>
+      <div className="safe-page-x pt-1 fade-in">
+        <h1 className="font-serif text-[22px] font-bold leading-tight sm:text-[26px] lg:text-[32px]" style={{ color: "var(--ink)" }}>
           臺灣十大觀光小城 - 大溪
         </h1>
       </div>
@@ -208,7 +261,7 @@ export default async function Home() {
         <TodayStatusCards nextTitle={nextMilestone?.title ?? "大溪大禧活動"} />
       </Suspense>
 
-      {/* Hero carousel: swipeable highlights from the festival timeline — now the first real content on the page */}
+      {/* Hero carousel: swipeable highlights from the festival timeline */}
       {heroSlides.length > 0 ? (
         <div id="event-carousel" className="pt-5 fade-in scroll-mt-6">
           <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} />

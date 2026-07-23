@@ -31,6 +31,9 @@ export type PlaceDetail = {
   recommendedParkingName?: string;
   // Manual editorial pick for public "featured recommendation" sections.
   featured?: boolean;
+  // Free-text business hours, self-maintained by the merchant login at
+  // /merchant rather than always going through admin.
+  hours?: string;
   // Soft-hide: keeps the underlying place (lat/lng, Google Maps nav link)
   // intact for cross-links and the weekly refresh script, just excludes it
   // from the public-facing lists when Google's data for it is inaccurate.
