@@ -1,9 +1,12 @@
-// Stateless admin session: the cookie holds an HMAC of a fixed message,
-// keyed by ADMIN_SESSION_SECRET. No server-side session storage needed —
-// anyone who can reproduce the HMAC must know the secret. Works in both the
-// Node and Edge runtimes since it only uses Web Crypto.
+// Stateless admin session: the cookie holds an HMAC of a fixed message.
+// Prefer ADMIN_SESSION_SECRET; fall back to ADMIN_PASSWORD so production does
+// not crash if the optional session secret was not configured separately.
 export const ADMIN_SESSION_COOKIE = "daxi_admin_session";
 const SESSION_MESSAGE = "daxi-admin-authenticated";
+
+function sessionSecret(): string | undefined {
+  return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD;
+}
 
 function toHex(buf: ArrayBuffer): string {
   return Array.from(new Uint8Array(buf))
@@ -12,8 +15,8 @@ function toHex(buf: ArrayBuffer): string {
 }
 
 export async function expectedSessionToken(): Promise<string> {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret) throw new Error("ADMIN_SESSION_SECRET is not set");
+  const secret = sessionSecret();
+  if (!secret) throw new Error("Admin auth secret is not set");
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, [
     "sign",
@@ -24,8 +27,12 @@ export async function expectedSessionToken(): Promise<string> {
 
 export async function isValidSessionToken(token: string | undefined): Promise<boolean> {
   if (!token) return false;
-  const expected = await expectedSessionToken();
-  return token === expected;
+  try {
+    const expected = await expectedSessionToken();
+    return token === expected;
+  } catch {
+    return false;
+  }
 }
 
 export function checkPassword(password: string): boolean {
