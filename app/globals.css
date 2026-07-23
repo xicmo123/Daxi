@@ -21,18 +21,18 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 2px 8px rgba(43, 36, 32, 0.06), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --shadow-card: 0 3px 10px rgba(255, 107, 74, 0.08), 0 16px 34px rgba(43, 36, 32, 0.1);
   --accent: #ff6b4a;
   --accent-fg: #ffffff;
   --status-ok: #6a9c5c;
   --status-warn: #d98a3d;
   --festival-gold: #e2a04f;
   --daxi-red: #ff6b4a;
-  --daxi-red-soft: rgba(255, 107, 74, 0.12);
+  --daxi-red-soft: rgba(255, 107, 74, 0.16);
   --wood-gold: #cf9a45;
   --river-teal: #3f9184;
   --river-teal-soft: rgba(63, 145, 132, 0.14);
-  --wallpaper-fade-opacity: 0.9;
+  --wallpaper-fade-opacity: 0.96;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -63,7 +63,7 @@
     --wood-gold: #e0b268;
     --river-teal: #5cb3a2;
     --river-teal-soft: rgba(92, 179, 162, 0.16);
-    --wallpaper-fade-opacity: 0.91;
+    --wallpaper-fade-opacity: 0.94;
   }
 }
 
@@ -94,7 +94,7 @@
   --wood-gold: #e0b268;
   --river-teal: #5cb3a2;
   --river-teal-soft: rgba(92, 179, 162, 0.16);
-  --wallpaper-fade-opacity: 0.91;
+  --wallpaper-fade-opacity: 0.94;
 }
 
 :root[data-theme="light"] {
@@ -114,17 +114,17 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 2px 8px rgba(43, 36, 32, 0.06), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --shadow-card: 0 3px 10px rgba(255, 107, 74, 0.08), 0 16px 34px rgba(43, 36, 32, 0.1);
   --accent: #ff6b4a;
   --accent-fg: #ffffff;
   --status-ok: #6a9c5c;
   --status-warn: #d98a3d;
   --daxi-red: #ff6b4a;
-  --daxi-red-soft: rgba(255, 107, 74, 0.12);
+  --daxi-red-soft: rgba(255, 107, 74, 0.16);
   --wood-gold: #cf9a45;
   --river-teal: #3f9184;
   --river-teal-soft: rgba(63, 145, 132, 0.14);
-  --wallpaper-fade-opacity: 0.9;
+  --wallpaper-fade-opacity: 0.96;
 }
 
 @theme inline {
@@ -148,7 +148,11 @@
   --color-accent-fg: var(--accent-fg);
   --color-river-teal: var(--river-teal);
   --color-river-teal-soft: var(--river-teal-soft);
-  --font-serif: var(--font-noto-serif-tc), "Songti TC", "PMingLiU", Georgia, serif;
+  /* chicTrip reference is a rounded, friendly sans everywhere — no book
+     serif. font-serif is repointed to the same sans stack rather than
+     removed, since ~15 files still use the font-serif utility class; this
+     way every one of them flips without touching each file. */
+  --font-serif: var(--font-app-sans);
   --font-sans: var(--font-app-sans);
 }
 
@@ -163,8 +167,8 @@ body {
 }
 
 body {
-  font-family: var(--font-serif);
-  line-height: 1.75;
+  font-family: var(--font-sans);
+  line-height: 1.65;
   overflow-x: hidden;
 }
 

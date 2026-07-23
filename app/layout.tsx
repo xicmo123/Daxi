@@ -1,13 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif_TC } from "next/font/google";
 import "./globals.css";
-
-const notoSerifTC = Noto_Serif_TC({
-  variable: "--font-noto-serif-tc",
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "大溪通 — Daxi Journal",
@@ -30,7 +22,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#1e293b",
+  themeColor: "#ff6b4a",
 };
 
 export default function RootLayout({
@@ -39,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-Hant" className={`${notoSerifTC.variable} h-full antialiased`}>
+    <html lang="zh-Hant" className="h-full antialiased">
       <body
         className="min-h-full flex flex-col bg-paper-2 text-ink"
         style={{
