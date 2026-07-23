@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trackClick } from "@/lib/trackClient";
 import type { CouponWithBusiness } from "./CouponList";
 import CouponRedeemModal from "./CouponRedeemModal";
+import PlaceholderIcon from "./PlaceholderIcon";
 
 export type FeedSpot = {
   placeId: string;
@@ -14,6 +16,7 @@ export type FeedSpot = {
   walkTime: string;
   distanceMeters: number;
   featured: boolean;
+  photoSrc?: string;
 };
 
 export type HomeMode = "explore" | "local";
@@ -192,17 +195,38 @@ export default function HomeExperience({
                 key={s.placeId}
                 href="/spots"
                 onClick={() => trackClick("spot", s.placeId, s.name, mode)}
-                className="shrink-0 w-32 rounded-xl px-3 py-3 card-shadow transition-opacity active:opacity-70"
+                className="group relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden card-shadow transition-transform active:scale-[0.98]"
                 style={{ background: "var(--card)" }}
               >
-                <div className="text-[12.5px] font-semibold truncate mb-1" style={{ color: "var(--ink)" }}>
-                  {s.name}
-                </div>
-                <div className="text-[11px] truncate" style={{ color: "var(--ink-soft)" }}>
-                  {s.category}
-                </div>
-                <div className="text-[10.5px] mt-1.5" style={{ color: "var(--daxi-red)" }}>
-                  步行 {s.walkTime}
+                {s.photoSrc ? (
+                  <Image
+                    src={s.photoSrc}
+                    alt={s.name}
+                    fill
+                    sizes="144px"
+                    className="object-cover transition-transform duration-500 group-active:scale-[1.03]"
+                    style={{ filter: "saturate(0.9) contrast(0.98)" }}
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)" }}
+                  >
+                    <PlaceholderIcon kind="景點" />
+                  </div>
+                )}
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, rgba(15,23,42,0.02) 0%, rgba(15,23,42,0.15) 45%, rgba(15,23,42,0.88) 100%)" }}
+                />
+                <div className="absolute inset-x-0 bottom-0 p-2.5">
+                  <div className="text-[12.5px] font-semibold leading-tight text-white truncate">{s.name}</div>
+                  <div className="text-[10.5px] mt-1 truncate" style={{ color: "rgba(255,255,255,0.78)" }}>
+                    {s.category}
+                  </div>
+                  <div className="text-[10px] mt-1 font-medium" style={{ color: "rgba(255,255,255,0.92)" }}>
+                    步行 {s.walkTime}
+                  </div>
                 </div>
               </Link>
             ))}
@@ -233,6 +257,16 @@ export default function HomeExperience({
                 className="flex items-center gap-3 rounded-xl px-3.5 py-3 card-shadow text-left transition-opacity active:opacity-70"
                 style={{ background: "var(--card)" }}
               >
+                <span
+                  className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
+                  aria-hidden
+                >
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3.5 9.8a2.2 2.2 0 0 0 0-3.6V5.5a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v.7a2.2 2.2 0 0 0 0 3.6v3.4a2.2 2.2 0 0 0 0 3.6v.7a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-.7a2.2 2.2 0 0 0 0-3.6Z" />
+                    <path d="M9.5 5v14" strokeDasharray="1.6 1.8" />
+                  </svg>
+                </span>
                 <div className="flex-1 min-w-0">
                   <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--ink)" }}>
                     {c.title}

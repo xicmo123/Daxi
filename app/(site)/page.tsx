@@ -9,7 +9,7 @@ import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { fetchDaxiWeather } from "@/lib/cwa";
 import { parkingSummary, walkTimeLabel } from "@/lib/experience";
 import { fetchDaxiAnnouncements } from "@/lib/announcements";
-import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStore";
+import { getAllPlaces, filterVisiblePlaces, readDetails, readPhotos } from "@/lib/placesStore";
 import { categoryLabel } from "@/lib/placeDetails";
 import { listActiveCoupons } from "@/lib/coupons";
 
@@ -144,7 +144,12 @@ function TodayStatusSkeleton() {
 }
 
 async function HomeFeed() {
-  const [rawPlaces, details, activeCoupons] = await Promise.all([getAllPlaces(), readDetails(), listActiveCoupons()]);
+  const [rawPlaces, details, activeCoupons, photos] = await Promise.all([
+    getAllPlaces(),
+    readDetails(),
+    listActiveCoupons(),
+    readPhotos(),
+  ]);
   const places = filterVisiblePlaces(rawPlaces, details);
   const byId = new Map(places.map((p) => [p.placeId, p]));
 
@@ -156,6 +161,7 @@ async function HomeFeed() {
     walkTime: walkTimeLabel(p.distanceMeters),
     distanceMeters: p.distanceMeters,
     featured: Boolean(details[p.placeId]?.featured),
+    photoSrc: photos[p.placeId]?.src,
   }));
 
   const coupons: CouponWithBusiness[] = activeCoupons
