@@ -20,11 +20,11 @@ function InquiryCta({ reservation }: { reservation: ReservationDetail }) {
         <div className="text-[13.5px] font-semibold">
           {reservation.contactType === "phone" ? "電話預約詢問" : "線上預約詢問"}
         </div>
-        <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+        <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.88)" }}>
           非即時保留座位，請等店家回覆確認
         </div>
         {reservation.note ? (
-          <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+          <div className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.88)" }}>
             {reservation.note}
           </div>
         ) : null}

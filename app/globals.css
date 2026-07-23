@@ -1,129 +1,129 @@
 @import "tailwindcss";
 
-/* Quiet literary palette — muted navy/ink instead of the saturated
-   red/gold/teal tourism-brochure set. Token names kept as-is (daxi-red,
-   wood-gold, river-teal, festival-gold) since components already
-   reference them; only the values change, so nothing else needs editing. */
+/* chicTrip-inspired palette — warm coral-orange accent on a cream base,
+   swapped in for the previous muted navy "quiet literary" set. Token names
+   kept as-is (daxi-red, wood-gold, river-teal, festival-gold, accent)
+   since components already reference them; only the values change. */
 :root {
-  --paper: #faf9f6;
-  --paper-2: #f0efe9;
-  --ink: #1e293b;
-  --ink-soft: #64748b;
-  --line: rgba(30, 41, 59, 0.12);
+  --paper: #fdf8f2;
+  --paper-2: #f7ebdc;
+  --ink: #2b2420;
+  --ink-soft: #8a7360;
+  --line: rgba(43, 36, 32, 0.12);
   --card: #ffffff;
-  --cognac: #64748b;
-  --cognac-deep: #475569;
-  --cognac-tint: rgba(30, 41, 59, 0.06);
-  --bordeaux: #1e293b;
-  --bordeaux-deep: #0f172a;
-  --bordeaux-tint: rgba(30, 41, 59, 0.05);
-  --cognac-surface: #334155;
-  --cognac-surface-deep: #1e293b;
-  --bordeaux-surface: #1e293b;
-  --bordeaux-surface-deep: #0f172a;
-  --shadow-card: 0 2px 8px rgba(30, 41, 59, 0.05), 0 16px 34px rgba(30, 41, 59, 0.08);
-  --accent: #1e293b;
+  --cognac: #8a7360;
+  --cognac-deep: #5c4736;
+  --cognac-tint: rgba(43, 36, 32, 0.06);
+  --bordeaux: #2b2420;
+  --bordeaux-deep: #150f0c;
+  --bordeaux-tint: rgba(43, 36, 32, 0.05);
+  --cognac-surface: #6b5340;
+  --cognac-surface-deep: #3d2e22;
+  --bordeaux-surface: #2b2420;
+  --bordeaux-surface-deep: #150f0c;
+  --shadow-card: 0 2px 8px rgba(43, 36, 32, 0.06), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --accent: #ff6b4a;
   --accent-fg: #ffffff;
-  --status-ok: #5f8f74;
-  --status-warn: #b58245;
-  --festival-gold: #9c8460;
-  --daxi-red: #1e293b;
-  --daxi-red-soft: rgba(30, 41, 59, 0.08);
-  --wood-gold: #9c8460;
-  --river-teal: #4f7d72;
-  --river-teal-soft: rgba(79, 125, 114, 0.12);
+  --status-ok: #6a9c5c;
+  --status-warn: #d98a3d;
+  --festival-gold: #e2a04f;
+  --daxi-red: #ff6b4a;
+  --daxi-red-soft: rgba(255, 107, 74, 0.12);
+  --wood-gold: #cf9a45;
+  --river-teal: #3f9184;
+  --river-teal-soft: rgba(63, 145, 132, 0.14);
   --wallpaper-fade-opacity: 0.9;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #12141a;
-    --paper-2: #171a21;
-    --ink: #eef1f5;
-    --ink-soft: #94a3b8;
-    --line: rgba(238, 241, 245, 0.12);
-    --card: #1a1d24;
-    --cognac: #94a3b8;
-    --cognac-deep: #cbd5e1;
-    --cognac-tint: rgba(148, 163, 184, 0.14);
-    --bordeaux: #eef1f5;
+    --paper: #1c1512;
+    --paper-2: #241b15;
+    --ink: #f6ece0;
+    --ink-soft: #c2ac97;
+    --line: rgba(246, 236, 224, 0.12);
+    --card: #2a1f18;
+    --cognac: #c2ac97;
+    --cognac-deep: #e6d3bd;
+    --cognac-tint: rgba(194, 172, 151, 0.14);
+    --bordeaux: #f6ece0;
     --bordeaux-deep: #ffffff;
-    --bordeaux-tint: rgba(238, 241, 245, 0.08);
-    --cognac-surface: #334155;
-    --cognac-surface-deep: #1e293b;
-    --bordeaux-surface: #2c3a52;
-    --bordeaux-surface-deep: #17202e;
+    --bordeaux-tint: rgba(246, 236, 224, 0.08);
+    --cognac-surface: #4a392b;
+    --cognac-surface-deep: #2a1f18;
+    --bordeaux-surface: #3a2c21;
+    --bordeaux-surface-deep: #201811;
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
-    --accent: #cbd5e1;
-    --accent-fg: #12141a;
-    --status-ok: #7fada0;
-    --status-warn: #cf9f68;
-    --daxi-red: #cbd5e1;
-    --daxi-red-soft: rgba(203, 213, 225, 0.14);
-    --wood-gold: #c9ad7a;
-    --river-teal: #7fb3a4;
-    --river-teal-soft: rgba(127, 179, 164, 0.15);
+    --accent: #ff8a65;
+    --accent-fg: #1c1512;
+    --status-ok: #8fc17f;
+    --status-warn: #e2a45f;
+    --daxi-red: #ff8a65;
+    --daxi-red-soft: rgba(255, 138, 101, 0.16);
+    --wood-gold: #e0b268;
+    --river-teal: #5cb3a2;
+    --river-teal-soft: rgba(92, 179, 162, 0.16);
     --wallpaper-fade-opacity: 0.91;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper: #12141a;
-  --paper-2: #171a21;
-  --ink: #eef1f5;
-  --ink-soft: #94a3b8;
-  --line: rgba(238, 241, 245, 0.12);
-  --card: #1a1d24;
-  --cognac: #94a3b8;
-  --cognac-deep: #cbd5e1;
-  --cognac-tint: rgba(148, 163, 184, 0.14);
-  --bordeaux: #eef1f5;
+  --paper: #1c1512;
+  --paper-2: #241b15;
+  --ink: #f6ece0;
+  --ink-soft: #c2ac97;
+  --line: rgba(246, 236, 224, 0.12);
+  --card: #2a1f18;
+  --cognac: #c2ac97;
+  --cognac-deep: #e6d3bd;
+  --cognac-tint: rgba(194, 172, 151, 0.14);
+  --bordeaux: #f6ece0;
   --bordeaux-deep: #ffffff;
-  --bordeaux-tint: rgba(238, 241, 245, 0.08);
-  --cognac-surface: #334155;
-  --cognac-surface-deep: #1e293b;
-  --bordeaux-surface: #2c3a52;
-  --bordeaux-surface-deep: #17202e;
+  --bordeaux-tint: rgba(246, 236, 224, 0.08);
+  --cognac-surface: #4a392b;
+  --cognac-surface-deep: #2a1f18;
+  --bordeaux-surface: #3a2c21;
+  --bordeaux-surface-deep: #201811;
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
-  --accent: #cbd5e1;
-  --accent-fg: #12141a;
-  --status-ok: #7fada0;
-  --status-warn: #cf9f68;
-  --daxi-red: #cbd5e1;
-  --daxi-red-soft: rgba(203, 213, 225, 0.14);
-  --wood-gold: #c9ad7a;
-  --river-teal: #7fb3a4;
-  --river-teal-soft: rgba(127, 179, 164, 0.15);
+  --accent: #ff8a65;
+  --accent-fg: #1c1512;
+  --status-ok: #8fc17f;
+  --status-warn: #e2a45f;
+  --daxi-red: #ff8a65;
+  --daxi-red-soft: rgba(255, 138, 101, 0.16);
+  --wood-gold: #e0b268;
+  --river-teal: #5cb3a2;
+  --river-teal-soft: rgba(92, 179, 162, 0.16);
   --wallpaper-fade-opacity: 0.91;
 }
 
 :root[data-theme="light"] {
-  --paper: #faf9f6;
-  --paper-2: #f0efe9;
-  --ink: #1e293b;
-  --ink-soft: #64748b;
-  --line: rgba(30, 41, 59, 0.12);
+  --paper: #fdf8f2;
+  --paper-2: #f7ebdc;
+  --ink: #2b2420;
+  --ink-soft: #8a7360;
+  --line: rgba(43, 36, 32, 0.12);
   --card: #ffffff;
-  --cognac: #64748b;
-  --cognac-deep: #475569;
-  --cognac-tint: rgba(30, 41, 59, 0.06);
-  --bordeaux: #1e293b;
-  --bordeaux-deep: #0f172a;
-  --bordeaux-tint: rgba(30, 41, 59, 0.05);
-  --cognac-surface: #334155;
-  --cognac-surface-deep: #1e293b;
-  --bordeaux-surface: #1e293b;
-  --bordeaux-surface-deep: #0f172a;
-  --shadow-card: 0 2px 8px rgba(30, 41, 59, 0.05), 0 16px 34px rgba(30, 41, 59, 0.08);
-  --accent: #1e293b;
+  --cognac: #8a7360;
+  --cognac-deep: #5c4736;
+  --cognac-tint: rgba(43, 36, 32, 0.06);
+  --bordeaux: #2b2420;
+  --bordeaux-deep: #150f0c;
+  --bordeaux-tint: rgba(43, 36, 32, 0.05);
+  --cognac-surface: #6b5340;
+  --cognac-surface-deep: #3d2e22;
+  --bordeaux-surface: #2b2420;
+  --bordeaux-surface-deep: #150f0c;
+  --shadow-card: 0 2px 8px rgba(43, 36, 32, 0.06), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --accent: #ff6b4a;
   --accent-fg: #ffffff;
-  --status-ok: #5f8f74;
-  --status-warn: #b58245;
-  --daxi-red: #1e293b;
-  --daxi-red-soft: rgba(30, 41, 59, 0.08);
-  --wood-gold: #9c8460;
-  --river-teal: #4f7d72;
-  --river-teal-soft: rgba(79, 125, 114, 0.12);
+  --status-ok: #6a9c5c;
+  --status-warn: #d98a3d;
+  --daxi-red: #ff6b4a;
+  --daxi-red-soft: rgba(255, 107, 74, 0.12);
+  --wood-gold: #cf9a45;
+  --river-teal: #3f9184;
+  --river-teal-soft: rgba(63, 145, 132, 0.14);
   --wallpaper-fade-opacity: 0.9;
 }
 
