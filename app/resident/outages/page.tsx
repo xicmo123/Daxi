@@ -17,7 +17,7 @@ export default async function OutagesPage() {
           className="mb-4 rounded-xl px-4 py-3 text-[11.5px] leading-relaxed"
           style={{ background: "var(--river-teal-soft)", border: "1px solid var(--line)", color: "var(--ink-soft)" }}
         >
-          目前為示範資料，尚未串接台灣自來水公司／台電正式開放資料，實際停水停電請以官方公告為準。
+          即時串接台灣自來水公司停水公告與台灣電力公司計畫性工作停電資料，僅篩選影響大溪區的項目；正式時間與範圍仍以官方公告為準。
         </div>
 
         {outages.length === 0 ? (
