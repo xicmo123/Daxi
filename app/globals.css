@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
-/* Three-tone earthy palette, per spec: wood brown #7A4E2E, moss green
-   #5C7F45, river blue #4E88A8 — replacing the chicTrip coral set. Token
-   names kept as-is (daxi-red, wood-gold, river-teal, festival-gold, accent)
-   since components already reference them; only the values change. */
+/* Three-tone pastel palette, per spec: 杏橘 apricot #D7A06B, 青綠 teal
+   #6FA99B, 霧藍 mist blue #7DA8C9 — replacing the previous earthy
+   wood/moss/river set. These are light/pastel, so --block-fg switched from
+   white to dark ink (white text on them fails contrast — apricot only
+   reads ~2.3:1). --accent/--daxi-red (shared text/button color used all
+   over the app, not just the color blocks) uses a deepened apricot in
+   light mode so it stays legible as text and under white button labels;
+   dark mode flips to the literal light apricot against the dark page. */
 :root {
   --paper: #fdf8f2;
   --paper-2: #f3e9d8;
@@ -21,29 +25,31 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 3px 10px rgba(122, 78, 46, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
-  --accent: #7a4e2e;
+  --shadow-card: 0 3px 10px rgba(160, 106, 58, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --accent: #a06a3a;
   --accent-fg: #ffffff;
-  --status-ok: #5c7f45;
-  --status-warn: #b5793a;
-  --festival-gold: #5c7f45;
-  --daxi-red: #7a4e2e;
-  --daxi-red-soft: rgba(122, 78, 46, 0.16);
-  --wood-gold: #a9754a;
-  --river-teal: #4e88a8;
-  --river-teal-soft: rgba(78, 136, 168, 0.16);
+  --accent-fg-soft: rgba(255, 255, 255, 0.85);
+  --status-ok: #457d70;
+  --status-warn: #b8814c;
+  --festival-gold: #457d70;
+  --daxi-red: #a06a3a;
+  --daxi-red-soft: rgba(160, 106, 58, 0.16);
+  --wood-gold: #d7a06b;
+  --river-teal: #4a7594;
+  --river-teal-soft: rgba(74, 117, 148, 0.16);
   --wallpaper-fade-opacity: 0.96;
 
   /* Solid "color block" surfaces — banners/cards use these directly rather
-     than a tinted wash. Fixed (not redefined in the dark overrides below)
-     except where a lighter variant is needed for contrast on a dark page. */
-  --block-wood: #7a4e2e;
-  --block-wood-deep: #5c3a21;
-  --block-moss: #5c7f45;
-  --block-moss-deep: #476234;
-  --block-river: #4e88a8;
-  --block-river-deep: #396a86;
-  --block-fg: #ffffff;
+     than a tinted wash. The three literal spec colors plus a darker -deep
+     stop for gradients; fixed (not redefined per theme) since they're
+     pastel enough to read fine on both light and dark pages. */
+  --block-wood: #d7a06b;
+  --block-wood-deep: #b8814c;
+  --block-moss: #6fa99b;
+  --block-moss-deep: #4f8478;
+  --block-river: #7da8c9;
+  --block-river-deep: #5c86a8;
+  --block-fg: #2b2420;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -65,22 +71,17 @@
     --bordeaux-surface: #3a2c21;
     --bordeaux-surface-deep: #201811;
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
-    --accent: #b5854f;
+    --accent: #d7a06b;
     --accent-fg: #1a1611;
-    --status-ok: #85a56c;
-    --status-warn: #cf9c5c;
-    --daxi-red: #b5854f;
-    --daxi-red-soft: rgba(181, 133, 79, 0.2);
-    --wood-gold: #cba572;
-    --river-teal: #74b0cf;
-    --river-teal-soft: rgba(116, 176, 207, 0.2);
+    --accent-fg-soft: rgba(43, 36, 32, 0.72);
+    --status-ok: #6fa99b;
+    --status-warn: #d7a06b;
+    --daxi-red: #d7a06b;
+    --daxi-red-soft: rgba(215, 160, 107, 0.22);
+    --wood-gold: #e6bd90;
+    --river-teal: #7da8c9;
+    --river-teal-soft: rgba(125, 168, 201, 0.2);
     --wallpaper-fade-opacity: 0.94;
-    --block-wood: #a06f43;
-    --block-wood-deep: #7a4e2e;
-    --block-moss: #78a05d;
-    --block-moss-deep: #5c7f45;
-    --block-river: #6fabc9;
-    --block-river-deep: #4e88a8;
   }
 }
 
@@ -102,22 +103,17 @@
   --bordeaux-surface: #3a2c21;
   --bordeaux-surface-deep: #201811;
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 36px rgba(0, 0, 0, 0.38);
-  --accent: #b5854f;
+  --accent: #d7a06b;
   --accent-fg: #1a1611;
-  --status-ok: #85a56c;
-  --status-warn: #cf9c5c;
-  --daxi-red: #b5854f;
-  --daxi-red-soft: rgba(181, 133, 79, 0.2);
-  --wood-gold: #cba572;
-  --river-teal: #74b0cf;
-  --river-teal-soft: rgba(116, 176, 207, 0.2);
+  --accent-fg-soft: rgba(43, 36, 32, 0.72);
+  --status-ok: #6fa99b;
+  --status-warn: #d7a06b;
+  --daxi-red: #d7a06b;
+  --daxi-red-soft: rgba(215, 160, 107, 0.22);
+  --wood-gold: #e6bd90;
+  --river-teal: #7da8c9;
+  --river-teal-soft: rgba(125, 168, 201, 0.2);
   --wallpaper-fade-opacity: 0.94;
-  --block-wood: #a06f43;
-  --block-wood-deep: #7a4e2e;
-  --block-moss: #78a05d;
-  --block-moss-deep: #5c7f45;
-  --block-river: #6fabc9;
-  --block-river-deep: #4e88a8;
 }
 
 :root[data-theme="light"] {
@@ -137,24 +133,25 @@
   --cognac-surface-deep: #3d2e22;
   --bordeaux-surface: #2b2420;
   --bordeaux-surface-deep: #150f0c;
-  --shadow-card: 0 3px 10px rgba(122, 78, 46, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
-  --accent: #7a4e2e;
+  --shadow-card: 0 3px 10px rgba(160, 106, 58, 0.1), 0 16px 34px rgba(43, 36, 32, 0.1);
+  --accent: #a06a3a;
   --accent-fg: #ffffff;
-  --status-ok: #5c7f45;
-  --status-warn: #b5793a;
-  --daxi-red: #7a4e2e;
-  --daxi-red-soft: rgba(122, 78, 46, 0.16);
-  --wood-gold: #a9754a;
-  --river-teal: #4e88a8;
-  --river-teal-soft: rgba(78, 136, 168, 0.16);
+  --accent-fg-soft: rgba(255, 255, 255, 0.85);
+  --status-ok: #457d70;
+  --status-warn: #b8814c;
+  --daxi-red: #a06a3a;
+  --daxi-red-soft: rgba(160, 106, 58, 0.16);
+  --wood-gold: #d7a06b;
+  --river-teal: #4a7594;
+  --river-teal-soft: rgba(74, 117, 148, 0.16);
   --wallpaper-fade-opacity: 0.96;
-  --block-wood: #7a4e2e;
-  --block-wood-deep: #5c3a21;
-  --block-moss: #5c7f45;
-  --block-moss-deep: #476234;
-  --block-river: #4e88a8;
-  --block-river-deep: #396a86;
-  --block-fg: #ffffff;
+  --block-wood: #d7a06b;
+  --block-wood-deep: #b8814c;
+  --block-moss: #6fa99b;
+  --block-moss-deep: #4f8478;
+  --block-river: #7da8c9;
+  --block-river-deep: #5c86a8;
+  --block-fg: #2b2420;
 }
 
 @theme inline {

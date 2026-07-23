@@ -24,7 +24,7 @@ export default function PageHeader({
   tint?: PageTint;
 }) {
   const ink = tint ? "var(--block-fg)" : "var(--ink)";
-  const soft = tint ? "rgba(255,255,255,0.78)" : "var(--ink-soft)";
+  const soft = tint ? "rgba(43,36,32,0.7)" : "var(--ink-soft)";
 
   return (
     <div
@@ -45,7 +45,7 @@ export default function PageHeader({
           {title}
         </h1>
         {subtitle ? (
-          <div className="text-[13px] mt-2 font-medium" style={{ color: tint ? "rgba(255,255,255,0.9)" : "var(--ink)" }}>
+          <div className="text-[13px] mt-2 font-medium" style={{ color: tint ? "rgba(43,36,32,0.82)" : "var(--ink)" }}>
             {subtitle}
           </div>
         ) : null}

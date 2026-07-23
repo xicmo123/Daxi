@@ -98,7 +98,7 @@ export default function HomeExperience({
         {/* 1. Greeting + town name + notification bell */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[13px]" style={{ color: "rgba(255,255,255,0.8)" }}>
+            <div className="text-[13px]" style={{ color: "rgba(43,36,32,0.7)" }}>
               {greeting}
             </div>
             <div className="text-[18px] font-bold" style={{ color: "var(--block-fg)" }}>
@@ -116,7 +116,7 @@ export default function HomeExperience({
               <path d="M10.2 19.5a1.9 1.9 0 0 0 3.6 0" />
             </svg>
             {hasRecentAnnouncement ? (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: "#fff" }} aria-hidden />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: "var(--accent)", boxShadow: "0 0 0 1.5px rgba(255,255,255,0.9)" }} aria-hidden />
             ) : null}
           </Link>
         </div>
@@ -135,7 +135,7 @@ export default function HomeExperience({
                 className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
                 style={{
                   background: mode === opt.value ? "#ffffff" : "transparent",
-                  color: mode === opt.value ? "var(--block-wood-deep)" : "rgba(255,255,255,0.9)",
+                  color: mode === opt.value ? "var(--block-wood-deep)" : "rgba(43,36,32,0.72)",
                 }}
               >
                 {opt.label}
@@ -180,7 +180,7 @@ export default function HomeExperience({
             <span className="block text-[13px] font-medium" style={{ color: "var(--block-fg)" }}>
               地圖導覽
             </span>
-            <span className="block text-[11.5px] mt-0.5" style={{ color: "rgba(255,255,255,0.8)" }}>
+            <span className="block text-[11.5px] mt-0.5" style={{ color: "rgba(43,36,32,0.7)" }}>
               景點與停車位置一覽
             </span>
           </span>
@@ -288,7 +288,7 @@ export default function HomeExperience({
                   <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--block-fg)" }}>
                     {c.title}
                   </div>
-                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.82)" }}>
+                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "rgba(43,36,32,0.7)" }}>
                     {c.businessName}
                   </div>
                 </div>

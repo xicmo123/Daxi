@@ -127,7 +127,7 @@ async function TodayStatusCards({ nextTitle }: { nextTitle: string }) {
           className="min-h-[70px] rounded-xl px-3 py-3 transition-opacity active:opacity-70 sm:min-h-[76px] lg:px-4"
           style={{ background: blockGradient[item.block] }}
         >
-          <div className="text-[10.5px] font-semibold mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>
+          <div className="text-[10.5px] font-semibold mb-1" style={{ color: "rgba(43,36,32,0.72)" }}>
             {item.label}
           </div>
           <div className="text-[12.5px] leading-snug line-clamp-2" style={{ color: "var(--block-fg)" }}>

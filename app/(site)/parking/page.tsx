@@ -79,13 +79,13 @@ export default async function ParkingPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-[11px] mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>
+                <div className="text-[11px] mb-1" style={{ color: "var(--accent-fg-soft)" }}>
                   現在建議
                 </div>
                 <div className="font-serif text-[20px] font-semibold leading-snug">
                   {summary.recommended ? summary.recommended.name : "公有停車場偏滿"}
                 </div>
-                <div className="text-[12px] mt-1" style={{ color: "rgba(255,255,255,0.88)" }}>
+                <div className="text-[12px] mt-1" style={{ color: "var(--accent-fg-soft)" }}>
                   {summary.recommended
                     ? `距老街 ${summary.recommended.distanceLabel}・步行約 ${walkTimeLabel(summary.recommended.distanceMeters)}`
                     : "先查看下方鄰近停車場，或改搭接駁/步行進入老街"}
@@ -95,7 +95,7 @@ export default async function ParkingPage() {
                 <div className="font-serif text-[26px] leading-none">
                   {summary.availableStalls}
                 </div>
-                <div className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.85)" }}>
+                <div className="text-[10.5px] mt-1" style={{ color: "var(--accent-fg-soft)" }}>
                   即時剩餘格
                 </div>
               </div>
@@ -106,7 +106,7 @@ export default async function ParkingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[13px] font-semibold transition-opacity active:opacity-80"
-                style={{ background: "#fff", color: "var(--accent)" }}
+                style={{ background: "#fff", color: "var(--block-wood-deep)" }}
               >
                 導航到建議停車場
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
