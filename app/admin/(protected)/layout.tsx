@@ -15,22 +15,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen" style={{ minHeight: "100vh", background: "#f4eee4", color: "#2f261f" }}>
       <header
-        className="sticky top-0 z-10 flex flex-col items-start justify-between gap-3 px-4 py-4 sm:flex-row sm:items-center sm:px-6"
+        className="sticky top-0 z-10 flex items-center justify-between px-6 py-4"
         style={{
           position: "sticky",
           top: 0,
           zIndex: 10,
           display: "flex",
-          flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 16,
-          padding: "16px clamp(16px, 4vw, 32px)",
+          padding: "16px 24px",
           background: "#fffaf1",
           borderBottom: "1px solid #dfd1bf",
         }}
       >
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2" style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+        <div className="flex items-center gap-5" style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <Link href="/admin" className="font-serif text-[17px] font-bold" style={{ color: "#2f261f", fontSize: 17, fontWeight: 700, textDecoration: "none" }}>
             大溪通後台
           </Link>
@@ -63,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8" style={{ width: "100%", maxWidth: 1120, boxSizing: "border-box", margin: "0 auto", padding: "clamp(24px, 4vw, 36px) clamp(16px, 4vw, 32px)" }}>
+      <main className="max-w-3xl mx-auto px-6 py-8" style={{ width: "100%", maxWidth: 768, boxSizing: "border-box", margin: "0 auto", padding: "32px 24px" }}>
         {children}
       </main>
     </div>

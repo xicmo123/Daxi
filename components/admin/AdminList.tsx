@@ -40,7 +40,7 @@ export default function AdminList({ rows, pendingBookings }: { rows: Row[]; pend
 
   return (
     <div>
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center justify-between mb-5">
         <h1 className="font-serif text-xl font-bold" style={{ color: "var(--ink)" }}>
           商家／景點管理
         </h1>
@@ -53,7 +53,7 @@ export default function AdminList({ rows, pendingBookings }: { rows: Row[]; pend
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 mb-5 md:grid-cols-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
         {[
           { label: "待確認預約", value: pendingBookings, tone: pendingBookings > 0 ? "hot" : "calm" },
           { label: "前台精選", value: featuredRows, tone: featuredRows > 0 ? "hot" : "calm" },
@@ -88,7 +88,7 @@ export default function AdminList({ rows, pendingBookings }: { rows: Row[]; pend
         />
       </div>
 
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">
+      <div className="flex gap-2 mb-5">
         {TABS.map((t) => (
           <button
             key={t.value}
@@ -114,7 +114,7 @@ export default function AdminList({ rows, pendingBookings }: { rows: Row[]; pend
           <Link
             key={place.placeId}
             href={`/admin/${place.placeId}`}
-            className="flex flex-wrap items-center gap-3 rounded-xl px-3 py-2.5 transition-opacity active:opacity-70 sm:flex-nowrap"
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-opacity active:opacity-70"
             style={{ background: "var(--paper)", border: "1px solid var(--line)" }}
           >
             <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>
@@ -134,7 +134,7 @@ export default function AdminList({ rows, pendingBookings }: { rows: Row[]; pend
             </div>
             {detail?.hidden ? (
               <span
-                className="shrink-0 rounded-full px-2 py-0.5 text-[10.5px]"
+                className="text-[10.5px] shrink-0 rounded-full px-2 py-0.5"
                 style={{ background: "var(--line)", color: "var(--ink-soft)" }}
               >
                 已隱藏
