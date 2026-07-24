@@ -1,50 +1,7 @@
 [
   {
-    "id": "slide-seed-1",
-    "order": 0,
-    "date": "7/18（六）",
-    "isoDate": "2026-07-18",
-    "phase": "past",
-    "time": "13:00–18:00",
-    "title": "開幕式暨大匯演",
-    "desc": "大溪天幕籃球場、老城區及普濟堂登場，集結在地社頭、藝陣團隊及北管傳習成果。當日康莊路、復興路、得勝路、中正路、和平路、登龍路及普濟路一帶交通管制，和平老街全段劃設為行人徒步區。",
-    "history": "大溪迎六月廿四（關聖帝君聖誕）已有百年歷史，是大溪最盛大的民俗慶典之一。開幕式集結歷年傳承的社頭陣頭與北管技藝，揭開整個慶典的序幕。",
-    "badges": [
-      "route"
-    ],
-    "photo": {
-      "src": "/images/puji-temple.jpg",
-      "author": "Taiwankengo",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File:2021_Daxi_Puji_Temple.jpg"
-    },
-    "createdAt": "2026-07-21T00:00:00.000Z",
-    "updatedAt": "2026-07-21T00:00:00.000Z"
-  },
-  {
-    "id": "slide-seed-2",
-    "order": 1,
-    "date": "7/19（日）－8/5（三）",
-    "phase": "ongoing",
-    "time": "系列活動期間",
-    "title": "北管、社頭文化、戲劇走讀、音樂展演",
-    "desc": "以「聲聲不息」為主軸，串聯百年迎六月廿四慶典的系列活動陸續登場，詳細場次時間以大溪大禧官方粉專公告為準。",
-    "theme": "以「聲聲不息」為主軸，呈現北管、社頭文化與音樂展演如何在當代持續傳唱大溪百年迎六月廿四的慶典精神。",
-    "badges": [
-      "live"
-    ],
-    "ctaLabel": "前往官方粉專看最新場次 →",
-    "ctaUrl": "https://www.facebook.com/DaxiCulFes/",
-    "photo": {
-      "src": "/images/guanyu-statue.jpg",
-      "author": "阿道",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Statues_of_Guan_Yu_in_Daxi_Puji_Temple_20250514.jpg"
-    },
-    "createdAt": "2026-07-21T00:00:00.000Z",
-    "updatedAt": "2026-07-21T00:00:00.000Z"
-  },
-  {
     "id": "slide-seed-3",
-    "order": 2,
+    "order": 0,
     "date": "8/1（六）",
     "isoDate": "2026-08-01",
     "phase": "upcoming",
@@ -62,8 +19,29 @@
     "badges": []
   },
   {
+    "id": "slide-seed-2",
+    "order": 1,
+    "date": "7/19（日）－8/5（三）",
+    "phase": "ongoing",
+    "time": "系列活動期間",
+    "title": "北管、社頭文化、戲劇走讀、音樂展演",
+    "desc": "以「聲聲不息」為主軸，串聯百年迎六月廿四慶典的系列活動陸續登場，詳細場次時間以大溪大禧官方粉專公告為準。",
+    "theme": "以「聲聲不息」為主軸，呈現北管、社頭文化與音樂展演如何在當代持續傳唱大溪百年迎六月廿四的慶典精神。",
+    "badges": [
+      "live"
+    ],
+    "ctaLabel": "前往官方粉專看最新場次 →",
+    "ctaUrl": "https://www.facebook.com/DaxiCulFes/",
+    "photo": {
+      "src": "/api/uploads/carousel/slide-seed-2.jpg"
+    },
+    "createdAt": "2026-07-21T00:00:00.000Z",
+    "updatedAt": "2026-07-22T07:01:59.649Z",
+    "showInCarousel": true
+  },
+  {
     "id": "slide-seed-4",
-    "order": 4,
+    "order": 2,
     "date": "8/6（四）",
     "isoDate": "2026-08-06",
     "phase": "upcoming",
@@ -79,6 +57,27 @@
       "author": "fppp053",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:大溪普濟堂關聖帝君聖誕慶典.jpg",
       "historical": true
+    },
+    "createdAt": "2026-07-21T00:00:00.000Z",
+    "updatedAt": "2026-07-21T00:00:00.000Z"
+  },
+  {
+    "id": "slide-seed-1",
+    "order": 4,
+    "date": "7/18（六）",
+    "isoDate": "2026-07-18",
+    "phase": "past",
+    "time": "13:00–18:00",
+    "title": "開幕式暨大匯演",
+    "desc": "大溪天幕籃球場、老城區及普濟堂登場，集結在地社頭、藝陣團隊及北管傳習成果。當日康莊路、復興路、得勝路、中正路、和平路、登龍路及普濟路一帶交通管制，和平老街全段劃設為行人徒步區。",
+    "history": "大溪迎六月廿四（關聖帝君聖誕）已有百年歷史，是大溪最盛大的民俗慶典之一。開幕式集結歷年傳承的社頭陣頭與北管技藝，揭開整個慶典的序幕。",
+    "badges": [
+      "route"
+    ],
+    "photo": {
+      "src": "/images/puji-temple.jpg",
+      "author": "Taiwankengo",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:2021_Daxi_Puji_Temple.jpg"
     },
     "createdAt": "2026-07-21T00:00:00.000Z",
     "updatedAt": "2026-07-21T00:00:00.000Z"

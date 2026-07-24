@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import AnnouncementFeed from "@/components/AnnouncementFeed";
 import { ANNOUNCEMENTS_PAGE_URL, fetchDaxiAnnouncements } from "@/lib/announcements";
 
 export const revalidate = 1800;
@@ -23,46 +24,7 @@ export default async function AnnouncementsPage() {
         </a>
 
         {announcements.length > 0 ? (
-          <div className="space-y-3">
-            {announcements.map((item) => (
-              <a
-                key={item.id}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-                className="block rounded-xl px-4 py-4 transition-transform active:scale-[0.99]"
-                style={{ background: "var(--card)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(58, 45, 33, 0.08)" }}
-              >
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <span
-                    className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold tracking-wide"
-                    style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
-                  >
-                    官方公告
-                  </span>
-                  {item.date ? (
-                    <span className="shrink-0 text-[11px] tabular-nums" style={{ color: "var(--ink-soft)" }}>
-                      {item.date}
-                    </span>
-                  ) : null}
-                </div>
-
-                <h2 className="text-[16px] font-semibold leading-snug" style={{ color: "var(--ink)" }}>
-                  {item.title}
-                </h2>
-
-                {item.summary ? (
-                  <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-                    {item.summary}
-                  </p>
-                ) : null}
-
-                <div className="mt-3 text-[12px] font-semibold" style={{ color: "var(--daxi-red)" }}>
-                  查看完整公告
-                </div>
-              </a>
-            ))}
-          </div>
+          <AnnouncementFeed items={announcements} tint="var(--daxi-red)" tintSoft="var(--daxi-red-soft)" />
         ) : (
           <div
             className="rounded-xl px-5 py-8 text-center"

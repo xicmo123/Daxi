@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import GarbageTruckMap from "@/components/GarbageTruckMap";
 
 const DAXI_OFFICE_URL = "https://www.daxi.tycg.gov.tw";
 
@@ -81,18 +82,7 @@ export default function ResidentServicesPage() {
         </SectionCard>
 
         <SectionCard id="garbage" title="垃圾清運">
-          <p className="text-[12.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-            大溪區垃圾清運與資源回收時段依各里、各路段不同，請以桃園市環保局公告的清運路線及時間為準；一般垃圾、資源回收、廚餘請分類妥當後於垃圾車到達時段交運。
-          </p>
-          <a
-            href={DAXI_OFFICE_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-semibold"
-            style={{ color: "var(--river-teal)" }}
-          >
-            查詢所在里別清運時間 ↗
-          </a>
+          <GarbageTruckMap />
         </SectionCard>
 
         <SectionCard id="links" title="常用連結">

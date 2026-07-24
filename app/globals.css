@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 /* Three-tone pastel palette, per spec: 杏橘 apricot #D7A06B, 青綠 teal
    #6FA99B, 霧藍 mist blue #7DA8C9 — replacing the previous earthy
@@ -271,6 +272,64 @@ button:focus-visible {
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+}
+
+.leaflet-container {
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.garbage-marker {
+  align-items: center;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(43, 36, 32, 0.22);
+  display: flex;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.garbage-marker span {
+  display: block;
+  height: 17px;
+  position: relative;
+  width: 18px;
+}
+
+.garbage-marker span::before,
+.garbage-marker span::after {
+  background: currentColor;
+  content: "";
+  position: absolute;
+}
+
+.garbage-marker span::before {
+  border-radius: 4px 4px 2px 2px;
+  height: 13px;
+  left: 2px;
+  top: 1px;
+  width: 14px;
+}
+
+.garbage-marker span::after {
+  border-radius: 999px;
+  box-shadow: 10px 0 0 currentColor;
+  height: 4px;
+  left: 2px;
+  top: 13px;
+  width: 4px;
+}
+
+.garbage-marker-trash {
+  background: var(--river-teal);
+  color: #fff;
+}
+
+.garbage-marker-recycle {
+  background: var(--block-moss);
+  color: #fff;
 }
 
 @keyframes skeleton-pulse {

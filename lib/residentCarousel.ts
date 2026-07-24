@@ -4,15 +4,19 @@
 // short announcement banners, not festival hero cards.
 import { promises as fs } from "fs";
 import path from "path";
+import { getResidentFeature, type ResidentFeatureKey } from "./residentFeatures";
 
 const DATA_PATH = path.join(process.cwd(), "data", "resident-carousel-slides.json");
 
 export type ResidentSlideTag = "一般" | "緊急" | "活動";
+export type ResidentSlideKind = "custom" | "feature";
 
 export type ResidentCarouselSlide = {
   id: string;
   order: number;
   active: boolean;
+  kind?: ResidentSlideKind;
+  featureKey?: ResidentFeatureKey;
   tag: ResidentSlideTag;
   title: string;
   subtitle?: string;
@@ -23,11 +27,26 @@ export type ResidentCarouselSlide = {
 
 export type ResidentCarouselSlideInput = {
   active: boolean;
+  kind?: ResidentSlideKind;
+  featureKey?: ResidentFeatureKey;
   tag: ResidentSlideTag;
   title: string;
   subtitle?: string;
   href?: string;
 };
+
+export function resolveResidentSlide(slide: ResidentCarouselSlide): ResidentCarouselSlide {
+  if ((slide.kind ?? "custom") !== "feature") return slide;
+  const feature = getResidentFeature(slide.featureKey);
+  if (!feature) return slide;
+  return {
+    ...slide,
+    tag: slide.tag ?? feature.tag,
+    title: slide.title || feature.title,
+    subtitle: slide.subtitle || feature.subtitle,
+    href: slide.href || feature.href,
+  };
+}
 
 async function readJson<T>(fallback: T): Promise<T> {
   try {
@@ -51,7 +70,7 @@ export async function readResidentSlides(): Promise<ResidentCarouselSlide[]> {
 
 export async function listActiveResidentSlides(): Promise<ResidentCarouselSlide[]> {
   const slides = await readResidentSlides();
-  return slides.filter((s) => s.active);
+  return slides.filter((s) => s.active).map(resolveResidentSlide);
 }
 
 export async function getResidentSlide(id: string): Promise<ResidentCarouselSlide | null> {

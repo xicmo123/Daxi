@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ResidentCarouselSlide, ResidentSlideTag } from "@/lib/residentCarousel";
+import type { ResidentCarouselSlide, ResidentSlideKind, ResidentSlideTag } from "@/lib/residentCarousel";
+import { RESIDENT_FEATURES, type ResidentFeatureKey } from "@/lib/residentFeatures";
 
 const inputStyle = { background: "#f4eee4", border: "1px solid #dfd1bf", color: "#2f261f" } as const;
 
@@ -17,6 +18,8 @@ export default function ResidentCarouselSlideForm({ slide }: { slide?: ResidentC
   const isEdit = Boolean(slide);
 
   const [active, setActive] = useState(slide?.active ?? false);
+  const [kind, setKind] = useState<ResidentSlideKind>(slide?.kind ?? "custom");
+  const [featureKey, setFeatureKey] = useState<ResidentFeatureKey | "">(slide?.featureKey ?? "");
   const [tag, setTag] = useState<ResidentSlideTag>(slide?.tag ?? "一般");
   const [title, setTitle] = useState(slide?.title ?? "");
   const [subtitle, setSubtitle] = useState(slide?.subtitle ?? "");
@@ -27,7 +30,17 @@ export default function ResidentCarouselSlideForm({ slide }: { slide?: ResidentC
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const body = () => ({ active, tag, title, subtitle, href });
+  const body = () => ({ active, kind, featureKey: featureKey || undefined, tag, title, subtitle, href });
+
+  const applyFeature = (key: ResidentFeatureKey) => {
+    const feature = RESIDENT_FEATURES.find((item) => item.key === key);
+    if (!feature) return;
+    setFeatureKey(feature.key);
+    setTag(feature.tag);
+    setTitle(feature.title);
+    setSubtitle(feature.subtitle);
+    setHref(feature.href);
+  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +106,52 @@ export default function ResidentCarouselSlideForm({ slide }: { slide?: ResidentC
         <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} />
         上架中（顯示在大溪人首頁輪播）
       </label>
+
+      <label className="block text-[12.5px] font-medium mb-1.5" style={{ color: "#766a5d" }}>
+        輪播內容
+      </label>
+      <div className="grid grid-cols-2 gap-2 mb-4">
+        {[
+          { value: "feature" as const, label: "功能捷徑" },
+          { value: "custom" as const, label: "自訂公告" },
+        ].map((item) => (
+          <button
+            key={item.value}
+            type="button"
+            onClick={() => setKind(item.value)}
+            className="rounded-lg px-3 py-2 text-[12.5px] font-semibold"
+            style={{
+              background: kind === item.value ? "#4a7594" : "#f4eee4",
+              color: kind === item.value ? "#fff" : "#2f261f",
+              border: "1px solid #dfd1bf",
+            }}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      {kind === "feature" ? (
+        <>
+          <label className="block text-[12.5px] font-medium mb-1.5" style={{ color: "#766a5d" }}>
+            選擇功能
+          </label>
+          <select
+            value={featureKey}
+            onChange={(e) => applyFeature(e.target.value as ResidentFeatureKey)}
+            required
+            className="w-full rounded-lg px-3 py-2.5 mb-4 text-[13px]"
+            style={inputStyle}
+          >
+            <option value="">請選擇要放上輪播的功能</option>
+            {RESIDENT_FEATURES.map((feature) => (
+              <option key={feature.key} value={feature.key}>
+                {feature.title}
+              </option>
+            ))}
+          </select>
+        </>
+      ) : null}
 
       <label className="block text-[12.5px] font-medium mb-1.5" style={{ color: "#766a5d" }}>
         標籤

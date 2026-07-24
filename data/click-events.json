@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "type": "coupon",
+    "id": "cp-doufu-01",
+    "label": "現滷豆干買5送1",
+    "at": "2026-07-23T07:24:57.552Z"
+  },
+  {
+    "type": "spot",
+    "id": "ChIJA7odaOQZaDQROJIHrBxLEEI",
+    "label": "月眉人工濕地生態公園",
+    "mode": "explore",
+    "at": "2026-07-23T07:25:25.463Z"
+  },
+  {
+    "type": "map_card",
+    "id": "map",
+    "label": "地圖導覽",
+    "mode": "tourist",
+    "at": "2026-07-23T10:12:57.412Z"
+  },
+  {
+    "type": "spot",
+    "id": "ChIJAcbxQSIYaDQRY-uNQ8Xq704",
+    "label": "大溪中正公園",
+    "mode": "tourist",
+    "at": "2026-07-23T13:38:14.329Z"
+  }
+]

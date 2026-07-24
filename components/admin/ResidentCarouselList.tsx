@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ResidentCarouselSlide } from "@/lib/residentCarousel";
+import { getResidentFeature, RESIDENT_FEATURES, type ResidentFeature } from "@/lib/residentFeatures";
 
 const tagColor: Record<ResidentCarouselSlide["tag"], string> = {
   一般: "#766a5d",
@@ -40,6 +41,39 @@ export default function ResidentCarouselList({ slides }: { slides: ResidentCarou
     }
   };
 
+  const featureSlideFor = (feature: ResidentFeature) => slides.find((slide) => slide.kind === "feature" && slide.featureKey === feature.key);
+
+  const toggleFeature = async (feature: ResidentFeature) => {
+    const existing = featureSlideFor(feature);
+    setBusyId(`feature:${feature.key}`);
+    try {
+      if (existing) {
+        await fetch(`/api/admin/resident-carousel/${existing.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ active: !existing.active }),
+        });
+      } else {
+        await fetch("/api/admin/resident-carousel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            active: true,
+            kind: "feature",
+            featureKey: feature.key,
+            tag: feature.tag,
+            title: feature.title,
+            subtitle: feature.subtitle,
+            href: feature.href,
+          }),
+        });
+      }
+      router.refresh();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
@@ -60,6 +94,35 @@ export default function ResidentCarouselList({ slides }: { slides: ResidentCarou
         </Link>
       </div>
 
+      <div className="mb-5 rounded-xl p-3" style={{ background: "#fffaf1", border: "1px solid #dfd1bf" }}>
+        <div className="mb-2 text-[12.5px] font-semibold" style={{ color: "#2f261f" }}>
+          功能捷徑上架
+        </div>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+          {RESIDENT_FEATURES.map((feature) => {
+            const existing = featureSlideFor(feature);
+            const enabled = existing?.active === true;
+            return (
+              <button
+                key={feature.key}
+                type="button"
+                onClick={() => toggleFeature(feature)}
+                disabled={busyId === `feature:${feature.key}`}
+                className="rounded-lg px-3 py-2 text-left text-[12px] font-semibold transition-opacity active:opacity-70 disabled:opacity-50"
+                style={{
+                  background: enabled ? "#4a7594" : "#f4eee4",
+                  color: enabled ? "#fff" : "#2f261f",
+                  border: "1px solid #dfd1bf",
+                }}
+              >
+                <span className="block truncate">{feature.title}</span>
+                <span className="block text-[10px] font-normal opacity-75">{enabled ? "已上架" : "未上架"}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="flex flex-col gap-2">
         {slides.map((s, i) => (
           <div key={s.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5" style={{ background: "#fffaf1", border: "1px solid #dfd1bf" }}>
@@ -74,7 +137,7 @@ export default function ResidentCarouselList({ slides }: { slides: ResidentCarou
                 {s.title}
               </div>
               <div className="text-[11.5px] truncate" style={{ color: "#766a5d" }}>
-                {s.active ? "上架中" : "未上架"}
+                {(s.kind ?? "custom") === "feature" ? `功能：${getResidentFeature(s.featureKey)?.title ?? "未選功能"}` : "自訂公告"} ・ {s.active ? "上架中" : "未上架"}
                 {s.href ? ` ・ ${s.href}` : ""}
               </div>
             </Link>

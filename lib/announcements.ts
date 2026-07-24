@@ -59,7 +59,7 @@ function parseAnnouncements(xml: string): Announcement[] {
       title,
       href,
       date: formatDate(pubDate),
-      summary: truncate(htmlToText(description), 96),
+      summary: truncate(htmlToText(description), 260),
       publishedAt,
     });
   }

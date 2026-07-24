@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
+import TrafficControlBanner from "@/components/TrafficControlBanner";
 import HomeExperience, { type FeedSpot } from "@/components/HomeExperience";
 import type { CouponWithBusiness } from "@/components/CouponList";
 import { isSlideInCarousel, readSlides } from "@/lib/carousel";
@@ -273,6 +274,10 @@ export default async function Home() {
       <Suspense fallback={<TodayStatusSkeleton />}>
         <TodayStatusCards nextTitle={nextMilestone?.title ?? "大溪大禧活動"} />
       </Suspense>
+
+      {/* Live traffic-control status — sourced from Taoyuan open data,
+          auto-refreshes every 10 minutes on the client. */}
+      <TrafficControlBanner />
 
       {/* Hero carousel: swipeable highlights from the festival timeline */}
       {heroSlides.length > 0 ? (

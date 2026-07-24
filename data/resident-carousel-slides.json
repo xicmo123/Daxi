@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "active": true,
+    "tag": "一般",
+    "title": "道路施工地圖",
+    "href": "/resident/roadworks",
+    "id": "rslide-mrxdb70x2g1y",
+    "order": 0,
+    "createdAt": "2026-07-23T10:27:54.321Z",
+    "updatedAt": "2026-07-23T11:05:23.099Z",
+    "kind": "feature",
+    "featureKey": "roadworks",
+    "subtitle": "查看今日道路申挖與施工位置"
+  },
+  {
+    "active": true,
+    "tag": "緊急",
+    "title": "停水停電通知",
+    "href": "/resident/outages",
+    "id": "rslide-mrxdb70x2g1z",
+    "order": 1,
+    "createdAt": "2026-07-24T00:00:00.000Z",
+    "updatedAt": "2026-07-24T00:00:00.000Z",
+    "kind": "feature",
+    "featureKey": "outages",
+    "subtitle": "預告中的停水停電整理"
+  },
+  {
+    "active": true,
+    "tag": "一般",
+    "title": "垃圾車即時地圖",
+    "href": "/resident/services#garbage",
+    "id": "rslide-mrxdb70x2g20",
+    "order": 2,
+    "createdAt": "2026-07-24T00:00:00.000Z",
+    "updatedAt": "2026-07-24T00:00:00.000Z",
+    "kind": "feature",
+    "featureKey": "garbage",
+    "subtitle": "查看目前清運車位置"
+  }
+]
