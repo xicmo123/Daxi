@@ -4,6 +4,7 @@ import BusinessList from "@/components/BusinessList";
 import { businessesGeneratedAt } from "@/lib/businesses";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+import { listActiveCoupons } from "@/lib/coupons";
 
 export const dynamic = "force-dynamic";
 
@@ -27,11 +28,18 @@ export default async function BusinessesPage() {
     lots = [];
   }
 
+  let couponPlaceIds: string[] = [];
+  try {
+    couponPlaceIds = Array.from(new Set((await listActiveCoupons()).map((c) => c.placeId)));
+  } catch {
+    couponPlaceIds = [];
+  }
+
   return (
     <div className="pt-2">
       <PageHeader title="商家" subtitle={`美食・市集・${updatedLabel} 更新`} tint="wood" />
       <Suspense fallback={null}>
-        <BusinessList businesses={listable} photos={photos} details={details} lots={lots} />
+        <BusinessList businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} />
       </Suspense>
       <div className="safe-page-x pb-2 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：Google Maps Places API（依 Google 使用者評論數排序，每類別各取前 20 名，半徑 3 公里內；資料每週更新一次，非即時）

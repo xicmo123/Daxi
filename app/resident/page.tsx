@@ -5,9 +5,12 @@ import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { listUpcomingOutages, type Outage } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { listActiveResidentSlides } from "@/lib/residentCarousel";
+import { getFestivalTiming } from "@/lib/festivalTiming";
+import { congestionScore } from "@/lib/experience";
 import ResidentCarousel from "@/components/ResidentCarousel";
 import ResidentLinksCard from "@/components/ResidentLinksCard";
 import ResidentAnnouncementPreview from "@/components/ResidentAnnouncementPreview";
+import CongestionIndexCard from "@/components/CongestionIndexCard";
 
 export const dynamic = "force-dynamic";
 
@@ -89,7 +92,7 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
   {
     href: "/resident/roadworks",
     label: "道路施工",
-    desc: "今日施工與申挖位置",
+    desc: "目前施工與申挖位置",
     block: "river",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -97,6 +100,18 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
         <path d="M7.5 19 10 7h4l2.5 12" />
         <path d="M9 12h6" />
         <path d="M8.2 15.5h7.6" />
+      </svg>
+    ),
+  },
+  {
+    href: "/resident/events",
+    label: "在地活動",
+    desc: "大溪大禧與老街周邊活動",
+    block: "moss",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 4.5h12v15H6z" />
+        <path d="M9 3v3M15 3v3M6 9.5h12" />
       </svg>
     ),
   },
@@ -143,7 +158,7 @@ async function TodayStatusRow() {
     {
       href: "/resident/roadworks",
       label: "道路施工",
-      value: roadworkCount > 0 ? `${roadworkCount} 處管制` : "今日暢通",
+      value: roadworkCount > 0 ? `${roadworkCount} 處管制` : "目前暢通",
       block: "river",
     },
     {
@@ -176,6 +191,18 @@ async function TodayStatusRow() {
       })}
     </div>
   );
+}
+
+async function WeekendOutingIndex() {
+  let roadworkCount = 0;
+  try {
+    roadworkCount = (await fetchDaxiRoadworks()).length;
+  } catch {
+    roadworkCount = 0;
+  }
+  const isFestivalToday = getFestivalTiming().phase === "during";
+  const score = congestionScore({ roadworkCount, isFestivalToday });
+  return <CongestionIndexCard score={score} />;
 }
 
 function TodayStatusSkeleton() {
@@ -360,6 +387,12 @@ export default function ResidentHome() {
       <Suspense fallback={<TodayStatusSkeleton />}>
         <TodayStatusRow />
       </Suspense>
+
+      <div className="pt-3">
+        <Suspense fallback={null}>
+          <WeekendOutingIndex />
+        </Suspense>
+      </div>
 
       <AnnouncementCarousel />
 

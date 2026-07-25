@@ -24,6 +24,16 @@ export type DaxiWeather = {
   hourly: HourCard[];
 };
 
+export type WeatherMood = "hot" | "rain" | "normal";
+
+// Drives the homepage Hero styling/copy and spot ordering — hot or wet
+// weather nudges tourists toward indoor, air-conditioned attractions.
+export function weatherMood(weather: Pick<DaxiWeather, "apparentTemp" | "currentTemp" | "weatherText">): WeatherMood {
+  if (weather.weatherText.includes("雨") || weather.weatherText.includes("雷")) return "rain";
+  if (weather.apparentTemp >= 34 || weather.currentTemp >= 33) return "hot";
+  return "normal";
+}
+
 // CWA's forecast text doesn't distinguish day/night, so pass the target hour
 // to swap the sun for a moon after dark.
 function weatherEmoji(text: string, hour: number): string {

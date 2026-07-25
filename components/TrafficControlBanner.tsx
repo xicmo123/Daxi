@@ -69,7 +69,7 @@ export default function TrafficControlBanner() {
         />
         <div className="min-w-0 flex-1">
           <div className="text-[12.5px] font-semibold leading-snug" style={{ color: "var(--ink)" }}>
-            {hasControl ? `今日大溪有 ${roadworks.length} 處交通管制／道路施工` : "今日大溪暫無交通管制"}
+            {hasControl ? `大溪目前有 ${roadworks.length} 處交通管制／道路施工` : "大溪目前暫無交通管制"}
           </div>
           <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
             {syncedAt ? `最後更新 ${formatTime(syncedAt)} · 每 10 分鐘自動更新` : "同步中"}

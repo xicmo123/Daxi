@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { ReservationDetail } from "@/lib/placeDetails";
 import type { SlotWithAvailability } from "@/lib/reservations";
+import EmptyState from "@/components/EmptyState";
 
 function InquiryCta({ reservation }: { reservation: ReservationDetail }) {
   const href =
@@ -127,9 +128,11 @@ function SlotBooking({ placeId, reservation }: { placeId: string; reservation: R
           載入時段中…
         </div>
       ) : upcoming.length === 0 ? (
-        <div className="text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
-          目前尚無可預約時段{reservation.contactValue ? "，可透過下方聯絡方式詢問" : ""}
-        </div>
+        <EmptyState
+          variant="mascot"
+          title="目前尚無可預約時段"
+          subtitle={reservation.contactValue ? "可透過下方聯絡方式詢問" : "請稍後再回來看看"}
+        />
       ) : (
         <>
           <div className="grid gap-2 mb-3">

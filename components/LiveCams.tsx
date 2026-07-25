@@ -6,6 +6,7 @@ import { liveCams } from "@/lib/data";
 export default function LiveCams() {
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [thumbLoaded, setThumbLoaded] = useState(false);
   const cam = liveCams[active];
 
   return (
@@ -17,6 +18,7 @@ export default function LiveCams() {
             onClick={() => {
               setActive(i);
               setPlaying(false);
+              setThumbLoaded(false);
             }}
             aria-pressed={i === active}
             className="shrink-0 text-[12.5px] font-semibold rounded-full px-3.5 py-1.5 transition-transform active:scale-95"
@@ -50,12 +52,14 @@ export default function LiveCams() {
               aria-label={`播放 ${cam.title} 即時影像`}
               className="absolute inset-0 w-full h-full"
             >
+              {!thumbLoaded ? <div className="absolute inset-0 tv-static-skeleton" aria-hidden="true" /> : null}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://img.youtube.com/vi/${cam.youtubeId}/hqdefault.jpg`}
                 alt={`${cam.title} 即時影像縮圖`}
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ filter: "sepia(0.05) saturate(0.85) contrast(0.97)" }}
+                onLoad={() => setThumbLoaded(true)}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                style={{ filter: "sepia(0.05) saturate(0.85) contrast(0.97)", opacity: thumbLoaded ? 1 : 0 }}
               />
               <div
                 className="absolute inset-0"

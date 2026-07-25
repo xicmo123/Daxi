@@ -3,7 +3,8 @@ import Link from "next/link";
 import { statusWeight, statusBarColor } from "@/lib/status";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesParking";
-import { parkingSummary, walkTimeLabel } from "@/lib/experience";
+import { parkingSummary, parkingCongestion, walkTimeLabel } from "@/lib/experience";
+import ParkingAlertBanner from "@/components/ParkingAlertBanner";
 
 // Rough average walking pace (~80m/min) — a static, indicative label only.
 export const revalidate = 60;
@@ -34,6 +35,7 @@ export default async function ParkingPage() {
     ...nearbyLots.map((l): Row => ({ kind: "private", ...l })),
   ].sort((a, b) => a.distanceMeters - b.distanceMeters);
   const summary = parkingSummary(lots);
+  const congestion = parkingCongestion(lots);
 
   return (
     <div className="pt-2">
@@ -42,6 +44,14 @@ export default async function ParkingPage() {
         subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
         tint="river"
       />
+
+      {congestion.isCongested ? (
+        <ParkingAlertBanner
+          occupancyPct={congestion.occupancyPct}
+          alternatives={congestion.alternatives}
+          lateBirdExtraMinutes={congestion.lateBirdExtraMinutes}
+        />
+      ) : null}
 
       <div className="safe-page-x pb-4 fade-in">
         <Link

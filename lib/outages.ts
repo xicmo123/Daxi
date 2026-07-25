@@ -18,15 +18,28 @@ import JSZip from "jszip";
 
 export type OutageType = "water" | "power";
 
+// Taiwan Water's case feed doesn't expose a distinct "reduced pressure"
+// case type — it's inferred from the free-text reason, since a pressure
+// reduction (減壓/降壓) is meaningfully less disruptive than a full outage
+// and residents should be able to tell the two apart at a glance.
+export type WaterSeverity = "outage" | "lowPressure";
+
 export type Outage = {
   id: string;
   type: OutageType;
+  severity?: WaterSeverity;
   areas: string[];
   date: string; // YYYY-MM-DD
   timeRange: string;
   reason: string;
   source: string;
 };
+
+const LOW_PRESSURE_KEYWORDS = ["減壓", "降壓", "低水壓", "水壓不足"];
+
+function waterSeverity(reason: string): WaterSeverity {
+  return LOW_PRESSURE_KEYWORDS.some((kw) => reason.includes(kw)) ? "lowPressure" : "outage";
+}
 
 const DAXI_TOWN_CODE = "68000030";
 const WATER_API = "https://web.water.gov.tw/wateroffapi/f/case/search";
@@ -77,6 +90,7 @@ async function fetchWaterOutages(): Promise<Outage[]> {
     .map((c) => ({
       id: `water-${c.id}`,
       type: "water" as const,
+      severity: waterSeverity(c.waterOffReason ?? ""),
       areas: [(c.waterOffRegion ?? "大溪區").split("/").slice(-1)[0].replace(/。$/, "").trim() || "大溪區"],
       date: c.startDate ? toDateKey(c.startDate) : "",
       timeRange: c.startTime && c.endTime ? `${c.startTime}–${c.endTime}` : "",

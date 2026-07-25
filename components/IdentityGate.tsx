@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { readIdentity, writeIdentity, type Identity } from "@/lib/identity";
+import IdentityTransitionOverlay from "./IdentityTransitionOverlay";
 
 function subscribe(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -35,6 +36,7 @@ function HomeIdentityGate() {
   // it swaps to the real stored value right after mount.
   const storedIdentity = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [chosen, setChosen] = useState<Identity | null>(null);
+  const [pending, setPending] = useState<Identity | null>(null);
   const identity = chosen ?? storedIdentity;
   const redirecting = identity === "resident";
 
@@ -43,8 +45,11 @@ function HomeIdentityGate() {
   }, [redirecting, router]);
 
   const choose = (next: Identity) => {
-    writeIdentity(next);
-    setChosen(next);
+    setPending(next);
+    window.setTimeout(() => {
+      writeIdentity(next);
+      setChosen(next);
+    }, 220);
   };
 
   if (redirecting) {
@@ -55,6 +60,7 @@ function HomeIdentityGate() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ background: "var(--paper)" }}>
+      <IdentityTransitionOverlay to={pending} />
       <div className="w-full max-w-sm fade-in">
         <div className="text-center mb-8">
           <div className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: "var(--accent)" }}>

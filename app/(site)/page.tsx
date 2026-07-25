@@ -7,8 +7,8 @@ import type { CouponWithBusiness } from "@/components/CouponList";
 import { isSlideInCarousel, readSlides } from "@/lib/carousel";
 import { fetchDaxiParking } from "@/lib/tycgParking";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
-import { fetchDaxiWeather } from "@/lib/cwa";
-import { parkingSummary, walkTimeLabel } from "@/lib/experience";
+import { fetchDaxiWeather, weatherMood } from "@/lib/cwa";
+import { parkingSummary, walkTimeLabel, isIndoorSpot } from "@/lib/experience";
 import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { getAllPlaces, filterVisiblePlaces, readDetails, readPhotos } from "@/lib/placesStore";
 import { categoryLabel } from "@/lib/placeDetails";
@@ -170,7 +170,15 @@ async function HomeFeed() {
     distanceMeters: p.distanceMeters,
     featured: Boolean(details[p.placeId]?.featured),
     photoSrc: photos[p.placeId]?.src,
+    indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
   }));
+
+  let mood: "hot" | "rain" | "normal" = "normal";
+  try {
+    mood = weatherMood(await fetchDaxiWeather());
+  } catch {
+    mood = "normal";
+  }
 
   const coupons: CouponWithBusiness[] = activeCoupons
     .map((c): CouponWithBusiness | null => {
@@ -188,7 +196,15 @@ async function HomeFeed() {
     hasRecentAnnouncement = false;
   }
 
-  return <HomeExperience townName="大溪 Daxi" hasRecentAnnouncement={hasRecentAnnouncement} spots={spots} coupons={coupons} />;
+  return (
+    <HomeExperience
+      townName="大溪 Daxi"
+      hasRecentAnnouncement={hasRecentAnnouncement}
+      spots={spots}
+      coupons={coupons}
+      weatherMood={mood}
+    />
+  );
 }
 
 function HomeFeedSkeleton() {

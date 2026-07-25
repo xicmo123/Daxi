@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import type React from "react";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
@@ -40,18 +41,22 @@ export default function BusinessDetailModal({
   business,
   photo,
   detail,
+  allDetails = {},
   allBusinesses,
   photos,
   lots = [],
+  couponPlaceIds = [],
   onSelect,
   onClose,
 }: {
   business: Business;
   photo: PhotoCredit | undefined;
   detail: PlaceDetail | undefined;
+  allDetails?: Record<string, PlaceDetail>;
   allBusinesses: Business[];
   photos: Record<string, PhotoCredit>;
   lots?: LiveParkingLot[];
+  couponPlaceIds?: string[];
   onSelect?: (b: Business) => void;
   onClose: () => void;
 }) {
@@ -72,6 +77,22 @@ export default function BusinessDetailModal({
       : null;
   const nearby = nearbyBusinesses(business, allBusinesses);
   const decisionTags = experienceTags(business, detail);
+  const couponSet = new Set(couponPlaceIds);
+
+  // 智能分流推薦: when this business is visibly busy or sold out, surface
+  // nearby alternatives that are currently free of the same problem —
+  // coupon-bearing ones first, since that's the strongest nudge to switch.
+  const liveStatus = detail?.liveStatus;
+  const isBusy = Boolean(liveStatus?.soldOut) || (liveStatus?.queueMinutes ?? 0) >= 15;
+  const overflowPicks = isBusy
+    ? nearbyBusinesses(business, allBusinesses, 8)
+        .filter(({ business: nb }) => {
+          const nbStatus = allDetails[nb.placeId]?.liveStatus;
+          return !nbStatus?.soldOut && (nbStatus?.queueMinutes ?? 0) < 15;
+        })
+        .sort((a, b) => Number(couponSet.has(b.business.placeId)) - Number(couponSet.has(a.business.placeId)))
+        .slice(0, 3)
+    : [];
   const displayPhone = detail?.contact?.phone?.trim() || business.phone || undefined;
   const contactLinks: ContactLink[] = [];
   if (displayPhone) {
@@ -200,6 +221,21 @@ export default function BusinessDetailModal({
                 {business.businessStatus === "CLOSED_PERMANENTLY" ? "已歇業" : "暫停營業"}
               </span>
             ) : null}
+            {liveStatus?.soldOut ? (
+              <span
+                className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                style={{ background: "rgba(15,17,22,0.55)", color: "#fff" }}
+              >
+                今日已完售
+              </span>
+            ) : liveStatus?.queueMinutes ? (
+              <span
+                className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                style={{ background: "rgba(224,90,70,0.55)", color: "#fff" }}
+              >
+                大排長龍・約等 {liveStatus.queueMinutes} 分鐘
+              </span>
+            ) : null}
             <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
           </div>
         </div>
@@ -213,6 +249,56 @@ export default function BusinessDetailModal({
               <p className="font-serif text-[14px] leading-relaxed" style={{ color: "var(--ink)" }}>
                 {detail.story}
               </p>
+            </div>
+          ) : null}
+
+          {overflowPicks.length > 0 ? (
+            <div className="mb-5 rounded-xl px-4 py-4" style={{ background: "var(--daxi-red-soft)" }}>
+              <div className="mb-3 text-[12.5px] font-semibold" style={{ color: "var(--daxi-red)" }}>
+                {liveStatus?.soldOut ? "已完售，先逛逛這幾家吧" : "現場大排長龍，免排隊優質好店推薦"}
+              </div>
+              <div className="flex flex-col gap-2">
+                {overflowPicks.map(({ business: nb }, i) => {
+                  const nbPhoto = photos[nb.placeId];
+                  const hasCoupon = couponSet.has(nb.placeId);
+                  return (
+                    <motion.button
+                      key={nb.placeId}
+                      type="button"
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.08, type: "spring", stiffness: 320, damping: 24 }}
+                      onClick={() => onSelect?.(nb)}
+                      className="flex items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-opacity active:opacity-70"
+                      style={{ background: "var(--card)" }}
+                    >
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md">
+                        {nbPhoto ? (
+                          <Image src={nbPhoto.src} alt={nb.name} fill sizes="48px" className="object-cover" />
+                        ) : (
+                          <div className="absolute inset-0" style={{ background: "var(--bordeaux-surface)" }} />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[13px] font-semibold truncate" style={{ color: "var(--ink)" }}>
+                          {nb.name}
+                        </div>
+                        <div className="text-[10.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+                          {nb.distanceLabel}
+                        </div>
+                      </div>
+                      {hasCoupon ? (
+                        <span
+                          className="shrink-0 text-[9.5px] font-semibold rounded-full px-2 py-1"
+                          style={{ background: "var(--daxi-red)", color: "#fff" }}
+                        >
+                          限時優惠
+                        </span>
+                      ) : null}
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
           ) : null}
 

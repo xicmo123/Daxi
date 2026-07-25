@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import EventModal from "./EventModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import type { HeroSlide } from "./HeroCarousel";
@@ -19,10 +20,11 @@ const filters: { label: string; value: HeroSlide["phase"] | "all" }[] = [
   { label: "已結束", value: "past" },
 ];
 
-export default function EventsList({ events }: { events: HeroSlide[] }) {
+export default function EventsList({ events, residentMode = false }: { events: HeroSlide[]; residentMode?: boolean }) {
   const [openEvent, setOpenEvent] = useState<HeroSlide | null>(null);
   const [activeFilter, setActiveFilter] = useState<HeroSlide["phase"] | "all">("all");
   const filteredEvents = activeFilter === "all" ? events : events.filter((event) => event.phase === activeFilter);
+  const hasOngoingFestival = events.some((event) => event.phase === "ongoing");
   const sections = filters
     .filter((filter) => filter.value !== "all")
     .map((filter) => ({
@@ -34,6 +36,29 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
 
   return (
     <div className="safe-page-x pb-10 fade-in">
+      {/* 大溪大拜拜模式: for residents, an ongoing festival converts this
+          page's headline content from "event info" into the two things a
+          local actually needs right now — where the roads are closed and
+          where the parade is. */}
+      {residentMode && hasOngoingFestival ? (
+        <Link
+          href="/resident/parade"
+          className="mb-5 flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-opacity active:opacity-80"
+          style={{ background: "var(--daxi-red)", color: "#fff" }}
+        >
+          <span className="text-[20px]" aria-hidden="true">
+            🏮
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[13px] font-bold">繞境進行中：查看交通管制範圍地圖</span>
+            <span className="block text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.85)" }}>
+              交通管制範圍與陣頭動態，取代一般活動介紹
+            </span>
+          </span>
+          <span aria-hidden>→</span>
+        </Link>
+      ) : null}
+
       <div className="mb-5 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {filters.map((filter) => (
           <button

@@ -25,6 +25,7 @@ export default async function MerchantHomePage() {
       businessName={place.name}
       hours={details[session.placeId]?.hours ?? ""}
       coupon={coupons[0] ?? null}
+      liveStatus={details[session.placeId]?.liveStatus}
     />
   );
 }

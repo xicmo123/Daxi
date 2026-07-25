@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import type { Coupon } from "@/lib/coupons";
+
+const QUEUE_PRESETS = [0, 10, 20, 30, 45, 60];
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -20,13 +23,32 @@ export default function MerchantDashboard({
   businessName,
   hours: initialHours,
   coupon: initialCoupon,
+  liveStatus: initialLiveStatus,
 }: {
   businessName: string;
   hours: string;
   coupon: Coupon | null;
+  liveStatus?: { queueMinutes?: number; soldOut?: boolean };
 }) {
   const [hours, setHours] = useState(initialHours);
   const [hoursStatus, setHoursStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
+  const [queueMinutes, setQueueMinutes] = useState(initialLiveStatus?.queueMinutes ?? 0);
+  const [soldOut, setSoldOut] = useState(Boolean(initialLiveStatus?.soldOut));
+  const [statusSaving, setStatusSaving] = useState(false);
+
+  const pushStatus = async (next: { queueMinutes: number; soldOut: boolean }) => {
+    setStatusSaving(true);
+    try {
+      await fetch("/api/merchant/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ queueMinutes: next.queueMinutes || undefined, soldOut: next.soldOut }),
+      });
+    } finally {
+      setStatusSaving(false);
+    }
+  };
 
   const [title, setTitle] = useState(initialCoupon?.title ?? "");
   const [desc, setDesc] = useState(initialCoupon?.desc ?? "");
@@ -78,6 +100,73 @@ export default function MerchantDashboard({
       <div className="text-[13px] mb-6" style={{ color: "#766a5d" }}>
         {businessName}
       </div>
+
+      <section className="rounded-2xl p-5 mb-6" style={{ background: "#fffaf1", border: "1px solid #dfd1bf" }}>
+        <h2 className="font-serif text-[15px] font-bold mb-1">目前狀態</h2>
+        <p className="text-[11.5px] mb-4" style={{ color: "#a89a89" }}>
+          即時顯示在遊客端商家頁面，提醒遊客現場狀況
+        </p>
+
+        <div className="mb-4">
+          <div className="text-[12.5px] font-medium mb-2" style={{ color: "#5c5145" }}>
+            排隊狀態
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {QUEUE_PRESETS.map((mins) => {
+              const active = !soldOut && queueMinutes === mins;
+              return (
+                <motion.button
+                  key={mins}
+                  type="button"
+                  whileTap={{ scale: 0.92 }}
+                  onClick={() => {
+                    setSoldOut(false);
+                    setQueueMinutes(mins);
+                    pushStatus({ queueMinutes: mins, soldOut: false });
+                  }}
+                  className="rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors"
+                  style={
+                    active
+                      ? { background: "#9c3b3b", color: "#fff" }
+                      : { background: "#fff", color: "#766a5d", border: "1px solid #dfd1bf" }
+                  }
+                >
+                  {mins === 0 ? "不用等" : `等 ${mins} 分鐘`}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.97 }}
+          onClick={() => {
+            const next = !soldOut;
+            setSoldOut(next);
+            pushStatus({ queueMinutes, soldOut: next });
+          }}
+          className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-[13px] font-semibold transition-colors"
+          style={soldOut ? { background: "#9c3b3b", color: "#fff" } : { background: "#fff", color: "#5c5145", border: "1px solid #dfd1bf" }}
+        >
+          今日商品已完售
+          <span
+            className="inline-flex h-5 w-9 items-center rounded-full px-0.5"
+            style={{ background: soldOut ? "rgba(255,255,255,0.35)" : "#e5d8c6" }}
+          >
+            <motion.span
+              className="h-4 w-4 rounded-full bg-white"
+              animate={{ x: soldOut ? 16 : 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          </span>
+        </motion.button>
+        {statusSaving ? (
+          <div className="mt-2 text-[11px]" style={{ color: "#a89a89" }}>
+            更新中…
+          </div>
+        ) : null}
+      </section>
 
       <section className="rounded-2xl p-5 mb-6" style={{ background: "#fffaf1", border: "1px solid #dfd1bf" }}>
         <h2 className="font-serif text-[15px] font-bold mb-4">營業時間</h2>

@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import IdentitySwitchCard from "@/components/IdentitySwitchCard";
+import ResidentIdCard from "@/components/ResidentIdCard";
 
 export default function ResidentProfilePage() {
   return (
@@ -7,6 +8,7 @@ export default function ResidentProfilePage() {
       <PageHeader title="我的" tint="river" />
 
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
+        <ResidentIdCard />
         <IdentitySwitchCard currentLabel="大溪人" switchToHref="/" switchToLabel="切換為遊客模式" switchToIdentity="tourist" />
 
         <div className="rounded-2xl border px-4 py-4 text-[12px] leading-relaxed" style={{ background: "var(--card)", borderColor: "var(--line)", color: "var(--ink-soft)" }}>

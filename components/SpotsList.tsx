@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
-import { experienceTags } from "@/lib/experience";
+import { experienceTags, isReliefSpot } from "@/lib/experience";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
+import EmptyState from "./EmptyState";
 
 export default function SpotsList({
   spots,
@@ -28,8 +30,11 @@ export default function SpotsList({
   const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
   const featuredRows = featuredSpots ?? [];
   const [query, setQuery] = useState("");
+  const [reliefMode, setReliefMode] = useState(false);
   const normalizedQuery = query.trim().toLowerCase();
-  const visibleSpots = spots;
+  const visibleSpots = reliefMode
+    ? spots.filter((s) => isReliefSpot(s.name, details[s.placeId]?.category, details[s.placeId]?.tags))
+    : spots;
   const rows = normalizedQuery
     ? visibleSpots.filter((s) => {
         const detail = details[s.placeId];
@@ -157,8 +162,40 @@ export default function SpotsList({
             <path d="m16 16 4 4" />
           </svg>
         </label>
+
+        <button
+          type="button"
+          onClick={() => setReliefMode((v) => !v)}
+          aria-pressed={reliefMode}
+          className="mt-3 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors"
+          style={
+            reliefMode
+              ? { background: "var(--river-teal-soft)", border: "1.5px solid var(--river-teal)" }
+              : { background: "var(--card)", border: "1px solid var(--line)" }
+          }
+        >
+          <motion.span
+            key={reliefMode ? "relieved" : "urgent"}
+            initial={{ scale: 0.5, rotate: -20, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 450, damping: 18 }}
+            className="text-[22px]"
+            aria-hidden="true"
+          >
+            {reliefMode ? "😄" : "😣"}
+          </motion.span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[13px] font-semibold" style={{ color: "var(--ink)" }}>
+              {reliefMode ? "生理需求雷達：開啟中" : "內急了？點我開雷達"}
+            </span>
+            <span className="block text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+              只顯示周邊公廁、冷氣休息區、哺集乳室
+            </span>
+          </span>
+        </button>
+
         <div className="pt-5 text-[13px] font-semibold" style={{ color: "var(--ink-soft)" }}>
-          共 {rows.length} 個景點
+          共 {rows.length} 個{reliefMode ? "救援地點" : "景點"}
         </div>
       </div>
 
@@ -239,8 +276,12 @@ export default function SpotsList({
           );
         })}
         {rows.length === 0 ? (
-          <div className="rounded-xl px-4 py-5 text-[13px]" style={{ background: "var(--card)", color: "var(--ink-soft)", border: "1px solid var(--line)" }}>
-            找不到符合的景點。
+          <div className="col-span-full">
+            <EmptyState
+              variant="mascot"
+              title={reliefMode ? "附近還沒收錄救援地點" : "找不到符合的景點"}
+              subtitle={reliefMode ? "先撐著，或改用地圖找找最近的超商" : "換個關鍵字試試"}
+            />
           </div>
         ) : null}
       </div>

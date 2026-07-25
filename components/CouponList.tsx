@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import type { Coupon } from "@/lib/coupons";
 import CouponRedeemModal from "./CouponRedeemModal";
 import { trackClick } from "@/lib/trackClient";
@@ -21,13 +22,15 @@ export default function CouponList({ coupons }: { coupons: CouponWithBusiness[] 
   return (
     <div className="safe-page-x flex flex-col gap-2.5">
       {coupons.map((c) => (
-        <button
+        <motion.button
           key={c.id}
           type="button"
           onClick={() => {
             trackClick("coupon", c.id, c.title);
             setOpen(c);
           }}
+          whileTap={{ scale: 0.94 }}
+          transition={{ type: "spring", stiffness: 420, damping: 20 }}
           className="flex items-center gap-3 rounded-2xl px-4 py-3.5 card-shadow text-left transition-opacity active:opacity-70"
           style={{ background: "var(--card)" }}
         >
@@ -46,7 +49,7 @@ export default function CouponList({ coupons }: { coupons: CouponWithBusiness[] 
           >
             到店掃碼核銷
           </span>
-        </button>
+        </motion.button>
       ))}
 
       {open ? <CouponRedeemModal coupon={open} businessName={open.businessName} onClose={() => setOpen(null)} /> : null}

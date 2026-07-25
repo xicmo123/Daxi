@@ -20,6 +20,17 @@ export default function Loading() {
   return (
     <div className="pt-2">
       <PageHeader title="周邊停車" subtitle="距大溪老街由近到遠・每分鐘更新" tint="river" />
+      <div className="flex flex-col items-center gap-2 py-6">
+        <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
+          <circle cx="36" cy="36" r="28" fill="none" stroke="var(--line)" strokeWidth="2" strokeDasharray="4 6" />
+          <g className="orbit-car-track" style={{ transform: "translate(36px, 8px)" }}>
+            <rect x="-8" y="-5" width="16" height="9" rx="3" fill="var(--river-teal)" />
+          </g>
+        </svg>
+        <div className="text-[12px] font-medium" style={{ color: "var(--ink-soft)" }}>
+          正在幫你找車位…
+        </div>
+      </div>
       <div className="px-6 pb-10" style={{ borderTop: "1px solid var(--line)" }}>
         {Array.from({ length: 5 }).map((_, i) => (
           <LotSkeleton key={i} />

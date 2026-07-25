@@ -332,6 +332,89 @@ button:focus-visible {
   color: #fff;
 }
 
+.roadwork-marker {
+  align-items: center;
+  display: flex;
+  filter: drop-shadow(0 6px 10px rgba(43, 36, 32, 0.28));
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.roadwork-marker span {
+  border-bottom: 20px solid #b8814c;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  display: block;
+  height: 0;
+  position: relative;
+  width: 0;
+}
+
+.roadwork-marker span::before {
+  background: #fff;
+  content: "";
+  height: 3px;
+  left: -7px;
+  position: absolute;
+  top: 10px;
+  width: 14px;
+}
+
+@keyframes tv-static {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Skeleton for the live-cam thumbnail: a noisy multi-gradient wash that
+   drifts diagonally, reading as "tuning in" rather than a flat placeholder. */
+.tv-static-skeleton {
+  background-image:
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, #1a1c22 0%, #2b2e37 40%, #1a1c22 70%, #34373f 100%);
+  background-size: 6px 6px, 220% 220%;
+  animation: tv-static 0.4s steps(2) infinite, tv-static-drift 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes tv-static-drift {
+  from {
+    background-position: 0% 0%, 0% 0%;
+  }
+  to {
+    background-position: 0% 0%, 100% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-static-skeleton {
+    animation: none;
+  }
+}
+
+@keyframes orbit-car {
+  from {
+    transform: rotate(0deg) translateX(28px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(28px) rotate(-360deg);
+  }
+}
+
+.orbit-car-track {
+  animation: orbit-car 2.8s linear infinite;
+  transform-origin: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-car-track {
+    animation: none;
+  }
+}
+
 @keyframes skeleton-pulse {
   0%,
   100% {

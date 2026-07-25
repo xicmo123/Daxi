@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,7 @@ export type FeedSpot = {
   distanceMeters: number;
   featured: boolean;
   photoSrc?: string;
+  indoor?: boolean;
 };
 
 // Tag used only for click-tracking context, not for reordering content
@@ -30,11 +32,13 @@ export default function HomeExperience({
   hasRecentAnnouncement,
   spots,
   coupons,
+  weatherMood = "normal",
 }: {
   townName: string;
   hasRecentAnnouncement: boolean;
   spots: FeedSpot[];
   coupons: CouponWithBusiness[];
+  weatherMood?: "hot" | "rain" | "normal";
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -56,11 +60,35 @@ export default function HomeExperience({
     return "晚安";
   }, []);
 
+  const wantsIndoor = weatherMood === "hot" || weatherMood === "rain";
   const visibleSpots = useMemo(
-    () => [...spots].sort((a, b) => Number(b.featured) - Number(a.featured)).slice(0, 8),
-    [spots]
+    () =>
+      [...spots]
+        .sort((a, b) => {
+          if (wantsIndoor) {
+            const indoorDiff = Number(b.indoor) - Number(a.indoor);
+            if (indoorDiff !== 0) return indoorDiff;
+          }
+          return Number(b.featured) - Number(a.featured);
+        })
+        .slice(0, 8),
+    [spots, wantsIndoor]
   );
   const visibleCoupons = useMemo(() => coupons.slice(0, 6), [coupons]);
+
+  const heroGradient =
+    weatherMood === "hot"
+      ? "linear-gradient(160deg, rgba(224,122,79,0.95) 0%, rgba(196,84,60,0.92) 100%)"
+      : weatherMood === "rain"
+        ? "linear-gradient(160deg, rgba(90,124,150,0.95) 0%, rgba(58,90,115,0.92) 100%)"
+        : "linear-gradient(160deg, rgba(215,160,107,0.94) 0%, rgba(184,129,76,0.92) 100%)";
+
+  const heroCopy =
+    weatherMood === "hot"
+      ? "今天有點熱！幫你把冷氣景點排前面了 🧊"
+      : weatherMood === "rain"
+        ? "外面在下雨，室內景點先幫你排好了 ☔"
+        : greeting;
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,10 +103,11 @@ export default function HomeExperience({
       {/* Hero color-block banner: greeting/bell + identity switcher + search all
           sit on one solid coral panel, chicTrip-style, instead of blending
           into the page background. */}
-      <div
+      <motion.div
         className="safe-page-x pt-6 pb-5 fade-in"
+        animate={{ background: heroGradient }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
         style={{
-          background: "linear-gradient(160deg, rgba(215,160,107,0.94) 0%, rgba(184,129,76,0.92) 100%)",
           borderBottomLeftRadius: 28,
           borderBottomRightRadius: 28,
           boxShadow: "var(--shadow-float)",
@@ -88,7 +117,7 @@ export default function HomeExperience({
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[13px]" style={{ color: "rgba(43,36,32,0.7)" }}>
-              {greeting}
+              {heroCopy}
             </div>
             <div className="text-[18px] font-bold" style={{ color: "var(--block-fg)" }}>
               {townName}
@@ -149,7 +178,7 @@ export default function HomeExperience({
             />
           </div>
         </form>
-      </div>
+      </motion.div>
 
       {/* 4. Map nav card — solid teal block */}
       <div className="safe-page-x pt-4 fade-in">
@@ -229,6 +258,14 @@ export default function HomeExperience({
                     步行 {s.walkTime}
                   </div>
                 </div>
+                {wantsIndoor && s.indoor ? (
+                  <span
+                    className="absolute right-2 top-2 rounded-full px-2 py-0.5 text-[9.5px] font-semibold"
+                    style={{ background: "rgba(255,255,255,0.92)", color: "var(--river-teal)" }}
+                  >
+                    室內冷氣
+                  </span>
+                ) : null}
               </Link>
             ))}
           </div>

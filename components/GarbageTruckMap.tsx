@@ -6,10 +6,12 @@ import type {
   LatLngBoundsExpression,
   LayerGroup,
   Map as LeafletMap,
+  Marker,
   Polyline,
   TileLayer,
 } from "leaflet";
 import type { GarbageRealtime, GarbageRoute } from "@/lib/taoyuanGarbage";
+import { animateMarkerTo } from "@/lib/leafletAnimate";
 
 type LeafletModule = typeof import("leaflet");
 
@@ -48,6 +50,7 @@ export default function GarbageTruckMap() {
   const stopLayerRef = useRef<LayerGroup | null>(null);
   const pathLayerRef = useRef<Polyline | null>(null);
   const routeIdRef = useRef<string>("");
+  const vehicleMarkersRef = useRef<Map<string, Marker>>(new Map());
 
   const [routes, setRoutes] = useState<GarbageRoute[]>([]);
   const [routeId, setRouteId] = useState("");
@@ -126,7 +129,6 @@ export default function GarbageTruckMap() {
     const stopLayer = stopLayerRef.current;
     if (!L || !map || !vehicleLayer || !stopLayer) return;
 
-    vehicleLayer.clearLayers();
     stopLayer.clearLayers();
     pathLayerRef.current?.remove();
 
@@ -160,15 +162,35 @@ export default function GarbageTruckMap() {
         iconAnchor: [17, 17],
       });
 
+    // Keep one persistent marker per vehicle id and tween its position on
+    // each refresh instead of clearing + recreating the layer — that swap
+    // was causing the truck icons to visibly "teleport" every 15s.
+    const seenIds = new Set<string>();
+    const markers = vehicleMarkersRef.current;
     realtime.vehicles.forEach((vehicle) => {
-      L.marker([vehicle.lat, vehicle.lng], { icon: makeTruckIcon(vehicle.type) })
-        .bindTooltip(`${vehicle.type} ${vehicle.id}`, { direction: "top", opacity: 0.95 })
-        .addTo(vehicleLayer);
+      seenIds.add(vehicle.id);
+      const existing = markers.get(vehicle.id);
+      if (existing) {
+        existing.setIcon(makeTruckIcon(vehicle.type));
+        existing.setTooltipContent(`${vehicle.type} ${vehicle.id}`);
+        animateMarkerTo(existing, [vehicle.lat, vehicle.lng]);
+      } else {
+        const marker = L.marker([vehicle.lat, vehicle.lng], { icon: makeTruckIcon(vehicle.type) })
+          .bindTooltip(`${vehicle.type} ${vehicle.id}`, { direction: "top", opacity: 0.95 })
+          .addTo(vehicleLayer);
+        markers.set(vehicle.id, marker);
+      }
+    });
+    markers.forEach((marker, id) => {
+      if (!seenIds.has(id)) {
+        marker.remove();
+        markers.delete(id);
+      }
     });
 
     const bounds = boundsFor(realtime);
     if (shouldFit && bounds) {
-      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 16 });
+      map.flyToBounds(bounds, { padding: [24, 24], maxZoom: 16, duration: 0.8 });
     }
 
     setVehicleCount(realtime.vehicles.length);

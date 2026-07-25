@@ -38,6 +38,15 @@ export type PlaceDetail = {
   // intact for cross-links and the weekly refresh script, just excludes it
   // from the public-facing lists when Google's data for it is inaccurate.
   hidden?: boolean;
+  // Merchant self-reported "right now" status — queue length / sold out —
+  // set from the merchant dashboard's quick-toggle, not derived from any
+  // POS integration. No staleness expiry; a merchant clearing it is what
+  // takes it off the public listing.
+  liveStatus?: {
+    queueMinutes?: number;
+    soldOut?: boolean;
+    updatedAt: number;
+  };
 };
 
 // Google's own place-type classification, translated — a safe, non-invented

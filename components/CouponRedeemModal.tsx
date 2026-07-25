@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import type { Coupon } from "@/lib/coupons";
+import { fireConfetti } from "@/lib/confetti";
 
 // Deterministic pixel grid from the current rotating token — reads as a QR
 // code without a scanning library; the value itself rotates server-side
@@ -40,6 +42,7 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
+  const celebratedRef = useRef(false);
 
   async function fetchToken() {
     setStatus("loading");
@@ -54,6 +57,12 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
       setToken(data.token);
       setExpiresAt(data.expiresAt);
       setStatus("idle");
+      // Celebrate the moment the redemption code is ready, not on the
+      // silent 90s auto-refresh that follows.
+      if (!celebratedRef.current) {
+        celebratedRef.current = true;
+        fireConfetti();
+      }
     } catch {
       setStatus("error");
     }
@@ -101,7 +110,10 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
       style={{ background: "rgba(15,17,22,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 340, damping: 24 }}
         className="w-full max-w-sm rounded-[22px] card-shadow p-5 text-center"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
@@ -139,7 +151,7 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
         >
           關閉
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 

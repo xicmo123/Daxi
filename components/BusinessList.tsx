@@ -62,11 +62,13 @@ export default function BusinessList({
   photos,
   details,
   lots = [],
+  couponPlaceIds = [],
 }: {
   businesses: Business[];
   photos: Record<string, PhotoCredit>;
   details: Record<string, PlaceDetail>;
   lots?: LiveParkingLot[];
+  couponPlaceIds?: string[];
 }) {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("cat");
@@ -90,6 +92,12 @@ export default function BusinessList({
     const photo = photos[b.placeId];
     const tags = experienceTags(b, details[b.placeId]);
     const promo = tags[0] ?? categoryLabel(details[b.placeId]?.category, b.googleType, b.tag);
+    const liveStatus = details[b.placeId]?.liveStatus;
+    const statusBadge = liveStatus?.soldOut
+      ? "已完售"
+      : liveStatus?.queueMinutes
+        ? `需等 ${liveStatus.queueMinutes} 分`
+        : null;
 
     return (
       <button
@@ -127,6 +135,14 @@ export default function BusinessList({
           >
             {promo}
           </div>
+          {statusBadge ? (
+            <div
+              className="absolute right-2.5 top-2.5 rounded-md px-2 py-1 text-[11px] font-bold leading-none"
+              style={{ background: liveStatus?.soldOut ? "var(--ink)" : "var(--daxi-red)", color: "#fff" }}
+            >
+              {statusBadge}
+            </div>
+          ) : null}
         </div>
         <div className="pt-2.5">
           <h3 className="truncate text-[17px] font-black leading-tight" style={{ color: "var(--ink)" }}>
@@ -213,9 +229,11 @@ export default function BusinessList({
           business={openBusiness}
           photo={photos[openBusiness.placeId]}
           detail={details[openBusiness.placeId]}
+          allDetails={details}
           allBusinesses={businesses}
           photos={photos}
           lots={lots}
+          couponPlaceIds={couponPlaceIds}
           onSelect={setOpenBusiness}
           onClose={() => setOpenBusiness(null)}
         />

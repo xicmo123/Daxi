@@ -6,6 +6,7 @@ import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { trackClick } from "@/lib/trackClient";
+import EmptyState from "@/components/EmptyState";
 
 export default function SearchResults({
   places,
@@ -52,13 +53,9 @@ export default function SearchResults({
       </div>
 
       {!normalized ? (
-        <div className="text-center text-[12.5px] py-8" style={{ color: "var(--ink-soft)" }}>
-          輸入關鍵字開始搜尋
-        </div>
+        <EmptyState variant="car" title="輸入關鍵字開始搜尋" subtitle="景點、店家、活動都找得到，先繞一圈等你" />
       ) : results.length === 0 ? (
-        <div className="text-center text-[12.5px] py-8" style={{ color: "var(--ink-soft)" }}>
-          找不到「{query}」相關結果
-        </div>
+        <EmptyState variant="mascot" title={`找不到「${query}」相關結果`} subtitle="換個關鍵字試試，或許是我們還沒收錄" />
       ) : (
         <div className="flex flex-col gap-2">
           {results.map((p) => (
