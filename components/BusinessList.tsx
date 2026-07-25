@@ -7,6 +7,7 @@ import type { Business, BusinessTag } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
+import type { Coupon } from "@/lib/coupons";
 import { experienceTags } from "@/lib/experience";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
@@ -63,12 +64,14 @@ export default function BusinessList({
   details,
   lots = [],
   couponPlaceIds = [],
+  coupons = [],
 }: {
   businesses: Business[];
   photos: Record<string, PhotoCredit>;
   details: Record<string, PlaceDetail>;
   lots?: LiveParkingLot[];
   couponPlaceIds?: string[];
+  coupons?: Coupon[];
 }) {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("cat");
@@ -234,6 +237,7 @@ export default function BusinessList({
           photos={photos}
           lots={lots}
           couponPlaceIds={couponPlaceIds}
+          coupons={coupons}
           onSelect={setOpenBusiness}
           onClose={() => setOpenBusiness(null)}
         />

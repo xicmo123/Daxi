@@ -39,6 +39,51 @@ export function experienceTags(business: Business, detail?: PlaceDetail): string
   return Array.from(tags).slice(0, 3);
 }
 
+export type SuggestedRoute = {
+  id: string;
+  title: string;
+  desc: string;
+  stops: Array<{ placeId: string; name: string; walkTime: string }>;
+};
+
+// Auto-built from existing tagged spot/business data (no hand-authored
+// itinerary content to keep in sync) — grouped by the same experienceTags
+// used elsewhere, ordered by distance from the old street.
+export function buildSuggestedRoutes(allBusinesses: Business[], details: Record<string, PlaceDetail>): SuggestedRoute[] {
+  const tagged = allBusinesses.map((b) => ({ b, tags: experienceTags(b, details[b.placeId]) }));
+  const toStop = (b: Business) => ({ placeId: b.placeId, name: b.name, walkTime: walkTimeLabel(b.distanceMeters) });
+
+  const heritageSpots = tagged
+    .filter(({ b, tags }) => b.tag === "景點" && (tags.includes("歷史地標") || tags.includes("木藝散步")))
+    .map(({ b }) => b)
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .slice(0, 3);
+  const nearbyFood = allBusinesses
+    .filter((b) => b.tag === "美食")
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .slice(0, 2);
+  const heritageRoute: SuggestedRoute = {
+    id: "heritage",
+    title: "老街人文半日遊",
+    desc: "古蹟＋木藝散步，中途順路吃點在地小吃",
+    stops: [...heritageSpots, ...nearbyFood].sort((a, b) => a.distanceMeters - b.distanceMeters).map(toStop),
+  };
+
+  const natureSpots = tagged
+    .filter(({ b, tags }) => b.tag === "景點" && tags.includes("親子走走"))
+    .map(({ b }) => b)
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .slice(0, 4);
+  const natureRoute: SuggestedRoute = {
+    id: "nature",
+    title: "親子自然路線",
+    desc: "公園、河濱綠地，適合帶小孩慢慢走",
+    stops: natureSpots.map(toStop),
+  };
+
+  return [heritageRoute, natureRoute].filter((r) => r.stops.length >= 2);
+}
+
 const INDOOR_KEYWORDS = ["博物館", "美術館", "展館", "紀念館", "文化館", "生態博物館", "室內", "圖書館", "古宅"];
 
 // No structured "indoor" field on curated places yet, so infer it from
@@ -82,16 +127,6 @@ export function parkingCongestion(lots: LiveParkingLot[]): ParkingCongestion {
   return { isCongested, occupancyPct, nearLots, alternatives, lateBirdExtraMinutes };
 }
 
-const RELIEF_KEYWORDS = ["公廁", "廁所", "洗手間", "哺乳室", "哺集乳室", "育嬰室", "遊客中心", "旅客服務中心", "服務中心", "冷氣", "空調", "候車室", "休息室"];
-
-// "緊急生理需求雷達" — no dedicated restroom/nursing-room dataset exists yet,
-// so this filters the existing spot list by name/category/tag keywords for
-// facilities that are actually usable as a bathroom/AC break/nursing stop.
-export function isReliefSpot(name: string, category?: string, tags?: string[]): boolean {
-  const text = `${name} ${category ?? ""} ${(tags ?? []).join(" ")}`;
-  return RELIEF_KEYWORDS.some((kw) => text.includes(kw));
-}
-
 // Heuristic "how busy will the old street be" score — no live footfall feed
 // exists, so this blends known signals (roadwork count, weekend/afternoon,
 // festival) into a 0-100 band for the resident "週末出門指數" card.
@@ -116,20 +151,4 @@ export function congestionScore({
   if (isFestivalToday) score += 30;
 
   return Math.max(0, Math.min(100, score));
-}
-
-export function parkingSummary(lots: LiveParkingLot[]) {
-  const openLots = lots.filter((l) => l.status !== "full");
-  const availableStalls = lots.reduce((sum, lot) => sum + (lot.surplus ?? 0), 0);
-  const recommended =
-    openLots.find((l) => !l.isOpenAccess && (l.pct ?? 0) >= 15) ?? openLots.find((l) => l.status !== "full") ?? null;
-  const fullCount = lots.filter((l) => l.status === "full").length;
-
-  return {
-    openLots,
-    availableStalls,
-    recommended,
-    fullCount,
-    tone: openLots.length === 0 ? "tight" : fullCount >= Math.ceil(lots.length / 2) ? "busy" : "ok",
-  };
 }

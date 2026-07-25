@@ -4,17 +4,43 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Coupon } from "@/lib/coupons";
 import CouponRedeemModal from "./CouponRedeemModal";
+import AboutModal from "./AboutModal";
 import { trackClick } from "@/lib/trackClient";
 
 export type CouponWithBusiness = Coupon & { businessName: string; distanceLabel?: string };
+
+function AboutRow() {
+  const [showAbout, setShowAbout] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setShowAbout(true)}
+        className="flex items-center justify-between rounded-2xl px-4 py-3.5 text-left transition-opacity active:opacity-70"
+        style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+      >
+        <span className="text-[13px] font-medium" style={{ color: "var(--ink)" }}>
+          關於
+        </span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: "var(--ink-soft)" }}>
+          <path d="m9 5 7 7-7 7" />
+        </svg>
+      </button>
+      {showAbout ? <AboutModal onClose={() => setShowAbout(false)} /> : null}
+    </>
+  );
+}
 
 export default function CouponList({ coupons }: { coupons: CouponWithBusiness[] }) {
   const [open, setOpen] = useState<CouponWithBusiness | null>(null);
 
   if (coupons.length === 0) {
     return (
-      <div className="safe-page-x py-6 text-center text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
-        目前沒有進行中的優惠
+      <div className="safe-page-x flex flex-col gap-2.5">
+        <div className="py-6 text-center text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
+          暫時無資料
+        </div>
+        <AboutRow />
       </div>
     );
   }
@@ -51,6 +77,8 @@ export default function CouponList({ coupons }: { coupons: CouponWithBusiness[] 
           </span>
         </motion.button>
       ))}
+
+      <AboutRow />
 
       {open ? <CouponRedeemModal coupon={open} businessName={open.businessName} onClose={() => setOpen(null)} /> : null}
     </div>

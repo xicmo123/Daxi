@@ -34,7 +34,7 @@ export default function IdentitySwitchCard({
         onClick={() => {
           setSwitching(true);
           writeIdentity(switchToIdentity);
-          window.setTimeout(() => router.push(switchToHref), 220);
+          window.setTimeout(() => router.push(switchToHref), 550);
         }}
         className="w-full rounded-full py-2.5 text-[13px] font-semibold transition-opacity active:opacity-70"
         style={{ background: "var(--river-teal)", color: "#fff", opacity: switching ? 0.6 : 1 }}

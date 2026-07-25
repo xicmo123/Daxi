@@ -1,11 +1,11 @@
 import PageHeader from "@/components/PageHeader";
 import EventsList from "@/components/EventsList";
-import { readSlides } from "@/lib/carousel";
+import { getMergedEvents } from "@/lib/eventsFeed";
 
 export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
-  const slides = await readSlides();
+  const slides = await getMergedEvents();
   const events = slides.map((event) => ({
     key: event.id,
     phase: event.phase,
@@ -18,8 +18,8 @@ export default async function EventsPage() {
     badges: event.badges,
     ctaLabel: event.ctaLabel,
     ctaUrl: event.ctaUrl,
-    photoSrc: event.photo?.src,
-    photoHistorical: event.photo?.historical,
+    photoSrc: event.photoSrc,
+    photoHistorical: event.photoHistorical,
   }));
 
   return (

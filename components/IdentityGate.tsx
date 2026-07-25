@@ -4,6 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { readIdentity, writeIdentity, type Identity } from "@/lib/identity";
 import IdentityTransitionOverlay from "./IdentityTransitionOverlay";
+import { useT } from "@/lib/i18n";
 
 function subscribe(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -30,6 +31,7 @@ export default function IdentityGate() {
 
 function HomeIdentityGate() {
   const router = useRouter();
+  const t = useT();
   // useSyncExternalStore (not a plain effect) is the correct way to read an
   // external source like localStorage: getServerSnapshot keeps the SSR/
   // first-paint output as "unknown" so there's no hydration mismatch, and
@@ -49,7 +51,7 @@ function HomeIdentityGate() {
     window.setTimeout(() => {
       writeIdentity(next);
       setChosen(next);
-    }, 220);
+    }, 550);
   };
 
   if (redirecting) {
@@ -64,13 +66,13 @@ function HomeIdentityGate() {
       <div className="w-full max-w-sm fade-in">
         <div className="text-center mb-8">
           <div className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: "var(--accent)" }}>
-            歡迎來到
+            {t("welcomeTo")}
           </div>
           <h1 className="text-[26px] font-bold" style={{ color: "var(--ink)" }}>
             大溪 Daxi
           </h1>
           <p className="text-[13px] mt-2" style={{ color: "var(--ink-soft)" }}>
-            先告訴我們你是誰，內容會不一樣
+            {t("gateSubtitle")}
           </p>
         </div>
 
@@ -82,10 +84,10 @@ function HomeIdentityGate() {
             style={{ background: "linear-gradient(135deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)" }}
           >
             <div className="text-[15px] font-bold" style={{ color: "var(--block-fg)" }}>
-              我是遊客
+              {t("imTourist")}
             </div>
             <div className="text-[12px] mt-1" style={{ color: "rgba(43,36,32,0.72)" }}>
-              景點推薦、美食優惠、地圖導覽
+              {t("touristCardDesc")}
             </div>
           </button>
 
@@ -96,16 +98,16 @@ function HomeIdentityGate() {
             style={{ background: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)" }}
           >
             <div className="text-[15px] font-bold" style={{ color: "var(--block-fg)" }}>
-              我是大溪人
+              {t("imResident")}
             </div>
             <div className="text-[12px] mt-1" style={{ color: "rgba(43,36,32,0.72)" }}>
-              里民服務、區公所公告、停水停電通知
+              {t("residentCardDesc")}
             </div>
           </button>
         </div>
 
         <p className="text-center text-[11px] mt-6" style={{ color: "var(--ink-soft)" }}>
-          之後可以隨時在「我的」切換身份
+          {t("gateSwitchHint")}
         </p>
       </div>
     </div>

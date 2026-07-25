@@ -27,7 +27,15 @@ export type HeroSlide = {
   photoHistorical?: boolean;
 };
 
-export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: HeroSlide[]; initialIndex?: number }) {
+export default function HeroCarousel({
+  slides,
+  initialIndex = 0,
+  compact = false,
+}: {
+  slides: HeroSlide[];
+  initialIndex?: number;
+  compact?: boolean;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(initialIndex);
   const [openSlide, setOpenSlide] = useState<HeroSlide | null>(null);
@@ -69,7 +77,11 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
           <div key={s.key} className="w-full shrink-0 snap-center safe-page-x">
             <button
               onClick={() => setOpenSlide(s)}
-              className="relative flex h-[215px] w-full flex-col justify-end overflow-hidden rounded-[22px] p-5 text-left transition-opacity active:opacity-90 card-shadow sm:h-[260px] lg:h-[340px] lg:p-7"
+              className={
+                compact
+                  ? "relative flex h-[108px] w-full flex-col justify-end overflow-hidden rounded-2xl p-3 text-left transition-opacity active:opacity-90 card-shadow sm:h-[130px] lg:h-[170px]"
+                  : "relative flex h-[215px] w-full flex-col justify-end overflow-hidden rounded-[22px] p-5 text-left transition-opacity active:opacity-90 card-shadow sm:h-[260px] lg:h-[340px] lg:p-7"
+              }
               style={{ color: "#f4ece2" }}
             >
               {s.photoSrc ? (
@@ -77,6 +89,7 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
                   src={s.photoSrc}
                   alt={s.title}
                   fill
+                  unoptimized={s.photoSrc.startsWith("http")}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 768px, 1024px"
                   className="object-cover"
                   style={{ filter: "saturate(0.85) contrast(0.97)" }}
@@ -101,7 +114,11 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
               />
               <div className="relative">
                 <div
-                  className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-2"
+                  className={
+                    compact
+                      ? "inline-flex items-center gap-1 text-[9.5px] rounded-full px-2 py-0.5 mb-1"
+                      : "inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-2"
+                  }
                   style={{ background: "rgba(244,236,226,0.14)", border: "1px solid rgba(244,236,226,0.3)" }}
                 >
                   <span
@@ -110,25 +127,38 @@ export default function HeroCarousel({ slides, initialIndex = 0 }: { slides: Her
                   />
                   {s.date}・{phaseLabel[s.phase]}
                 </div>
-                <h3 className="font-serif text-lg font-semibold mb-1.5 sm:text-2xl lg:text-[30px]">{s.title}</h3>
-                <p
-                  className="text-[12.5px] leading-snug mb-3"
-                  style={{
-                    color: "rgba(242,239,233,0.78)",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
+                <h3
+                  className={
+                    compact
+                      ? "font-serif text-[13px] font-semibold leading-tight sm:text-[15px]"
+                      : "font-serif text-lg font-semibold mb-1.5 sm:text-2xl lg:text-[30px]"
+                  }
+                  style={compact ? { display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" } : undefined}
                 >
-                  {s.desc}
-                </p>
-                <span
-                  className="inline-flex items-center gap-1.5 text-[12.5px] font-medium rounded-full px-3.5 py-1.5"
-                  style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
-                >
-                  查看詳情 →
-                </span>
+                  {s.title}
+                </h3>
+                {compact ? null : (
+                  <>
+                    <p
+                      className="text-[12.5px] leading-snug mb-3"
+                      style={{
+                        color: "rgba(242,239,233,0.78)",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {s.desc}
+                    </p>
+                    <span
+                      className="inline-flex items-center gap-1.5 text-[12.5px] font-medium rounded-full px-3.5 py-1.5"
+                      style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
+                    >
+                      查看詳情 →
+                    </span>
+                  </>
+                )}
               </div>
             </button>
           </div>

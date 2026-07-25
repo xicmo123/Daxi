@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, type CSSProperties } from "react";
+import { useT, type DictKey } from "@/lib/i18n";
+import AboutModal from "./AboutModal";
 
 const tabs = [
   {
     href: "/",
-    label: "首頁",
+    labelKey: "navHome" as DictKey,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4.5 11.5 12 5l7.5 6.5" />
@@ -18,7 +21,7 @@ const tabs = [
   },
   {
     href: "/events",
-    label: "活動",
+    labelKey: "navEvents" as DictKey,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M8 5.8h8" />
@@ -33,7 +36,7 @@ const tabs = [
   },
   {
     href: "/spots",
-    label: "景點",
+    labelKey: "navSpots" as DictKey,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 21s6.4-5.9 6.4-10.7a6.4 6.4 0 0 0-12.8 0C5.6 15.1 12 21 12 21Z" />
@@ -45,7 +48,7 @@ const tabs = [
   },
   {
     href: "/businesses",
-    label: "商家",
+    labelKey: "navBusinesses" as DictKey,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 9.5h14l-1.1-4h-11.8Z" />
@@ -58,7 +61,7 @@ const tabs = [
   },
   {
     href: "/parking",
-    label: "停車",
+    labelKey: "navParking" as DictKey,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <rect x="4.5" y="4" width="15" height="15" rx="4" />
@@ -68,12 +71,13 @@ const tabs = [
     ),
   },
   {
-    href: "/coupons",
-    label: "優惠券",
+    href: null,
+    labelKey: "navAbout" as DictKey,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4.5 9.8a2.2 2.2 0 0 0 0-3.6V5.5a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v.7a2.2 2.2 0 0 0 0 3.6v3.4a2.2 2.2 0 0 0 0 3.6v.7a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-.7a2.2 2.2 0 0 0 0-3.6Z" />
-        <path d="M9.5 5v14" strokeDasharray="1.6 1.8" />
+        <circle cx="12" cy="12" r="8.2" />
+        <path d="M12 11v5.2" />
+        <circle cx="12" cy="7.8" r="0.15" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
       </svg>
     ),
   },
@@ -81,6 +85,8 @@ const tabs = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const t = useT();
+  const [showAbout, setShowAbout] = useState(false);
 
   return (
     <nav
@@ -106,27 +112,25 @@ export default function BottomNav() {
         }}
       >
         {tabs.map((tab) => {
-          const active = pathname === tab.href || (tab.href === "/parking" && pathname === "/weather");
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              aria-current={active ? "page" : undefined}
-              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-              style={{
-                color: active ? "var(--daxi-red)" : "var(--ink)",
-                opacity: active ? 1 : 0.54,
-                minHeight: 56,
-                padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 4,
-                textDecoration: "none",
-                position: "relative",
-              }}
-            >
+          const active = tab.href !== null && (pathname === tab.href || (tab.href === "/parking" && pathname === "/weather"));
+          const itemStyle: CSSProperties = {
+            color: active ? "var(--daxi-red)" : "var(--ink)",
+            opacity: active ? 1 : 0.54,
+            minHeight: 56,
+            padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            textDecoration: "none",
+            position: "relative",
+            background: "none",
+            border: "none",
+            width: "100%",
+          };
+          const content = (
+            <>
               <span
                 aria-hidden
                 className="absolute top-1.5 h-0.5 w-5 rounded-full transition-opacity duration-300"
@@ -150,12 +154,39 @@ export default function BottomNav() {
                 className="text-[10.5px] font-normal tracking-wide transition-all duration-300"
                 style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </span>
+            </>
+          );
+
+          if (tab.href === null) {
+            return (
+              <button
+                key={tab.labelKey}
+                type="button"
+                onClick={() => setShowAbout(true)}
+                className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
+                style={itemStyle}
+              >
+                {content}
+              </button>
+            );
+          }
+
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              aria-current={active ? "page" : undefined}
+              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
+              style={itemStyle}
+            >
+              {content}
             </Link>
           );
         })}
       </div>
+      {showAbout ? <AboutModal onClose={() => setShowAbout(false)} /> : null}
     </nav>
   );
 }

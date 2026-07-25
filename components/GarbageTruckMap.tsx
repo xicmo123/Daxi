@@ -19,6 +19,7 @@ type LoadState = "loading" | "ready" | "empty" | "error";
 
 const DAXI_CENTER: [number, number] = [24.884, 121.288];
 const REFRESH_SECONDS = 15;
+const ROUTE_STORAGE_KEY = "daxi-garbage-route";
 
 function formatTime(value: string | number) {
   return new Intl.DateTimeFormat("zh-TW", {
@@ -109,7 +110,12 @@ export default function GarbageTruckMap() {
         const data = (await response.json()) as { routes: GarbageRoute[] };
         if (cancelled) return;
         setRoutes(data.routes);
-        setRouteId((current) => current || data.routes[0]?.id || "");
+        setRouteId((current) => {
+          if (current) return current;
+          const saved = window.localStorage.getItem(ROUTE_STORAGE_KEY);
+          const savedIsValid = saved && data.routes.some((r) => r.id === saved);
+          return (savedIsValid ? saved : data.routes[0]?.id) ?? "";
+        });
         setState(data.routes.length > 0 ? "ready" : "empty");
       } catch {
         if (!cancelled) setState("error");
@@ -237,6 +243,7 @@ export default function GarbageTruckMap() {
           onChange={(event) => {
             setState("loading");
             setRouteId(event.target.value);
+            window.localStorage.setItem(ROUTE_STORAGE_KEY, event.target.value);
           }}
           aria-label="垃圾清運路線"
           className="min-w-0 flex-1 rounded-full px-3 py-2 text-[13px] font-semibold outline-none"

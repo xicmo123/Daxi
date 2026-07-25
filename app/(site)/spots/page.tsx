@@ -2,6 +2,8 @@ import PageHeader from "@/components/PageHeader";
 import SpotsList from "@/components/SpotsList";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+import { buildSuggestedRoutes } from "@/lib/experience";
+import { listActiveCoupons } from "@/lib/coupons";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +13,7 @@ export default async function SpotsPage() {
   const spots = allPlaces.filter((b) => b.tag === "景點");
   const featuredSpots = spots.filter((b) => details[b.placeId]?.featured);
   const creditedSpots = spots.filter((b) => photos[b.placeId]?.author);
+  const routes = buildSuggestedRoutes(allPlaces, details);
 
   let lots: LiveParkingLot[] = [];
   try {
@@ -19,11 +22,18 @@ export default async function SpotsPage() {
     lots = [];
   }
 
+  let coupons: Awaited<ReturnType<typeof listActiveCoupons>> = [];
+  try {
+    coupons = await listActiveCoupons();
+  } catch {
+    coupons = [];
+  }
+
   return (
     <div className="pt-2">
       <PageHeader title="景點" subtitle="老街周邊景點與順路走走" tint="moss" />
 
-      <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} />
+      <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} routes={routes} coupons={coupons} />
 
       {creditedSpots.length > 0 ? (
         <div className="safe-page-x pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>

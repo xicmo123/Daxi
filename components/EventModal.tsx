@@ -50,6 +50,7 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
               src={slide.photoSrc}
               alt={slide.title}
               fill
+              unoptimized={slide.photoSrc.startsWith("http")}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 544px, 672px"
               className="object-cover"
               style={{ filter: "saturate(0.85) contrast(0.97)" }}

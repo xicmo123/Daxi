@@ -1,10 +1,11 @@
 import PageHeader from "@/components/PageHeader";
 import Link from "next/link";
-import { statusWeight, statusBarColor } from "@/lib/status";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesParking";
-import { parkingSummary, parkingCongestion, walkTimeLabel } from "@/lib/experience";
+import { parkingCongestion } from "@/lib/experience";
 import ParkingAlertBanner from "@/components/ParkingAlertBanner";
+import ParkingMap, { type ParkingMapLot, type ParkingMapLandmark } from "@/components/ParkingMap";
+import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStore";
 
 // Rough average walking pace (~80m/min) — a static, indicative label only.
 export const revalidate = 60;
@@ -34,8 +35,46 @@ export default async function ParkingPage() {
     ...lots.map((l): Row => ({ kind: "public", ...l })),
     ...nearbyLots.map((l): Row => ({ kind: "private", ...l })),
   ].sort((a, b) => a.distanceMeters - b.distanceMeters);
-  const summary = parkingSummary(lots);
   const congestion = parkingCongestion(lots);
+
+  const mapLots: ParkingMapLot[] = rows.map((row) => {
+    const key = row.kind === "public" ? row.name : row.placeId;
+    if (row.kind === "public") {
+      const isFull = row.status === "full";
+      const availability = isFull ? "目前滿位" : row.isOpenAccess ? "開放式車位" : `剩餘 ${row.surplus}/${row.total}`;
+      return {
+        id: key,
+        name: row.name,
+        lat: row.lat,
+        lng: row.lng,
+        kind: "public",
+        status: row.status,
+        isFull,
+        note: `${availability}・距老街 ${row.distanceLabel}`,
+        mapsUrl: row.mapsUrl,
+      };
+    }
+    return {
+      id: key,
+      name: row.name,
+      lat: row.lat,
+      lng: row.lng,
+      kind: "private",
+      note: `僅供位置參考・距老街 ${row.distanceLabel}`,
+      mapsUrl: row.mapsUrl,
+    };
+  });
+
+  let landmarks: ParkingMapLandmark[] = [];
+  try {
+    const [rawPlaces, details] = await Promise.all([getAllPlaces(), readDetails()]);
+    const places = filterVisiblePlaces(rawPlaces, details);
+    landmarks = places
+      .filter((p) => p.tag === "景點")
+      .map((p) => ({ id: p.placeId, name: p.name, lat: p.lat, lng: p.lng }));
+  } catch {
+    landmarks = [];
+  }
 
   return (
     <div className="pt-2">
@@ -54,6 +93,36 @@ export default async function ParkingPage() {
       ) : null}
 
       <div className="safe-page-x pb-4 fade-in">
+        <a
+          href="https://www.google.com/maps/dir/?api=1&destination=24.8809,121.2868&travelmode=transit"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 mb-3 transition-opacity active:opacity-70"
+          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
+        >
+          <span className="flex items-center gap-3 min-w-0">
+            <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="5" y="4" width="14" height="13" rx="3" />
+                <path d="M5 13.5h14M8.5 17v2.2M15.5 17v2.2" />
+                <circle cx="8.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
+                <circle cx="15.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
+              </svg>
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[13.5px] font-medium" style={{ color: "var(--ink)" }}>
+                不開車？查大眾運輸路線
+              </span>
+              <span className="block text-[11.5px] truncate" style={{ color: "var(--ink-soft)" }}>
+                大溪本地無火車站，多由桃園、中壢或高鐵桃園站轉乘客運
+              </span>
+            </span>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: "var(--ink-soft)" }}>
+            <path d="m9 5 7 7-7 7" />
+          </svg>
+        </a>
+
         <Link
           href="/weather"
           className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 transition-opacity active:opacity-70"
@@ -81,50 +150,9 @@ export default async function ParkingPage() {
         </Link>
       </div>
 
-      {!liveDataFailed && lots.length > 0 ? (
+      {mapLots.length > 0 ? (
         <div className="safe-page-x pb-5 fade-in">
-          <div
-            className="rounded-xl px-4 py-4"
-            style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-[11px] mb-1" style={{ color: "var(--accent-fg-soft)" }}>
-                  現在建議
-                </div>
-                <div className="font-serif text-[20px] font-semibold leading-snug">
-                  {summary.recommended ? summary.recommended.name : "公有停車場偏滿"}
-                </div>
-                <div className="text-[12px] mt-1" style={{ color: "var(--accent-fg-soft)" }}>
-                  {summary.recommended
-                    ? `距老街 ${summary.recommended.distanceLabel}・步行約 ${walkTimeLabel(summary.recommended.distanceMeters)}`
-                    : "先查看下方鄰近停車場，或改搭接駁/步行進入老街"}
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <div className="font-serif text-[26px] leading-none">
-                  {summary.availableStalls}
-                </div>
-                <div className="text-[10.5px] mt-1" style={{ color: "var(--accent-fg-soft)" }}>
-                  即時剩餘格
-                </div>
-              </div>
-            </div>
-            {summary.recommended ? (
-              <a
-                href={summary.recommended.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[13px] font-semibold transition-opacity active:opacity-80"
-                style={{ background: "#fff", color: "var(--block-wood-deep)" }}
-              >
-                導航到建議停車場
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M7 17 17 7M9 7h8v8" />
-                </svg>
-              </a>
-            ) : null}
-          </div>
+          <ParkingMap lots={mapLots} landmarks={landmarks} />
         </div>
       ) : null}
 
@@ -135,102 +163,6 @@ export default async function ParkingPage() {
           </div>
         </div>
       ) : null}
-
-      <div className="safe-page-x pb-10 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
-        {rows.map((row, i) => {
-          const key = row.kind === "public" ? row.name : row.placeId;
-          const isFull = row.kind === "public" && row.status === "full";
-          const weight = row.kind === "public" ? statusWeight[row.status] : null;
-
-          return (
-            <a
-              key={key}
-              href={isFull ? undefined : row.mapsUrl}
-              target={isFull ? undefined : "_blank"}
-              rel={isFull ? undefined : "noopener noreferrer"}
-              aria-disabled={isFull || undefined}
-              className={`flex items-center justify-between gap-5 py-6 transition-opacity ${isFull ? "cursor-default" : "active:opacity-60"}`}
-              style={{
-                borderBottom: "1px solid var(--line)",
-                animationDelay: `${Math.min(i, 6) * 40}ms`,
-              }}
-            >
-              <div className="min-w-0 flex-1">
-                <div className="text-[15px] font-serif mb-1.5 truncate" style={{ color: isFull ? "var(--ink-soft)" : "var(--ink)" }}>
-                  {row.name}
-                </div>
-                <div className="text-[12px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                  距老街 {row.distanceLabel}
-                </div>
-                {row.address ? (
-                  <div className="text-[11.5px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
-                    {row.address}
-                  </div>
-                ) : null}
-                {row.kind === "private" ? (
-                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                    <span
-                      className="text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
-                      style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
-                    >
-                      僅供位置參考
-                    </span>
-                    <span
-                      className="text-[10.5px] tracking-wide rounded-full px-2 py-0.5"
-                      style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
-                    >
-                      步行至老街約 {walkTimeLabel(row.distanceMeters)}
-                    </span>
-                  </div>
-                ) : null}
-                {row.kind === "public" && !isFull && !row.isOpenAccess ? (
-                  <div className="mt-3 h-[3px] w-full max-w-[140px] rounded-full overflow-hidden" style={{ background: "var(--line)" }}>
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{ width: `${row.pct}%`, background: statusBarColor[row.status] }}
-                    />
-                  </div>
-                ) : null}
-              </div>
-              <div className="flex flex-col items-end gap-1 shrink-0">
-                {row.kind === "public" ? (
-                  isFull ? (
-                    <div className="font-serif text-lg" style={{ color: "var(--ink-soft)" }}>
-                      目前滿位
-                    </div>
-                  ) : (
-                    <div
-                      className={`font-serif text-2xl tracking-tight tabular-nums ${weight!.label}`}
-                      style={{ color: weight!.fg }}
-                    >
-                      {row.isOpenAccess ? "開放" : `${row.pct}%`}
-                    </div>
-                  )
-                ) : (
-                  <span
-                    className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12.5px] font-semibold"
-                    style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
-                  >
-                    導航
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M7 17 17 7M9 7h8v8" />
-                    </svg>
-                  </span>
-                )}
-                <div className="text-[10.5px] tracking-wide" style={{ color: "var(--ink-soft)" }}>
-                  {row.kind === "public"
-                    ? isFull
-                      ? "建議改往鄰近停車場"
-                      : row.isOpenAccess
-                        ? `總車位 ${row.total}`
-                        : `剩餘 ${row.surplus}/${row.total}`
-                    : ""}
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
 
       <div className="safe-page-x pb-10 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：

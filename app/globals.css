@@ -280,6 +280,16 @@ button:focus-visible {
   font-family: var(--font-sans);
 }
 
+/* Default OSM tiles are cool blue/grey — pull them toward the app's warm
+   paper/wood palette so the map doesn't look like a different product. */
+.leaflet-tile-pane {
+  filter: sepia(0.32) saturate(0.75) hue-rotate(-6deg) brightness(1.04) contrast(0.96);
+}
+
+:root[data-theme="dark"] .leaflet-tile-pane {
+  filter: sepia(0.3) saturate(0.6) hue-rotate(-6deg) brightness(0.72) contrast(1.05);
+}
+
 .garbage-marker {
   align-items: center;
   border: 2px solid #fff;
@@ -349,6 +359,23 @@ button:focus-visible {
   height: 0;
   position: relative;
   width: 0;
+}
+
+.bus-marker {
+  align-items: center;
+  background: var(--river-teal);
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(43, 36, 32, 0.22);
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.bus-marker span {
+  font-size: 15px;
+  line-height: 1;
 }
 
 .roadwork-marker span::before {

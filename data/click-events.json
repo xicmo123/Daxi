@@ -25,5 +25,53 @@
     "label": "大溪中正公園",
     "mode": "tourist",
     "at": "2026-07-23T13:38:14.329Z"
+  },
+  {
+    "type": "coupon",
+    "id": "cp-doufu-01",
+    "label": "現滷豆干買5送1",
+    "at": "2026-07-24T08:57:29.402Z"
+  },
+  {
+    "type": "map_card",
+    "id": "/bus",
+    "label": "公車資訊",
+    "mode": "tourist",
+    "at": "2026-07-25T15:02:50.527Z"
+  },
+  {
+    "type": "map_card",
+    "id": "/weather",
+    "label": "直播",
+    "mode": "tourist",
+    "at": "2026-07-25T15:36:51.925Z"
+  },
+  {
+    "type": "spot",
+    "id": "ChIJT_aqYmkYaDQR427DjxHNCcU",
+    "label": "大溪埔頂公園",
+    "mode": "tourist",
+    "at": "2026-07-25T17:20:54.587Z"
+  },
+  {
+    "type": "map_card",
+    "id": "/weather",
+    "label": "直播",
+    "mode": "tourist",
+    "at": "2026-07-25T17:20:59.834Z"
+  },
+  {
+    "type": "map_card",
+    "id": "/bus",
+    "label": "公車資訊",
+    "mode": "tourist",
+    "at": "2026-07-25T17:21:31.308Z"
+  },
+  {
+    "type": "map_card",
+    "id": "/spots",
+    "label": "景點資訊",
+    "mode": "tourist",
+    "at": "2026-07-25T17:25:36.048Z"
   }
 ]

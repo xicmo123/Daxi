@@ -1,18 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type React from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
+import type { Coupon } from "@/lib/coupons";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import { experienceTags } from "@/lib/experience";
 import PlaceholderIcon from "./PlaceholderIcon";
 import ReservationBooking from "./ReservationBooking";
+import FavoriteButton from "./FavoriteButton";
+import CouponRedeemModal from "./CouponRedeemModal";
 
 function nearbyBusinesses(business: Business, all: Business[], limit = 3) {
   return all
@@ -46,6 +49,7 @@ export default function BusinessDetailModal({
   photos,
   lots = [],
   couponPlaceIds = [],
+  coupons = [],
   onSelect,
   onClose,
 }: {
@@ -57,9 +61,12 @@ export default function BusinessDetailModal({
   photos: Record<string, PhotoCredit>;
   lots?: LiveParkingLot[];
   couponPlaceIds?: string[];
+  coupons?: Coupon[];
   onSelect?: (b: Business) => void;
   onClose: () => void;
 }) {
+  const [openCoupon, setOpenCoupon] = useState<Coupon | null>(null);
+  const myCoupons = coupons.filter((c) => c.placeId === business.placeId);
   const nearest = findNearestLot(business, lots, business.placeId);
   const recommendedLot = detail?.recommendedParkingName
     ? lots.find((lot) => lot.name === detail.recommendedParkingName)
@@ -196,6 +203,9 @@ export default function BusinessDetailModal({
             className="absolute inset-0"
             style={{ background: "linear-gradient(180deg, rgba(15,17,22,0.05) 0%, rgba(15,17,22,0.15) 45%, rgba(15,17,22,0.88) 100%)" }}
           />
+          <div className="absolute left-3 top-3">
+            <FavoriteButton placeId={business.placeId} />
+          </div>
           <button
             onClick={onClose}
             aria-label="關閉"
@@ -249,6 +259,50 @@ export default function BusinessDetailModal({
               <p className="font-serif text-[14px] leading-relaxed" style={{ color: "var(--ink)" }}>
                 {detail.story}
               </p>
+            </div>
+          ) : null}
+
+          {myCoupons.length > 0 ? (
+            <div className="mb-5 flex flex-col gap-2">
+              <div className="text-[10.5px] tracking-[0.16em] uppercase" style={{ color: "var(--daxi-red)" }}>
+                本店優惠
+              </div>
+              {myCoupons.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setOpenCoupon(c)}
+                  className="relative flex items-center gap-3 overflow-hidden rounded-xl border px-3.5 py-3 text-left transition-opacity active:opacity-70"
+                  style={{ background: "var(--card)", borderColor: "var(--line)" }}
+                >
+                  <span
+                    className="absolute inset-y-2.5 left-0 w-1 rounded-r-full"
+                    style={{ background: "var(--daxi-red)" }}
+                    aria-hidden
+                  />
+                  <span
+                    className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+                    style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
+                    aria-hidden
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3.5 9.8a2.2 2.2 0 0 0 0-3.6V5.5a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v.7a2.2 2.2 0 0 0 0 3.6v3.4a2.2 2.2 0 0 0 0 3.6v.7a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-.7a2.2 2.2 0 0 0 0-3.6Z" />
+                      <path d="M9.5 5v14" strokeDasharray="1.6 1.8" />
+                    </svg>
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--ink)" }}>
+                      {c.title}
+                    </div>
+                    <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
+                      {c.desc}
+                    </div>
+                  </div>
+                  <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+                    掃碼核銷
+                  </span>
+                </button>
+              ))}
             </div>
           ) : null}
 
@@ -477,6 +531,7 @@ export default function BusinessDetailModal({
           </div>
         ) : null}
       </div>
+      {openCoupon ? <CouponRedeemModal coupon={openCoupon} businessName={business.name} onClose={() => setOpenCoupon(null)} /> : null}
     </div>
   );
 

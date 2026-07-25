@@ -103,6 +103,7 @@ export default function EventsList({ events, residentMode = false }: { events: H
                         src={event.photoSrc}
                         alt={event.title}
                         fill
+                        unoptimized={event.photoSrc.startsWith("http")}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover"
                         style={{ filter: "saturate(0.9) contrast(0.98)" }}

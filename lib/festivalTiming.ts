@@ -1,5 +1,4 @@
 import { festival } from "./data";
-import type { CarouselSlide } from "./carousel";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -9,7 +8,7 @@ function dateOnly(d: Date) {
 
 // Only single-day milestones (opening ceremony, procession day) count as
 // "live today" — the multi-week "ongoing" entry shouldn't read as breaking-news.
-export function findTodaysMilestone(slides: CarouselSlide[], now: Date = new Date()): CarouselSlide | null {
+export function findTodaysMilestone<T extends { isoDate?: string }>(slides: T[], now: Date = new Date()): T | null {
   const today = dateOnly(now).getTime();
   return slides.find((m) => m.isoDate && dateOnly(new Date(m.isoDate)).getTime() === today) ?? null;
 }
