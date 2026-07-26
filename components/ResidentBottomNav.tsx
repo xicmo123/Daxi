@@ -70,13 +70,12 @@ export default function ResidentBottomNav() {
       style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20, display: "flex", justifyContent: "center" }}
     >
       <div
-        className="mx-auto flex w-full max-w-md border-t md:max-w-3xl md:border-x lg:max-w-5xl"
+        className="mx-auto flex w-full max-w-md border-t md:max-w-3xl md:border-x lg:max-w-6xl"
         style={{
           borderColor: "var(--line)",
           display: "grid",
           gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
           width: "100%",
-          maxWidth: "64rem",
         }}
       >
         {tabs.map((tab) => {
