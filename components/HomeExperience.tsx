@@ -11,6 +11,7 @@ import type { CouponWithBusiness } from "./CouponList";
 import CouponRedeemModal from "./CouponRedeemModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import HeroCarousel, { type HeroSlide } from "./HeroCarousel";
+import { HeaderShapes } from "./PageHeader";
 
 export type FeedSpot = {
   placeId: string;
@@ -95,7 +96,7 @@ export default function HomeExperience({
           sit on one solid coral panel, chicTrip-style, instead of blending
           into the page background. */}
       <motion.div
-        className="safe-page-x pt-6 pb-5 fade-in"
+        className="relative overflow-hidden safe-page-x pt-6 pb-5 fade-in"
         animate={{ background: heroGradient }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
         style={{
@@ -104,8 +105,9 @@ export default function HomeExperience({
           boxShadow: "var(--shadow-float)",
         }}
       >
+        <HeaderShapes />
         {/* 1. "Daxi Today" eyebrow + headline, weather chip + bell + profile */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="relative flex items-center justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase" style={{ color: "rgba(43,36,32,0.7)" }}>
               Daxi Today · {todayLabel}
@@ -154,7 +156,7 @@ export default function HomeExperience({
         {/* 2. Identity switcher — 我是遊客 stays here; 我是大溪人 leaves for
             the separate /resident section entirely (different nav, different
             content), not just a re-sort of this page. */}
-        <div className="pt-4">
+        <div className="relative pt-4">
           <div className="inline-flex p-1 rounded-full" style={{ background: "rgba(255,255,255,0.18)" }}>
             <span
               className="px-4 py-1.5 rounded-full text-[12.5px] font-medium"
@@ -175,7 +177,7 @@ export default function HomeExperience({
         </div>
 
         {/* 3. Search bar */}
-        <form onSubmit={onSearch} className="pt-3">
+        <form onSubmit={onSearch} className="relative pt-3">
           <div className="flex items-center gap-2 rounded-full px-4 py-2.5" style={{ background: "#ffffff" }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ color: "var(--ink-soft)" }}>
               <circle cx="10.5" cy="10.5" r="6.5" />

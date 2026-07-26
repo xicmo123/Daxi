@@ -12,7 +12,7 @@ const tintBg: Record<PageTint, string> = {
 // of the app gets its own hue instead of one uniform cream wash throughout.
 // Large flat overlapping shapes break up the flat color fill without
 // competing with the title, echoed from the identity-gate/hero treatment.
-function HeaderShapes() {
+export function HeaderShapes() {
   return (
     <svg
       aria-hidden="true"
