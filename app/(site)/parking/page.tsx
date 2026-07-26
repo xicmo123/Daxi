@@ -1,4 +1,4 @@
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import Link from "next/link";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { fetchNearbyParking, type NearbyParkingLot } from "@/lib/googlePlacesParking";
@@ -78,9 +78,9 @@ export default async function ParkingPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader
-        title="周邊停車"
-        subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
+      <PageHeaderT
+        titleKey="parkingTitle"
+        subtitleKey={liveDataFailed ? "parkingSubtitleFailed" : "parkingSubtitleOk"}
         tint="river"
       />
 

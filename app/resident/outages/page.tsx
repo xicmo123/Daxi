@@ -1,4 +1,4 @@
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import OutagesList from "@/components/OutagesList";
 import { listUpcomingOutages } from "@/lib/outages";
 
@@ -18,7 +18,7 @@ export default async function OutagesPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="民生示警看板" subtitle="影響大溪區的停水、降壓、停電預告" tint="river" />
+      <PageHeaderT titleKey="residentOutagesTitle" subtitleKey="residentOutagesSubtitle" tint="river" />
 
       <div className="safe-page-x pb-4 fade-in">
         <div className="grid grid-cols-3 gap-2">

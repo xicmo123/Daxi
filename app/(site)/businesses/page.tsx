@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import BusinessList from "@/components/BusinessList";
 import { businessesGeneratedAt } from "@/lib/businesses";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
@@ -38,7 +38,7 @@ export default async function BusinessesPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="商家" subtitle={`美食・市集・${updatedLabel} 更新`} tint="wood" />
+      <PageHeaderT titleKey="navBusinesses" subtitleKey="businessesSubtitleTemplate" subtitleVars={{ updated: updatedLabel }} tint="wood" />
       <Suspense fallback={null}>
         <BusinessList businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} coupons={coupons} />
       </Suspense>

@@ -1,4 +1,4 @@
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import FavoritesView from "@/components/FavoritesView";
 import IdentitySwitchCard from "@/components/IdentitySwitchCard";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -28,11 +28,11 @@ export default async function ProfilePage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="我的" subtitle="收藏的景點與店家" tint="wood" />
+      <PageHeaderT titleKey="navProfile" subtitleKey="profileSubtitleTourist" tint="wood" />
 
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
         <FavoritesView allPlaces={allPlaces} photos={photos} details={details} lots={lots} coupons={coupons} />
-        <IdentitySwitchCard currentLabel="遊客" switchToHref="/resident" switchToLabel="切換為大溪人模式" switchToIdentity="resident" />
+        <IdentitySwitchCard currentLabelKey="touristLabel" switchToHref="/resident" switchToLabelKey="switchToResidentLabel" switchToIdentity="resident" />
         <LanguageToggle />
       </div>
     </div>

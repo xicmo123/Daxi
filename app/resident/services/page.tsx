@@ -1,5 +1,8 @@
-import PageHeader from "@/components/PageHeader";
+"use client";
+
+import PageHeaderT from "@/components/PageHeaderT";
 import GarbageTruckMap from "@/components/GarbageTruckMap";
+import { useT } from "@/lib/i18n";
 
 const DAXI_OFFICE_URL = "https://www.daxi.tycg.gov.tw";
 
@@ -32,12 +35,13 @@ function ContactRow({ label, phone }: { label: string; phone: string }) {
 }
 
 export default function ResidentServicesPage() {
+  const t = useT();
   return (
     <div className="pt-2">
-      <PageHeader title="里民服務" subtitle="生活大小事，這裡先找" tint="river" />
+      <PageHeaderT titleKey="residentServicesTitle" subtitleKey="residentServicesSubtitle" tint="river" />
 
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
-        <SectionCard id="report" title="陳情 / 報修">
+        <SectionCard id="report" title={t("serviceReportTitle")}>
           <p className="text-[12.5px] leading-relaxed mb-3" style={{ color: "var(--ink-soft)" }}>
             路燈故障、道路坑洞、路樹倒伏等問題，可撥打市民專線或前往區公所網站陳情信箱通報。
           </p>
@@ -71,7 +75,7 @@ export default function ResidentServicesPage() {
           </div>
         </SectionCard>
 
-        <SectionCard id="emergency" title="緊急聯絡">
+        <SectionCard id="emergency" title={t("serviceEmergencyTitle")}>
           <div>
             <ContactRow label="警察報案" phone="110" />
             <ContactRow label="消防／救護" phone="119" />
@@ -81,11 +85,11 @@ export default function ResidentServicesPage() {
           </div>
         </SectionCard>
 
-        <SectionCard id="garbage" title="垃圾清運">
+        <SectionCard id="garbage" title={t("serviceGarbageTitle")}>
           <GarbageTruckMap />
         </SectionCard>
 
-        <SectionCard id="links" title="常用連結">
+        <SectionCard id="links" title={t("serviceLinksTitle")}>
           <div className="flex flex-col gap-2">
             {[
               { label: "戶政服務", note: "戶籍謄本、身分證異動" },

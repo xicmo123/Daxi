@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import SearchResults from "@/components/SearchResults";
 import { getAllPlaces, filterVisiblePlaces, readDetails, readPhotos } from "@/lib/placesStore";
 
@@ -15,7 +15,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const { q } = await searchParams;
   return (
     <div className="pt-2">
-      <PageHeader title="搜尋" subtitle="搜尋景點、店家、活動" />
+      <PageHeaderT titleKey="searchTitle" subtitleKey="searchPlaceholder" />
       <Suspense>
         <Results q={q ?? ""} />
       </Suspense>

@@ -4,7 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { readIdentity, writeIdentity, type Identity } from "@/lib/identity";
 import IdentityTransitionOverlay from "./IdentityTransitionOverlay";
-import { useT } from "@/lib/i18n";
+import { useT, useLang, setLang, type Lang } from "@/lib/i18n";
 
 function subscribe(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -32,6 +32,7 @@ export default function IdentityGate() {
 function HomeIdentityGate() {
   const router = useRouter();
   const t = useT();
+  const lang = useLang();
   // useSyncExternalStore (not a plain effect) is the correct way to read an
   // external source like localStorage: getServerSnapshot keeps the SSR/
   // first-paint output as "unknown" so there's no hydration mismatch, and
@@ -39,6 +40,10 @@ function HomeIdentityGate() {
   const storedIdentity = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [chosen, setChosen] = useState<Identity | null>(null);
   const [pending, setPending] = useState<Identity | null>(null);
+  // A fresh visitor sees the language step before the identity step; once
+  // storedIdentity resolves as null (real first visit, not just SSR
+  // "unknown"), the language prompt is the first thing they're asked.
+  const [langConfirmed, setLangConfirmed] = useState(false);
   const identity = chosen ?? storedIdentity;
   const redirecting = identity === "resident";
 
@@ -59,6 +64,56 @@ function HomeIdentityGate() {
   }
 
   if (identity) return null;
+
+  if (!langConfirmed) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ background: "var(--paper)" }}>
+        <div className="w-full max-w-sm fade-in">
+          <div className="text-center mb-8">
+            <div className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: "var(--accent)" }}>
+              {t("welcomeTo")}
+            </div>
+            <h1 className="text-[26px] font-bold" style={{ color: "var(--ink)" }}>
+              大溪 Daxi
+            </h1>
+            <p className="text-[13px] mt-2" style={{ color: "var(--ink-soft)" }}>
+              {t("langChooseTitle")}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {(["zh", "en"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setLang(option as Lang);
+                  setLangConfirmed(true);
+                }}
+                className="rounded-2xl px-5 py-4 text-left card-shadow transition-transform active:scale-[0.98]"
+                style={
+                  lang === option
+                    ? { background: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)" }
+                    : { background: "var(--card)", border: "1px solid var(--line)" }
+                }
+              >
+                <div
+                  className="text-[15px] font-bold"
+                  style={{ color: lang === option ? "var(--block-fg)" : "var(--ink)" }}
+                >
+                  {option === "zh" ? "中文" : "English"}
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <p className="text-center text-[11px] mt-6" style={{ color: "var(--ink-soft)" }}>
+            {t("langChooseSubtitle")}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ background: "var(--paper)" }}>

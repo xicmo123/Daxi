@@ -1,4 +1,4 @@
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import AnnouncementFeed from "@/components/AnnouncementFeed";
 import { ANNOUNCEMENTS_PAGE_URL, fetchDaxiAnnouncements } from "@/lib/announcements";
 
@@ -12,7 +12,7 @@ export default async function ResidentAnnouncementsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeader title="區公所公告" subtitle="同步大溪區公所最新消息" tint="river" />
+      <PageHeaderT titleKey="announcementsTitle" subtitleKey="announcementsSubtitle" tint="river" />
 
       <div className="px-6 pb-24 fade-in">
         <a

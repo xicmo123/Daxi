@@ -1,10 +1,10 @@
-import PageHeader from "@/components/PageHeader";
+import PageHeaderT from "@/components/PageHeaderT";
 import BusMap from "@/components/BusMap";
 
 export default function BusPage() {
   return (
     <div className="pt-2">
-      <PageHeader title="公車資訊" subtitle="大溪老街方圓 5 公里內的即時公車位置" tint="river" />
+      <PageHeaderT titleKey="busTitle" subtitleKey="busSubtitle" tint="river" />
 
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
         <BusMap />
