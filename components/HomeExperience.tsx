@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trackClick } from "@/lib/trackClient";
 import { writeIdentity } from "@/lib/identity";
-import { useT } from "@/lib/i18n";
 import type { CouponWithBusiness } from "./CouponList";
 import CouponRedeemModal from "./CouponRedeemModal";
 import PlaceholderIcon from "./PlaceholderIcon";
@@ -49,7 +48,6 @@ export default function HomeExperience({
   initialSlideIndex?: number;
 }) {
   const router = useRouter();
-  const t = useT();
   const [query, setQuery] = useState("");
   const [openCoupon, setOpenCoupon] = useState<CouponWithBusiness | null>(null);
   const [switching, setSwitching] = useState(false);
@@ -162,7 +160,7 @@ export default function HomeExperience({
               className="px-4 py-1.5 rounded-full text-[12.5px] font-medium"
               style={{ background: "#ffffff", color: "var(--block-wood-deep)" }}
             >
-              {t("imTourist")}
+              我是遊客
             </span>
             <button
               type="button"
@@ -171,7 +169,7 @@ export default function HomeExperience({
               className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
               style={{ background: "transparent", color: "rgba(43,36,32,0.72)", opacity: switching ? 0.6 : 1 }}
             >
-              {switching ? "切換中…" : t("imResident")}
+              {switching ? "切換中…" : "我是大溪人"}
             </button>
           </div>
         </div>
@@ -186,7 +184,7 @@ export default function HomeExperience({
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("searchPlaceholder")}
+              placeholder="搜尋景點、店家、活動"
               className="flex-1 bg-transparent text-[13px] outline-none"
               style={{ color: "var(--ink)" }}
             />

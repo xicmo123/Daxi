@@ -1,4 +1,4 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import EventsList from "@/components/EventsList";
 import { getMergedEvents } from "@/lib/eventsFeed";
 
@@ -24,7 +24,7 @@ export default async function EventsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="navEvents" subtitleKey="eventsSubtitle" tint="moss" />
+      <PageHeader title="活動" subtitle="大溪大禧與老街周邊活動" tint="moss" />
       <EventsList events={events} />
     </div>
   );

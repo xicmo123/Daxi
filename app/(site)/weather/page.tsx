@@ -1,4 +1,4 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import LiveCams from "@/components/LiveCams";
 import { trafficAlerts } from "@/lib/data";
 
@@ -11,7 +11,7 @@ const alertDot: Record<string, string> = {
 export default function RoadConditionsPage() {
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="weatherTitle" subtitleKey="weatherSubtitle" tint="river" />
+      <PageHeader title="即時狀態" subtitle="大溪區・即時影像與交通管制" tint="river" />
 
       <div className="px-6 pt-1 pb-4 fade-in">
         <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>

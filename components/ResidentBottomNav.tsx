@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useT, type DictKey } from "@/lib/i18n";
 
 const tabs = [
   {
     href: "/resident",
-    labelKey: "navHome" as DictKey,
+    label: "首頁",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4.5 11.5 12 5l7.5 6.5" />
@@ -19,7 +18,7 @@ const tabs = [
   },
   {
     href: "/resident/announcements",
-    labelKey: "navAnnouncements" as DictKey,
+    label: "公告",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6.5 20.2V5.8a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v14.4" />
@@ -32,7 +31,7 @@ const tabs = [
   },
   {
     href: "/resident/services",
-    labelKey: "navServices" as DictKey,
+    label: "服務",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4.5 8.5h15v10a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-10Z" />
@@ -43,7 +42,7 @@ const tabs = [
   },
   {
     href: "/resident/outages",
-    labelKey: "navOutages" as DictKey,
+    label: "停水停電",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M13 3 5.5 13.5h4.8L11 21l7.5-10.5h-4.8L13 3Z" />
@@ -52,7 +51,7 @@ const tabs = [
   },
   {
     href: "/resident/profile",
-    labelKey: "navProfile" as DictKey,
+    label: "我的",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="8.3" r="3.3" />
@@ -64,7 +63,6 @@ const tabs = [
 
 export default function ResidentBottomNav() {
   const pathname = usePathname();
-  const t = useT();
 
   return (
     <nav
@@ -123,7 +121,7 @@ export default function ResidentBottomNav() {
                 {tab.icon}
               </span>
               <span className="text-[10.5px] font-normal tracking-wide transition-all duration-300" style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}>
-                {t(tab.labelKey)}
+                {tab.label}
               </span>
             </Link>
           );

@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type CSSProperties } from "react";
-import { useT, type DictKey } from "@/lib/i18n";
 import AboutModal from "./AboutModal";
 
 const tabs = [
   {
     href: "/",
-    labelKey: "navHome" as DictKey,
+    label: "首頁",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4.5 11.5 12 5l7.5 6.5" />
@@ -21,7 +20,7 @@ const tabs = [
   },
   {
     href: "/events",
-    labelKey: "navEvents" as DictKey,
+    label: "活動",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M8 5.8h8" />
@@ -36,7 +35,7 @@ const tabs = [
   },
   {
     href: "/spots",
-    labelKey: "navSpots" as DictKey,
+    label: "景點",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 21s6.4-5.9 6.4-10.7a6.4 6.4 0 0 0-12.8 0C5.6 15.1 12 21 12 21Z" />
@@ -48,7 +47,7 @@ const tabs = [
   },
   {
     href: "/businesses",
-    labelKey: "navBusinesses" as DictKey,
+    label: "商家",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 9.5h14l-1.1-4h-11.8Z" />
@@ -61,7 +60,7 @@ const tabs = [
   },
   {
     href: "/parking",
-    labelKey: "navParking" as DictKey,
+    label: "停車",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <rect x="4.5" y="4" width="15" height="15" rx="4" />
@@ -72,7 +71,7 @@ const tabs = [
   },
   {
     href: null,
-    labelKey: "navAbout" as DictKey,
+    label: "關於",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="8.2" />
@@ -85,7 +84,6 @@ const tabs = [
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const t = useT();
   const [showAbout, setShowAbout] = useState(false);
 
   return (
@@ -154,7 +152,7 @@ export default function BottomNav() {
                 className="text-[10.5px] font-normal tracking-wide transition-all duration-300"
                 style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}
               >
-                {t(tab.labelKey)}
+                {tab.label}
               </span>
             </>
           );
@@ -162,7 +160,7 @@ export default function BottomNav() {
           if (tab.href === null) {
             return (
               <button
-                key={tab.labelKey}
+                key={tab.label}
                 type="button"
                 onClick={() => setShowAbout(true)}
                 className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"

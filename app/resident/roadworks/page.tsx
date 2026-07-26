@@ -1,4 +1,4 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import RoadworksMap from "@/components/RoadworksMap";
 import CongestionIndexCard from "@/components/CongestionIndexCard";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
@@ -18,7 +18,7 @@ export default async function ResidentRoadworksPage() {
 
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="residentRoadworksTitle" subtitleKey="residentRoadworksSubtitle" tint="river" />
+      <PageHeader title="道路施工" subtitle="目前道路申挖與施工位置" tint="river" />
       <div className="pb-4">
         <CongestionIndexCard score={score} />
       </div>

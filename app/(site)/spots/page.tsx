@@ -1,4 +1,4 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import SpotsList from "@/components/SpotsList";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
@@ -31,7 +31,7 @@ export default async function SpotsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="navSpots" subtitleKey="spotsSubtitle" tint="moss" />
+      <PageHeader title="景點" subtitle="老街周邊景點與順路走走" tint="moss" />
 
       <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} routes={routes} coupons={coupons} />
 

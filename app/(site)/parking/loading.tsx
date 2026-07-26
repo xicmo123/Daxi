@@ -1,7 +1,4 @@
-"use client";
-
-import PageHeaderT from "@/components/PageHeaderT";
-import { useT } from "@/lib/i18n";
+import PageHeader from "@/components/PageHeader";
 
 function LotSkeleton() {
   return (
@@ -20,10 +17,9 @@ function LotSkeleton() {
 }
 
 export default function Loading() {
-  const t = useT();
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="parkingTitle" subtitleKey="parkingSubtitleOk" tint="river" />
+      <PageHeader title="周邊停車" subtitle="距大溪老街由近到遠・每分鐘更新" tint="river" />
       <div className="flex flex-col items-center gap-2 py-6">
         <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
           <circle cx="36" cy="36" r="28" fill="none" stroke="var(--line)" strokeWidth="2" strokeDasharray="4 6" />
@@ -32,7 +28,7 @@ export default function Loading() {
           </g>
         </svg>
         <div className="text-[12px] font-medium" style={{ color: "var(--ink-soft)" }}>
-          {t("findingParkingLabel")}
+          正在幫你找車位…
         </div>
       </div>
       <div className="px-6 pb-10" style={{ borderTop: "1px solid var(--line)" }}>

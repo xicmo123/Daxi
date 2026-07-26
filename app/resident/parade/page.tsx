@@ -1,4 +1,4 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import RoadworksMap from "@/components/RoadworksMap";
 
 export const dynamic = "force-dynamic";
@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function ResidentParadePage() {
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="residentParadeTitle" subtitleKey="residentParadeSubtitle" tint="wood" />
+      <PageHeader title="大溪大拜拜" subtitle="繞境交通管制與陣頭動態" tint="wood" />
 
       <div className="safe-page-x pb-6 fade-in">
         <div

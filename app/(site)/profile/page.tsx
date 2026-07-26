@@ -1,7 +1,6 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import FavoritesView from "@/components/FavoritesView";
 import IdentitySwitchCard from "@/components/IdentitySwitchCard";
-import LanguageToggle from "@/components/LanguageToggle";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
 import { listActiveCoupons } from "@/lib/coupons";
@@ -28,12 +27,11 @@ export default async function ProfilePage() {
 
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="navProfile" subtitleKey="profileSubtitleTourist" tint="wood" />
+      <PageHeader title="我的" subtitle="收藏的景點與店家" tint="wood" />
 
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
         <FavoritesView allPlaces={allPlaces} photos={photos} details={details} lots={lots} coupons={coupons} />
-        <IdentitySwitchCard currentLabelKey="touristLabel" switchToHref="/resident" switchToLabelKey="switchToResidentLabel" switchToIdentity="resident" />
-        <LanguageToggle />
+        <IdentitySwitchCard currentLabel="遊客" switchToHref="/resident" switchToLabel="切換為大溪人模式" switchToIdentity="resident" />
       </div>
     </div>
   );

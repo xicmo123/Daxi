@@ -1,4 +1,4 @@
-import PageHeaderT from "@/components/PageHeaderT";
+import PageHeader from "@/components/PageHeader";
 import CouponList, { type CouponWithBusiness } from "@/components/CouponList";
 import { listActiveCoupons } from "@/lib/coupons";
 import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStore";
@@ -20,7 +20,7 @@ export default async function CouponsPage() {
 
   return (
     <div className="pt-2">
-      <PageHeaderT titleKey="couponsTitle" subtitleKey="couponsSubtitle" tint="wood" />
+      <PageHeader title="優惠券" subtitle="到店出示核銷碼，店員掃碼即可使用" tint="wood" />
       <div className="pb-10">
         <CouponList coupons={rows} />
       </div>
