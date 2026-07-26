@@ -10,6 +10,25 @@ const tintBg: Record<PageTint, string> = {
 
 // Solid color-block banner behind the title, chicTrip-style — each section
 // of the app gets its own hue instead of one uniform cream wash throughout.
+// Large flat overlapping shapes break up the flat color fill without
+// competing with the title, echoed from the identity-gate/hero treatment.
+function HeaderShapes() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      preserveAspectRatio="none"
+      style={{ mixBlendMode: "overlay" }}
+    >
+      <circle cx="88%" cy="0%" r="110" fill="rgba(255,255,255,0.22)" />
+      <circle cx="98%" cy="14%" r="46" fill="rgba(255,255,255,0.16)" />
+      <circle cx="-4%" cy="100%" r="130" fill="rgba(0,0,0,0.16)" />
+      <rect x="6%" y="-10%" width="90" height="90" rx="20" transform="rotate(24 6 -10)" fill="rgba(255,255,255,0.12)" />
+      <circle cx="20%" cy="112%" r="34" fill="rgba(255,255,255,0.18)" />
+    </svg>
+  );
+}
+
 export default function PageHeader({
   eyebrow,
   title,
@@ -28,13 +47,14 @@ export default function PageHeader({
 
   return (
     <div
-      className="relative safe-page-x pt-8 pb-7 text-center sm:pt-10 sm:pb-8 lg:pt-12"
+      className="relative overflow-hidden safe-page-x pt-8 pb-7 text-center sm:pt-10 sm:pb-8 lg:pt-12"
       style={
         tint
           ? { background: tintBg[tint], borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }
           : undefined
       }
     >
+      {tint ? <HeaderShapes /> : null}
       <div className="relative">
         {eyebrow ? (
           <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-2" style={{ color: soft }}>
