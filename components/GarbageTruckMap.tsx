@@ -20,6 +20,8 @@ type LoadState = "loading" | "ready" | "empty" | "error";
 const DAXI_CENTER: [number, number] = [24.884, 121.288];
 const REFRESH_SECONDS = 15;
 const ROUTE_STORAGE_KEY = "daxi-garbage-route";
+// ~500-1000m visible radius on a typical phone-width map.
+const LOCATE_ZOOM = 16;
 
 function formatTime(value: string | number) {
   return new Intl.DateTimeFormat("zh-TW", {
@@ -52,6 +54,11 @@ export default function GarbageTruckMap() {
   const pathLayerRef = useRef<Polyline | null>(null);
   const routeIdRef = useRef<string>("");
   const vehicleMarkersRef = useRef<Map<string, Marker>>(new Map());
+  // Once we've zoomed to the user's own position, automatic route refreshes
+  // stop re-fitting the map to the whole route — that would zoom right back
+  // out. An explicit tap on the locate-truck button still re-fits.
+  const didLocateRef = useRef(false);
+  const nextFitRef = useRef<"auto" | "user">("auto");
 
   const [routes, setRoutes] = useState<GarbageRoute[]>([]);
   const [routeId, setRouteId] = useState("");
@@ -87,6 +94,21 @@ export default function GarbageTruckMap() {
       stopLayerRef.current = L.layerGroup().addTo(map);
 
       setTimeout(() => map.invalidateSize(), 120);
+
+      if (typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (cancelled || !mapRef.current) return;
+            didLocateRef.current = true;
+            // The fix can arrive before the container has been measured, and
+            // Leaflet silently ignores a fly on a zero-size map — measure first.
+            mapRef.current.invalidateSize();
+            mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
+          },
+          () => {},
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
+        );
+      }
     }
 
     setupMap();
@@ -128,7 +150,9 @@ export default function GarbageTruckMap() {
     };
   }, []);
 
-  const drawRealtime = useCallback((realtime: GarbageRealtime, shouldFit: boolean) => {
+  // "auto" fits only until the user's own position takes over the view;
+  // "user" always fits (the locate-truck button); "none" never does.
+  const drawRealtime = useCallback((realtime: GarbageRealtime, fit: "none" | "auto" | "user") => {
     const L = leafletRef.current;
     const map = mapRef.current;
     const vehicleLayer = vehicleLayerRef.current;
@@ -195,6 +219,7 @@ export default function GarbageTruckMap() {
     });
 
     const bounds = boundsFor(realtime);
+    const shouldFit = fit === "user" || (fit === "auto" && !didLocateRef.current);
     if (shouldFit && bounds) {
       map.flyToBounds(bounds, { padding: [24, 24], maxZoom: 16, duration: 0.8 });
     }
@@ -207,7 +232,7 @@ export default function GarbageTruckMap() {
   }, []);
 
   const loadRealtime = useCallback(
-    async (selectedRouteId: string, shouldFit = false) => {
+    async (selectedRouteId: string, fit: "none" | "auto" | "user" = "none") => {
       if (!selectedRouteId) return;
       try {
         const response = await fetch(`/api/resident/garbage/realtime?routeId=${encodeURIComponent(selectedRouteId)}`, {
@@ -216,7 +241,7 @@ export default function GarbageTruckMap() {
         if (!response.ok) throw new Error("Unable to load realtime.");
         const realtime = (await response.json()) as GarbageRealtime;
         if (routeIdRef.current === selectedRouteId) {
-          drawRealtime(realtime, shouldFit);
+          drawRealtime(realtime, fit);
         }
       } catch {
         setState("error");
@@ -229,8 +254,9 @@ export default function GarbageTruckMap() {
     if (!routeId) return;
     // The selected route is the subscription key for the external GPS feed.
     // Loading here keeps the map in sync when routes change.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadRealtime(routeId, true);
+    const fit = nextFitRef.current;
+    nextFitRef.current = "auto";
+    loadRealtime(routeId, fit);
     const interval = window.setInterval(() => loadRealtime(routeId), 15000);
     return () => window.clearInterval(interval);
   }, [loadRealtime, routeId]);
@@ -242,6 +268,9 @@ export default function GarbageTruckMap() {
           value={routeId}
           onChange={(event) => {
             setState("loading");
+            // Picking a different route is an explicit request to see it, so
+            // fit to it even if we're currently zoomed to the user.
+            nextFitRef.current = "user";
             setRouteId(event.target.value);
             window.localStorage.setItem(ROUTE_STORAGE_KEY, event.target.value);
           }}
@@ -259,7 +288,7 @@ export default function GarbageTruckMap() {
           type="button"
           onClick={() => {
             setState("loading");
-            loadRealtime(routeId, true);
+            loadRealtime(routeId, "user");
           }}
           aria-label="重新定位垃圾車"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"

@@ -1,28 +1,13 @@
 import PageHeader from "@/components/PageHeader";
 import RoadworksMap from "@/components/RoadworksMap";
-import CongestionIndexCard from "@/components/CongestionIndexCard";
-import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
-import { getFestivalTiming } from "@/lib/festivalTiming";
-import { congestionScore } from "@/lib/experience";
 
 export const dynamic = "force-dynamic";
 
-export default async function ResidentRoadworksPage() {
-  let roadworkCount = 0;
-  try {
-    roadworkCount = (await fetchDaxiRoadworks()).length;
-  } catch {
-    roadworkCount = 0;
-  }
-  const score = congestionScore({ roadworkCount, isFestivalToday: getFestivalTiming().phase === "during" });
-
+export default function ResidentRoadworksPage() {
   return (
     <div className="pt-2">
       <PageHeader title="道路施工" subtitle="目前道路申挖與施工位置" tint="river" />
-      <div className="pb-4">
-        <CongestionIndexCard score={score} />
-      </div>
-      <div className="safe-page-x pb-10 fade-in">
+      <div className="safe-page-x pb-10 pt-4 fade-in">
         <RoadworksMap />
         <div
           className="mt-3 rounded-2xl border px-4 py-3.5 text-[12px] leading-relaxed"

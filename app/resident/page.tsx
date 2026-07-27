@@ -5,12 +5,9 @@ import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { listUpcomingOutages, type Outage } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { listActiveResidentSlides } from "@/lib/residentCarousel";
-import { getFestivalTiming } from "@/lib/festivalTiming";
-import { congestionScore } from "@/lib/experience";
 import ResidentCarousel from "@/components/ResidentCarousel";
 import ResidentLinksCard from "@/components/ResidentLinksCard";
 import ResidentAnnouncementPreview from "@/components/ResidentAnnouncementPreview";
-import CongestionIndexCard from "@/components/CongestionIndexCard";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +101,20 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
     ),
   },
   {
+    href: "/resident/bus",
+    label: "客運資訊",
+    desc: "周邊即時公車位置與時刻",
+    block: "river",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="5" y="4" width="14" height="13" rx="3" />
+        <path d="M5 13.5h14M8.5 17v2.2M15.5 17v2.2" />
+        <circle cx="8.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
+        <circle cx="15.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
     href: "/resident/events",
     label: "在地活動",
     desc: "大溪大禧與老街周邊活動",
@@ -191,18 +202,6 @@ async function TodayStatusRow() {
       })}
     </div>
   );
-}
-
-async function WeekendOutingIndex() {
-  let roadworkCount = 0;
-  try {
-    roadworkCount = (await fetchDaxiRoadworks()).length;
-  } catch {
-    roadworkCount = 0;
-  }
-  const isFestivalToday = getFestivalTiming().phase === "during";
-  const score = congestionScore({ roadworkCount, isFestivalToday });
-  return <CongestionIndexCard score={score} />;
 }
 
 function TodayStatusSkeleton() {
@@ -387,12 +386,6 @@ export default function ResidentHome() {
       <Suspense fallback={<TodayStatusSkeleton />}>
         <TodayStatusRow />
       </Suspense>
-
-      <div className="pt-3">
-        <Suspense fallback={null}>
-          <WeekendOutingIndex />
-        </Suspense>
-      </div>
 
       <AnnouncementCarousel />
 

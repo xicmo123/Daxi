@@ -13,6 +13,8 @@ type RouteSearchState = "idle" | "loading" | "ready" | "error";
 const DAXI_CENTER: [number, number] = [24.8809, 121.2868];
 const REFRESH_SECONDS = 15;
 const SEARCH_DEBOUNCE_MS = 400;
+// ~500-1000m visible radius on a typical phone-width map.
+const LOCATE_ZOOM = 16;
 
 function formatTime(value: string | null) {
   if (!value) return null;
@@ -146,6 +148,20 @@ export default function BusMap() {
       busLayerRef.current = L.layerGroup().addTo(map);
 
       setTimeout(() => map.invalidateSize(), 120);
+
+      if (typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (cancelled || !mapRef.current) return;
+            // The fix can arrive before the container has been measured, and
+            // Leaflet silently ignores a fly on a zero-size map — measure first.
+            mapRef.current.invalidateSize();
+            mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
+          },
+          () => {},
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
+        );
+      }
     }
 
     setupMap();

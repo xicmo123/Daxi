@@ -126,29 +126,3 @@ export function parkingCongestion(lots: LiveParkingLot[]): ParkingCongestion {
 
   return { isCongested, occupancyPct, nearLots, alternatives, lateBirdExtraMinutes };
 }
-
-// Heuristic "how busy will the old street be" score — no live footfall feed
-// exists, so this blends known signals (roadwork count, weekend/afternoon,
-// festival) into a 0-100 band for the resident "週末出門指數" card.
-export function congestionScore({
-  roadworkCount,
-  isFestivalToday,
-  now = new Date(),
-}: {
-  roadworkCount: number;
-  isFestivalToday: boolean;
-  now?: Date;
-}): number {
-  const day = now.getDay();
-  const hour = now.getHours();
-  const isWeekend = day === 0 || day === 6;
-  const isAfternoon = hour >= 12 && hour <= 18;
-
-  let score = 20;
-  score += Math.min(roadworkCount, 5) * 8;
-  if (isWeekend) score += 25;
-  if (isWeekend && isAfternoon) score += 15;
-  if (isFestivalToday) score += 30;
-
-  return Math.max(0, Math.min(100, score));
-}
