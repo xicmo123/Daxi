@@ -123,16 +123,6 @@
   "ChIJETB2Z6wXaDQRKdaKMX5mD9c": {
     "tags": []
   },
-  "custom-mruejuqv6c96": {
-    "category": "美食",
-    "story": "多多真可愛",
-    "tags": [],
-    "reservation": {
-      "mode": "slots",
-      "contactType": "phone",
-      "contactValue": "0925090705"
-    }
-  },
   "custom-mrvmxfhwp74k": {
     "category": "木藝職人",
     "tags": [],
@@ -145,6 +135,18 @@
       "contactType": "phone",
       "contactValue": "0981353486",
       "note": "需提前一週預約"
+    },
+    "featured": true
+  },
+  "custom-ms2vfxzk29ok": {
+    "category": "咖啡廳",
+    "tags": [
+      "咖啡",
+      "可頌"
+    ],
+    "contact": {
+      "phone": "033878368",
+      "instagram": "https://www.instagram.com/moyecoffee_daxi"
     },
     "featured": true
   }

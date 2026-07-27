@@ -12,6 +12,7 @@ import type {
 } from "leaflet";
 import type { GarbageRealtime, GarbageRoute } from "@/lib/taoyuanGarbage";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
+import { useGarbageAlert } from "@/lib/useGarbageAlert";
 
 type LeafletModule = typeof import("leaflet");
 
@@ -29,6 +30,15 @@ function formatTime(value: string | number) {
     minute: "2-digit",
     second: "2-digit",
   }).format(new Date(value));
+}
+
+function buildAlertPointIcon(L: LeafletModule): DivIcon {
+  return L.divIcon({
+    className: "",
+    html: `<span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:999px 999px 999px 0;transform:rotate(45deg);background:#c98a2e;border:2px solid #fff;box-shadow:0 6px 14px rgba(43,36,32,0.3);"><span style="transform:rotate(-45deg);font-size:14px;">🗑️</span></span>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+  });
 }
 
 function truckClass(type: string) {
@@ -59,6 +69,8 @@ export default function GarbageTruckMap() {
   // out. An explicit tap on the locate-truck button still re-fits.
   const didLocateRef = useRef(false);
   const nextFitRef = useRef<"auto" | "user">("auto");
+  const alertPointLayerRef = useRef<LayerGroup | null>(null);
+  const pickingPointRef = useRef(false);
 
   const [routes, setRoutes] = useState<GarbageRoute[]>([]);
   const [routeId, setRouteId] = useState("");
@@ -66,6 +78,14 @@ export default function GarbageTruckMap() {
   const [latestGpsTime, setLatestGpsTime] = useState<number | null>(null);
   const [syncedAt, setSyncedAt] = useState<string | null>(null);
   const [vehicleCount, setVehicleCount] = useState(0);
+  const [pickingPoint, setPickingPoint] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+
+  const { point: alertPoint, setPoint: setAlertPoint, permission: notifyPermission, requestPermission } = useGarbageAlert(routeId);
+
+  useEffect(() => {
+    pickingPointRef.current = pickingPoint;
+  }, [pickingPoint]);
 
   useEffect(() => {
     routeIdRef.current = routeId;
@@ -92,8 +112,16 @@ export default function GarbageTruckMap() {
       }).addTo(map);
       vehicleLayerRef.current = L.layerGroup().addTo(map);
       stopLayerRef.current = L.layerGroup().addTo(map);
+      alertPointLayerRef.current = L.layerGroup().addTo(map);
+
+      map.on("click", (e: { latlng: { lat: number; lng: number } }) => {
+        if (!pickingPointRef.current) return;
+        setAlertPoint({ lat: e.latlng.lat, lng: e.latlng.lng });
+        setPickingPoint(false);
+      });
 
       setTimeout(() => map.invalidateSize(), 120);
+      setMapReady(true);
 
       if (typeof navigator !== "undefined" && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -119,6 +147,9 @@ export default function GarbageTruckMap() {
       mapRef.current?.remove();
       mapRef.current = null;
     };
+    // setAlertPoint is stable (useCallback) — the map is built once and the
+    // click handler reads pickingPointRef for the current mode, not props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -231,6 +262,18 @@ export default function GarbageTruckMap() {
 
   }, []);
 
+  // Draw/update the "my drop-off point" marker whenever it changes.
+  useEffect(() => {
+    const L = leafletRef.current;
+    const layer = alertPointLayerRef.current;
+    if (!L || !layer) return;
+    layer.clearLayers();
+    if (!alertPoint) return;
+    L.marker([alertPoint.lat, alertPoint.lng], { icon: buildAlertPointIcon(L) })
+      .bindTooltip("我的倒垃圾點", { direction: "top", opacity: 0.95 })
+      .addTo(layer);
+  }, [alertPoint, mapReady]);
+
   const loadRealtime = useCallback(
     async (selectedRouteId: string, fit: "none" | "auto" | "user" = "none") => {
       if (!selectedRouteId) return;
@@ -330,6 +373,72 @@ export default function GarbageTruckMap() {
             即時位置暫時無法載入
           </div>
         ) : null}
+        {pickingPoint ? (
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-center text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "#c98a2e" }}>
+            點擊地圖，設定你的倒垃圾點
+          </div>
+        ) : null}
+      </div>
+
+      <div className="flex flex-col gap-2 border-t px-3 py-3" style={{ borderColor: "var(--line)" }}>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPickingPoint((prev) => !prev)}
+            aria-pressed={pickingPoint}
+            className="flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-opacity active:opacity-70"
+            style={
+              pickingPoint
+                ? { background: "#c98a2e", color: "#fff" }
+                : { background: "var(--paper-2)", color: "var(--ink-soft)", border: "1px solid var(--line)" }
+            }
+          >
+            <span aria-hidden="true">📍</span>
+            {alertPoint ? "重新設定倒垃圾點" : "設定我的倒垃圾點"}
+          </button>
+          {alertPoint ? (
+            <button
+              type="button"
+              onClick={() => setAlertPoint(null)}
+              aria-label="清除倒垃圾點"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
+              style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M6 6l12 12M18 6 6 18" />
+              </svg>
+            </button>
+          ) : null}
+        </div>
+
+        {alertPoint ? (
+          notifyPermission === "granted" ? (
+            <div className="text-[11.5px]" style={{ color: "var(--river-teal)" }}>
+              🔔 垃圾車進入 300 公尺內會通知你
+            </div>
+          ) : notifyPermission === "denied" ? (
+            <div className="text-[11.5px]" style={{ color: "var(--daxi-red)" }}>
+              通知已被瀏覽器封鎖，請至瀏覽器設定重新開啟「通知」權限
+            </div>
+          ) : notifyPermission === "unsupported" ? (
+            <div className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+              此瀏覽器不支援通知功能，暫時無法在垃圾車接近時提醒你
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => requestPermission()}
+              className="flex min-h-10 items-center justify-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-opacity active:opacity-70"
+              style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}
+            >
+              🔔 開啟通知，垃圾車靠近時提醒我
+            </button>
+          )
+        ) : (
+          <div className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+            設定倒垃圾點後，垃圾車進入 300 公尺內會發送通知提醒
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
 
-export type PageTint = "wood" | "moss" | "river";
+export type PageTint = "wood" | "moss" | "river" | "red";
 
 const tintBg: Record<PageTint, string> = {
   wood: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
   moss: "linear-gradient(160deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
   river: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
+  red: "linear-gradient(160deg, var(--daxi-red) 0%, color-mix(in srgb, var(--daxi-red) 100%, black 28%) 100%)",
 };
 
 // Solid color-block banner behind the title, chicTrip-style — each section
@@ -81,8 +82,12 @@ export default function PageHeader({
   right?: ReactNode;
   tint?: PageTint;
 }) {
-  const ink = tint ? "var(--block-fg)" : "var(--ink)";
-  const soft = tint ? "rgba(43,36,32,0.7)" : "var(--ink-soft)";
+  // The wood/moss/river tints are pastel enough for dark ink text; the
+  // red tint is a much deeper, saturated fill (same contrast call already
+  // made for the "red" gradient card on the resident home page) and needs
+  // white instead.
+  const ink = tint === "red" ? "#fff" : tint ? "var(--block-fg)" : "var(--ink)";
+  const soft = tint === "red" ? "rgba(255,255,255,0.82)" : tint ? "rgba(43,36,32,0.7)" : "var(--ink-soft)";
 
   return (
     <div
@@ -104,7 +109,7 @@ export default function PageHeader({
           {title}
         </h1>
         {subtitle ? (
-          <div className="text-[13px] mt-2 font-medium" style={{ color: tint ? "rgba(43,36,32,0.82)" : "var(--ink)" }}>
+          <div className="text-[13px] mt-2 font-medium" style={{ color: tint === "red" ? "rgba(255,255,255,0.9)" : tint ? "rgba(43,36,32,0.82)" : "var(--ink)" }}>
             {subtitle}
           </div>
         ) : null}

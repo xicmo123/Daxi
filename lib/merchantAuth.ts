@@ -3,24 +3,13 @@
 // placeId (same pattern as lib/adminAuth.ts). This is a UI prototype for
 // letting merchants self-maintain hours/coupons, NOT production-grade
 // identity — swap for real per-merchant accounts before launch.
-import { promises as fs } from "fs";
-import path from "path";
+// Account CRUD (for the admin backend) lives in lib/merchantAccounts.ts;
+// this file only verifies logins/sessions.
+import { readMerchantAccounts, type MerchantAccount } from "./merchantAccounts";
 
 export const MERCHANT_SESSION_COOKIE = "daxi_merchant_session";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const ACCOUNTS_PATH = path.join(DATA_DIR, "merchant-accounts.json");
-
-export type MerchantAccount = { passcode: string; businessName: string };
-
-async function readAccounts(): Promise<Record<string, MerchantAccount>> {
-  try {
-    const raw = await fs.readFile(ACCOUNTS_PATH, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return {};
-  }
-}
+export type { MerchantAccount };
 
 function sessionSecret(): string {
   return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || "daxi-merchant-dev-secret";
@@ -42,7 +31,7 @@ async function signPlaceId(placeId: string): Promise<string> {
 }
 
 export async function checkMerchantLogin(placeId: string, passcode: string): Promise<MerchantAccount | null> {
-  const accounts = await readAccounts();
+  const accounts = await readMerchantAccounts();
   const account = accounts[placeId];
   if (!account || account.passcode !== passcode) return null;
   return account;

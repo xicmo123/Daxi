@@ -6,6 +6,14 @@ import type { Coupon } from "@/lib/coupons";
 
 const QUEUE_PRESETS = [0, 10, 20, 30, 45, 60];
 
+const QUEUE_STATUSES = ["免排隊", "排隊中", "號碼牌發放完畢"] as const;
+type QueueStatus = (typeof QUEUE_STATUSES)[number];
+const QUEUE_STATUS_COLOR: Record<QueueStatus, string> = {
+  免排隊: "#3a7d44",
+  排隊中: "#c98a2e",
+  號碼牌發放完畢: "#9c3b3b",
+};
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-4">
@@ -24,26 +32,40 @@ export default function MerchantDashboard({
   hours: initialHours,
   coupon: initialCoupon,
   liveStatus: initialLiveStatus,
+  acceptsLuggage: initialAcceptsLuggage,
 }: {
   businessName: string;
   hours: string;
   coupon: Coupon | null;
-  liveStatus?: { queueMinutes?: number; soldOut?: boolean };
+  liveStatus?: { queueMinutes?: number; soldOut?: boolean; queueStatus?: QueueStatus };
+  acceptsLuggage?: boolean;
 }) {
   const [hours, setHours] = useState(initialHours);
   const [hoursStatus, setHoursStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   const [queueMinutes, setQueueMinutes] = useState(initialLiveStatus?.queueMinutes ?? 0);
   const [soldOut, setSoldOut] = useState(Boolean(initialLiveStatus?.soldOut));
+  const [queueStatus, setQueueStatus] = useState<QueueStatus>(initialLiveStatus?.queueStatus ?? "免排隊");
+  const [acceptsLuggage, setAcceptsLuggage] = useState(Boolean(initialAcceptsLuggage));
   const [statusSaving, setStatusSaving] = useState(false);
 
-  const pushStatus = async (next: { queueMinutes: number; soldOut: boolean }) => {
+  const pushStatus = async (next: {
+    queueMinutes: number;
+    soldOut: boolean;
+    queueStatus: QueueStatus;
+    acceptsLuggage: boolean;
+  }) => {
     setStatusSaving(true);
     try {
       await fetch("/api/merchant/status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ queueMinutes: next.queueMinutes || undefined, soldOut: next.soldOut }),
+        body: JSON.stringify({
+          queueMinutes: next.queueMinutes || undefined,
+          soldOut: next.soldOut,
+          queueStatus: next.queueStatus,
+          acceptsLuggage: next.acceptsLuggage,
+        }),
       });
     } finally {
       setStatusSaving(false);
@@ -109,7 +131,38 @@ export default function MerchantDashboard({
 
         <div className="mb-4">
           <div className="text-[12.5px] font-medium mb-2" style={{ color: "#5c5145" }}>
-            排隊狀態
+            排隊燈號（遊客端會看到這個標籤）
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {QUEUE_STATUSES.map((status) => {
+              const active = queueStatus === status;
+              return (
+                <motion.button
+                  key={status}
+                  type="button"
+                  whileTap={{ scale: 0.92 }}
+                  aria-pressed={active}
+                  onClick={() => {
+                    setQueueStatus(status);
+                    pushStatus({ queueMinutes, soldOut, queueStatus: status, acceptsLuggage });
+                  }}
+                  className="rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors"
+                  style={
+                    active
+                      ? { background: QUEUE_STATUS_COLOR[status], color: "#fff" }
+                      : { background: "#fff", color: "#766a5d", border: "1px solid #dfd1bf" }
+                  }
+                >
+                  {status}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="text-[12.5px] font-medium mb-2" style={{ color: "#5c5145" }}>
+            預估等候時間
           </div>
           <div className="flex flex-wrap gap-2">
             {QUEUE_PRESETS.map((mins) => {
@@ -122,7 +175,7 @@ export default function MerchantDashboard({
                   onClick={() => {
                     setSoldOut(false);
                     setQueueMinutes(mins);
-                    pushStatus({ queueMinutes: mins, soldOut: false });
+                    pushStatus({ queueMinutes: mins, soldOut: false, queueStatus, acceptsLuggage });
                   }}
                   className="rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors"
                   style={
@@ -144,9 +197,9 @@ export default function MerchantDashboard({
           onClick={() => {
             const next = !soldOut;
             setSoldOut(next);
-            pushStatus({ queueMinutes, soldOut: next });
+            pushStatus({ queueMinutes, soldOut: next, queueStatus, acceptsLuggage });
           }}
-          className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-[13px] font-semibold transition-colors"
+          className="mb-3 flex w-full items-center justify-between rounded-xl px-4 py-3 text-[13px] font-semibold transition-colors"
           style={soldOut ? { background: "#9c3b3b", color: "#fff" } : { background: "#fff", color: "#5c5145", border: "1px solid #dfd1bf" }}
         >
           今日商品已完售
@@ -157,6 +210,33 @@ export default function MerchantDashboard({
             <motion.span
               className="h-4 w-4 rounded-full bg-white"
               animate={{ x: soldOut ? 16 : 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          </span>
+        </motion.button>
+
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.97 }}
+          onClick={() => {
+            const next = !acceptsLuggage;
+            setAcceptsLuggage(next);
+            pushStatus({ queueMinutes, soldOut, queueStatus, acceptsLuggage: next });
+          }}
+          className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-[13px] font-semibold transition-colors"
+          style={acceptsLuggage ? { background: "#3a7d44", color: "#fff" } : { background: "#fff", color: "#5c5145", border: "1px solid #dfd1bf" }}
+        >
+          <span className="flex items-center gap-2">
+            <span aria-hidden="true">🎒</span>
+            提供伴手禮寄放服務
+          </span>
+          <span
+            className="inline-flex h-5 w-9 items-center rounded-full px-0.5"
+            style={{ background: acceptsLuggage ? "rgba(255,255,255,0.35)" : "#e5d8c6" }}
+          >
+            <motion.span
+              className="h-4 w-4 rounded-full bg-white"
+              animate={{ x: acceptsLuggage ? 16 : 0 }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           </span>

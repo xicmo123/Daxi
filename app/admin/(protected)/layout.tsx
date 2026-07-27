@@ -7,14 +7,26 @@ const touristLinks = [
   { href: "/admin", label: "景點/商家管理" },
   { href: "/admin/events", label: "活動管理" },
   { href: "/admin/carousel", label: "首頁輪播" },
+  { href: "/admin/amenities", label: "友善設施" },
+  { href: "/admin/routes", label: "主題路線" },
+  { href: "/admin/traffic-alerts", label: "交通管制公告" },
+  { href: "/admin/coupons", label: "優惠券管理" },
+  { href: "/admin/merchants", label: "商家帳號" },
 ];
 
-const residentLinks = [{ href: "/admin/resident-carousel", label: "首頁輪播" }];
+const residentLinks = [
+  { href: "/admin/resident-carousel", label: "首頁輪播" },
+  { href: "/admin/resident-bulletin", label: "社區佈告欄" },
+  { href: "/admin/resident-clinics", label: "醫療輪值地圖" },
+  { href: "/admin/useful-links", label: "常用連結" },
+];
+
+const RESIDENT_PREFIXES = ["/admin/resident-carousel", "/admin/resident-bulletin", "/admin/resident-clinics", "/admin/useful-links"];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const scope: "tourist" | "resident" = pathname.startsWith("/admin/resident-carousel") ? "resident" : "tourist";
+  const scope: "tourist" | "resident" = RESIDENT_PREFIXES.some((p) => pathname.startsWith(p)) ? "resident" : "tourist";
   const links = scope === "resident" ? residentLinks : touristLinks;
 
   const logout = async () => {

@@ -1,6 +1,8 @@
 import PageHeader from "@/components/PageHeader";
 import LiveCams from "@/components/LiveCams";
-import { trafficAlerts } from "@/lib/data";
+import { readTrafficAlerts } from "@/lib/trafficAlerts";
+
+export const dynamic = "force-dynamic";
 
 const alertDot: Record<string, string> = {
   block: "var(--bordeaux)",
@@ -8,7 +10,8 @@ const alertDot: Record<string, string> = {
   info: "var(--cognac)",
 };
 
-export default function RoadConditionsPage() {
+export default async function RoadConditionsPage() {
+  const trafficAlerts = await readTrafficAlerts();
   return (
     <div className="pt-2">
       <PageHeader title="即時狀態" subtitle="大溪區・即時影像與交通管制" tint="river" />
@@ -30,8 +33,13 @@ export default function RoadConditionsPage() {
         <h2 className="font-serif text-[17px] font-semibold">交通管制公告</h2>
       </div>
       <div className="px-6 fade-in" style={{ borderTop: "1px solid var(--line)" }}>
+        {trafficAlerts.length === 0 ? (
+          <div className="py-5 text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
+            目前沒有交通管制公告
+          </div>
+        ) : null}
         {trafficAlerts.map((a) => (
-          <div key={a.title} className="flex gap-3.5 py-5" style={{ borderBottom: "1px solid var(--line)" }}>
+          <div key={a.id} className="flex gap-3.5 py-5" style={{ borderBottom: "1px solid var(--line)" }}>
             <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: alertDot[a.level] }} />
             <div>
               <div className="text-[13.5px] font-medium mb-1">{a.title}</div>

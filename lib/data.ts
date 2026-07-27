@@ -22,22 +22,9 @@ export const festival = {
 // lib/carousel.ts + data/carousel-slides.json — admin-editable now instead
 // of hardcoded here.
 
-export type Alert = {
-  level: "block" | "warn" | "info";
-  title: string;
-  desc: string;
-};
-
-// Only the opening-day control is officially confirmed (see festival.sourceUrl).
-// Day-to-day control for the rest of the festival isn't published — that feed
-// needs a TDX (運輸資料流通服務) client id/secret to go live.
-export const trafficAlerts: Alert[] = [
-  {
-    level: "info",
-    title: "開幕日交通管制（7/18，已解除）",
-    desc: "13:00–18:00・康莊路、復興路、得勝路、中正路、和平路、登龍路、普濟路一帶管制，和平老街全段行人徒步區",
-  },
-];
+// Traffic alerts moved to lib/trafficAlerts.ts (data/traffic-alerts.json) —
+// admin-editable now instead of hardcoded here, since new control windows
+// get announced throughout the festival.
 
 export type LiveCam = {
   title: string;

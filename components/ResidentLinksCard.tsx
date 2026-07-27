@@ -1,25 +1,20 @@
 "use client";
 
 import { useState } from "react";
-
-const DAXI_OFFICE_URL = "https://www.daxi.tycg.gov.tw";
-
-const subLinks = [
-  { label: "戶政服務", note: "戶籍謄本、身分證異動" },
-  { label: "地政服務", note: "地籍謄本、地價查詢" },
-  { label: "稅務服務", note: "地價稅、房屋稅" },
-  { label: "區公所首頁", note: "各項服務入口" },
-];
+import type { UsefulLink } from "@/lib/usefulLinks";
 
 // The wide "常用連結" tile expands in place instead of jumping straight to
-// /resident/services#links — residents can peek at the 4 sub-services
-// without leaving the home screen, and still tap through to the real page.
+// /resident/services#links — residents can peek at the sub-services without
+// leaving the home screen, and still tap through to the real page. Link list
+// is now admin-editable (lib/usefulLinks.ts) instead of hardcoded here.
 export default function ResidentLinksCard({
   icon,
   block,
+  links,
 }: {
   icon: React.ReactNode;
   block: string;
+  links: UsefulLink[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -63,10 +58,10 @@ export default function ResidentLinksCard({
 
       {open ? (
         <div className="flex flex-col gap-2 px-4 pb-4 fade-in">
-          {subLinks.map((l) => (
+          {links.map((l) => (
             <a
-              key={l.label}
-              href={DAXI_OFFICE_URL}
+              key={l.id}
+              href={l.href}
               target="_blank"
               rel="noreferrer"
               className="flex items-center justify-between rounded-xl px-3.5 py-2.5 transition-opacity active:opacity-70"

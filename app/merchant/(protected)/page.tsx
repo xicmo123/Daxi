@@ -26,6 +26,7 @@ export default async function MerchantHomePage() {
       hours={details[session.placeId]?.hours ?? ""}
       coupon={coupons[0] ?? null}
       liveStatus={details[session.placeId]?.liveStatus}
+      acceptsLuggage={details[session.placeId]?.acceptsLuggage}
     />
   );
 }

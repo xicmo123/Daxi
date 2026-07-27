@@ -1,13 +1,16 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { listUpcomingOutages, type Outage } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
-import { listActiveResidentSlides } from "@/lib/residentCarousel";
-import ResidentCarousel from "@/components/ResidentCarousel";
+import { readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
+import { readUsefulLinks } from "@/lib/usefulLinks";
 import ResidentLinksCard from "@/components/ResidentLinksCard";
 import ResidentAnnouncementPreview from "@/components/ResidentAnnouncementPreview";
+import CommunityBulletin from "@/components/CommunityBulletin";
+import ResidentHomeHero from "@/components/ResidentHomeHero";
+import ResidentQuickLinks from "@/components/ResidentQuickLinks";
+import ResidentStatusButtons, { type StatusButton } from "@/components/ResidentStatusButtons";
 
 export const dynamic = "force-dynamic";
 
@@ -20,33 +23,6 @@ const blockColor: Record<Block, string> = {
   moss: "var(--block-moss)",
   river: "var(--block-river)",
   red: "var(--daxi-red)",
-};
-
-// Vivid gradient card treatment — the same "135deg light→deep" pairing
-// used by the tourist/resident identity-gate cards — plus the text color
-// that reads best on each (the pastel wood/moss/river tones need dark
-// ink; the darker daxi-red gradient needs white).
-const gradientCard: Record<Block, { background: string; fg: string; fgSoft: string }> = {
-  wood: {
-    background: "linear-gradient(135deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
-    fg: "var(--block-fg)",
-    fgSoft: "rgba(43,36,32,0.72)",
-  },
-  moss: {
-    background: "linear-gradient(135deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
-    fg: "var(--block-fg)",
-    fgSoft: "rgba(43,36,32,0.72)",
-  },
-  river: {
-    background: "linear-gradient(135deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
-    fg: "var(--block-fg)",
-    fgSoft: "rgba(43,36,32,0.72)",
-  },
-  red: {
-    background: "linear-gradient(135deg, var(--daxi-red) 0%, color-mix(in srgb, var(--daxi-red) 100%, black 28%) 100%)",
-    fg: "#fff",
-    fgSoft: "rgba(255,255,255,0.82)",
-  },
 };
 
 const quickLinks: Array<{ href: string; label: string; desc: string; block: Block; icon: React.ReactNode }> = [
@@ -126,6 +102,18 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
       </svg>
     ),
   },
+  {
+    href: "/resident/clinics",
+    label: "醫療輪值",
+    desc: "現在有開的診所與藥局",
+    block: "red",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 4.5v15M4.5 12h15" />
+        <rect x="4.5" y="4.5" width="15" height="15" rx="4" />
+      </svg>
+    ),
+  },
 ];
 
 const linksIcon = (
@@ -159,47 +147,52 @@ async function TodayStatusRow() {
     announcementCount = 0;
   }
 
-  const items: Array<{ href: string; label: string; value: string; block: Block }> = [
+  const items: StatusButton[] = [
     {
       href: "/resident/outages",
       label: "停水停電",
-      value: outageCount > 0 ? `${outageCount} 筆預告` : "目前正常",
       block: "red",
+      count: outageCount,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M13 3 5.5 13.5h4.8L11 21l7.5-10.5h-4.8L13 3Z" />
+        </svg>
+      ),
     },
     {
       href: "/resident/roadworks",
       label: "道路施工",
-      value: roadworkCount > 0 ? `${roadworkCount} 處管制` : "目前暢通",
       block: "river",
+      count: roadworkCount,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 19h14" />
+          <path d="M7.5 19 10 7h4l2.5 12" />
+          <path d="M9 12h6" />
+          <path d="M8.2 15.5h7.6" />
+        </svg>
+      ),
     },
     {
       href: "/resident/announcements",
       label: "區公所公告",
-      value: announcementCount > 0 ? `${announcementCount} 則新公告` : "本週無新公告",
       block: "moss",
+      count: announcementCount,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6.5 20.2V5.8a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v14.4" />
+          <path d="M4.8 20.2h14.4" />
+          <path d="M9.2 8h5.6" />
+          <path d="M9.2 11.2h5.6" />
+          <path d="M9.2 14.4h3.4" />
+        </svg>
+      ),
     },
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-2 safe-page-x pt-4 fade-in-delay-1">
-      {items.map((item) => {
-        const card = gradientCard[item.block];
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="relative overflow-hidden rounded-xl px-3 py-3 transition-transform active:scale-[0.97]"
-            style={{ background: card.background, boxShadow: "var(--shadow-card)" }}
-          >
-            <div className="text-[10.5px] font-bold mb-1" style={{ color: card.fgSoft }}>
-              {item.label}
-            </div>
-            <div className="text-[12px] leading-snug line-clamp-2 font-bold" style={{ color: card.fg }}>
-              {item.value}
-            </div>
-          </Link>
-        );
-      })}
+    <div className="fade-in-delay-1">
+      <ResidentStatusButtons items={items} />
     </div>
   );
 }
@@ -316,9 +309,14 @@ async function AnnouncementPreview() {
   return <ResidentAnnouncementPreview items={items} />;
 }
 
-async function AnnouncementCarousel() {
-  const slides = await listActiveResidentSlides();
-  return <ResidentCarousel slides={slides} />;
+async function Bulletin() {
+  const posts = await readBulletinPosts();
+  return <CommunityBulletin posts={sortedBulletinPosts(posts)} />;
+}
+
+async function ResidentLinksCardData() {
+  const links = await readUsefulLinks();
+  return <ResidentLinksCard icon={linksIcon} block={blockColor.wood} links={links} />;
 }
 
 export default function ResidentHome() {
@@ -326,99 +324,37 @@ export default function ResidentHome() {
 
   return (
     <div>
-      <div
-        className="relative safe-page-x pt-6 pb-6 fade-in overflow-hidden"
-        style={{
-          borderBottomLeftRadius: 32,
-          borderBottomRightRadius: 32,
-          boxShadow: "var(--shadow-float)",
-        }}
-      >
-        <Image
-          src="/images/daxi-bridge.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={{ zIndex: 0 }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(160deg, rgba(93,134,167,0.5) 0%, rgba(35,45,56,0.85) 100%)",
-            zIndex: 1,
-          }}
-          aria-hidden
-        />
-        <div className="relative" style={{ zIndex: 2 }}>
-          <div className="flex items-center justify-between">
-            <span
-              className="inline-flex items-center rounded-full px-2.5 py-1 text-[10.5px] font-bold tracking-wide"
-              style={{ background: "var(--block-wood)", color: "var(--block-fg)" }}
-            >
-              大溪人限定
-            </span>
-            <Link
-              href="/resident/profile"
-              aria-label="我的"
-              className="relative w-9 h-9 rounded-full flex items-center justify-center transition-opacity active:opacity-70"
-              style={{ background: "rgba(255,255,255,0.22)", color: "#fff" }}
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="8.3" r="3.3" />
-                <path d="M5.3 19.8c1-3.2 3.6-5 6.7-5s5.7 1.8 6.7 5" />
-              </svg>
-            </Link>
-          </div>
-          <div className="text-[13px] mt-3" style={{ color: "rgba(255,255,255,0.8)" }}>
-            {todayLabel}
-          </div>
-          <div className="font-serif text-[24px] font-bold leading-tight" style={{ color: "#fff" }}>
-            大溪居民您好 👋
-          </div>
-          <p className="text-[12.5px] mt-2" style={{ color: "rgba(255,255,255,0.88)" }}>
-            里民服務、區公所公告、停水停電通知，一站看完
-          </p>
-        </div>
-      </div>
+      <ResidentHomeHero todayLabel={todayLabel} />
 
       <Suspense fallback={<TodayStatusSkeleton />}>
         <TodayStatusRow />
       </Suspense>
 
-      <AnnouncementCarousel />
-
-      <div className="grid grid-cols-2 gap-3 safe-page-x pt-5 fade-in-delay-1">
-        {quickLinks.map((q) => (
-          <Link
-            key={q.href}
-            href={q.href}
-            className="relative overflow-hidden rounded-2xl px-4 py-4 transition-opacity active:opacity-70"
-            style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}
-          >
-            <span className="absolute inset-x-4 top-0 h-1 rounded-b-full" style={{ background: blockColor[q.block] }} aria-hidden />
-            <span
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-2.5"
-              style={{ background: blockColor[q.block], color: "#fff" }}
-            >
-              <span className="w-[19px] h-[19px] block">{q.icon}</span>
-            </span>
-            <div className="text-[13.5px] font-bold" style={{ color: "var(--ink)" }}>
-              {q.label}
-            </div>
-            <div className="text-[10.5px] mt-0.5 leading-snug" style={{ color: "var(--ink-soft)" }}>
-              {q.desc}
-            </div>
-          </Link>
-        ))}
-        <ResidentLinksCard icon={linksIcon} block={blockColor.wood} />
+      <div className="pt-6 fade-in-delay-1">
+        <div className="flex items-center gap-1.5 safe-page-x mb-2.5">
+          <span aria-hidden>📋</span>
+          <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+            社區佈告欄
+          </div>
+        </div>
+        <Suspense fallback={<ListSkeleton />}>
+          <Bulletin />
+        </Suspense>
       </div>
 
-      <div className="pt-7">
+      <ResidentQuickLinks
+        links={quickLinks}
+        extra={
+          <Suspense fallback={<div className="col-span-2 h-16 rounded-2xl skeleton" style={{ background: "var(--line)" }} />}>
+            <ResidentLinksCardData />
+          </Suspense>
+        }
+      />
+
+      <div className="pt-7 fade-in-delay-2">
         <div className="flex items-center justify-between safe-page-x mb-2.5">
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--daxi-red)" }} aria-hidden />
+            <span aria-hidden>⚡</span>
             <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--daxi-red)" }}>
               停水停電通知
             </div>
@@ -432,10 +368,10 @@ export default function ResidentHome() {
         </Suspense>
       </div>
 
-      <div className="pt-7 pb-10">
+      <div className="pt-7 pb-10 fade-in-delay-2">
         <div className="flex items-center justify-between safe-page-x mb-2.5">
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--block-wood-deep)" }} aria-hidden />
+            <span aria-hidden>📢</span>
             <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
               區公所公告
             </div>

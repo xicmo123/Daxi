@@ -45,8 +45,17 @@ export type PlaceDetail = {
   liveStatus?: {
     queueMinutes?: number;
     soldOut?: boolean;
+    // Coarse queue badge shown on the tourist-facing list/detail views —
+    // distinct from queueMinutes (a wait-time estimate): this is a simple
+    // categorical status a merchant can flip with one tap when they don't
+    // want to estimate minutes.
+    queueStatus?: "免排隊" | "排隊中" | "號碼牌發放完畢";
     updatedAt: number;
   };
+  // Merchant self-reported: will they hold souvenir/purchase bags for a
+  // customer while they keep browsing nearby? Persistent capability flag,
+  // not "live" moment-to-moment status, so it lives outside liveStatus.
+  acceptsLuggage?: boolean;
 };
 
 // Google's own place-type classification, translated — a safe, non-invented
@@ -90,3 +99,13 @@ export function categoryLabel(curatedCategory: string | undefined, googleType: s
   if (googleType && GOOGLE_TYPE_LABELS[googleType]) return GOOGLE_TYPE_LABELS[googleType];
   return fallback;
 }
+
+export type QueueStatus = NonNullable<PlaceDetail["liveStatus"]>["queueStatus"];
+
+// Shared colors so the queue badge reads the same on the card grid and the
+// detail modal — green means walk right in, red means expect a wait.
+export const QUEUE_STATUS_BADGE: Record<NonNullable<QueueStatus>, { bg: string; fg: string }> = {
+  免排隊: { bg: "var(--status-ok)", fg: "#fff" },
+  排隊中: { bg: "var(--daxi-red)", fg: "#fff" },
+  號碼牌發放完畢: { bg: "var(--ink)", fg: "#fff" },
+};

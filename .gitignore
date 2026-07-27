@@ -23,6 +23,9 @@
 # misc
 .DS_Store
 *.pem
+# Public CA intermediate cert (not a secret) needed to complete the AED
+# open-data source's incomplete TLS chain — see lib/aedService.ts.
+!/certs/twca-secure-ssl-intermediate.pem
 
 # debug
 npm-debug.log*

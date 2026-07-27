@@ -1,0 +1,6 @@
+[
+  { "id": "link-seed-household", "label": "戶政服務", "note": "戶籍謄本、身分證異動", "href": "https://www.daxi.tycg.gov.tw", "order": 0 },
+  { "id": "link-seed-land", "label": "地政服務", "note": "地籍謄本、地價查詢", "href": "https://www.daxi.tycg.gov.tw", "order": 1 },
+  { "id": "link-seed-tax", "label": "稅務服務", "note": "地價稅、房屋稅", "href": "https://www.daxi.tycg.gov.tw", "order": 2 },
+  { "id": "link-seed-office", "label": "區公所首頁", "note": "各項服務入口", "href": "https://www.daxi.tycg.gov.tw", "order": 3 }
+]

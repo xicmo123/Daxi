@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import type { Business, BusinessTag } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
-import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
+import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
 import { experienceTags } from "@/lib/experience";
@@ -96,6 +96,8 @@ export default function BusinessList({
     const tags = experienceTags(b, details[b.placeId]);
     const promo = tags[0] ?? categoryLabel(details[b.placeId]?.category, b.googleType, b.tag);
     const liveStatus = details[b.placeId]?.liveStatus;
+    const acceptsLuggage = details[b.placeId]?.acceptsLuggage;
+    const queueBadge = liveStatus?.queueStatus ? QUEUE_STATUS_BADGE[liveStatus.queueStatus] : null;
     const statusBadge = liveStatus?.soldOut
       ? "已完售"
       : liveStatus?.queueMinutes
@@ -138,14 +140,33 @@ export default function BusinessList({
           >
             {promo}
           </div>
-          {statusBadge ? (
-            <div
-              className="absolute right-2.5 top-2.5 rounded-md px-2 py-1 text-[11px] font-bold leading-none"
-              style={{ background: liveStatus?.soldOut ? "var(--ink)" : "var(--daxi-red)", color: "#fff" }}
-            >
-              {statusBadge}
-            </div>
-          ) : null}
+          <div className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1">
+            {queueBadge ? (
+              <div
+                className="rounded-md px-2 py-1 text-[11px] font-bold leading-none"
+                style={{ background: queueBadge.bg, color: queueBadge.fg }}
+              >
+                {liveStatus?.queueStatus}
+              </div>
+            ) : statusBadge ? (
+              <div
+                className="rounded-md px-2 py-1 text-[11px] font-bold leading-none"
+                style={{ background: liveStatus?.soldOut ? "var(--ink)" : "var(--daxi-red)", color: "#fff" }}
+              >
+                {statusBadge}
+              </div>
+            ) : null}
+            {acceptsLuggage ? (
+              <div
+                className="flex h-6 w-6 items-center justify-center rounded-full text-[12px] shadow-sm"
+                style={{ background: "rgba(255,255,255,0.92)" }}
+                aria-label="提供寄放服務"
+                title="提供寄放服務"
+              >
+                🎒
+              </div>
+            ) : null}
+          </div>
         </div>
         <div className="pt-2.5">
           <h3 className="truncate text-[17px] font-black leading-tight" style={{ color: "var(--ink)" }}>

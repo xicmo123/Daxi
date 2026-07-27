@@ -65,6 +65,25 @@ export async function upsertCoupon(coupon: Coupon): Promise<void> {
   await writeJson(COUPONS_PATH, coupons);
 }
 
+// Admin-side moderation — merchants otherwise have zero oversight on their
+// own coupon listings (wrong terms, expired-but-still-active, etc.).
+export async function setCouponActive(id: string, active: boolean): Promise<Coupon | null> {
+  const coupons = await readCoupons();
+  const idx = coupons.findIndex((c) => c.id === id);
+  if (idx === -1) return null;
+  coupons[idx] = { ...coupons[idx], active, updatedAt: new Date().toISOString() };
+  await writeJson(COUPONS_PATH, coupons);
+  return coupons[idx];
+}
+
+export async function deleteCoupon(id: string): Promise<boolean> {
+  const coupons = await readCoupons();
+  const next = coupons.filter((c) => c.id !== id);
+  if (next.length === coupons.length) return false;
+  await writeJson(COUPONS_PATH, next);
+  return true;
+}
+
 // Rotating redemption token: valid for a short window so a screenshot
 // forwarded to someone else stops working within a couple of minutes —
 // staff scan it in-store rather than reading a static discount code off

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, type CSSProperties } from "react";
+import AboutModal from "./AboutModal";
 
 const tabs = [
   {
@@ -50,12 +52,13 @@ const tabs = [
     ),
   },
   {
-    href: "/resident/profile",
-    label: "我的",
+    href: null,
+    label: "關於",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8.3" r="3.3" />
-        <path d="M5.3 19.8c1-3.2 3.6-5 6.7-5s5.7 1.8 6.7 5" />
+        <circle cx="12" cy="12" r="8.2" />
+        <path d="M12 11v5.2" />
+        <circle cx="12" cy="7.8" r="0.15" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
       </svg>
     ),
   },
@@ -63,6 +66,7 @@ const tabs = [
 
 export default function ResidentBottomNav() {
   const pathname = usePathname();
+  const [showAbout, setShowAbout] = useState(false);
 
   return (
     <nav
@@ -79,27 +83,25 @@ export default function ResidentBottomNav() {
         }}
       >
         {tabs.map((tab) => {
-          const active = pathname === tab.href;
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              aria-current={active ? "page" : undefined}
-              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-              style={{
-                color: active ? "var(--river-teal)" : "var(--ink)",
-                opacity: active ? 1 : 0.54,
-                minHeight: 56,
-                padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 4,
-                textDecoration: "none",
-                position: "relative",
-              }}
-            >
+          const active = tab.href !== null && pathname === tab.href;
+          const itemStyle: CSSProperties = {
+            color: active ? "var(--river-teal)" : "var(--ink)",
+            opacity: active ? 1 : 0.54,
+            minHeight: 56,
+            padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            textDecoration: "none",
+            position: "relative",
+            background: "none",
+            border: "none",
+            width: "100%",
+          };
+          const content = (
+            <>
               <span
                 aria-hidden
                 className="absolute top-1.5 h-0.5 w-5 rounded-full transition-opacity duration-300"
@@ -122,10 +124,37 @@ export default function ResidentBottomNav() {
               <span className="text-[10.5px] font-normal tracking-wide transition-all duration-300" style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}>
                 {tab.label}
               </span>
+            </>
+          );
+
+          if (tab.href === null) {
+            return (
+              <button
+                key={tab.label}
+                type="button"
+                onClick={() => setShowAbout(true)}
+                className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
+                style={itemStyle}
+              >
+                {content}
+              </button>
+            );
+          }
+
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              aria-current={active ? "page" : undefined}
+              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
+              style={itemStyle}
+            >
+              {content}
             </Link>
           );
         })}
       </div>
+      {showAbout ? <AboutModal onClose={() => setShowAbout(false)} /> : null}
     </nav>
   );
 }

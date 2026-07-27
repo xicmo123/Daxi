@@ -1,7 +1,11 @@
+import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import GarbageTruckMap from "@/components/GarbageTruckMap";
+import { readUsefulLinks } from "@/lib/usefulLinks";
 
 const DAXI_OFFICE_URL = "https://www.daxi.tycg.gov.tw";
+
+export const dynamic = "force-dynamic";
 
 function SectionCard({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
@@ -31,7 +35,9 @@ function ContactRow({ label, phone }: { label: string; phone: string }) {
   );
 }
 
-export default function ResidentServicesPage() {
+export default async function ResidentServicesPage() {
+  const usefulLinks = await readUsefulLinks();
+
   return (
     <div className="pt-2">
       <PageHeader title="里民服務" subtitle="生活大小事，這裡先找" tint="river" />
@@ -79,6 +85,14 @@ export default function ResidentServicesPage() {
             <ContactRow label="反詐騙諮詢專線" phone="165" />
             <ContactRow label="桃園市民專線" phone="1999" />
           </div>
+          <Link
+            href="/resident/aed"
+            className="mt-3 flex items-center justify-between rounded-xl px-4 py-3 text-[13px] font-bold transition-opacity active:opacity-70"
+            style={{ background: "var(--daxi-red)", color: "#fff" }}
+          >
+            🚨 尋找最近的 AED
+            <span aria-hidden="true">→</span>
+          </Link>
         </SectionCard>
 
         <SectionCard id="garbage" title="垃圾清運">
@@ -87,15 +101,10 @@ export default function ResidentServicesPage() {
 
         <SectionCard id="links" title="常用連結">
           <div className="flex flex-col gap-2">
-            {[
-              { label: "戶政服務", note: "戶籍謄本、身分證異動" },
-              { label: "地政服務", note: "地籍謄本、地價查詢" },
-              { label: "稅務服務", note: "地價稅、房屋稅" },
-              { label: "區公所首頁", note: "各項服務入口" },
-            ].map((l) => (
+            {usefulLinks.map((l) => (
               <a
-                key={l.label}
-                href={DAXI_OFFICE_URL}
+                key={l.id}
+                href={l.href}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center justify-between rounded-xl px-4 py-3 transition-opacity active:opacity-70"

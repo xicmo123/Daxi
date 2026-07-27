@@ -37,5 +37,44 @@
     "kind": "feature",
     "featureKey": "garbage",
     "subtitle": "查看目前清運車位置"
+  },
+  {
+    "active": false,
+    "kind": "feature",
+    "featureKey": "services",
+    "tag": "一般",
+    "title": "里民服務",
+    "subtitle": "生活大小事，這裡先找",
+    "href": "/resident/services",
+    "id": "rslide-ms2nycywr4kt",
+    "order": 3,
+    "createdAt": "2026-07-27T03:24:42.152Z",
+    "updatedAt": "2026-07-27T03:24:42.826Z"
+  },
+  {
+    "active": false,
+    "kind": "feature",
+    "featureKey": "announcements",
+    "tag": "一般",
+    "title": "區公所公告",
+    "subtitle": "最新公告與里民資訊",
+    "href": "/resident/announcements",
+    "id": "rslide-ms2v5xxz5wh8",
+    "order": 4,
+    "createdAt": "2026-07-27T06:46:33.239Z",
+    "updatedAt": "2026-07-27T06:46:34.249Z"
+  },
+  {
+    "active": false,
+    "kind": "feature",
+    "featureKey": "profile",
+    "tag": "一般",
+    "title": "我的模式",
+    "subtitle": "切換遊客／大溪人模式",
+    "href": "/resident/profile",
+    "id": "rslide-ms2v642d6d7x",
+    "order": 5,
+    "createdAt": "2026-07-27T06:46:41.173Z",
+    "updatedAt": "2026-07-27T06:46:42.104Z"
   }
 ]

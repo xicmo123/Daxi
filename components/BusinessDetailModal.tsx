@@ -8,7 +8,7 @@ import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import type { Coupon } from "@/lib/coupons";
-import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
+import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/placeDetails";
 import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import { experienceTags } from "@/lib/experience";
@@ -231,6 +231,14 @@ export default function BusinessDetailModal({
                 {business.businessStatus === "CLOSED_PERMANENTLY" ? "已歇業" : "暫停營業"}
               </span>
             ) : null}
+            {liveStatus?.queueStatus ? (
+              <span
+                className="inline-flex text-[10.5px] font-bold tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                style={{ background: QUEUE_STATUS_BADGE[liveStatus.queueStatus].bg, color: QUEUE_STATUS_BADGE[liveStatus.queueStatus].fg }}
+              >
+                {liveStatus.queueStatus}
+              </span>
+            ) : null}
             {liveStatus?.soldOut ? (
               <span
                 className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
@@ -244,6 +252,15 @@ export default function BusinessDetailModal({
                 style={{ background: "rgba(224,90,70,0.55)", color: "#fff" }}
               >
                 大排長龍・約等 {liveStatus.queueMinutes} 分鐘
+              </span>
+            ) : null}
+            {detail?.acceptsLuggage ? (
+              <span
+                className="inline-flex items-center gap-1 text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
+              >
+                <span aria-hidden="true">🎒</span>
+                可寄放伴手禮
               </span>
             ) : null}
             <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
