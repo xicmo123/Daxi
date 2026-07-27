@@ -10,8 +10,10 @@ const tintBg: Record<PageTint, string> = {
 
 // Solid color-block banner behind the title, chicTrip-style — each section
 // of the app gets its own hue instead of one uniform cream wash throughout.
-// Large flat overlapping shapes break up the flat color fill without
-// competing with the title, echoed from the identity-gate/hero treatment.
+// Large flat silhouettes of Daxi motifs (old-street parapet, spinning top,
+// dried-tofu blocks, the reservoir dam) break up the flat color fill
+// without competing with the title — same tone-on-tone treatment as the
+// plain geometric shapes this replaced, just recognizably "Daxi" now.
 export function HeaderShapes() {
   return (
     <svg
@@ -20,11 +22,40 @@ export function HeaderShapes() {
       preserveAspectRatio="none"
       style={{ mixBlendMode: "overlay" }}
     >
-      <circle cx="88%" cy="0%" r="110" fill="rgba(255,255,255,0.22)" />
-      <circle cx="98%" cy="14%" r="46" fill="rgba(255,255,255,0.16)" />
-      <circle cx="-4%" cy="100%" r="130" fill="rgba(0,0,0,0.16)" />
-      <rect x="6%" y="-10%" width="90" height="90" rx="20" transform="rotate(24 6 -10)" fill="rgba(255,255,255,0.12)" />
-      <circle cx="20%" cy="112%" r="34" fill="rgba(255,255,255,0.18)" />
+      {/* 老街牌樓 — old-street shophouse parapet, scalloped Baroque skyline */}
+      <svg x="-8%" y="-12%" width="150" height="100" viewBox="0 0 160 100">
+        <path
+          d="M0 100V46c6-16 16-24 24-12 4-16 18-22 28-8 6-18 22-24 32-4 6-16 20-20 28-4 6-14 18-16 24-2v84H0Z"
+          fill="rgba(0,0,0,0.15)"
+        />
+      </svg>
+
+      {/* 陀螺 — Daxi spinning top, top right */}
+      <svg x="76%" y="-16%" width="120" height="120" viewBox="0 0 100 100">
+        <path
+          d="M50 6c15 0 24 11 24 25 0 11-5 19-12 25l-9 36a3.2 3.2 0 0 1-6.2 0l-9-36c-7-6-12-14-12-25 0-14 9-25 24-25Z"
+          fill="rgba(255,255,255,0.22)"
+        />
+        <rect x="45" y="0" width="10" height="9" rx="2.5" fill="rgba(255,255,255,0.22)" />
+      </svg>
+
+      {/* 豆干 — stacked dried-tofu blocks, bottom left */}
+      <svg x="8%" y="80%" width="86" height="86" viewBox="0 0 100 100">
+        <rect x="10" y="36" width="54" height="54" rx="9" transform="rotate(-9 37 63)" fill="rgba(255,255,255,0.15)" />
+        <rect x="34" y="12" width="54" height="54" rx="9" transform="rotate(7 61 39)" fill="rgba(255,255,255,0.22)" />
+      </svg>
+
+      {/* 水庫 — reservoir dam wall + ripples, bottom right */}
+      <svg x="68%" y="80%" width="160" height="96" viewBox="0 0 170 96">
+        <path d="M0 34 Q42 12 85 34 T170 34 V96H0Z" fill="rgba(0,0,0,0.15)" />
+        <path
+          d="M14 50 Q42 38 70 50 T126 50"
+          stroke="rgba(255,255,255,0.24)"
+          strokeWidth="4.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </svg>
     </svg>
   );
 }
