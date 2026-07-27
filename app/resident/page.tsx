@@ -3,7 +3,7 @@ import Link from "next/link";
 import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { listUpcomingOutages, type Outage } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
-import { readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
+import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
 import { readUsefulLinks } from "@/lib/usefulLinks";
 import ResidentLinksCard from "@/components/ResidentLinksCard";
 import ResidentAnnouncementPreview from "@/components/ResidentAnnouncementPreview";
@@ -311,7 +311,7 @@ async function AnnouncementPreview() {
 
 async function Bulletin() {
   const posts = await readBulletinPosts();
-  return <CommunityBulletin posts={sortedBulletinPosts(posts)} />;
+  return <CommunityBulletin posts={sortedBulletinPosts(activeBulletinPosts(posts))} />;
 }
 
 async function ResidentLinksCardData() {

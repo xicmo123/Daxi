@@ -18,6 +18,8 @@ export default function BulletinForm({ post }: { post?: BulletinPost }) {
   const [tags, setTags] = useState<BulletinTag[]>(post?.tags ?? []);
   const [village, setVillage] = useState<DaxiVillage | "">(post?.village ?? "");
   const [urgent, setUrgent] = useState(post?.urgent ?? false);
+  const [startDate, setStartDate] = useState(post?.startDate ?? "");
+  const [endDate, setEndDate] = useState(post?.endDate ?? "");
 
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -34,10 +36,22 @@ export default function BulletinForm({ post }: { post?: BulletinPost }) {
     setError(null);
     setMessage(null);
     try {
+      if (startDate && endDate && endDate < startDate) {
+        setError("結束日期不能早於開始日期");
+        return;
+      }
       const res = await fetch(isEdit ? `/api/admin/resident-bulletin/${post!.id}` : "/api/admin/resident-bulletin", {
         method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, body, tags, village: village || undefined, urgent }),
+        body: JSON.stringify({
+          title,
+          body,
+          tags,
+          village: village || undefined,
+          urgent,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -130,6 +144,31 @@ export default function BulletinForm({ post }: { post?: BulletinPost }) {
           </option>
         ))}
       </select>
+
+      <label className="block text-[12.5px] font-medium mb-1.5" style={{ color: "#766a5d" }}>
+        公告期間（選填，不指定代表一直顯示）
+      </label>
+      <div className="flex items-center gap-2 mb-4">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          max={endDate || undefined}
+          className="flex-1 rounded-lg px-3 py-2.5 text-[13px]"
+          style={inputStyle}
+        />
+        <span className="text-[12.5px]" style={{ color: "#766a5d" }}>
+          至
+        </span>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          min={startDate || undefined}
+          className="flex-1 rounded-lg px-3 py-2.5 text-[13px]"
+          style={inputStyle}
+        />
+      </div>
 
       <label className="block text-[12.5px] font-medium mb-1.5" style={{ color: "#766a5d" }}>
         標題

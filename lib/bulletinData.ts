@@ -9,34 +9,12 @@
 // instead of only through code edits.
 import { promises as fs } from "fs";
 import path from "path";
-import type { DaxiVillage } from "./daxiVillages";
+import { activeBulletinPosts, isBulletinPostActive, type BulletinPost, type BulletinPostInput, type BulletinTag } from "./bulletinActive";
+
+export type { BulletinTag, BulletinPost, BulletinPostInput };
+export { activeBulletinPosts, isBulletinPostActive };
 
 const DATA_PATH = path.join(process.cwd(), "data", "bulletin-posts.json");
-
-export type BulletinTag = "疫苗" | "停水" | "噴藥" | "颱風" | "活動" | "一般";
-
-export type BulletinPost = {
-  id: string;
-  title: string;
-  body: string;
-  tags: BulletinTag[];
-  postedAt: number; // epoch ms
-  // Which 里 this notice applies to — optional, since some posts (a
-  // district-wide typhoon notice) aren't specific to one village.
-  village?: DaxiVillage;
-  // Pinned + shown with red emphasis regardless of tag — for genuinely
-  // urgent notices (typhoon, water outage) rather than every post claiming
-  // urgency.
-  urgent?: boolean;
-};
-
-export type BulletinPostInput = {
-  title: string;
-  body: string;
-  tags: BulletinTag[];
-  village?: DaxiVillage;
-  urgent?: boolean;
-};
 
 async function readJson<T>(fallback: T): Promise<T> {
   try {

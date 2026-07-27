@@ -3,9 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { BulletinPost } from "@/lib/bulletinData";
+import { isBulletinPostActive, type BulletinPost } from "@/lib/bulletinActive";
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const rangeFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", timeZone: "Asia/Taipei" });
+
+function formatRange(post: BulletinPost): string | null {
+  if (!post.startDate && !post.endDate) return null;
+  const start = post.startDate ? rangeFormatter.format(new Date(post.startDate)) : "即日起";
+  const end = post.endDate ? rangeFormatter.format(new Date(post.endDate)) : "不限";
+  return `${start} ~ ${end}`;
+}
 
 export default function BulletinList({ posts }: { posts: BulletinPost[] }) {
   const router = useRouter();
@@ -45,8 +53,11 @@ export default function BulletinList({ posts }: { posts: BulletinPost[] }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        {sorted.map((post) => (
-          <div key={post.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5" style={{ background: "#fffaf1", border: "1px solid #dfd1bf" }}>
+        {sorted.map((post) => {
+          const range = formatRange(post);
+          const active = isBulletinPostActive(post);
+          return (
+          <div key={post.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5" style={{ background: "#fffaf1", border: "1px solid #dfd1bf", opacity: active ? 1 : 0.6 }}>
             {post.urgent ? (
               <span className="shrink-0 text-[10.5px] font-bold rounded-full px-2 py-1" style={{ background: "#b0503f", color: "#fff" }}>
                 緊急
@@ -59,6 +70,7 @@ export default function BulletinList({ posts }: { posts: BulletinPost[] }) {
               <div className="text-[11.5px] truncate" style={{ color: "#766a5d" }}>
                 {post.village ? `${post.village} ・ ` : ""}
                 {post.tags.join("、") || "無標籤"} ・ {dateFormatter.format(new Date(post.postedAt))}
+                {range ? ` ・ 🗓 ${range}${active ? "" : "（目前未顯示）"}` : ""}
               </div>
             </Link>
             <button
@@ -71,7 +83,8 @@ export default function BulletinList({ posts }: { posts: BulletinPost[] }) {
               刪除
             </button>
           </div>
-        ))}
+          );
+        })}
         {sorted.length === 0 ? (
           <p className="text-[13px] py-8 text-center" style={{ color: "#766a5d" }}>
             尚未發布任何社區公告

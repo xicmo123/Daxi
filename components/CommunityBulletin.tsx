@@ -15,11 +15,20 @@ const TAG_COLOR: Record<BulletinTag, string> = {
 };
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const rangeFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", timeZone: "Asia/Taipei" });
 
 const ALL_FILTER = "全部";
 const ROTATE_MS = 6000;
 
+function formatRange(post: BulletinPost): string | null {
+  if (!post.startDate && !post.endDate) return null;
+  const start = post.startDate ? rangeFormatter.format(new Date(post.startDate)) : "即日起";
+  const end = post.endDate ? rangeFormatter.format(new Date(post.endDate)) : "不限";
+  return `${start} ~ ${end}`;
+}
+
 function BulletinCard({ post }: { post: BulletinPost }) {
+  const range = formatRange(post);
   return (
     <div
       className="rounded-2xl px-4 py-3.5"
@@ -57,6 +66,11 @@ function BulletinCard({ post }: { post: BulletinPost }) {
       <p className="text-[12px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         {post.body}
       </p>
+      {range ? (
+        <div className="mt-1.5 text-[11px] font-medium" style={{ color: "var(--river-teal)" }}>
+          🗓 {range}
+        </div>
+      ) : null}
     </div>
   );
 }
