@@ -1,12 +1,8 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { fetchDaxiAnnouncements } from "@/lib/announcements";
-import { listUpcomingOutages, type Outage } from "@/lib/outages";
+import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
-import { readUsefulLinks } from "@/lib/usefulLinks";
-import ResidentLinksCard from "@/components/ResidentLinksCard";
-import ResidentAnnouncementPreview from "@/components/ResidentAnnouncementPreview";
 import CommunityBulletin from "@/components/CommunityBulletin";
 import ResidentHomeHero from "@/components/ResidentHomeHero";
 import ResidentQuickLinks from "@/components/ResidentQuickLinks";
@@ -17,13 +13,6 @@ export const dynamic = "force-dynamic";
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short" });
 
 type Block = "wood" | "moss" | "river" | "red";
-
-const blockColor: Record<Block, string> = {
-  wood: "var(--block-wood)",
-  moss: "var(--block-moss)",
-  river: "var(--block-river)",
-  red: "var(--daxi-red)",
-};
 
 const quickLinks: Array<{ href: string; label: string; desc: string; block: Block; icon: React.ReactNode }> = [
   {
@@ -116,15 +105,6 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
   },
 ];
 
-const linksIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10.2 13.8a3.4 3.4 0 0 0 4.8 0l2.6-2.6a3.4 3.4 0 0 0-4.8-4.8l-1.3 1.3" />
-    <path d="M13.8 10.2a3.4 3.4 0 0 0-4.8 0l-2.6 2.6a3.4 3.4 0 0 0 4.8 4.8l1.3-1.3" />
-  </svg>
-);
-
-const outageTypeLabel: Record<Outage["type"], string> = { water: "停水", power: "停電" };
-
 async function TodayStatusRow() {
   let outageCount = 0;
   let roadworkCount = 0;
@@ -142,7 +122,7 @@ async function TodayStatusRow() {
   }
   try {
     const items = await fetchDaxiAnnouncements(10);
-    announcementCount = items.filter((item) => Date.now() - item.publishedAt < 7 * 24 * 60 * 60 * 1000).length;
+    announcementCount = items.length;
   } catch {
     announcementCount = 0;
   }
@@ -207,67 +187,6 @@ function TodayStatusSkeleton() {
   );
 }
 
-async function OutagePreview() {
-  const outages = await listUpcomingOutages();
-  if (outages.length === 0) {
-    return (
-      <div className="safe-page-x">
-        <div
-          className="rounded-2xl px-4 py-4 flex items-center justify-between gap-3"
-          style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}
-        >
-          <span className="text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
-            目前沒有預告中的停水停電公告
-          </span>
-          <Link
-            href="/resident/services#emergency"
-            className="shrink-0 text-[11.5px] font-semibold whitespace-nowrap transition-opacity active:opacity-70"
-            style={{ color: "var(--daxi-red)" }}
-          >
-            緊急聯絡 →
-          </Link>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="safe-page-x flex flex-col gap-2.5">
-      {outages.slice(0, 3).map((o) => {
-        const accent = o.type === "water" ? "var(--river-teal)" : "var(--daxi-red)";
-        return (
-          <div
-            key={o.id}
-            className="rounded-2xl px-4 py-3.5 flex items-center gap-3"
-            style={{
-              background: "var(--card)",
-              boxShadow: "var(--shadow-card)",
-              borderLeft: `4px solid ${accent}`,
-            }}
-          >
-            <span
-              className="shrink-0 text-[10.5px] font-semibold rounded-full px-2.5 py-1"
-              style={{
-                background: o.type === "water" ? "var(--river-teal-soft)" : "var(--daxi-red-soft)",
-                color: accent,
-              }}
-            >
-              {outageTypeLabel[o.type]}
-            </span>
-            <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-semibold truncate" style={{ color: "var(--ink)" }}>
-                {o.areas.join("、")}
-              </div>
-              <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
-                {o.date}・{o.timeRange}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 function ListSkeleton() {
   return (
     <div className="safe-page-x flex flex-col gap-2.5">
@@ -278,45 +197,9 @@ function ListSkeleton() {
   );
 }
 
-async function AnnouncementPreview() {
-  let items: Awaited<ReturnType<typeof fetchDaxiAnnouncements>> = [];
-  try {
-    items = await fetchDaxiAnnouncements(3);
-  } catch {
-    items = [];
-  }
-  if (items.length === 0) {
-    return (
-      <div className="safe-page-x">
-        <div
-          className="rounded-2xl px-4 py-4 flex items-center justify-between gap-3"
-          style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}
-        >
-          <span className="text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
-            公告整理中，稍後再回來看看
-          </span>
-          <Link
-            href="/resident/services#report"
-            className="shrink-0 text-[11.5px] font-semibold whitespace-nowrap transition-opacity active:opacity-70"
-            style={{ color: "var(--block-wood-deep)" }}
-          >
-            我要陳情 →
-          </Link>
-        </div>
-      </div>
-    );
-  }
-  return <ResidentAnnouncementPreview items={items} />;
-}
-
 async function Bulletin() {
   const posts = await readBulletinPosts();
   return <CommunityBulletin posts={sortedBulletinPosts(activeBulletinPosts(posts))} />;
-}
-
-async function ResidentLinksCardData() {
-  const links = await readUsefulLinks();
-  return <ResidentLinksCard icon={linksIcon} block={blockColor.wood} links={links} />;
 }
 
 export default function ResidentHome() {
@@ -342,48 +225,9 @@ export default function ResidentHome() {
         </Suspense>
       </div>
 
-      <ResidentQuickLinks
-        links={quickLinks}
-        extra={
-          <Suspense fallback={<div className="col-span-2 h-16 rounded-2xl skeleton" style={{ background: "var(--line)" }} />}>
-            <ResidentLinksCardData />
-          </Suspense>
-        }
-      />
+      <ResidentQuickLinks links={quickLinks} />
 
-      <div className="pt-7 fade-in-delay-2">
-        <div className="flex items-center justify-between safe-page-x mb-2.5">
-          <div className="flex items-center gap-1.5">
-            <span aria-hidden>⚡</span>
-            <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--daxi-red)" }}>
-              停水停電通知
-            </div>
-          </div>
-          <Link href="/resident/outages" className="text-[11.5px] font-medium" style={{ color: "var(--ink-soft)" }}>
-            查看全部
-          </Link>
-        </div>
-        <Suspense fallback={<ListSkeleton />}>
-          <OutagePreview />
-        </Suspense>
-      </div>
-
-      <div className="pt-7 pb-10 fade-in-delay-2">
-        <div className="flex items-center justify-between safe-page-x mb-2.5">
-          <div className="flex items-center gap-1.5">
-            <span aria-hidden>📢</span>
-            <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
-              區公所公告
-            </div>
-          </div>
-          <Link href="/resident/announcements" className="text-[11.5px] font-medium" style={{ color: "var(--ink-soft)" }}>
-            查看全部
-          </Link>
-        </div>
-        <Suspense fallback={<ListSkeleton />}>
-          <AnnouncementPreview />
-        </Suspense>
-      </div>
+      <div className="pb-10" />
     </div>
   );
 }
