@@ -191,11 +191,7 @@ async function TodayStatusRow() {
 function TodayStatusSkeleton() {
   return (
     <div className="safe-page-x">
-      <div className="grid grid-cols-3 rounded-2xl overflow-hidden" style={{ background: "var(--card)", boxShadow: "var(--shadow-float)" }}>
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="h-[78px] skeleton" style={i > 0 ? { background: "var(--line)", borderLeft: "1px solid var(--line)" } : { background: "var(--line)" }} />
-        ))}
-      </div>
+      <div className="h-[128px] rounded-3xl skeleton" style={{ background: "var(--line)", boxShadow: "var(--shadow-float)" }} />
     </div>
   );
 }

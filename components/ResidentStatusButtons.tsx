@@ -6,13 +6,6 @@ import Link from "next/link";
 
 export type StatusBlock = "wood" | "moss" | "river" | "red";
 
-const blockColor: Record<StatusBlock, string> = {
-  wood: "var(--block-wood-deep)",
-  moss: "var(--block-moss-deep)",
-  river: "var(--block-river-deep)",
-  red: "var(--daxi-red)",
-};
-
 export type StatusButton = {
   href: string;
   label: string;
@@ -21,53 +14,53 @@ export type StatusButton = {
   count?: number;
 };
 
-// Icon-forward button row — was three separate white cards each with their
-// own shadow, floating with visible gaps between them (read as three
-// disconnected islands). Now one shared card container with hairline
-// dividers between items, so the row reads as a single grouped module —
-// matching the card language used by the bulletin section right below it.
-//
-// Overlaps the hero photo's bottom edge (negative margin applied by the
-// parent) the way iRead 臺北市立圖書館's home screen floats its "個人借閱證"
-// stat card over the banner image instead of stacking it below with a gap.
+// Big gradient number-card — directly modeled on iRead 臺北市立圖書館's home
+// screen "個人借閱證" widget (name + 借閱中/預約中/閱讀存摺點數 as three big
+// numbers side by side, separated by hairlines, on one teal-to-gold gradient
+// card that overlaps the banner photo). Same three links/counts as before,
+// just number-forward instead of icon-badge-forward.
 export default function ResidentStatusButtons({ items }: { items: StatusButton[] }) {
   return (
     <div className="safe-page-x">
-      <div
-        className="grid grid-cols-3 rounded-2xl overflow-hidden"
-        style={{ background: "var(--card)", boxShadow: "var(--shadow-float)" }}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="overflow-hidden rounded-3xl"
+        style={{
+          background: "linear-gradient(120deg, var(--block-wood) 0%, var(--block-river-deep) 100%)",
+          boxShadow: "var(--shadow-float)",
+        }}
       >
-        {items.map((item, i) => (
-          <motion.div
-            key={item.href}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06, duration: 0.3, ease: "easeOut" }}
-            whileTap={{ scale: 0.94 }}
-            style={i > 0 ? { borderLeft: "1px solid var(--line)" } : undefined}
-          >
-            <Link href={item.href} className="relative flex flex-col items-center gap-1.5 px-2 py-3.5">
-              <span
-                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-                style={{ background: blockColor[item.block], color: "#fff" }}
-              >
-                <span className="w-[18px] h-[18px] block">{item.icon}</span>
-                {item.count && item.count > 0 ? (
-                  <span
-                    className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold"
-                    style={{ background: "var(--daxi-red)", color: "#fff", border: "1.5px solid var(--card)" }}
-                  >
-                    {item.count}
-                  </span>
-                ) : null}
-              </span>
-              <span className="text-[11px] font-bold text-center leading-tight" style={{ color: "var(--ink)" }}>
+        <div className="flex items-center justify-between px-4 pt-3.5 pb-1">
+          <span className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "rgba(43,36,32,0.72)" }}>
+            大溪今日動態
+          </span>
+          <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.35)" }} aria-hidden>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--block-fg)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m9 6 6 6-6 6" />
+            </svg>
+          </span>
+        </div>
+        <div className="grid grid-cols-3 px-1 pb-3.5">
+          {items.map((item, i) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex flex-col items-center gap-0.5 px-2 py-2 text-center transition-opacity active:opacity-70"
+              style={i > 0 ? { borderLeft: "1px solid rgba(43,36,32,0.16)" } : undefined}
+            >
+              <div className="text-[26px] font-bold leading-none" style={{ color: "var(--block-fg)" }}>
+                {item.count ?? 0}
+              </div>
+              <div className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold" style={{ color: "rgba(43,36,32,0.78)" }}>
+                <span className="w-[13px] h-[13px] block">{item.icon}</span>
                 {item.label}
-              </span>
+              </div>
             </Link>
-          </motion.div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }
