@@ -5,6 +5,7 @@ import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "
 import type { BusPosition } from "@/lib/busPositions";
 import type { BusEtaStop, BusRouteMatch } from "@/lib/tdxBusRoutes";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
+import { getCurrentPosition } from "@/lib/geolocation";
 
 type LeafletModule = typeof import("leaflet");
 type LoadState = "loading" | "ready" | "empty" | "error";
@@ -45,6 +46,7 @@ export default function BusMap() {
   useEffect(() => {
     const q = query.trim();
     if (!q) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRouteMatches([]);
       setRouteSearchState("idle");
       setSelectedRouteUID(null);
@@ -92,6 +94,7 @@ export default function BusMap() {
   // Timetable-style ETA lookup for whichever matched route is selected.
   useEffect(() => {
     if (!selectedRoute) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEtaStops([]);
       setEtaState("idle");
       return;
@@ -149,19 +152,17 @@ export default function BusMap() {
 
       setTimeout(() => map.invalidateSize(), 120);
 
-      if (typeof navigator !== "undefined" && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            if (cancelled || !mapRef.current) return;
-            // The fix can arrive before the container has been measured, and
-            // Leaflet silently ignores a fly on a zero-size map — measure first.
-            mapRef.current.invalidateSize();
-            mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
-          },
-          () => {},
-          { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
-        );
-      }
+      getCurrentPosition(
+        (position) => {
+          if (cancelled || !mapRef.current) return;
+          // The fix can arrive before the container has been measured, and
+          // Leaflet silently ignores a fly on a zero-size map — measure first.
+          mapRef.current.invalidateSize();
+          mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
+      );
     }
 
     setupMap();

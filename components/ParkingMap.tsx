@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "leaflet";
 import { statusBarColor } from "@/lib/status";
 import type { Status } from "@/lib/data";
+import { getCurrentPosition } from "@/lib/geolocation";
 
 type LeafletModule = typeof import("leaflet");
 
@@ -172,12 +173,12 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
     const L = leafletRef.current;
     const map = mapRef.current;
     const layer = userMarkerLayerRef.current;
-    if (!L || !map || !layer || !navigator.geolocation) {
+    if (!L || !map || !layer) {
       setLocateState("denied");
       return;
     }
     setLocateState("locating");
-    navigator.geolocation.getCurrentPosition(
+    getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
         layer.clearLayers();

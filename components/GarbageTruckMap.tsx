@@ -13,6 +13,7 @@ import type {
 import type { GarbageRealtime, GarbageRoute } from "@/lib/taoyuanGarbage";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
 import { useGarbageAlert } from "@/lib/useGarbageAlert";
+import { getCurrentPosition } from "@/lib/geolocation";
 
 type LeafletModule = typeof import("leaflet");
 
@@ -123,20 +124,18 @@ export default function GarbageTruckMap() {
       setTimeout(() => map.invalidateSize(), 120);
       setMapReady(true);
 
-      if (typeof navigator !== "undefined" && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            if (cancelled || !mapRef.current) return;
-            didLocateRef.current = true;
-            // The fix can arrive before the container has been measured, and
-            // Leaflet silently ignores a fly on a zero-size map — measure first.
-            mapRef.current.invalidateSize();
-            mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
-          },
-          () => {},
-          { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
-        );
-      }
+      getCurrentPosition(
+        (position) => {
+          if (cancelled || !mapRef.current) return;
+          didLocateRef.current = true;
+          // The fix can arrive before the container has been measured, and
+          // Leaflet silently ignores a fly on a zero-size map — measure first.
+          mapRef.current.invalidateSize();
+          mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
+      );
     }
 
     setupMap();

@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { calculateDistance } from "@/lib/geo";
+import { getCurrentPosition } from "@/lib/geolocation";
 import type { AEDStation } from "@/lib/aedService";
 
 // Same rough walking pace already used for the parking page's distance
@@ -21,12 +22,8 @@ export function useNearestAED(stations: AEDStation[]) {
   const [results, setResults] = useState<NearestAEDResult[]>([]);
 
   const findNearest = useCallback(() => {
-    if (typeof navigator === "undefined" || !navigator.geolocation) {
-      setStatus("error");
-      return;
-    }
     setStatus("locating");
-    navigator.geolocation.getCurrentPosition(
+    getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         const ranked = stations
