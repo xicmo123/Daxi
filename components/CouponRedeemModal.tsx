@@ -3,43 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
+import QRCode from "qrcode";
 import type { Coupon } from "@/lib/coupons";
 import { fireConfetti } from "@/lib/confetti";
-
-// Deterministic pixel grid from the current rotating token — reads as a QR
-// code without a scanning library; the value itself rotates server-side
-// every 90s (see lib/coupons.ts) so a screenshot goes stale fast.
-function TokenGrid({ token }: { token: string }) {
-  const size = 11;
-  let seed = 0;
-  for (let i = 0; i < token.length; i++) seed = (seed * 31 + token.charCodeAt(i)) >>> 0;
-  const cells: boolean[] = [];
-  for (let i = 0; i < size * size; i++) {
-    seed = (seed * 1103515245 + 12345) >>> 0;
-    cells.push(((seed >> 16) & 1) === 1);
-  }
-  // Force the three QR-style corner finder squares on so it still reads
-  // visually as "a QR code" at a glance.
-  const finder = (r: number, c: number) => r < 3 && c < 3;
-  return (
-    <div
-      className="grid gap-[2px] p-3 rounded-xl"
-      style={{ gridTemplateColumns: `repeat(${size}, 1fr)`, background: "#fff", width: 176, height: 176 }}
-    >
-      {Array.from({ length: size }).map((_, r) =>
-        Array.from({ length: size }).map((_, c) => {
-          const isFinder = finder(r, c) || finder(r, size - 1 - c) || finder(size - 1 - r, c);
-          const on = isFinder ? (r === 1 || c === 1 || r === 0 || c === 0 || r === 2 || c === 2) && !(r === 1 && c === 1) : cells[r * size + c];
-          return <span key={`${r}-${c}`} style={{ background: on ? "#111" : "transparent" }} />;
-        })
-      )}
-    </div>
-  );
-}
 
 export default function CouponRedeemModal({ coupon, businessName, onClose }: { coupon: Coupon; businessName: string; onClose: () => void }) {
   const [token, setToken] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
+  const [qrSrc, setQrSrc] = useState<string | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
   const celebratedRef = useRef(false);
@@ -56,6 +27,19 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
       const data = await res.json();
       setToken(data.token);
       setExpiresAt(data.expiresAt);
+      const redeemUrl = new URL("/merchant/redeem", window.location.origin);
+      redeemUrl.searchParams.set("couponId", coupon.id);
+      redeemUrl.searchParams.set("token", data.token);
+      const dataUrl = await QRCode.toDataURL(redeemUrl.toString(), {
+        errorCorrectionLevel: "M",
+        margin: 1,
+        width: 176,
+        color: {
+          dark: "#111111",
+          light: "#ffffff",
+        },
+      });
+      setQrSrc(dataUrl);
       setStatus("idle");
       // Celebrate the moment the redemption code is ready, not on the
       // silent 90s auto-refresh that follows.
@@ -64,6 +48,7 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
         fireConfetti();
       }
     } catch {
+      setQrSrc(null);
       setStatus("error");
     }
   }
@@ -129,8 +114,16 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
         </div>
 
         <div className="flex items-center justify-center mb-3">
-          {token ? (
-            <TokenGrid token={token} />
+          {qrSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={qrSrc}
+              alt="優惠券核銷 QR Code"
+              width={176}
+              height={176}
+              className="rounded-xl"
+              style={{ background: "#fff" }}
+            />
           ) : (
             <div className="w-[176px] h-[176px] rounded-xl skeleton" style={{ background: "var(--line)" }} />
           )}
@@ -139,8 +132,13 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
         <div className="text-[12px] font-medium mb-1" style={{ color: status === "error" ? "var(--daxi-red)" : "var(--ink)" }}>
           {status === "error" ? "核銷碼取得失敗，請重新整理" : `請於 ${remaining} 秒內請店員掃描`}
         </div>
+        {token ? (
+          <div className="font-mono text-[11px] tracking-[0.08em] mb-2" style={{ color: "var(--ink-soft)" }}>
+            {token}
+          </div>
+        ) : null}
         <div className="text-[10.5px] leading-relaxed mb-4" style={{ color: "var(--ink-soft)" }}>
-          此碼每 90 秒自動更新，僅限現場出示，請勿截圖轉發。
+          此 QR Code 每 90 秒自動更新，僅限現場出示，請勿截圖轉發。
         </div>
 
         <button

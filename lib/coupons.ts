@@ -91,7 +91,12 @@ export async function deleteCoupon(id: string): Promise<boolean> {
 const TOKEN_WINDOW_MS = 90_000;
 
 function tokenSecret(): string {
-  return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || "daxi-coupon-dev-secret";
+  const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD;
+  if (secret) return secret;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Coupon token secret is not set");
+  }
+  return "daxi-coupon-dev-secret";
 }
 
 async function signToken(couponId: string, issuedAtBucket: number): Promise<string> {

@@ -329,7 +329,7 @@ export default function MerchantDashboard({
           {couponStatus === "saved" ? <span className="ml-3 text-[12px]" style={{ color: "#3a7d44" }}>已儲存</span> : null}
         </form>
         <p className="text-[11px] leading-relaxed mt-4" style={{ color: "#a89a89" }}>
-          優惠券以「到店掃碼核銷」呈現給遊客，核銷碼由系統自動產生並每 90 秒更新，商家不需要另外設定折扣碼。
+          優惠券以「到店掃碼核銷」呈現給遊客，請使用已登入商家後台的手機掃描顧客 QR Code；核銷碼每 90 秒更新，商家不需要另外設定折扣碼。
         </p>
       </section>
     </div>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 
 export default function AboutModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
@@ -60,6 +61,15 @@ export default function AboutModal({ onClose }: { onClose: () => void }) {
           <a href="mailto:xicmo123@gmail.com" className="text-[13.5px] font-semibold" style={{ color: "var(--ink)" }}>
             xicmo123@gmail.com
           </a>
+        </div>
+
+        <div className="mt-4 flex items-center justify-center gap-4 text-[12px]" style={{ color: "var(--ink-soft)" }}>
+          <Link href="/privacy" className="underline" onClick={onClose}>
+            隱私權政策
+          </Link>
+          <Link href="/terms" className="underline" onClick={onClose}>
+            服務條款
+          </Link>
         </div>
       </div>
     </div>
