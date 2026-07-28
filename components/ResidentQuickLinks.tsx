@@ -44,23 +44,33 @@ export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[
         return (
           <motion.div
             key={q.href}
+            className="flex flex-col items-center"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: Math.min(i, 6) * 0.05, duration: 0.35, ease: "easeOut" }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.85 }}
           >
-            <Link
-              href={q.href}
-              className="relative flex h-full flex-col items-center overflow-hidden rounded-2xl px-1.5 py-3"
-              style={{ background: card.background, boxShadow: "var(--shadow-card)" }}
-            >
+            <Link href={q.href} className="flex flex-col items-center gap-1.5">
               <span
-                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mb-1.5"
-                style={{ background: "rgba(255,255,255,0.3)", color: card.fg }}
+                className="relative w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: card.background, boxShadow: "var(--shadow-card)" }}
               >
-                <span className="w-[15px] h-[15px] block">{q.icon}</span>
+                <motion.span
+                  className="w-[17px] h-[17px] block"
+                  style={{ color: card.fg }}
+                  animate={{ y: [0, -2, 0] }}
+                  transition={{
+                    duration: 2.2 + (i % 3) * 0.3,
+                    repeat: Infinity,
+                    repeatDelay: 0.6,
+                    ease: "easeInOut",
+                    delay: i * 0.15,
+                  }}
+                >
+                  {q.icon}
+                </motion.span>
               </span>
-              <div className="text-[11px] font-semibold leading-tight text-center" style={{ color: card.fg }}>
+              <div className="text-[10.5px] font-semibold leading-tight text-center" style={{ color: "var(--ink)" }}>
                 {q.label}
               </div>
             </Link>
