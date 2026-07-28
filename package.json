@@ -8,6 +8,7 @@
     "start": "next start -p 8475",
     "lint": "eslint",
     "refresh:businesses": "node --env-file=.env.local scripts/fetch-businesses.mjs",
+    "refresh:spots": "node scripts/fetch-tycg-spots.mjs",
     "cap:sync": "cap sync",
     "cap:open:ios": "cap open ios",
     "cap:open:android": "cap open android"
