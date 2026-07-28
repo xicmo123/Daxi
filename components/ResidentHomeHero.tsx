@@ -24,7 +24,7 @@ export default function ResidentHomeHero({ todayLabel }: { todayLabel: string })
 
   return (
     <motion.div
-      className="relative safe-page-x pt-6 pb-5 overflow-hidden"
+      className="relative safe-page-x pt-6 pb-14 overflow-hidden"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}

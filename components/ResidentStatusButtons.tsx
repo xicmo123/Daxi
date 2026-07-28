@@ -26,12 +26,16 @@ export type StatusButton = {
 // disconnected islands). Now one shared card container with hairline
 // dividers between items, so the row reads as a single grouped module —
 // matching the card language used by the bulletin section right below it.
+//
+// Overlaps the hero photo's bottom edge (negative margin applied by the
+// parent) the way iRead 臺北市立圖書館's home screen floats its "個人借閱證"
+// stat card over the banner image instead of stacking it below with a gap.
 export default function ResidentStatusButtons({ items }: { items: StatusButton[] }) {
   return (
-    <div className="safe-page-x pt-4">
+    <div className="safe-page-x">
       <div
         className="grid grid-cols-3 rounded-2xl overflow-hidden"
-        style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}
+        style={{ background: "var(--card)", boxShadow: "var(--shadow-float)" }}
       >
         {items.map((item, i) => (
           <motion.div

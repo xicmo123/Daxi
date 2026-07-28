@@ -190,8 +190,8 @@ async function TodayStatusRow() {
 
 function TodayStatusSkeleton() {
   return (
-    <div className="safe-page-x pt-4">
-      <div className="grid grid-cols-3 rounded-2xl overflow-hidden" style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}>
+    <div className="safe-page-x">
+      <div className="grid grid-cols-3 rounded-2xl overflow-hidden" style={{ background: "var(--card)", boxShadow: "var(--shadow-float)" }}>
         {[0, 1, 2].map((i) => (
           <div key={i} className="h-[78px] skeleton" style={i > 0 ? { background: "var(--line)", borderLeft: "1px solid var(--line)" } : { background: "var(--line)" }} />
         ))}
@@ -222,9 +222,11 @@ export default function ResidentHome() {
     <div>
       <ResidentHomeHero todayLabel={todayLabel} />
 
-      <Suspense fallback={<TodayStatusSkeleton />}>
-        <TodayStatusRow />
-      </Suspense>
+      <div className="relative z-10 -mt-9">
+        <Suspense fallback={<TodayStatusSkeleton />}>
+          <TodayStatusRow />
+        </Suspense>
+      </div>
 
       <div className="pt-6 fade-in-delay-1">
         <div className="flex items-center gap-1.5 safe-page-x mb-2.5">

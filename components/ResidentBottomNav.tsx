@@ -84,6 +84,45 @@ export default function ResidentBottomNav() {
       >
         {tabs.map((tab) => {
           const active = tab.href !== null && pathname === tab.href;
+
+          // Center tab gets a raised filled-circle treatment — borrowed from
+          // iRead 臺北市立圖書館's home screen, where its primary action
+          // ("手機借書") floats above the bar instead of sitting flush with
+          // the other four. Same link/behavior as before, just visually
+          // promoted since 服務 is the resident tab's equivalent primary action.
+          if (tab.href === "/resident/services") {
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                aria-current={active ? "page" : undefined}
+                className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1 py-2 transition-transform active:scale-95"
+                style={{ textDecoration: "none", position: "relative" }}
+              >
+                <span
+                  className="flex items-center justify-center rounded-full"
+                  style={{
+                    width: 46,
+                    height: 46,
+                    marginTop: -26,
+                    background: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
+                    boxShadow: "var(--shadow-float)",
+                    border: "3px solid var(--paper)",
+                    color: "var(--block-fg)",
+                  }}
+                >
+                  <span className="w-[20px] h-[20px] block">{tab.icon}</span>
+                </span>
+                <span
+                  className="text-[10.5px] font-normal tracking-wide"
+                  style={{ color: active ? "var(--river-teal)" : "var(--ink)", opacity: active ? 1 : 0.68 }}
+                >
+                  {tab.label}
+                </span>
+              </Link>
+            );
+          }
+
           const itemStyle: CSSProperties = {
             color: active ? "var(--river-teal)" : "var(--ink)",
             opacity: active ? 1 : 0.54,
