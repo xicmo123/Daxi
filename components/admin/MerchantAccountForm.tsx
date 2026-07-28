@@ -24,10 +24,15 @@ export default function MerchantAccountForm({
   const [businessName, setBusinessName] = useState(
     account?.businessName ?? availablePlaces?.find((p) => p.placeId === placeId)?.name ?? "",
   );
-  const [passcode, setPasscode] = useState(account?.passcode ?? randomPasscode());
+  // Stored passcode is a one-way hash once set, so on edit we can't show or
+  // reuse the existing value — leave it blank and only send a new passcode
+  // to the API if the admin actually typed/generated one.
+  const [passcode, setPasscode] = useState(isEdit ? "" : randomPasscode());
 
+  const [disabled, setDisabled] = useState(Boolean(account?.disabled));
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [togglingStatus, setTogglingStatus] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +47,7 @@ export default function MerchantAccountForm({
         {
           method: isEdit ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ placeId, businessName, passcode }),
+          body: JSON.stringify({ placeId, businessName, passcode: passcode.trim() || undefined }),
         },
       );
       const data = await res.json().catch(() => ({}));
@@ -75,16 +80,58 @@ export default function MerchantAccountForm({
     }
   };
 
+  const toggleDisabled = async () => {
+    if (!account) return;
+    const next = !disabled;
+    setTogglingStatus(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/merchants/${encodeURIComponent(account.placeId)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ disabled: next }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "操作失敗");
+        return;
+      }
+      setDisabled(next);
+      setMessage(next ? "已停用此商家帳號" : "已重新啟用此商家帳號");
+      router.refresh();
+    } finally {
+      setTogglingStatus(false);
+    }
+  };
+
   return (
     <form onSubmit={save} className="max-w-lg">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold" style={{ color: "#2f261f" }}>
-          {isEdit ? "編輯商家帳號" : "開通新商家"}
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-bold" style={{ color: "#2f261f" }}>
+            {isEdit ? "編輯商家帳號" : "開通新商家"}
+          </h1>
+          {isEdit && disabled ? (
+            <span className="rounded-full px-2 py-0.5 text-[11px] font-semibold" style={{ background: "#f3d6d6", color: "#9c3b3b" }}>
+              已停用
+            </span>
+          ) : null}
+        </div>
         {isEdit ? (
-          <button type="button" onClick={remove} disabled={deleting} className="text-[12.5px] font-medium underline disabled:opacity-50" style={{ color: "#b0503f" }}>
-            刪除
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleDisabled}
+              disabled={togglingStatus}
+              className="text-[12.5px] font-medium underline disabled:opacity-50"
+              style={{ color: disabled ? "#4a7594" : "#b0503f" }}
+            >
+              {togglingStatus ? "處理中…" : disabled ? "重新啟用" : "停用"}
+            </button>
+            <button type="button" onClick={remove} disabled={deleting} className="text-[12.5px] font-medium underline disabled:opacity-50" style={{ color: "#b0503f" }}>
+              刪除
+            </button>
+          </div>
         ) : null}
       </div>
 
@@ -123,19 +170,34 @@ export default function MerchantAccountForm({
       <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} required maxLength={60} className="w-full rounded-lg px-3 py-2.5 mb-4 text-[13px]" style={inputStyle} />
 
       <label className="block text-[12.5px] font-medium mb-1.5" style={{ color: "#766a5d" }}>
-        通關密語
+        通關密語{isEdit ? "（留空表示不變更）" : ""}
       </label>
-      <div className="flex gap-2 mb-5">
-        <input value={passcode} onChange={(e) => setPasscode(e.target.value)} required minLength={6} className="min-w-0 flex-1 rounded-lg px-3 py-2.5 text-[13px]" style={inputStyle} />
+      <div className="flex gap-2 mb-1">
+        <input
+          value={passcode}
+          onChange={(e) => setPasscode(e.target.value)}
+          required={!isEdit}
+          minLength={6}
+          placeholder={isEdit ? "留空＝沿用現有密語" : undefined}
+          className="min-w-0 flex-1 rounded-lg px-3 py-2.5 text-[13px]"
+          style={inputStyle}
+        />
         <button
           type="button"
           onClick={() => setPasscode(randomPasscode())}
           className="shrink-0 rounded-lg px-3 py-2.5 text-[12.5px] font-semibold"
           style={{ background: "#f4eee4", color: "#2f261f", border: "1px solid #dfd1bf" }}
         >
-          隨機產生
+          {isEdit ? "重設新密語" : "隨機產生"}
         </button>
       </div>
+      {isEdit ? (
+        <p className="text-[11.5px] mb-4" style={{ color: "#766a5d" }}>
+          密語已加密儲存，系統無法顯示原本的通關密語。要更換時請按「重設新密語」再存檔，並告知商家新密語。
+        </p>
+      ) : (
+        <div className="mb-4" />
+      )}
 
       {error ? (
         <div className="text-[12.5px] mb-4" style={{ color: "#b0503f" }}>

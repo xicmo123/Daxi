@@ -8,7 +8,7 @@ import path from "path";
 
 const ACCOUNTS_PATH = path.join(process.cwd(), "data", "merchant-accounts.json");
 
-export type MerchantAccount = { passcode: string; businessName: string };
+export type MerchantAccount = { passcode: string; businessName: string; disabled?: boolean };
 export type MerchantAccountRecord = MerchantAccount & { placeId: string };
 
 export async function readMerchantAccounts(): Promise<Record<string, MerchantAccount>> {
@@ -45,12 +45,29 @@ export async function createMerchantAccount(record: MerchantAccountRecord): Prom
   await writeMerchantAccounts(accounts);
 }
 
-export async function updateMerchantAccount(placeId: string, input: MerchantAccount): Promise<boolean> {
+export async function updateMerchantAccount(
+  placeId: string,
+  input: { businessName: string; passcode?: string; disabled?: boolean },
+): Promise<boolean> {
   const accounts = await readMerchantAccounts();
-  if (!accounts[placeId]) return false;
-  accounts[placeId] = input;
+  const existing = accounts[placeId];
+  if (!existing) return false;
+  accounts[placeId] = {
+    businessName: input.businessName,
+    passcode: input.passcode ?? existing.passcode,
+    disabled: input.disabled ?? existing.disabled,
+  };
   await writeMerchantAccounts(accounts);
   return true;
+}
+
+export async function setMerchantAccountDisabled(placeId: string, disabled: boolean): Promise<MerchantAccountRecord | null> {
+  const accounts = await readMerchantAccounts();
+  const existing = accounts[placeId];
+  if (!existing) return null;
+  accounts[placeId] = { ...existing, disabled };
+  await writeMerchantAccounts(accounts);
+  return { placeId, ...accounts[placeId] };
 }
 
 export async function deleteMerchantAccount(placeId: string): Promise<boolean> {

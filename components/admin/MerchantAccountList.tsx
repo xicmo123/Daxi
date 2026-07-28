@@ -44,11 +44,16 @@ export default function MerchantAccountList({ accounts }: { accounts: MerchantAc
         {accounts.map((account) => (
           <div key={account.placeId} className="flex items-center gap-3 rounded-xl px-3 py-2.5" style={{ background: "#fffaf1", border: "1px solid #dfd1bf" }}>
             <Link href={`/admin/merchants/${encodeURIComponent(account.placeId)}`} className="min-w-0 flex-1">
-              <div className="text-[13.5px] font-medium truncate" style={{ color: "#2f261f" }}>
+              <div className="flex items-center gap-1.5 text-[13.5px] font-medium truncate" style={{ color: "#2f261f" }}>
                 {account.businessName}
+                {account.disabled ? (
+                  <span className="shrink-0 rounded-full px-1.5 py-0.5 text-[10.5px] font-semibold" style={{ background: "#f3d6d6", color: "#9c3b3b" }}>
+                    已停用
+                  </span>
+                ) : null}
               </div>
               <div className="text-[11.5px] truncate" style={{ color: "#766a5d" }}>
-                通關密語：{account.passcode}
+                {account.placeId}
               </div>
             </Link>
             <button

@@ -39,6 +39,12 @@ yarn-error.log*
 # merchant self-service passcodes — real credentials, never commit
 /data/merchant-accounts.json
 
+# runtime-generated logs / customer data — written by the server, not seed
+# content; must never carry real customer PII or usage logs into git history
+/data/bookings.json
+/data/click-events.json
+/data/admin-audit-log.json
+
 # vercel
 .vercel
 

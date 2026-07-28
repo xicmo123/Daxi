@@ -12,6 +12,7 @@ const touristLinks = [
   { href: "/admin/traffic-alerts", label: "交通管制公告" },
   { href: "/admin/coupons", label: "優惠券管理" },
   { href: "/admin/merchants", label: "商家帳號" },
+  { href: "/admin/audit-log", label: "操作紀錄" },
 ];
 
 const residentLinks = [

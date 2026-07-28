@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createMerchantAccount, listMerchantAccounts } from "@/lib/merchantAccounts";
+import { hashPasscode } from "@/lib/passcodeHash";
+import { appendAuditLog } from "@/lib/auditLog";
+import { clientIp } from "@/lib/rateLimit";
 
 export async function GET() {
   const accounts = await listMerchantAccounts();
@@ -16,9 +19,19 @@ export async function POST(request: NextRequest) {
   if (typeof passcode !== "string" || passcode.trim().length < 6) return NextResponse.json({ error: "passcode 至少需要 6 個字元" }, { status: 400 });
 
   try {
-    await createMerchantAccount({ placeId: placeId.trim(), businessName: businessName.trim(), passcode: passcode.trim() });
+    await createMerchantAccount({
+      placeId: placeId.trim(),
+      businessName: businessName.trim(),
+      passcode: await hashPasscode(passcode.trim()),
+    });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "建立失敗" }, { status: 400 });
   }
+  await appendAuditLog({
+    action: "merchant.create",
+    target: placeId.trim(),
+    detail: businessName.trim(),
+    ip: clientIp(request),
+  });
   return NextResponse.json({ ok: true });
 }
