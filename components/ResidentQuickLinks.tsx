@@ -38,7 +38,7 @@ export type QuickLink = { href: string; label: string; desc: string; block: Quic
 // wood/moss/river/red block palette rather than tourist's photo-card style.
 export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[]; extra?: ReactNode }) {
   return (
-    <div className="grid grid-cols-3 gap-2.5 safe-page-x pt-5">
+    <div className="grid grid-cols-4 gap-2 safe-page-x pt-5">
       {links.map((q, i) => {
         const card = gradientCard[q.block];
         return (
@@ -51,20 +51,17 @@ export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[
           >
             <Link
               href={q.href}
-              className="relative flex h-full flex-col overflow-hidden rounded-2xl px-3 py-3"
+              className="relative flex h-full flex-col items-center overflow-hidden rounded-2xl px-1.5 py-3"
               style={{ background: card.background, boxShadow: "var(--shadow-card)" }}
             >
               <span
-                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 mb-2"
+                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mb-1.5"
                 style={{ background: "rgba(255,255,255,0.3)", color: card.fg }}
               >
-                <span className="w-[17px] h-[17px] block">{q.icon}</span>
+                <span className="w-[15px] h-[15px] block">{q.icon}</span>
               </span>
-              <div className="text-[12.5px] font-bold leading-snug" style={{ color: card.fg }}>
+              <div className="text-[11px] font-semibold leading-tight text-center" style={{ color: card.fg }}>
                 {q.label}
-              </div>
-              <div className="text-[10px] mt-0.5 leading-snug" style={{ color: card.fgSoft }}>
-                {q.desc}
               </div>
             </Link>
           </motion.div>
