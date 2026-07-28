@@ -103,6 +103,17 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
       </svg>
     ),
   },
+  {
+    href: "/resident/aed",
+    label: "尋找ＡＥＤ",
+    desc: "找到最近的自動體外心臟電擊去顫器",
+    block: "red",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M13 3 5.5 13.5h4.8L11 21l7.5-10.5h-4.8L13 3Z" />
+      </svg>
+    ),
+  },
 ];
 
 async function TodayStatusRow() {

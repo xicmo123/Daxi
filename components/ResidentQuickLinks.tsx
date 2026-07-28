@@ -51,14 +51,14 @@ export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[
           >
             <Link
               href={q.href}
-              className="relative flex h-full flex-col overflow-hidden rounded-2xl px-4 py-4"
+              className="relative flex h-full flex-col overflow-hidden rounded-2xl px-4 py-2.5"
               style={{ background: card.background, boxShadow: "var(--shadow-card)" }}
             >
               <span
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-2.5"
+                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mb-1.5"
                 style={{ background: "rgba(255,255,255,0.3)", color: card.fg }}
               >
-                <span className="w-[19px] h-[19px] block">{q.icon}</span>
+                <span className="w-[16px] h-[16px] block">{q.icon}</span>
               </span>
               <div className="text-[13.5px] font-bold" style={{ color: card.fg }}>
                 {q.label}

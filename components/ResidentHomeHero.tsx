@@ -24,7 +24,7 @@ export default function ResidentHomeHero({ todayLabel }: { todayLabel: string })
 
   return (
     <motion.div
-      className="relative safe-page-x pt-6 pb-6 overflow-hidden"
+      className="relative safe-page-x pt-6 pb-5 overflow-hidden"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
@@ -47,16 +47,7 @@ export default function ResidentHomeHero({ todayLabel }: { todayLabel: string })
         <HeaderShapes />
       </div>
       <div className="relative" style={{ zIndex: 2 }}>
-        <div className="flex items-center justify-between">
-          <motion.span
-            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10.5px] font-bold tracking-wide"
-            style={{ background: "var(--river-teal)", color: "#fff" }}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1, duration: 0.35 }}
-          >
-            大溪人限定
-          </motion.span>
+        <div className="flex items-center justify-end">
           <Link
             href="/resident/profile"
             aria-label="我的"
