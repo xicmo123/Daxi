@@ -53,7 +53,7 @@ export const RESIDENT_FEATURES: ResidentFeature[] = [
     tag: "一般",
     title: "垃圾車即時地圖",
     subtitle: "查看附近 500 公尺清運車",
-    href: "/resident#garbage",
+    href: "/resident",
   },
   {
     key: "roadworks",

@@ -8,7 +8,6 @@ import ResidentHomeHero from "@/components/ResidentHomeHero";
 import ResidentPriorityActions from "@/components/ResidentPriorityActions";
 import ResidentQuickLinks from "@/components/ResidentQuickLinks";
 import ResidentStatusButtons, { type StatusButton } from "@/components/ResidentStatusButtons";
-import GarbageTruckMap from "@/components/GarbageTruckMap";
 
 export const dynamic = "force-dynamic";
 
@@ -212,23 +211,6 @@ export default function ResidentHome() {
       </div>
 
       <ResidentPriorityActions />
-
-      <section id="garbage" className="safe-page-x pt-5 fade-in-delay-1">
-        <div className="mb-2 flex items-end justify-between gap-3">
-          <div>
-            <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
-              垃圾清運
-            </div>
-            <h2 className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
-              附近 500 公尺
-            </h2>
-          </div>
-          <span className="text-[11px] font-semibold" style={{ color: "var(--ink-soft)" }}>
-            即時位置
-          </span>
-        </div>
-        <GarbageTruckMap />
-      </section>
 
       <ResidentQuickLinks links={quickLinks} />
 
