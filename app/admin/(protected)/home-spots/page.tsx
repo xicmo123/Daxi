@@ -16,5 +16,5 @@ export default async function HomeSpotsPage() {
     detail: details[place.placeId],
   }));
 
-  return <HomeSpotOrderList rows={rows} />;
+  return <HomeSpotOrderList key={spots.map((spot) => spot.placeId).join(",")} rows={rows} />;
 }

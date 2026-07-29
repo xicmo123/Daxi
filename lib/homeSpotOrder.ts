@@ -49,3 +49,14 @@ export async function moveHomeSpot(placeId: string, direction: "up" | "down", pl
   await writeJson(ORDER_PATH, order);
   return true;
 }
+
+export async function setHomeSpotPosition(placeId: string, position: number, placeIds: string[]): Promise<boolean> {
+  const order = normalizeHomeSpotOrder(placeIds, await readHomeSpotOrder());
+  const currentIndex = order.indexOf(placeId);
+  if (currentIndex === -1 || !Number.isInteger(position) || position < 1 || position > order.length) return false;
+
+  order.splice(currentIndex, 1);
+  order.splice(position - 1, 0, placeId);
+  await writeJson(ORDER_PATH, order);
+  return true;
+}
