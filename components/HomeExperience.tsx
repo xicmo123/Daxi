@@ -60,19 +60,7 @@ export default function HomeExperience({
   };
 
   const wantsIndoor = weatherMood === "hot" || weatherMood === "rain";
-  const visibleSpots = useMemo(
-    () =>
-      [...spots]
-        .sort((a, b) => {
-          if (wantsIndoor) {
-            const indoorDiff = Number(b.indoor) - Number(a.indoor);
-            if (indoorDiff !== 0) return indoorDiff;
-          }
-          return Number(b.featured) - Number(a.featured);
-        })
-        .slice(0, 8),
-    [spots, wantsIndoor]
-  );
+  const visibleSpots = useMemo(() => spots.slice(0, 8), [spots]);
   const visibleCoupons = useMemo(() => coupons.slice(0, 6), [coupons]);
 
   const heroGradient =

@@ -9,6 +9,7 @@ import { fetchDaxiAnnouncements } from "@/lib/announcements";
 import { getAllPlaces, filterVisiblePlaces, readDetails, readPhotos } from "@/lib/placesStore";
 import { categoryLabel } from "@/lib/placeDetails";
 import { listActiveCoupons } from "@/lib/coupons";
+import { readHomeSpotOrder, sortByHomeSpotOrder } from "@/lib/homeSpotOrder";
 
 // Carousel content is now admin-editable — force-dynamic so edits show up
 // immediately instead of waiting out a 60s ISR window (same as /businesses, /spots).
@@ -43,26 +44,30 @@ async function pickInitialSlide() {
 }
 
 async function HomeFeed() {
-  const [rawPlaces, details, activeCoupons, photos] = await Promise.all([
+  const [rawPlaces, details, activeCoupons, photos, homeSpotOrder] = await Promise.all([
     getAllPlaces(),
     readDetails(),
     listActiveCoupons(),
     readPhotos(),
+    readHomeSpotOrder(),
   ]);
   const places = filterVisiblePlaces(rawPlaces, details);
   const byId = new Map(places.map((p) => [p.placeId, p]));
 
   const spotPlaces = places.filter((p) => p.tag === "景點");
-  const spots: FeedSpot[] = spotPlaces.map((p) => ({
-    placeId: p.placeId,
-    name: p.name,
-    category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
-    walkTime: walkTimeLabel(p.distanceMeters),
-    distanceMeters: p.distanceMeters,
-    featured: Boolean(details[p.placeId]?.featured),
-    photoSrc: photos[p.placeId]?.src,
-    indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
-  }));
+  const spots: FeedSpot[] = sortByHomeSpotOrder(
+    spotPlaces.map((p) => ({
+      placeId: p.placeId,
+      name: p.name,
+      category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
+      walkTime: walkTimeLabel(p.distanceMeters),
+      distanceMeters: p.distanceMeters,
+      featured: Boolean(details[p.placeId]?.featured),
+      photoSrc: photos[p.placeId]?.src,
+      indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
+    })),
+    homeSpotOrder,
+  );
 
   let mood: "hot" | "rain" | "normal" = "normal";
   let weatherSummary: { icon: string; temp: number; text: string } | null = null;

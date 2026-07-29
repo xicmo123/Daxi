@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const touristLinks = [
   { href: "/admin", label: "景點/商家管理" },
+  { href: "/admin/home-spots", label: "首頁熱門景點" },
   { href: "/admin/events", label: "活動管理" },
   { href: "/admin/carousel", label: "首頁輪播" },
   { href: "/admin/amenities", label: "友善設施" },
