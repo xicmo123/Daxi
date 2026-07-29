@@ -10,6 +10,8 @@
    light mode so it stays legible as text and under white button labels;
    dark mode flips to the literal light apricot against the dark page. */
 :root {
+  --app-safe-top: env(safe-area-inset-top, 0px);
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
   --paper: #fdf8f2;
   --paper-2: #f3e9d8;
   --ink: #2b2420;
@@ -188,6 +190,12 @@
   --font-sans: var(--font-app-sans);
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 * {
   -webkit-tap-highlight-color: transparent;
 }
@@ -196,12 +204,23 @@ html,
 body {
   background: var(--paper-2);
   color: var(--ink);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   font-family: var(--font-sans);
   line-height: 1.65;
-  overflow-x: hidden;
+}
+
+.app-screen {
+  min-height: 100dvh;
+  padding-top: var(--app-safe-top);
+  padding-bottom: calc(5rem + var(--app-safe-bottom));
+}
+
+.app-bottom-nav {
+  padding-bottom: var(--app-safe-bottom);
 }
 
 h1,

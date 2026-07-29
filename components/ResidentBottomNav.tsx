@@ -70,7 +70,7 @@ export default function ResidentBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-20 flex glass-nav"
+      className="app-bottom-nav fixed bottom-0 inset-x-0 z-20 flex glass-nav"
       style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20, display: "flex", justifyContent: "center" }}
     >
       <div
@@ -127,7 +127,7 @@ export default function ResidentBottomNav() {
             color: active ? "var(--river-teal)" : "var(--ink)",
             opacity: active ? 1 : 0.54,
             minHeight: 56,
-            padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
+            padding: "8px 2px 8px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

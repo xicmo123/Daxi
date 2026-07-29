@@ -22,6 +22,90 @@ function formatTime(value: string | null) {
   return new Intl.DateTimeFormat("zh-TW", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(value));
 }
 
+function routeDirectionLabel(route: BusRouteMatch) {
+  const firstStop = route.stops[0]?.name;
+  const lastStop = route.stops[route.stops.length - 1]?.name;
+  return `${route.departure || firstStop || "起點"} → 往 ${route.destination || lastStop || "目的地"}`;
+}
+
+function routeKey(route: BusRouteMatch) {
+  return `${route.routeUID}-${route.direction}-${route.departure}-${route.destination}`;
+}
+
+function TimetableSheet({
+  route,
+  stops,
+  state,
+  onClose,
+}: {
+  route: BusRouteMatch;
+  stops: BusEtaStop[];
+  state: RouteSearchState;
+  onClose: () => void;
+}) {
+  return (
+    <div className="mt-3 rounded-3xl px-3 pb-3 pt-3" style={{ background: "var(--card)", border: "1px solid var(--line)", boxShadow: "var(--shadow-card)" }}>
+        <div className="mb-3 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
+              路線時刻
+            </div>
+            <h2 className="text-[17px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+              {route.routeName} 路
+            </h2>
+            <div className="mt-0.5 text-[12px] font-semibold" style={{ color: "var(--river-teal)" }}>
+              {routeDirectionLabel(route)}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="關閉時刻表"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
+            style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        {state === "loading" ? (
+          <div className="rounded-2xl px-4 py-5 text-center text-[12.5px]" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+            載入站牌時刻中…
+          </div>
+        ) : null}
+
+        {state === "error" ? (
+          <div className="rounded-2xl px-4 py-5 text-center text-[12.5px] font-semibold" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+            時刻表暫時無法載入
+          </div>
+        ) : null}
+
+        {state === "ready" && stops.length === 0 ? (
+          <div className="rounded-2xl px-4 py-5 text-center text-[12.5px]" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+            此方向暫無站牌時刻資料
+          </div>
+        ) : null}
+
+        {stops.length > 0 ? (
+          <div className="max-h-72 overflow-auto rounded-2xl" style={{ border: "1px solid var(--line)" }}>
+            {stops.map((stop) => (
+              <div key={`${stop.sequence}-${stop.stopName}`} className="flex items-center justify-between gap-3 border-b px-3 py-2.5 last:border-b-0" style={{ borderColor: "var(--line)" }}>
+                <span className="min-w-0 text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+                  {stop.sequence}. {stop.stopName}
+                </span>
+                <span className="shrink-0 rounded-full px-2 py-1 text-[11px] font-bold" style={{ background: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red-soft)" : "var(--paper-2)", color: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red)" : "var(--ink-soft)" }}>
+                  {stop.state}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : null}
+    </div>
+  );
+}
+
 export default function BusMap() {
   const mapNodeRef = useRef<HTMLDivElement | null>(null);
   const leafletRef = useRef<LeafletModule | null>(null);
@@ -40,6 +124,7 @@ export default function BusMap() {
   const [selectedRouteUID, setSelectedRouteUID] = useState<string | null>(null);
   const [etaStops, setEtaStops] = useState<BusEtaStop[]>([]);
   const [etaState, setEtaState] = useState<RouteSearchState>("idle");
+  const [timetableOpen, setTimetableOpen] = useState(false);
 
   // Route/stop search — a tourist may not know the route number, so the
   // same box matches on destination or any stop name along the route too.
@@ -50,6 +135,7 @@ export default function BusMap() {
       setRouteMatches([]);
       setRouteSearchState("idle");
       setSelectedRouteUID(null);
+      setTimetableOpen(false);
       return;
     }
     setRouteSearchState("loading");
@@ -61,8 +147,8 @@ export default function BusMap() {
         setRouteMatches(data.routes);
         setRouteSearchState("ready");
         setSelectedRouteUID((prev) => {
-          if (prev && data.routes.some((r) => r.routeUID === prev)) return prev;
-          return data.routes[0]?.routeUID ?? null;
+	          if (prev && data.routes.some((r) => routeKey(r) === prev)) return prev;
+	          return data.routes[0] ? routeKey(data.routes[0]) : null;
         });
       } catch {
         setRouteMatches([]);
@@ -74,22 +160,9 @@ export default function BusMap() {
   }, [query]);
 
   const selectedRoute = useMemo(
-    () => routeMatches.find((r) => r.routeUID === selectedRouteUID) ?? null,
+    () => routeMatches.find((r) => routeKey(r) === selectedRouteUID) ?? null,
     [routeMatches, selectedRouteUID]
   );
-
-  // Chip labels: when two directions (or sub-routes) share the same display
-  // name, show departure→destination so they're distinguishable.
-  const routeChipLabels = useMemo(() => {
-    const nameCounts = new Map<string, number>();
-    routeMatches.forEach((r) => nameCounts.set(r.routeName, (nameCounts.get(r.routeName) ?? 0) + 1));
-    const labels = new Map<string, string>();
-    routeMatches.forEach((r) => {
-      const count = nameCounts.get(r.routeName) ?? 1;
-      labels.set(r.routeUID, count > 1 ? `${r.routeName}（往${r.destination || "?"}）` : r.routeName);
-    });
-    return labels;
-  }, [routeMatches]);
 
   // Timetable-style ETA lookup for whichever matched route is selected.
   useEffect(() => {
@@ -242,17 +315,93 @@ export default function BusMap() {
             <circle cx="10.5" cy="10.5" r="6.5" />
             <path d="m20 20-4.3-4.3" />
           </svg>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜尋車號、目的地或會經過的地點"
-            className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
-            style={{ color: "var(--ink)" }}
-          />
-        </div>
-      </div>
+	          <input
+	            value={query}
+	            onChange={(e) => setQuery(e.target.value)}
+	            placeholder="輸入路線、目的地或站名"
+	            className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
+	            style={{ color: "var(--ink)" }}
+	          />
+	        </div>
+	      </div>
 
-      <div className="relative h-[300px] min-h-[42vh]">
+      {query.trim() ? (
+        <div className="border-b px-3 py-3" style={{ borderColor: "var(--line)" }}>
+          {routeSearchState === "loading" ? (
+            <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
+              搜尋路線中…
+            </div>
+          ) : null}
+
+          {routeSearchState === "ready" && routeMatches.length === 0 ? (
+            <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
+              沒有找到符合「{query}」的路線、目的地或停靠站
+            </div>
+          ) : null}
+
+          {routeSearchState === "error" ? (
+            <div className="text-[12px]" style={{ color: "var(--daxi-red)" }}>
+              路線搜尋暫時無法使用
+            </div>
+          ) : null}
+
+          {routeMatches.length > 0 ? (
+            <div>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
+                  選方向看時刻表
+                </span>
+                <span className="text-[11px]" style={{ color: "var(--ink-soft)" }}>
+                  {routeMatches.length} 筆
+                </span>
+              </div>
+              <div className="flex max-h-44 flex-col gap-2 overflow-auto">
+                {routeMatches.map((route) => {
+                  const key = routeKey(route);
+                  const selected = selectedRouteUID === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => {
+                        const changingRoute = selectedRouteUID !== key;
+                        setSelectedRouteUID(key);
+                        if (changingRoute) {
+                          setEtaStops([]);
+                          setEtaState("loading");
+                        }
+                        setTimetableOpen(true);
+                      }}
+                      className="flex items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-left transition-opacity active:opacity-70"
+                      style={{
+                        background: selected ? "var(--river-teal-soft)" : "var(--paper-2)",
+                        border: selected ? "1px solid rgba(74,117,148,0.34)" : "1px solid var(--line)",
+                      }}
+                    >
+                      <span className="min-w-0">
+                        <span className="block text-[13px] font-black" style={{ color: "var(--ink)" }}>
+                          {route.routeName} 路
+                        </span>
+                        <span className="mt-0.5 block truncate text-[11.5px] font-semibold" style={{ color: "var(--river-teal)" }}>
+                          {routeDirectionLabel(route)}
+                        </span>
+                      </span>
+                      <span className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+                        時刻
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedRoute && timetableOpen ? (
+                <TimetableSheet route={selectedRoute} stops={etaStops} state={etaState} onClose={() => setTimetableOpen(false)} />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+	      <div className="relative h-[300px] min-h-[42vh]">
         <div ref={mapNodeRef} className="absolute inset-0" aria-label="大溪周邊公車即時地圖" />
         <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-wrap gap-2">
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
@@ -304,98 +453,6 @@ export default function BusMap() {
         </div>
       ) : null}
 
-      {query.trim() ? (
-        <div className="border-t px-4 py-3.5" style={{ borderColor: "var(--line)" }}>
-          {routeSearchState === "loading" ? (
-            <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
-              搜尋路線中…
-            </div>
-          ) : null}
-
-          {routeSearchState === "ready" && routeMatches.length === 0 ? (
-            <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
-              沒有找到符合「{query}」的路線、目的地或停靠站
-            </div>
-          ) : null}
-
-          {routeSearchState === "error" ? (
-            <div className="text-[12px]" style={{ color: "var(--daxi-red)" }}>
-              路線搜尋暫時無法使用
-            </div>
-          ) : null}
-
-          {routeMatches.length > 0 ? (
-            <>
-              {routeMatches.length > 1 ? (
-                <div className="mb-2.5 flex flex-wrap gap-1.5">
-                  {routeMatches.map((r) => (
-                    <button
-                      key={r.routeUID}
-                      type="button"
-                      onClick={() => setSelectedRouteUID(r.routeUID)}
-                      className="rounded-full px-2.5 py-1 text-[11px] font-semibold transition-opacity active:opacity-70"
-                      style={{
-                        background: selectedRouteUID === r.routeUID ? "var(--daxi-red-soft)" : "var(--paper-2)",
-                        color: selectedRouteUID === r.routeUID ? "var(--daxi-red)" : "var(--ink-soft)",
-                      }}
-                    >
-                      {routeChipLabels.get(r.routeUID) ?? r.routeName}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-
-              {selectedRoute ? (
-                <>
-                  <div className="mb-2.5 text-[12px] font-semibold" style={{ color: "var(--ink)" }}>
-                    {selectedRoute.routeName} 路　{selectedRoute.departure} → {selectedRoute.destination}
-                  </div>
-
-                  {etaState === "loading" ? (
-                    <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
-                      載入時刻表中…
-                    </div>
-                  ) : null}
-
-                  {etaState === "error" ? (
-                    <div className="text-[12px]" style={{ color: "var(--daxi-red)" }}>
-                      時刻表暫時無法載入
-                    </div>
-                  ) : null}
-
-                  {etaState === "ready" && etaStops.length === 0 ? (
-                    <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
-                      此路線暫無時刻表資料
-                    </div>
-                  ) : null}
-
-                  {etaStops.length > 0 ? (
-                    <div className="flex max-h-64 flex-col overflow-auto rounded-xl" style={{ border: "1px solid var(--line)" }}>
-                      {etaStops.map((stop) => (
-                        <div
-                          key={`${stop.sequence}-${stop.stopName}`}
-                          className="flex items-center justify-between px-3 py-2 border-b last:border-b-0"
-                          style={{ borderColor: "var(--line)" }}
-                        >
-                          <span className="text-[12px]" style={{ color: "var(--ink)" }}>
-                            {stop.sequence}. {stop.stopName}
-                          </span>
-                          <span
-                            className="text-[11.5px] font-semibold"
-                            style={{ color: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red)" : "var(--ink-soft)" }}
-                          >
-                            {stop.state}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-                </>
-              ) : null}
-            </>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  );
-}
+	    </div>
+	  );
+	}

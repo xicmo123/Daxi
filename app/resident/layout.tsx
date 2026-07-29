@@ -21,7 +21,7 @@ export default function ResidentLayout({ children }: { children: React.ReactNode
         </div>
       </div>
 
-      <div className="relative z-10 flex-1 pb-20">
+      <div className="app-screen relative z-10 flex-1">
         <div className="mx-auto w-full max-w-md md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
           {children}
         </div>

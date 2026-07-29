@@ -88,7 +88,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-20 flex glass-nav"
+      className="app-bottom-nav fixed bottom-0 inset-x-0 z-20 flex glass-nav"
       style={{
         position: "fixed",
         left: 0,
@@ -109,12 +109,12 @@ export default function BottomNav() {
         }}
       >
         {tabs.map((tab) => {
-          const active = tab.href !== null && (pathname === tab.href || (tab.href === "/parking" && pathname === "/weather"));
+          const active = tab.href !== null && pathname === tab.href;
           const itemStyle: CSSProperties = {
             color: active ? "var(--daxi-red)" : "var(--ink)",
             opacity: active ? 1 : 0.54,
             minHeight: 56,
-            padding: "8px 2px calc(8px + env(safe-area-inset-bottom))",
+            padding: "8px 2px 8px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

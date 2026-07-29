@@ -229,7 +229,7 @@ export default function HomeExperience({
           },
           {
             href: "/weather",
-            label: "直播",
+            label: "即時影像",
             live: true,
             icon: (
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">

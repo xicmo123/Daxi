@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
-import LiveCams from "@/components/LiveCams";
+import LiveModeSwitcher from "@/components/LiveModeSwitcher";
+import { fetchDaxiRoadCctvs, type RoadCctvFeed } from "@/lib/tdxRoadCctv";
 import { readTrafficAlerts } from "@/lib/trafficAlerts";
 
 export const dynamic = "force-dynamic";
@@ -11,20 +12,21 @@ const alertDot: Record<string, string> = {
 };
 
 export default async function RoadConditionsPage() {
-  const trafficAlerts = await readTrafficAlerts();
+  const [trafficAlerts, roadCctvResult] = await Promise.all([
+    readTrafficAlerts(),
+    fetchDaxiRoadCctvs()
+      .then((feed): { feed: RoadCctvFeed; error?: string } => ({ feed }))
+      .catch((error): { feed: null; error: string } => ({
+        feed: null,
+        error: error instanceof Error ? error.message : "道路 CCTV 資料載入失敗",
+      })),
+  ]);
+
   return (
     <div className="pt-2">
-      <PageHeader title="即時狀態" subtitle="大溪區・即時影像與交通管制" tint="river" />
+      <PageHeader title="即時影像" subtitle="大溪區・道路 CCTV 與景點直播" tint="river" />
 
-      <div className="px-6 pt-1 pb-4 fade-in">
-        <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
-          Live
-        </div>
-        <h2 className="font-serif text-[17px] font-semibold">即時影像</h2>
-      </div>
-      <div className="fade-in">
-        <LiveCams />
-      </div>
+      <LiveModeSwitcher roadFeed={roadCctvResult.feed} roadError={roadCctvResult.error} />
 
       <div className="px-6 pt-10 pb-4">
         <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
