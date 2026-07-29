@@ -92,16 +92,16 @@ export default async function ParkingPage() {
         />
       ) : null}
 
-      <div className="safe-page-x pb-4 fade-in">
+      <div className="safe-page-x pb-3 fade-in">
         <a
           href="https://www.google.com/maps/dir/?api=1&destination=24.8809,121.2868&travelmode=transit"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 mb-3 transition-opacity active:opacity-70"
+          className="mb-2 flex items-center justify-between gap-3 rounded-xl px-3 py-2 transition-opacity active:opacity-70"
           style={{ background: "var(--card)", border: "1px solid var(--line)" }}
         >
-          <span className="flex items-center gap-3 min-w-0">
-            <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
+          <span className="flex min-w-0 items-center gap-2.5">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="5" y="4" width="14" height="13" rx="3" />
                 <path d="M5 13.5h14M8.5 17v2.2M15.5 17v2.2" />
@@ -109,13 +109,8 @@ export default async function ParkingPage() {
                 <circle cx="15.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
               </svg>
             </span>
-            <span className="min-w-0">
-              <span className="block text-[13.5px] font-medium" style={{ color: "var(--ink)" }}>
-                不開車？查大眾運輸路線
-              </span>
-              <span className="block text-[11.5px] truncate" style={{ color: "var(--ink-soft)" }}>
-                大溪本地無火車站，多由桃園、中壢或高鐵桃園站轉乘客運
-              </span>
+            <span className="block min-w-0 truncate text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+              不開車？查大眾運輸路線
             </span>
           </span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: "var(--ink-soft)" }}>
@@ -125,23 +120,18 @@ export default async function ParkingPage() {
 
         <Link
           href="/weather"
-          className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 transition-opacity active:opacity-70"
+          className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 transition-opacity active:opacity-70"
           style={{ background: "var(--card)", border: "1px solid var(--line)" }}
         >
-          <span className="flex items-center gap-3 min-w-0">
-            <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
+          <span className="flex min-w-0 items-center gap-2.5">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="4" y="7" width="10.5" height="8.5" rx="2.3" />
                 <path d="m14.5 10 5.5-2.8v8.6L14.5 13" />
               </svg>
             </span>
-            <span className="min-w-0">
-              <span className="block text-[13.5px] font-medium" style={{ color: "var(--ink)" }}>
-                即時影像與天氣路況
-              </span>
-              <span className="block text-[11.5px] truncate" style={{ color: "var(--ink-soft)" }}>
-                出發前確認現場狀態
-              </span>
+            <span className="block min-w-0 truncate text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+              即時影像與天氣路況
             </span>
           </span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: "var(--ink-soft)" }}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { HeroSlide } from "./HeroCarousel";
@@ -18,6 +18,8 @@ const badgeLabel: Record<string, string> = {
 };
 
 export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClose: () => void }) {
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -43,6 +45,13 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
         className="w-full max-w-md max-h-[88svh] overflow-y-auto rounded-[22px] card-shadow sm:max-w-lg sm:rounded-[24px] lg:max-w-2xl"
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => setTouchStartY(e.touches[0]?.clientY ?? null)}
+        onTouchEnd={(e) => {
+          if (touchStartY === null) return;
+          const endY = e.changedTouches[0]?.clientY ?? touchStartY;
+          if (endY - touchStartY > 90) onClose();
+          setTouchStartY(null);
+        }}
       >
         <div className="relative h-40 shrink-0 sm:h-52 lg:h-60">
           {slide.photoSrc ? (

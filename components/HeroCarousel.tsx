@@ -38,7 +38,10 @@ export default function HeroCarousel({
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(initialIndex);
+  const [timerVersion, setTimerVersion] = useState(0);
   const [openSlide, setOpenSlide] = useState<HeroSlide | null>(null);
+
+  const resetTimer = () => setTimerVersion((v) => v + 1);
 
   const onScroll = () => {
     const el = trackRef.current;
@@ -64,13 +67,16 @@ export default function HeroCarousel({
       el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
     }, 3000);
     return () => clearInterval(id);
-  }, [slides.length, openSlide]);
+  }, [slides.length, openSlide, timerVersion]);
 
   return (
     <div>
       <div
         ref={trackRef}
         onScroll={onScroll}
+        onPointerDown={resetTimer}
+        onTouchStart={resetTimer}
+        onWheel={resetTimer}
         className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
       >
         {slides.map((s) => (

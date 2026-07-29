@@ -164,9 +164,8 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
       bounds.push([matchedLandmark.lat, matchedLandmark.lng]);
     }
 
-    if (query.trim() && bounds.length > 0) {
-      map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 17, duration: 0.6 });
-    }
+    // Search highlights matching lots in place. Do not move or zoom the map:
+    // on mobile this feels like the whole app suddenly magnified.
   }, [lots, highlightedLots, matchedLandmark, query]);
 
   const locateMe = useCallback(() => {
@@ -218,7 +217,7 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="搜尋景點，例如：大溪老街"
-            className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
+            className="min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-[13px]"
             style={{ color: "var(--ink)" }}
           />
         </div>

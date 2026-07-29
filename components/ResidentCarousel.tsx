@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import type { ResidentCarouselSlide } from "@/lib/residentCarousel";
 import type { ResidentFeatureKey } from "@/lib/residentFeatures";
@@ -97,12 +97,24 @@ const ROTATE_MS = 4000;
 // big photo cards since this is meant for short text announcements.
 export default function ResidentCarousel({ slides }: { slides: ResidentCarouselSlide[] }) {
   const [index, setIndex] = useState(0);
+  const [timerVersion, setTimerVersion] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const resetTimer = useCallback(() => setTimerVersion((v) => v + 1), []);
+  const goToIndex = useCallback(
+    (nextIndex: number) => {
+      if (slides.length <= 0) return;
+      setIndex((nextIndex + slides.length) % slides.length);
+      resetTimer();
+    },
+    [slides.length, resetTimer],
+  );
 
   useEffect(() => {
     if (slides.length <= 1) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), ROTATE_MS);
     return () => clearInterval(id);
-  }, [slides.length]);
+  }, [slides.length, timerVersion]);
 
   if (slides.length === 0) return null;
 
@@ -113,6 +125,15 @@ export default function ResidentCarousel({ slides }: { slides: ResidentCarouselS
     <div
       className="flex min-h-[74px] items-center gap-3 rounded-2xl px-4 py-3.5 transition-opacity active:opacity-70"
       style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}
+      onTouchStart={(e) => setTouchStartX(e.touches[0]?.clientX ?? null)}
+      onTouchEnd={(e) => {
+        if (touchStartX === null || slides.length <= 1) return;
+        const endX = e.changedTouches[0]?.clientX ?? touchStartX;
+        const delta = endX - touchStartX;
+        if (Math.abs(delta) > 44) goToIndex(index + (delta < 0 ? 1 : -1));
+        else resetTimer();
+        setTouchStartX(null);
+      }}
     >
       <SlideIcon featureKey={slide.kind === "feature" ? slide.featureKey : undefined} />
       <span className="shrink-0 text-[10.5px] font-semibold rounded-full px-2.5 py-1" style={{ background: style.bg, color: style.fg }}>

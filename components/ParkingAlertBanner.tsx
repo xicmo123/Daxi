@@ -18,9 +18,9 @@ export default function ParkingAlertBanner({
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      className="safe-page-x pb-4 fade-in"
+      className="safe-page-x pb-2 fade-in"
     >
-      <div className="relative overflow-hidden rounded-2xl px-4 py-4" style={{ background: "var(--daxi-red)", color: "#fff" }}>
+      <div className="relative overflow-hidden rounded-xl px-3 py-2.5" style={{ background: "var(--daxi-red)", color: "#fff" }}>
         {/* Animated wave backdrop — reads as "actively filling up" rather than a static warning box. */}
         <svg
           className="pointer-events-none absolute inset-x-0 bottom-0 opacity-20"
@@ -36,21 +36,21 @@ export default function ParkingAlertBanner({
           />
         </svg>
 
-        <div className="relative flex items-start gap-2.5">
+        <div className="relative flex items-center gap-2.5">
           <motion.span
             animate={{ rotate: [0, -8, 8, 0] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            className="mt-0.5 shrink-0 text-[18px]"
+            className="shrink-0 text-[15px]"
             aria-hidden="true"
           >
             🚗💦
           </motion.span>
-          <div className="min-w-0">
-            <div className="text-[13.5px] font-bold leading-snug">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[12.5px] font-bold leading-snug">
               老街周邊停車場已滿載 {occupancyPct}%，建議改停外圍
             </div>
             {lateBirdExtraMinutes > 0 ? (
-              <div className="mt-1 text-[11.5px]" style={{ color: "rgba(255,255,255,0.85)" }}>
+              <div className="truncate text-[10.5px]" style={{ color: "rgba(255,255,255,0.85)" }}>
                 晚鳥逃脫預估：現在進場恐多花 {lateBirdExtraMinutes} 分鐘找車位
               </div>
             ) : null}
@@ -58,14 +58,14 @@ export default function ParkingAlertBanner({
         </div>
 
         {alternatives.length > 0 ? (
-          <div className="relative mt-3 flex flex-col gap-1.5">
-            {alternatives.map((lot) => (
+          <div className="relative mt-2 flex gap-1.5 overflow-x-auto no-scrollbar">
+            {alternatives.slice(0, 2).map((lot) => (
               <a
                 key={lot.name}
                 href={lot.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-[12px] font-medium transition-opacity active:opacity-80"
+                className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition-opacity active:opacity-80"
                 style={{ background: "rgba(255,255,255,0.16)" }}
               >
                 <span className="truncate">{lot.name}</span>

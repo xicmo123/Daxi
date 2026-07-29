@@ -66,6 +66,7 @@ export default function BusinessDetailModal({
   onClose: () => void;
 }) {
   const [openCoupon, setOpenCoupon] = useState<Coupon | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const myCoupons = coupons.filter((c) => c.placeId === business.placeId);
   const nearest = findNearestLot(business, lots, business.placeId);
   const recommendedLot = detail?.recommendedParkingName
@@ -173,9 +174,16 @@ export default function BusinessDetailModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md max-h-[88svh] overflow-y-auto rounded-[22px] card-shadow sm:max-w-lg sm:rounded-[24px] lg:max-w-2xl"
-        style={{ background: "var(--paper)" }}
+        className="w-full max-w-md max-h-[88svh] overflow-y-auto rounded-[22px] border-2 card-shadow sm:max-w-lg sm:rounded-[24px] lg:max-w-2xl"
+        style={{ background: "var(--paper)", borderColor: "rgba(255,255,255,0.92)", boxShadow: "0 0 0 1px rgba(43,36,32,0.24), 0 22px 60px rgba(0,0,0,0.34)" }}
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => setTouchStartY(e.touches[0]?.clientY ?? null)}
+        onTouchEnd={(e) => {
+          if (touchStartY === null) return;
+          const endY = e.changedTouches[0]?.clientY ?? touchStartY;
+          if (endY - touchStartY > 90) onClose();
+          setTouchStartY(null);
+        }}
       >
         {/* Full-bleed photo with identity only; richer story sits in the card body. */}
         <div className="relative h-48 shrink-0 sm:h-56 lg:h-64">

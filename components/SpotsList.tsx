@@ -195,29 +195,6 @@ export default function SpotsList({
           </svg>
         </label>
 
-        <a
-          href="https://cloud.tycg.gov.tw/life/toilet"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors"
-          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
-        >
-          <span className="text-[22px]" aria-hidden="true">
-            😣
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[13px] font-semibold" style={{ color: "var(--ink)" }}>
-              內急了？查桃園市公廁地圖
-            </span>
-            <span className="block text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
-              開啟桃園市政府公廁地點地圖（另開視窗）
-            </span>
-          </span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: "var(--ink-soft)" }}>
-            <path d="m9 5 7 7-7 7" />
-          </svg>
-        </a>
-
         <div className="pt-5 text-[13px] font-semibold" style={{ color: "var(--ink-soft)" }}>
           共 {rows.length} 個景點
         </div>
