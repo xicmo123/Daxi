@@ -266,11 +266,11 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
         }}
       >
         <div
-          className="relative overflow-hidden rounded-[23px] px-3.5 pb-3.5 pt-3"
+          className="relative overflow-hidden rounded-[21px] px-2.5 pb-2.5 pt-2.5"
           style={{
-            background: "rgba(255,255,255,0.94)",
-            border: "1px solid rgba(255,255,255,0.7)",
-            boxShadow: "inset 0 0 0 1px rgba(43,36,32,0.08)",
+            background: "linear-gradient(160deg, #1f463c 0%, #17362f 58%, #102a25 100%)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.3), inset 0 18px 36px rgba(0,0,0,0.18)",
           }}
           onTouchStart={(e) => setTouchStartX(e.touches[0]?.clientX ?? null)}
           onTouchEnd={(e) => {
@@ -287,133 +287,145 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
               background:
                 "radial-gradient(circle at 18% 24%, rgba(255,255,255,0.08), transparent 18%), linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px)",
               backgroundSize: "auto, 100% 34px",
-              opacity: 0.22,
+              opacity: 0.55,
             }}
             aria-hidden
           />
 
-          <div className="relative mb-3 flex items-center justify-between gap-3">
-            <div className="text-[11px] font-black tracking-[0.18em]" style={{ color: "var(--block-wood-deep)" }}>
-              里內公告
-            </div>
-            {villageOptions.length > 0 ? (
-              <div className="relative ml-auto">
-                <button
-                  type="button"
-                  onClick={() => setVillageMenuOpen((open) => !open)}
-                  aria-expanded={villageMenuOpen}
-                  className="flex h-8 items-center gap-1.5 rounded-full px-3 text-[11.5px] font-bold transition-opacity active:opacity-70"
-                  style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
-                >
-                  {villageFilterLabel}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </button>
-                {villageMenuOpen ? (
-                  <div
-                    className="absolute right-0 top-9 z-20 w-40 rounded-2xl p-1.5"
-                    style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 14px 28px rgba(0,0,0,0.26)", color: "#17362f" }}
-                  >
+          <div
+            className="relative rounded-[20px] border px-3.5 pb-3.5 pt-3"
+            style={{ background: "rgba(255,255,255,0.96)", borderColor: "rgba(255,255,255,0.72)", boxShadow: "0 14px 30px rgba(0,0,0,0.2)" }}
+          >
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <div className="text-[11px] font-black tracking-[0.18em]" style={{ color: "var(--block-wood-deep)" }}>
+                  里內公告
+                </div>
+                <div className="mt-0.5 text-[10.5px] font-semibold" style={{ color: "var(--ink-soft)" }}>
+                  左右滑動查看公告
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-1.5">
+                {villageOptions.length > 0 ? (
+                  <div className="relative">
                     <button
                       type="button"
-                      onClick={() => {
-                        setSelectedVillages([]);
-                        setIndex(0);
-                        resetTimer();
-                        setVillageMenuOpen(false);
-                      }}
-                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[12px] font-bold transition-colors"
-                      style={{ background: selectedVillages.length === 0 ? "rgba(74,117,148,0.14)" : "transparent" }}
+                      onClick={() => setVillageMenuOpen((open) => !open)}
+                      aria-expanded={villageMenuOpen}
+                      className="flex h-8 items-center gap-1.5 rounded-full px-3 text-[11.5px] font-bold transition-opacity active:opacity-70"
+                      style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
                     >
-                      全部里別
-                      {selectedVillages.length === 0 ? <span aria-hidden="true">✓</span> : null}
+                      {villageFilterLabel}
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
                     </button>
-                    {villageOptions.map((village) => {
-                      const selected = selectedVillages.includes(village);
-                      return (
+                    {villageMenuOpen ? (
+                      <div
+                        className="absolute right-0 top-9 z-20 w-40 rounded-2xl p-1.5"
+                        style={{ background: "rgba(255,255,255,0.98)", boxShadow: "0 14px 28px rgba(0,0,0,0.26)", color: "#17362f" }}
+                      >
                         <button
-                          key={village}
                           type="button"
-                          onClick={() => toggleVillage(village)}
+                          onClick={() => {
+                            setSelectedVillages([]);
+                            setIndex(0);
+                            resetTimer();
+                            setVillageMenuOpen(false);
+                          }}
                           className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[12px] font-bold transition-colors"
-                          style={{ background: selected ? "rgba(74,117,148,0.14)" : "transparent" }}
+                          style={{ background: selectedVillages.length === 0 ? "rgba(74,117,148,0.14)" : "transparent" }}
                         >
-                          {village}
-                          <span
-                            className="flex h-4 w-4 items-center justify-center rounded"
-                            style={{ border: "1px solid rgba(23,54,47,0.34)", background: selected ? "var(--river-teal)" : "transparent", color: "#fff" }}
-                            aria-hidden="true"
-                          >
-                            {selected ? "✓" : ""}
-                          </span>
+                          全部里別
+                          {selectedVillages.length === 0 ? <span aria-hidden="true">✓</span> : null}
                         </button>
-                      );
-                    })}
+                        {villageOptions.map((village) => {
+                          const selected = selectedVillages.includes(village);
+                          return (
+                            <button
+                              key={village}
+                              type="button"
+                              onClick={() => toggleVillage(village)}
+                              className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[12px] font-bold transition-colors"
+                              style={{ background: selected ? "rgba(74,117,148,0.14)" : "transparent" }}
+                            >
+                              {village}
+                              <span
+                                className="flex h-4 w-4 items-center justify-center rounded"
+                                style={{ border: "1px solid rgba(23,54,47,0.34)", background: selected ? "var(--river-teal)" : "transparent", color: "#fff" }}
+                                aria-hidden="true"
+                              >
+                                {selected ? "✓" : ""}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
-              </div>
-            ) : null}
-            {filteredPosts.length > 1 ? (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10.5px] font-semibold tabular-nums" style={{ color: "var(--ink-soft)" }}>
-                  {currentIndex + 1} / {filteredPosts.length}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => goToIndex(currentIndex - 1)}
-                  aria-label="上一則公告"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
-                  style={{ background: "var(--paper-2)", color: "var(--ink)" }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => goToIndex(currentIndex + 1)}
-                  aria-label="下一則公告"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
-                  style={{ background: "var(--paper-2)", color: "var(--ink)" }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </button>
-              </div>
-            ) : null}
-          </div>
-
-          {filteredPosts.length === 0 ? (
-            <div className="relative rounded-[18px] border px-4 py-5 text-center" style={{ borderColor: "var(--line)", color: "var(--ink-soft)" }}>
-              <div className="text-[14px] font-bold">{villageFilterLabel} 目前沒有公告</div>
-              <div className="mt-1 text-[12px]">換個里別看看，或稍後再回來</div>
-            </div>
-          ) : (
-            <>
-              <BulletinCard post={current} onOpen={() => setOpenPost(current)} />
-
-              {filteredPosts.length > 1 ? (
-                <div className="relative mt-2 flex items-center justify-center gap-1">
-                  {filteredPosts.map((_, i) => (
+                {filteredPosts.length > 1 ? (
+                  <>
+                    <span className="text-[10.5px] font-semibold tabular-nums" style={{ color: "var(--ink-soft)" }}>
+                      {currentIndex + 1} / {filteredPosts.length}
+                    </span>
                     <button
-                      key={i}
                       type="button"
-                      onClick={() => goToIndex(i)}
-                      aria-label={`第 ${i + 1} 則公告`}
-                      className="rounded-full transition-all"
-                      style={{
-                        width: i === currentIndex ? 14 : 5,
-                        height: 5,
-                        background: i === currentIndex ? "var(--river-teal)" : "var(--line)",
-                      }}
-                    />
-                  ))}
-                </div>
-              ) : null}
-            </>
-          )}
+                      onClick={() => goToIndex(currentIndex - 1)}
+                      aria-label="上一則公告"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
+                      style={{ background: "var(--paper-2)", color: "var(--ink)" }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m15 18-6-6 6-6" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => goToIndex(currentIndex + 1)}
+                      aria-label="下一則公告"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
+                      style={{ background: "var(--paper-2)", color: "var(--ink)" }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            </div>
+
+            {filteredPosts.length === 0 ? (
+              <div className="relative rounded-[18px] border px-4 py-5 text-center" style={{ borderColor: "var(--line)", color: "var(--ink-soft)" }}>
+                <div className="text-[14px] font-bold">{villageFilterLabel} 目前沒有公告</div>
+                <div className="mt-1 text-[12px]">換個里別看看，或稍後再回來</div>
+              </div>
+            ) : (
+              <>
+                <BulletinCard post={current} onOpen={() => setOpenPost(current)} />
+
+                {filteredPosts.length > 1 ? (
+                  <div className="relative mt-2 flex items-center justify-center gap-1">
+                    {filteredPosts.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => goToIndex(i)}
+                        aria-label={`第 ${i + 1} 則公告`}
+                        className="rounded-full transition-all"
+                        style={{
+                          width: i === currentIndex ? 14 : 5,
+                          height: 5,
+                          background: i === currentIndex ? "var(--river-teal)" : "var(--line)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+              </>
+            )}
+          </div>
         </div>
       </div>
 
