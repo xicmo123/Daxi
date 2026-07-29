@@ -135,17 +135,17 @@ function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void
       style={
         post.urgent
           ? { background: "rgba(255,246,226,0.94)", borderColor: "rgba(215,160,107,0.9)", boxShadow: "0 10px 22px rgba(0,0,0,0.18)" }
-          : { background: "var(--card)", borderColor: "var(--line)", boxShadow: "0 10px 22px rgba(43,36,32,0.08)" }
+          : { background: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.16)" }
       }
     >
       <span
         className="pointer-events-none absolute inset-x-4 top-[48px] h-px"
-        style={{ background: post.urgent ? "rgba(160,106,58,0.16)" : "rgba(43,36,32,0.08)" }}
+        style={{ background: post.urgent ? "rgba(160,106,58,0.16)" : "rgba(255,255,255,0.09)" }}
         aria-hidden
       />
       <span
         className="pointer-events-none absolute inset-x-4 top-[82px] h-px"
-        style={{ background: post.urgent ? "rgba(160,106,58,0.12)" : "rgba(43,36,32,0.06)" }}
+        style={{ background: post.urgent ? "rgba(160,106,58,0.12)" : "rgba(255,255,255,0.07)" }}
         aria-hidden
       />
       <div className="relative flex items-center justify-between gap-2 mb-1.5">
@@ -158,7 +158,7 @@ function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void
           {post.village ? (
             <span
               className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-              style={post.urgent ? { background: "var(--river-teal-soft)", color: "var(--river-teal)" } : { background: "var(--river-teal-soft)", color: "var(--river-teal)" }}
+              style={post.urgent ? { background: "var(--river-teal-soft)", color: "var(--river-teal)" } : { background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.88)" }}
             >
               {post.village}
             </span>
@@ -167,28 +167,28 @@ function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void
             <span
               key={tag}
               className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-              style={post.urgent ? { background: "rgba(0,0,0,0.06)", color: TAG_COLOR[tag] } : { background: "rgba(0,0,0,0.05)", color: TAG_COLOR[tag] }}
+              style={post.urgent ? { background: "rgba(0,0,0,0.06)", color: TAG_COLOR[tag] } : { background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.78)" }}
             >
               {tag}
             </span>
           ))}
         </div>
-        <span className="shrink-0 text-[10.5px]" style={{ color: "var(--ink-soft)" }}>
+        <span className="shrink-0 text-[10.5px]" style={{ color: post.urgent ? "var(--ink-soft)" : "rgba(255,255,255,0.66)" }}>
           {formatPostedAt(post.postedAt)}
         </span>
       </div>
-      <div className="relative mb-1 text-[18px] font-black leading-snug" style={{ color: post.urgent ? "var(--daxi-red)" : "var(--ink)" }}>
+      <div className="relative mb-1 text-[18px] font-black leading-snug" style={{ color: post.urgent ? "var(--daxi-red)" : "rgba(255,255,255,0.94)" }}>
         {post.title}
       </div>
-      <p className="relative text-[12.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <p className="relative text-[12.5px] leading-relaxed" style={{ color: post.urgent ? "var(--ink-soft)" : "rgba(255,255,255,0.74)" }}>
         {truncateText(post.body)}
       </p>
       {range ? (
-        <div className="relative mt-1.5 text-[11px] font-medium" style={{ color: "var(--river-teal)" }}>
+        <div className="relative mt-1.5 text-[11px] font-medium" style={{ color: post.urgent ? "var(--river-teal)" : "rgba(215,160,107,0.95)" }}>
           {range}
         </div>
       ) : null}
-      <div className="relative mt-2 text-[11.5px] font-semibold" style={{ color: "var(--block-wood-deep)" }}>
+      <div className="relative mt-2 text-[11.5px] font-semibold" style={{ color: post.urgent ? "var(--block-wood-deep)" : "rgba(255,255,255,0.88)" }}>
         查看完整內容
       </div>
     </button>
@@ -259,14 +259,14 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
   return (
     <div className="safe-page-x">
       <div
-        className="rounded-[28px] p-1.5"
+        className="rounded-[28px] p-2"
         style={{
           background: "linear-gradient(135deg, #c68a50 0%, #7a4b2c 48%, #4f321f 100%)",
           boxShadow: "0 18px 36px rgba(43,36,32,0.18)",
         }}
       >
         <div
-          className="relative overflow-hidden rounded-[21px] px-2.5 pb-2.5 pt-2.5"
+          className="relative overflow-hidden rounded-[21px] px-3.5 pb-3.5 pt-3"
           style={{
             background: "linear-gradient(160deg, #1f463c 0%, #17362f 58%, #102a25 100%)",
             border: "1px solid rgba(255,255,255,0.1)",
@@ -292,18 +292,10 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
             aria-hidden
           />
 
-          <div
-            className="relative rounded-[20px] border px-3.5 pb-3.5 pt-3"
-            style={{ background: "rgba(255,255,255,0.96)", borderColor: "rgba(255,255,255,0.72)", boxShadow: "0 14px 30px rgba(0,0,0,0.2)" }}
-          >
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <div className="min-w-0">
-                <div className="text-[11px] font-black tracking-[0.18em]" style={{ color: "var(--block-wood-deep)" }}>
-                  里內公告
-                </div>
-                <div className="mt-0.5 text-[10.5px] font-semibold" style={{ color: "var(--ink-soft)" }}>
-                  左右滑動查看公告
-                </div>
+          <div className="relative">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="min-w-0 text-[11px] font-black tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.86)" }}>
+                里內公告
               </div>
               <div className="flex shrink-0 items-center gap-1.5">
                 {villageOptions.length > 0 ? (
@@ -313,7 +305,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
                       onClick={() => setVillageMenuOpen((open) => !open)}
                       aria-expanded={villageMenuOpen}
                       className="flex h-8 items-center gap-1.5 rounded-full px-3 text-[11.5px] font-bold transition-opacity active:opacity-70"
-                      style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
+                      style={{ background: "rgba(255,255,255,0.13)", color: "rgba(255,255,255,0.88)", border: "1px solid rgba(255,255,255,0.16)" }}
                     >
                       {villageFilterLabel}
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -366,7 +358,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
                 ) : null}
                 {filteredPosts.length > 1 ? (
                   <>
-                    <span className="text-[10.5px] font-semibold tabular-nums" style={{ color: "var(--ink-soft)" }}>
+                    <span className="text-[10.5px] font-semibold tabular-nums" style={{ color: "rgba(255,255,255,0.62)" }}>
                       {currentIndex + 1} / {filteredPosts.length}
                     </span>
                     <button
@@ -374,7 +366,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
                       onClick={() => goToIndex(currentIndex - 1)}
                       aria-label="上一則公告"
                       className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
-                      style={{ background: "var(--paper-2)", color: "var(--ink)" }}
+                      style={{ background: "rgba(255,255,255,0.13)", color: "rgba(255,255,255,0.86)" }}
                     >
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="m15 18-6-6 6-6" />
@@ -385,7 +377,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
                       onClick={() => goToIndex(currentIndex + 1)}
                       aria-label="下一則公告"
                       className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-opacity active:opacity-70"
-                      style={{ background: "var(--paper-2)", color: "var(--ink)" }}
+                      style={{ background: "rgba(255,255,255,0.13)", color: "rgba(255,255,255,0.86)" }}
                     >
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="m9 18 6-6-6-6" />
@@ -397,7 +389,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
             </div>
 
             {filteredPosts.length === 0 ? (
-              <div className="relative rounded-[18px] border px-4 py-5 text-center" style={{ borderColor: "var(--line)", color: "var(--ink-soft)" }}>
+              <div className="relative rounded-[18px] border px-4 py-5 text-center" style={{ borderColor: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.78)" }}>
                 <div className="text-[14px] font-bold">{villageFilterLabel} 目前沒有公告</div>
                 <div className="mt-1 text-[12px]">換個里別看看，或稍後再回來</div>
               </div>
@@ -417,7 +409,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
                         style={{
                           width: i === currentIndex ? 14 : 5,
                           height: 5,
-                          background: i === currentIndex ? "var(--river-teal)" : "var(--line)",
+                          background: i === currentIndex ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.25)",
                         }}
                       />
                     ))}
