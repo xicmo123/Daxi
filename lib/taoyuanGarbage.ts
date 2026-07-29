@@ -20,6 +20,8 @@ export type GarbageRoute = {
 
 export type GarbageVehicle = {
   id: string;
+  routeId?: string;
+  routeName?: string;
   type: "垃圾車" | "資源回收車" | string;
   lat: number;
   lng: number;
@@ -86,6 +88,9 @@ type OfficialStop = {
 type OfficialTrace = {
   routing_path?: string;
 };
+
+let allRealtimeCache: { expiresAt: number; data: GarbageRealtime } | null = null;
+const ALL_REALTIME_CACHE_MS = 12000;
 
 const DAXI_ROUTE_LABELS: Record<string, { displayName: string; areaLabel: string }> = {
   西一區: { displayName: "慈光／新興／介壽一帶", areaLabel: "仁善、僑愛周邊" },
@@ -184,16 +189,13 @@ export async function fetchDaxiGarbageRoutes(): Promise<GarbageRoute[]> {
   }));
 }
 
-export async function fetchDaxiGarbageRealtime(routeId: string): Promise<GarbageRealtime> {
-  const [vehicles, stops, trace] = await Promise.all([
-    officialPost<OfficialVehicle[]>("lagifQueryRealtimeByRoute", { routing_id: routeId }),
-    officialPost<OfficialStop[]>("lagifRealtimeRouteDetailByRoute", { routing_id: routeId }),
-    officialPost<OfficialTrace[]>("lagifQueryTraceByRoute", { routing_id: routeId }),
-  ]);
-  const mappedVehicles = vehicles
+function mapOfficialVehicles(vehicles: OfficialVehicle[], route?: GarbageRoute): GarbageVehicle[] {
+  return vehicles
     .filter((vehicle) => Number.isFinite(vehicle.lat) && Number.isFinite(vehicle.lng))
     .map((vehicle) => ({
-      id: vehicle.car_id,
+      id: route ? `${route.id}:${vehicle.car_id}` : vehicle.car_id,
+      routeId: route?.id,
+      routeName: route?.name,
       type: vehicle.car_type,
       lat: vehicle.lat,
       lng: vehicle.lng,
@@ -204,6 +206,43 @@ export async function fetchDaxiGarbageRealtime(routeId: string): Promise<Garbage
       address: vehicle.addr?.trim() || null,
       gpsTime: vehicle.gpstime?.time ?? null,
     }));
+}
+
+export async function fetchDaxiGarbageAllRealtime(): Promise<GarbageRealtime> {
+  const now = Date.now();
+  if (allRealtimeCache && allRealtimeCache.expiresAt > now) return allRealtimeCache.data;
+
+  const routes = await fetchDaxiGarbageRoutes();
+  const results = await Promise.allSettled(
+    routes.map(async (route) => {
+      const vehicles = await officialPost<OfficialVehicle[]>("lagifQueryRealtimeByRoute", { routing_id: route.id });
+      return mapOfficialVehicles(vehicles, route);
+    }),
+  );
+  const mappedVehicles = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+  const latestGpsTime =
+    mappedVehicles.reduce((latest, vehicle) => (vehicle.gpsTime && vehicle.gpsTime > latest ? vehicle.gpsTime : latest), 0) ||
+    null;
+
+  const data = {
+    routeId: "all",
+    vehicles: mappedVehicles,
+    stops: [],
+    path: [],
+    latestGpsTime,
+    updatedAt: new Date().toISOString(),
+  };
+  allRealtimeCache = { expiresAt: now + ALL_REALTIME_CACHE_MS, data };
+  return data;
+}
+
+export async function fetchDaxiGarbageRealtime(routeId: string): Promise<GarbageRealtime> {
+  const [vehicles, stops, trace] = await Promise.all([
+    officialPost<OfficialVehicle[]>("lagifQueryRealtimeByRoute", { routing_id: routeId }),
+    officialPost<OfficialStop[]>("lagifRealtimeRouteDetailByRoute", { routing_id: routeId }),
+    officialPost<OfficialTrace[]>("lagifQueryTraceByRoute", { routing_id: routeId }),
+  ]);
+  const mappedVehicles = mapOfficialVehicles(vehicles);
   const latestGpsTime =
     mappedVehicles.reduce((latest, vehicle) => (vehicle.gpsTime && vehicle.gpsTime > latest ? vehicle.gpsTime : latest), 0) ||
     null;

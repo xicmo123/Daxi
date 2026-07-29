@@ -1,6 +1,5 @@
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
-import GarbageTruckMap from "@/components/GarbageTruckMap";
 import { readUsefulLinks } from "@/lib/usefulLinks";
 
 const DAXI_OFFICE_URL = "https://www.daxi.tycg.gov.tw";
@@ -93,10 +92,6 @@ export default async function ResidentServicesPage() {
             🚨 尋找最近的 AED
             <span aria-hidden="true">→</span>
           </Link>
-        </SectionCard>
-
-        <SectionCard id="garbage" title="垃圾清運">
-          <GarbageTruckMap />
         </SectionCard>
 
         <SectionCard id="links" title="常用連結">

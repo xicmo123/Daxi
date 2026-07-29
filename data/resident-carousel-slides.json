@@ -29,14 +29,14 @@
     "active": true,
     "tag": "一般",
     "title": "垃圾車即時地圖",
-    "href": "/resident/services#garbage",
+    "href": "/resident#garbage",
     "id": "rslide-mrxdb70x2g20",
     "order": 2,
     "createdAt": "2026-07-24T00:00:00.000Z",
     "updatedAt": "2026-07-24T00:00:00.000Z",
     "kind": "feature",
     "featureKey": "garbage",
-    "subtitle": "查看目前清運車位置"
+    "subtitle": "查看附近 500 公尺清運車"
   },
   {
     "active": false,

@@ -26,10 +26,10 @@ function readStoredPoint(): GarbageAlertPoint | null {
   }
 }
 
-// Periodically compares the live garbage-truck positions for `routeId`
-// against a user-set "my drop-off point" (persisted in localStorage) and
+// Periodically compares all live Daxi garbage-truck positions against a
+// user-set "my drop-off point" (persisted in localStorage) and
 // fires a browser Notification once a truck comes within 300m.
-export function useGarbageAlert(routeId: string) {
+export function useGarbageAlert() {
   const [point, setPointState] = useState<GarbageAlertPoint | null>(() =>
     typeof window === "undefined" ? null : readStoredPoint(),
   );
@@ -62,12 +62,12 @@ export function useGarbageAlert(routeId: string) {
   }, []);
 
   useEffect(() => {
-    if (!point || !routeId || permission !== "granted") return;
+    if (!point || permission !== "granted") return;
     let cancelled = false;
 
     async function check() {
       try {
-        const res = await fetch(`/api/resident/garbage/realtime?routeId=${encodeURIComponent(routeId)}`, { cache: "no-store" });
+        const res = await fetch("/api/resident/garbage/realtime", { cache: "no-store" });
         if (!res.ok) return;
         const data = (await res.json()) as GarbageRealtime;
         if (cancelled || !point) return;
@@ -100,7 +100,7 @@ export function useGarbageAlert(routeId: string) {
       cancelled = true;
       window.clearInterval(interval);
     };
-  }, [point, routeId, permission]);
+  }, [point, permission]);
 
   return { point, setPoint, permission, requestPermission };
 }
