@@ -34,7 +34,7 @@ type TouristQuickActionKind = "bus" | "spot" | "store" | "live";
 function QuickActionIllustration({ kind }: { kind: TouristQuickActionKind }) {
   if (kind === "bus") {
     return (
-      <svg viewBox="0 0 180 132" aria-hidden="true" className="absolute bottom-0 right-0 h-[66px] w-[84px] opacity-90">
+      <svg viewBox="0 0 180 132" aria-hidden="true" className="absolute bottom-0 right-0 h-[48px] w-[62px] opacity-90 md:h-[66px] md:w-[84px]">
         <path d="M16 104c21-34 39-52 64-54 31-3 55 19 84-18" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="8" strokeLinecap="round" />
         <path d="M24 110h124" stroke="rgba(43,36,32,0.18)" strokeWidth="5" strokeLinecap="round" />
         <rect x="50" y="38" width="90" height="52" rx="17" fill="rgba(255,255,255,0.9)" />
@@ -50,7 +50,7 @@ function QuickActionIllustration({ kind }: { kind: TouristQuickActionKind }) {
 
   if (kind === "spot") {
     return (
-      <svg viewBox="0 0 120 88" aria-hidden="true" className="absolute bottom-0 right-0 h-[62px] w-[88px] opacity-90">
+      <svg viewBox="0 0 120 88" aria-hidden="true" className="absolute bottom-0 right-0 h-[46px] w-[66px] opacity-90 md:h-[62px] md:w-[88px]">
         <path d="M8 72 39 38l18 18 16-24 39 40Z" fill="rgba(255,255,255,0.72)" />
         <path d="m8 72 31-34 18 18 16-24 39 40" fill="none" stroke="#4f8478" strokeWidth="4" strokeLinejoin="round" />
         <circle cx="92" cy="23" r="9" fill="rgba(255,255,255,0.72)" />
@@ -61,7 +61,7 @@ function QuickActionIllustration({ kind }: { kind: TouristQuickActionKind }) {
 
   if (kind === "store") {
     return (
-      <svg viewBox="0 0 120 84" aria-hidden="true" className="absolute bottom-0 right-0 h-[60px] w-[88px] opacity-90">
+      <svg viewBox="0 0 120 84" aria-hidden="true" className="absolute bottom-0 right-0 h-[46px] w-[66px] opacity-90 md:h-[60px] md:w-[88px]">
         <path d="M15 35h90l-7-18H22Z" fill="rgba(255,255,255,0.84)" />
         <path d="M17 35v36h86V35" fill="rgba(255,255,255,0.46)" />
         <path d="M17 35v7a10 10 0 0 0 20 0v-7a10 10 0 0 0 20 0v-7a10 10 0 0 0 20 0v7a10 10 0 0 0 20 0v-7" fill="none" stroke="#4a7594" strokeWidth="5" />
@@ -71,7 +71,7 @@ function QuickActionIllustration({ kind }: { kind: TouristQuickActionKind }) {
   }
 
   return (
-    <svg viewBox="0 0 120 78" aria-hidden="true" className="absolute bottom-0 right-0 h-[58px] w-[88px] opacity-95">
+    <svg viewBox="0 0 120 78" aria-hidden="true" className="absolute bottom-0 right-0 h-[44px] w-[68px] opacity-95 md:h-[58px] md:w-[88px]">
       <path d="M10 58c22-18 40-24 58-18 18 7 28 2 42-14" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="7" strokeLinecap="round" />
       <rect x="34" y="22" width="47" height="31" rx="9" fill="rgba(255,255,255,0.88)" />
       <path d="m81 32 23-10v31L81 43Z" fill="rgba(255,255,255,0.7)" />
@@ -267,7 +267,7 @@ export default function HomeExperience({
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+        <div className="grid grid-cols-4 gap-1.5 md:gap-2.5">
           {[
             {
               href: "/bus",
@@ -307,20 +307,20 @@ export default function HomeExperience({
               key={action.href}
               href={action.href}
               onClick={() => trackClick("map_card", action.href, action.label, TRACK_TAG)}
-              className="group relative block h-[124px] min-w-0 overflow-hidden rounded-[20px] px-2.5 py-3 transition-transform active:scale-[0.98] md:h-[138px]"
+              className="group relative block h-[112px] min-w-0 overflow-hidden rounded-[16px] px-1.5 py-2 transition-transform active:scale-[0.98] md:h-[138px] md:rounded-[20px] md:px-2.5 md:py-3"
               style={{ background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" }}
             >
               <QuickActionIllustration kind={action.kind} />
               <div className="relative z-10 flex h-full flex-col justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
+                  <div className="mb-1 inline-flex max-w-full items-center rounded-full px-1.5 py-0.5 text-[8.5px] font-bold md:mb-1.5 md:px-2 md:text-[10px]" style={{ background: "rgba(255,255,255,0.5)" }}>
                     {action.label}
                   </div>
-                  <div className="truncate text-[15px] font-black leading-tight">{action.title}</div>
+                  <div className="truncate text-[12px] font-black leading-tight md:text-[15px]">{action.title}</div>
                 </div>
-                <div className="flex items-center justify-between gap-1.5 text-[10.5px] font-bold">
+                <div className="flex items-center justify-between gap-1 text-[8.5px] font-bold md:gap-1.5 md:text-[10.5px]">
                   <span className="min-w-0 truncate leading-tight">{action.detail}</span>
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ background: "rgba(255,255,255,0.42)" }}>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1 md:h-6 md:w-6" style={{ background: "rgba(255,255,255,0.42)" }}>
                     <QuickActionArrow />
                   </span>
                 </div>
