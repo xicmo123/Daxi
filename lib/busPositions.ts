@@ -1,11 +1,10 @@
-// Live bus GPS near Daxi — sourced from TDX's city-wide "frequency-based
-// route" realtime feed, filtered down by straight-line distance from the
-// requested center. The old-street point remains only as a no-location fallback.
+// Live bus GPS for Taoyuan — sourced from TDX's city-wide "frequency-based"
+// realtime feed. The requested center is used only to calculate and sort
+// distances; vehicles are not hidden based on distance.
 import { tdxFetch } from "./tdx";
 import { haversineMeters } from "./tycgParking";
 
 const DAXI_CENTER = { lat: 24.8809, lng: 121.2868 };
-const NEARBY_RADIUS_METERS = 5000;
 
 type TdxBusRealtime = {
   PlateNumb: string;
@@ -36,7 +35,6 @@ export async function fetchNearbyBuses(center = DAXI_CENTER): Promise<BusPositio
     const lng = b.BusPosition.PositionLon;
     if (typeof lat !== "number" || typeof lng !== "number") continue;
     const distanceMeters = haversineMeters(center, { lat, lng });
-    if (distanceMeters > NEARBY_RADIUS_METERS) continue;
     positions.push({
       id: b.PlateNumb,
       route: b.RouteName?.Zh_tw ?? "—",
