@@ -143,6 +143,19 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
   const userLocation = useUserLocation();
   const demoLocation = readDemoLocation();
   const activeLocation = demoLocation ?? userLocation;
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>(
+    activeLocation ?? { lat: DAXI_CENTER[0], lng: DAXI_CENTER[1] },
+  );
+
+  const distanceFromUser = activeLocation
+    ? calculateDistance(activeLocation.lat, activeLocation.lng, mapCenter.lat, mapCenter.lng)
+    : Number.POSITIVE_INFINITY;
+  const distancePrefix = distanceFromUser <= 100 ? "距你" : "距地圖中心";
+  const locationChipLabel = distanceFromUser <= 100
+    ? demoLocation
+      ? "目前位置・大溪老街"
+      : "目前位置"
+    : "距離依地圖中心";
 
   const [routeMatches, setRouteMatches] = useState<BusRouteMatch[]>([]);
   const [routeSearchState, setRouteSearchState] = useState<RouteSearchState>("idle");
@@ -223,12 +236,23 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
 
   const matchedRouteNames = useMemo(() => new Set(routeMatches.map((r) => r.routeName)), [routeMatches]);
 
+  const distanceSortedBuses = useMemo(
+    () =>
+      buses
+        .map((bus) => ({
+          ...bus,
+          distanceMeters: calculateDistance(mapCenter.lat, mapCenter.lng, bus.lat, bus.lng),
+        }))
+        .sort((a, b) => a.distanceMeters - b.distanceMeters),
+    [buses, mapCenter],
+  );
+
   const filteredBuses = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return buses;
-    if (matchedRouteNames.size > 0) return buses.filter((b) => matchedRouteNames.has(b.route));
-    return buses.filter((b) => b.route.toLowerCase().includes(q));
-  }, [buses, query, matchedRouteNames]);
+    if (!q) return distanceSortedBuses;
+    if (matchedRouteNames.size > 0) return distanceSortedBuses.filter((b) => matchedRouteNames.has(b.route));
+    return distanceSortedBuses.filter((b) => b.route.toLowerCase().includes(q));
+  }, [distanceSortedBuses, query, matchedRouteNames]);
 
   useEffect(() => {
     let cancelled = false;
@@ -244,6 +268,13 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
       );
       mapRef.current = map;
       map.attributionControl.setPrefix("");
+      setMapCenter(activeLocation ?? { lat: DAXI_CENTER[0], lng: DAXI_CENTER[1] });
+
+      const handleMapMove = () => {
+        const center = map.getCenter();
+        setMapCenter({ lat: center.lat, lng: center.lng });
+      };
+      map.on("moveend", handleMapMove);
 
       if (activeLocation) {
         locationMarkerRef.current = L.circleMarker([activeLocation.lat, activeLocation.lng], {
@@ -276,7 +307,7 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [activeLocation]);
+  }, [activeLocation, demoLocation]);
 
   const busIcon = useCallback((L: LeafletModule): DivIcon => {
     return L.divIcon({
@@ -451,7 +482,7 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
           </span>
           {activeLocation ? (
             <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
-              {demoLocation ? "目前位置・大溪老街" : "目前位置"}
+              {locationChipLabel}
             </span>
           ) : null}
           {updatedAt ? (
@@ -486,7 +517,7 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
                   {bus.route} 路
                 </div>
                 <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
-                  距你 {bus.distanceMeters < 1000 ? `${Math.round(bus.distanceMeters)}m` : `${(bus.distanceMeters / 1000).toFixed(1)}km`}
+                  {distancePrefix} {bus.distanceMeters < 1000 ? `${Math.round(bus.distanceMeters)}m` : `${(bus.distanceMeters / 1000).toFixed(1)}km`}
                 </div>
               </div>
               <div className="text-right text-[11px]" style={{ color: "var(--ink-soft)" }}>
