@@ -29,6 +29,68 @@ export type FeedSpot = {
 // (see IdentityGate) rather than re-sorting this page in place.
 const TRACK_TAG = "tourist";
 
+type TouristQuickActionKind = "bus" | "spot" | "store" | "live";
+
+function QuickActionIllustration({ kind }: { kind: TouristQuickActionKind }) {
+  if (kind === "bus") {
+    return (
+      <svg viewBox="0 0 180 132" aria-hidden="true" className="absolute bottom-0 right-0 h-[66px] w-[84px] opacity-90">
+        <path d="M16 104c21-34 39-52 64-54 31-3 55 19 84-18" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="8" strokeLinecap="round" />
+        <path d="M24 110h124" stroke="rgba(43,36,32,0.18)" strokeWidth="5" strokeLinecap="round" />
+        <rect x="50" y="38" width="90" height="52" rx="17" fill="rgba(255,255,255,0.9)" />
+        <path d="M63 54h26M101 54h25" stroke="#4a7594" strokeWidth="10" strokeLinecap="round" />
+        <path d="M66 74h58" stroke="#2b2420" strokeOpacity="0.18" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="72" cy="91" r="10" fill="#2b2420" />
+        <circle cx="119" cy="91" r="10" fill="#2b2420" />
+        <circle cx="72" cy="91" r="4" fill="#d7a06b" />
+        <circle cx="119" cy="91" r="4" fill="#d7a06b" />
+      </svg>
+    );
+  }
+
+  if (kind === "spot") {
+    return (
+      <svg viewBox="0 0 120 88" aria-hidden="true" className="absolute bottom-0 right-0 h-[62px] w-[88px] opacity-90">
+        <path d="M8 72 39 38l18 18 16-24 39 40Z" fill="rgba(255,255,255,0.72)" />
+        <path d="m8 72 31-34 18 18 16-24 39 40" fill="none" stroke="#4f8478" strokeWidth="4" strokeLinejoin="round" />
+        <circle cx="92" cy="23" r="9" fill="rgba(255,255,255,0.72)" />
+        <path d="M92 17v12M86 23h12" stroke="#b8814c" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (kind === "store") {
+    return (
+      <svg viewBox="0 0 120 84" aria-hidden="true" className="absolute bottom-0 right-0 h-[60px] w-[88px] opacity-90">
+        <path d="M15 35h90l-7-18H22Z" fill="rgba(255,255,255,0.84)" />
+        <path d="M17 35v36h86V35" fill="rgba(255,255,255,0.46)" />
+        <path d="M17 35v7a10 10 0 0 0 20 0v-7a10 10 0 0 0 20 0v-7a10 10 0 0 0 20 0v7a10 10 0 0 0 20 0v-7" fill="none" stroke="#4a7594" strokeWidth="5" />
+        <path d="M49 71V51h22v20M28 50h10M82 50h10" fill="none" stroke="#2b2420" strokeOpacity="0.28" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 120 78" aria-hidden="true" className="absolute bottom-0 right-0 h-[58px] w-[88px] opacity-95">
+      <path d="M10 58c22-18 40-24 58-18 18 7 28 2 42-14" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="7" strokeLinecap="round" />
+      <rect x="34" y="22" width="47" height="31" rx="9" fill="rgba(255,255,255,0.88)" />
+      <path d="m81 32 23-10v31L81 43Z" fill="rgba(255,255,255,0.7)" />
+      <circle cx="55" cy="38" r="9" fill="#2b2420" fillOpacity="0.18" />
+      <circle cx="55" cy="38" r="4" fill="#4a7594" />
+      <path d="M44 58h31" stroke="rgba(43,36,32,0.2)" strokeWidth="5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function QuickActionArrow() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  );
+}
+
 export default function HomeExperience({
   todayLabel,
   hasRecentAnnouncement,
@@ -189,80 +251,92 @@ export default function HomeExperience({
         </div>
       ) : null}
 
-      {/* 4b. Quick actions — bus / spots / businesses / live cams, one tap from home */}
-      <div className="grid grid-cols-4 gap-2 safe-page-x pt-4 fade-in">
-        {[
-          {
-            href: "/bus",
-            label: "公車資訊",
-            icon: (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4.5" y="4" width="15" height="13" rx="3" />
-                <path d="M4.5 13.5h15M8.5 17v2.2M15.5 17v2.2" />
-                <circle cx="8.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
-                <circle cx="15.5" cy="10" r="0.8" fill="currentColor" stroke="none" />
-              </svg>
-            ),
-          },
-          {
-            href: "/spots",
-            label: "景點資訊",
-            icon: (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
-                <circle cx="12" cy="9.5" r="2.2" />
-              </svg>
-            ),
-          },
-          {
-            href: "/businesses",
-            label: "店家資訊",
-            icon: (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 9.5h14l-1.1-4h-11.8Z" />
-                <path d="M6 9.5v9h12v-9" />
-                <path d="M8 9.5v1.2a2 2 0 0 0 4 0V9.5" />
-                <path d="M12 9.5v1.2a2 2 0 0 0 4 0V9.5" />
-                <path d="M9 18.5v-4h6v4" />
-              </svg>
-            ),
-          },
-          {
-            href: "/weather",
-            label: "即時影像",
-            live: true,
-            icon: (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2.5" y="6" width="13" height="12" rx="2.5" />
-                <path d="M15.5 10.5 21 7.5v9l-5.5-3Z" />
-              </svg>
-            ),
-          },
-        ].map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            onClick={() => trackClick("map_card", action.href, action.label, TRACK_TAG)}
-            className="relative flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 card-shadow transition-opacity active:opacity-70"
-            style={{ background: "var(--card)", borderColor: "var(--line)" }}
-          >
-            {action.live ? (
-              <span
-                className="absolute right-1.5 top-1.5 text-[8.5px] font-bold rounded-full px-1.5 py-0.5"
-                style={{ background: "var(--festival-gold)", color: "#fff" }}
-              >
-                LIVE
-              </span>
-            ) : null}
-            <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
-              {action.icon}
-            </span>
-            <span className="text-[11px] font-semibold leading-tight text-center" style={{ color: "var(--ink)" }}>
-              {action.label}
-            </span>
-          </Link>
-        ))}
-      </div>
+      {/* 4b. Tourist priority actions use the same visual language as the resident home cards. */}
+      <section className="safe-page-x pt-4 fade-in" aria-labelledby="tourist-priority-title">
+        <div className="mb-2 flex items-end justify-between gap-3">
+          <div>
+            <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+              旅遊動線
+            </div>
+            <h2 id="tourist-priority-title" className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+              出發前先看
+            </h2>
+          </div>
+          <span className="text-[11px] font-semibold" style={{ color: "var(--ink-soft)" }}>
+            快速資訊
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+          {[
+            {
+              href: "/bus",
+              label: "公車資訊",
+              title: "公車在哪",
+              detail: "位置 / 時刻",
+              kind: "bus" as const,
+              background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-moss) 100%)",
+            },
+            {
+              href: "/spots",
+              label: "景點資訊",
+              title: "景點去哪裡",
+              detail: "熱門 / 地圖",
+              kind: "spot" as const,
+              background: "linear-gradient(145deg, var(--block-moss) 0%, var(--block-wood) 100%)",
+            },
+            {
+              href: "/businesses",
+              label: "店家資訊",
+              title: "吃喝買什麼",
+              detail: "在地店家 / 優惠",
+              kind: "store" as const,
+              background: "linear-gradient(140deg, var(--block-wood) 0%, var(--block-river) 100%)",
+            },
+            {
+              href: "/weather",
+              label: "即時影像",
+              title: "先看路況",
+              detail: "CCTV / 景點",
+              kind: "live" as const,
+              live: true,
+              background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-wood) 100%)",
+            },
+          ].map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              onClick={() => trackClick("map_card", action.href, action.label, TRACK_TAG)}
+              className="group relative block h-[124px] min-w-0 overflow-hidden rounded-[20px] px-2.5 py-3 transition-transform active:scale-[0.98] md:h-[138px]"
+              style={{ background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" }}
+            >
+              <QuickActionIllustration kind={action.kind} />
+              <div className="relative z-10 flex h-full flex-col justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
+                    {action.label}
+                  </div>
+                  <div className="truncate text-[15px] font-black leading-tight">{action.title}</div>
+                </div>
+                <div className="flex items-center justify-between gap-1.5 text-[10.5px] font-bold">
+                  <span className="min-w-0 truncate leading-tight">{action.detail}</span>
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ background: "rgba(255,255,255,0.42)" }}>
+                    <QuickActionArrow />
+                  </span>
+                </div>
+              </div>
+              {action.live ? (
+                <span
+                  className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold"
+                  style={{ background: "rgba(255,255,255,0.72)", color: "var(--daxi-red)" }}
+                >
+                  LIVE
+                </span>
+              ) : null}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {/* 5. Featured spots — horizontal cards */}
       {visibleSpots.length > 0 ? (
