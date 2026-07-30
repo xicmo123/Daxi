@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import BusModal from "@/components/BusModal";
 import GarbageTruckMap from "@/components/GarbageTruckMap";
 
 function BusIllustration() {
@@ -57,6 +58,7 @@ function CameraIllustration() {
 }
 
 export default function ResidentPriorityActions() {
+  const [showBusMap, setShowBusMap] = useState(false);
   const [showGarbageMap, setShowGarbageMap] = useState(false);
 
   useEffect(() => {
@@ -89,8 +91,9 @@ export default function ResidentPriorityActions() {
       </div>
 
       <div className="mr-5 grid min-w-0 grid-cols-3 gap-1.5 sm:mr-0">
-        <Link
-          href="/resident/bus"
+        <button
+          type="button"
+          onClick={() => setShowBusMap(true)}
           className="group relative block h-[120px] min-w-0 overflow-hidden rounded-[20px] px-2.5 py-3 transition-transform active:scale-[0.98] md:h-[138px]"
           style={{
             background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-moss) 100%)",
@@ -113,7 +116,7 @@ export default function ResidentPriorityActions() {
               </span>
             </div>
           </div>
-        </Link>
+        </button>
 
         <button
           type="button"
@@ -200,6 +203,8 @@ export default function ResidentPriorityActions() {
           </div>
         </div>
       ) : null}
+
+      {showBusMap ? <BusModal onClose={() => setShowBusMap(false)} /> : null}
     </section>
   );
 }

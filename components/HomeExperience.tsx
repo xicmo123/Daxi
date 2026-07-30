@@ -11,6 +11,7 @@ import { calculateDistance } from "@/lib/geo";
 import { walkTimeLabel } from "@/lib/experience";
 import { useUserLocation } from "@/lib/useUserLocation";
 import type { CouponWithBusiness } from "./CouponList";
+import BusModal from "./BusModal";
 import CouponRedeemModal from "./CouponRedeemModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import HeroCarousel, { type HeroSlide } from "./HeroCarousel";
@@ -117,6 +118,7 @@ export default function HomeExperience({
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [showBusMap, setShowBusMap] = useState(false);
   const [openCoupon, setOpenCoupon] = useState<CouponWithBusiness | null>(null);
   const [switching, setSwitching] = useState(false);
   const userLocation = useUserLocation();
@@ -316,41 +318,64 @@ export default function HomeExperience({
               live: true,
               background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-wood) 100%)",
             },
-          ].map((action) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              onClick={() => trackClick("map_card", action.href, action.label, TRACK_TAG)}
-              className="group relative block h-[112px] min-w-0 overflow-hidden rounded-[16px] px-1.5 py-2 transition-transform active:scale-[0.98] md:h-[138px] md:rounded-[20px] md:px-2.5 md:py-3"
-              style={{ background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" }}
-            >
-              <QuickActionIllustration kind={action.kind} />
-              <div className="relative z-10 flex h-full flex-col justify-between gap-2">
-                <div className="min-w-0">
-                  <div className="mb-1 inline-flex max-w-full items-center rounded-full px-1.5 py-0.5 text-[8.5px] font-bold md:mb-1.5 md:px-2 md:text-[10px]" style={{ background: "rgba(255,255,255,0.5)" }}>
-                    {action.label}
+          ].map((action) => {
+            const content = (
+              <>
+                <QuickActionIllustration kind={action.kind} />
+                <div className="relative z-10 flex h-full flex-col justify-between gap-2 text-left">
+                  <div className="min-w-0">
+                    <div className="mb-1 inline-flex max-w-full items-center rounded-full px-1.5 py-0.5 text-[8.5px] font-bold md:mb-1.5 md:px-2 md:text-[10px]" style={{ background: "rgba(255,255,255,0.5)" }}>
+                      {action.label}
+                    </div>
+                    <div className="truncate text-[12px] font-black leading-tight md:text-[15px]">{action.title}</div>
                   </div>
-                  <div className="truncate text-[12px] font-black leading-tight md:text-[15px]">{action.title}</div>
+                  <div className="flex items-center justify-between gap-1 text-[8.5px] font-bold md:gap-1.5 md:text-[10.5px]">
+                    <span className="min-w-0 truncate leading-tight">{action.detail}</span>
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1 md:h-6 md:w-6" style={{ background: "rgba(255,255,255,0.42)" }}>
+                      <QuickActionArrow />
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between gap-1 text-[8.5px] font-bold md:gap-1.5 md:text-[10.5px]">
-                  <span className="min-w-0 truncate leading-tight">{action.detail}</span>
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1 md:h-6 md:w-6" style={{ background: "rgba(255,255,255,0.42)" }}>
-                    <QuickActionArrow />
+                {action.live ? (
+                  <span
+                    className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold"
+                    style={{ background: "rgba(255,255,255,0.72)", color: "var(--daxi-red)" }}
+                  >
+                    LIVE
                   </span>
-                </div>
-              </div>
-              {action.live ? (
-                <span
-                  className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold"
-                  style={{ background: "rgba(255,255,255,0.72)", color: "var(--daxi-red)" }}
+                ) : null}
+              </>
+            );
+            const className = "group relative block h-[112px] min-w-0 overflow-hidden rounded-[16px] px-1.5 py-2 transition-transform active:scale-[0.98] md:h-[138px] md:rounded-[20px] md:px-2.5 md:py-3";
+            const style = { background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" };
+
+            if (action.kind === "bus") {
+              return (
+                <button
+                  key={action.href}
+                  type="button"
+                  onClick={() => {
+                    setShowBusMap(true);
+                    trackClick("map_card", action.href, action.label, TRACK_TAG);
+                  }}
+                  className={className}
+                  style={style}
                 >
-                  LIVE
-                </span>
-              ) : null}
-            </Link>
-          ))}
+                  {content}
+                </button>
+              );
+            }
+
+            return (
+              <Link key={action.href} href={action.href} onClick={() => trackClick("map_card", action.href, action.label, TRACK_TAG)} className={className} style={style}>
+                {content}
+              </Link>
+            );
+          })}
         </div>
       </section>
+
+      {showBusMap ? <BusModal onClose={() => setShowBusMap(false)} /> : null}
 
       {/* 5. Featured spots — horizontal cards */}
       {visibleSpots.length > 0 ? (
