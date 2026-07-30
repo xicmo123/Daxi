@@ -11,6 +11,49 @@ type LoadState = "loading" | "ready" | "empty" | "error";
 
 const DAXI_CENTER: [number, number] = [24.884, 121.288];
 const REFRESH_SECONDS = 15;
+const OLD_STREET_CENTER: [number, number] = [24.8833, 121.2862];
+const DEMO_GARBAGE_REALTIME: GarbageRealtime = {
+  routeId: "demo-old-street",
+  vehicles: [
+    {
+      id: "demo:419-VN",
+      routeId: "demo-old-street",
+      routeName: "東一區",
+      type: "垃圾車",
+      lat: 24.8838,
+      lng: 121.2868,
+      speed: 12,
+      direction: "往和平老街",
+      status: "清運中",
+      cleanStatus: null,
+      address: "大溪老街和平路",
+      gpsTime: Date.now() - 90_000,
+    },
+    {
+      id: "demo:KEQ-9271",
+      routeId: "demo-old-street",
+      routeName: "東二區",
+      type: "資源回收車",
+      lat: 24.8827,
+      lng: 121.2878,
+      speed: 7,
+      direction: "往大溪橋",
+      status: "即將到站",
+      cleanStatus: null,
+      address: "和平老街入口",
+      gpsTime: Date.now() - 150_000,
+    },
+  ],
+  stops: [],
+  path: [],
+  latestGpsTime: Date.now() - 90_000,
+  updatedAt: new Date().toISOString(),
+};
+
+function readOldStreetDemo() {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("appstoreDemo") === "old-street";
+}
 
 function formatTime(value: string | number) {
   return new Intl.DateTimeFormat("zh-TW", {
@@ -49,6 +92,7 @@ export default function GarbageTruckMap() {
   const [vehicleCount, setVehicleCount] = useState(0);
   const [mapReady, setMapReady] = useState(false);
   const [vehicles, setVehicles] = useState<GarbageVehicle[]>([]);
+  const oldStreetDemo = readOldStreetDemo();
 
   const drawRealtime = useCallback((realtime: GarbageRealtime, fit: "none" | "auto") => {
     const currentVehicles = realtime.vehicles;
@@ -112,7 +156,7 @@ export default function GarbageTruckMap() {
       const map = L.map(mapNodeRef.current, {
         attributionControl: true,
         zoomControl: false,
-      }).setView(DAXI_CENTER, 14);
+      }).setView(oldStreetDemo ? OLD_STREET_CENTER : DAXI_CENTER, oldStreetDemo ? 16 : 14);
       mapRef.current = map;
       map.attributionControl.setPrefix("");
 
@@ -134,11 +178,15 @@ export default function GarbageTruckMap() {
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [oldStreetDemo]);
 
   const loadRealtime = useCallback(
     async (fit: "none" | "auto" = "none") => {
       try {
+        if (oldStreetDemo) {
+          drawRealtime(DEMO_GARBAGE_REALTIME, fit);
+          return;
+        }
         const response = await fetch("/api/resident/garbage/realtime", { cache: "no-store" });
         if (!response.ok) throw new Error("Unable to load realtime.");
         const realtime = (await response.json()) as GarbageRealtime;
@@ -147,7 +195,7 @@ export default function GarbageTruckMap() {
         setState("error");
       }
     },
-    [drawRealtime],
+    [drawRealtime, oldStreetDemo],
   );
 
   useEffect(() => {
@@ -210,6 +258,11 @@ export default function GarbageTruckMap() {
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
             每 {REFRESH_SECONDS} 秒更新
           </span>
+          {oldStreetDemo ? (
+            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
+              定位 大溪老街
+            </span>
+          ) : null}
           {latestGpsTime ? (
             <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
               GPS {formatTime(latestGpsTime)}

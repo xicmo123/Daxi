@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import BusModal from "@/components/BusModal";
 import GarbageTruckMap from "@/components/GarbageTruckMap";
@@ -175,7 +176,7 @@ export default function ResidentPriorityActions() {
 
       </section>
 
-      {showGarbageMap ? (
+      {showGarbageMap && typeof document !== "undefined" ? createPortal(
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-0 pt-10 sm:items-center sm:px-4" role="dialog" aria-modal="true" aria-labelledby="garbage-map-title">
           <button type="button" className="absolute inset-0 cursor-default" aria-label="關閉垃圾清運地圖" onClick={() => setShowGarbageMap(false)} />
           <div className="relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl shadow-2xl sm:rounded-3xl" style={{ background: "var(--paper)" }}>
@@ -204,7 +205,8 @@ export default function ResidentPriorityActions() {
               <GarbageTruckMap />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
 
       {showBusMap ? <BusModal onClose={() => setShowBusMap(false)} /> : null}

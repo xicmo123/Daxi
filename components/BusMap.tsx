@@ -5,6 +5,7 @@ import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "
 import type { BusPosition } from "@/lib/busPositions";
 import type { BusEtaStop, BusRouteMatch } from "@/lib/tdxBusRoutes";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
+import { calculateDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
 
 type LeafletModule = typeof import("leaflet");
@@ -16,6 +17,26 @@ const REFRESH_SECONDS = 15;
 const SEARCH_DEBOUNCE_MS = 400;
 // ~500-1000m visible radius on a typical phone-width map.
 const LOCATE_ZOOM = 16;
+const OLD_STREET_LOCATION = { lat: 24.8833, lng: 121.2862 };
+const DEMO_BUS_SOURCES = [
+  { id: "demo-5097-01", route: "5097", lat: 24.8838, lng: 121.2865, speedKmh: 18 },
+  { id: "demo-5097-02", route: "5097", lat: 24.8816, lng: 121.2891, speedKmh: 12 },
+  { id: "demo-5101-01", route: "5101", lat: 24.8848, lng: 121.2848, speedKmh: 8 },
+] as const;
+
+function readDemoLocation() {
+  if (typeof window === "undefined") return null;
+  return new URLSearchParams(window.location.search).get("appstoreDemo") === "old-street" ? OLD_STREET_LOCATION : null;
+}
+
+function demoBuses(): BusPosition[] {
+  const gpsTime = new Date().toISOString();
+  return DEMO_BUS_SOURCES.map((bus) => ({
+    ...bus,
+    gpsTime,
+    distanceMeters: calculateDistance(OLD_STREET_LOCATION.lat, OLD_STREET_LOCATION.lng, bus.lat, bus.lng),
+  }));
+}
 
 function formatTime(value: string | null) {
   if (!value) return null;
@@ -106,7 +127,7 @@ function TimetableSheet({
   );
 }
 
-export default function BusMap() {
+export default function BusMap({ compact = false }: { compact?: boolean }) {
   const mapNodeRef = useRef<HTMLDivElement | null>(null);
   const leafletRef = useRef<LeafletModule | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
@@ -119,6 +140,8 @@ export default function BusMap() {
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const userLocation = useUserLocation();
+  const demoLocation = readDemoLocation();
+  const activeLocation = demoLocation ?? userLocation;
 
   const [routeMatches, setRouteMatches] = useState<BusRouteMatch[]>([]);
   const [routeSearchState, setRouteSearchState] = useState<RouteSearchState>("idle");
@@ -215,8 +238,8 @@ export default function BusMap() {
 
       leafletRef.current = L;
       const map = L.map(mapNodeRef.current, { attributionControl: true, zoomControl: false }).setView(
-        userLocation ? [userLocation.lat, userLocation.lng] : DAXI_CENTER,
-        userLocation ? LOCATE_ZOOM : 14,
+        activeLocation ? [activeLocation.lat, activeLocation.lng] : DAXI_CENTER,
+        activeLocation ? LOCATE_ZOOM : 14,
       );
       mapRef.current = map;
       map.attributionControl.setPrefix("");
@@ -238,7 +261,7 @@ export default function BusMap() {
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [userLocation]);
+  }, [activeLocation]);
 
   const busIcon = useCallback((L: LeafletModule): DivIcon => {
     return L.divIcon({
@@ -251,7 +274,14 @@ export default function BusMap() {
 
   const loadBuses = useCallback(async () => {
     try {
-      const query = userLocation ? `?lat=${userLocation.lat}&lng=${userLocation.lng}` : "";
+      if (demoLocation) {
+        const data = demoBuses();
+        setBuses(data);
+        setUpdatedAt(new Date().toISOString());
+        setState("ready");
+        return;
+      }
+      const query = activeLocation ? `?lat=${activeLocation.lat}&lng=${activeLocation.lng}` : "";
       const response = await fetch(`/api/bus/realtime${query}`, { cache: "no-store" });
       if (!response.ok) throw new Error("Unable to load bus positions.");
       const data = (await response.json()) as { buses: BusPosition[]; updatedAt: string };
@@ -261,7 +291,7 @@ export default function BusMap() {
     } catch {
       setState("error");
     }
-  }, [userLocation]);
+  }, [activeLocation, demoLocation]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -395,7 +425,7 @@ export default function BusMap() {
         </div>
       ) : null}
 
-	      <div className="relative h-[300px] min-h-[42vh]">
+      <div className={compact ? "relative h-[240px] min-h-0 sm:h-[300px]" : "relative h-[300px] min-h-[42vh]"}>
         <div ref={mapNodeRef} className="absolute inset-0" aria-label="以目前位置為中心的大溪周邊公車即時地圖" />
         <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-wrap gap-2">
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
@@ -404,6 +434,11 @@ export default function BusMap() {
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
             每 {REFRESH_SECONDS} 秒更新
           </span>
+          {demoLocation ? (
+            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
+              定位 大溪老街
+            </span>
+          ) : null}
           {updatedAt ? (
             <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
               同步 {formatTime(updatedAt)}
@@ -428,7 +463,7 @@ export default function BusMap() {
       </div>
 
       {filteredBuses.length > 0 ? (
-        <div className="flex max-h-56 flex-col overflow-auto border-t" style={{ borderColor: "var(--line)" }}>
+        <div className={compact ? "flex max-h-40 flex-col overflow-auto border-t sm:max-h-56" : "flex max-h-56 flex-col overflow-auto border-t"} style={{ borderColor: "var(--line)" }}>
           {filteredBuses.map((bus) => (
             <div key={bus.id} className="flex items-center justify-between px-4 py-3 border-b last:border-b-0" style={{ borderColor: "var(--line)" }}>
               <div>
