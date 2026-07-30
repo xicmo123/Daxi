@@ -131,10 +131,10 @@ export default function ResidentPriorityActions() {
               <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
                 垃圾清運
               </div>
-              <div className="text-[15px] font-black leading-tight">附近清運</div>
+              <div className="text-[15px] font-black leading-tight">即時清運</div>
             </div>
             <div className="flex items-center justify-between gap-1.5 text-[10.5px] font-bold">
-              <span className="min-w-0 truncate leading-tight">500 公尺</span>
+              <span className="min-w-0 truncate leading-tight">即時位置</span>
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ background: "rgba(255,255,255,0.38)" }}>
                 <ArrowIcon />
               </span>
@@ -179,7 +179,7 @@ export default function ResidentPriorityActions() {
                   垃圾清運
                 </div>
                 <h2 id="garbage-map-title" className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
-                  附近 500 公尺
+                  即時清運車
                 </h2>
               </div>
               <button
