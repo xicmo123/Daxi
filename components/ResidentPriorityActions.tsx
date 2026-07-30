@@ -94,7 +94,7 @@ export default function ResidentPriorityActions() {
         <button
           type="button"
           onClick={() => setShowBusMap(true)}
-          className="group relative block h-[120px] min-w-0 overflow-hidden rounded-[20px] px-2.5 py-3 transition-transform active:scale-[0.98] md:h-[138px]"
+          className="group relative block h-[120px] min-w-0 overflow-hidden rounded-[20px] px-2.5 py-3 text-left transition-transform active:scale-[0.98] md:h-[138px]"
           style={{
             background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-moss) 100%)",
             boxShadow: "var(--shadow-float)",
