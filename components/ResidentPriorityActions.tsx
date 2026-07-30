@@ -75,7 +75,8 @@ export default function ResidentPriorityActions() {
   }, [showGarbageMap]);
 
   return (
-    <section className="safe-page-x pt-3 fade-in-delay-1" aria-labelledby="resident-priority-title">
+    <>
+      <section className="safe-page-x pt-3 fade-in-delay-1" aria-labelledby="resident-priority-title">
       <div className="mb-2 flex items-end justify-between gap-3">
         <div>
           <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
@@ -172,6 +173,8 @@ export default function ResidentPriorityActions() {
         </Link>
       </div>
 
+      </section>
+
       {showGarbageMap ? (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-0 pt-10 sm:items-center sm:px-4" role="dialog" aria-modal="true" aria-labelledby="garbage-map-title">
           <button type="button" className="absolute inset-0 cursor-default" aria-label="關閉垃圾清運地圖" onClick={() => setShowGarbageMap(false)} />
@@ -205,6 +208,6 @@ export default function ResidentPriorityActions() {
       ) : null}
 
       {showBusMap ? <BusModal onClose={() => setShowBusMap(false)} /> : null}
-    </section>
+    </>
   );
 }
