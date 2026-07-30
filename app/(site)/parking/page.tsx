@@ -80,7 +80,7 @@ export default async function ParkingPage() {
     <div className="pt-2">
       <PageHeader
         title="周邊停車"
-        subtitle={liveDataFailed ? "即時資料暫時整理中" : "距大溪老街由近到遠・每分鐘更新"}
+        subtitle={liveDataFailed ? "即時資料暫時整理中" : "以目前定位由近到遠・每分鐘更新"}
         tint="river"
       />
 
@@ -159,7 +159,7 @@ export default async function ParkingPage() {
         <a href="https://data.gov.tw/dataset/25940" target="_blank" rel="noopener noreferrer" className="underline">
           桃園市路外停車資訊｜政府資料開放平臺
         </a>
-        （公有路外停車場，含即時空位；距離以大溪老街和平路豆干街一帶為基準點）、
+        （公有路外停車場，含即時空位；距離依目前定位計算，未授權定位時以大溪老街和平路豆干街一帶為基準點）、
         <a
           href="https://developers.google.com/maps/documentation/places/web-service/nearby-search"
           target="_blank"

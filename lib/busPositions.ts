@@ -1,8 +1,6 @@
 // Live bus GPS near Daxi — sourced from TDX's city-wide "frequency-based
 // route" realtime feed, filtered down by straight-line distance from the
-// old street. No hardcoded route numbers: whatever's actually running
-// nearby right now shows up, so this doesn't go stale like a hand-typed
-// route list would.
+// requested center. The old-street point remains only as a no-location fallback.
 import { tdxFetch } from "./tdx";
 import { haversineMeters } from "./tycgParking";
 
@@ -28,7 +26,7 @@ export type BusPosition = {
   distanceMeters: number;
 };
 
-export async function fetchNearbyBuses(): Promise<BusPosition[]> {
+export async function fetchNearbyBuses(center = DAXI_CENTER): Promise<BusPosition[]> {
   const raw = await tdxFetch<TdxBusRealtime[]>("/v2/Bus/RealTimeByFrequency/City/Taoyuan");
 
   const positions: BusPosition[] = [];
@@ -37,7 +35,7 @@ export async function fetchNearbyBuses(): Promise<BusPosition[]> {
     const lat = b.BusPosition.PositionLat;
     const lng = b.BusPosition.PositionLon;
     if (typeof lat !== "number" || typeof lng !== "number") continue;
-    const distanceMeters = haversineMeters(DAXI_CENTER, { lat, lng });
+    const distanceMeters = haversineMeters(center, { lat, lng });
     if (distanceMeters > NEARBY_RADIUS_METERS) continue;
     positions.push({
       id: b.PlateNumb,

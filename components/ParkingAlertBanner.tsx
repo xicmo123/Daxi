@@ -1,8 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import { walkTimeLabel } from "@/lib/experience";
+import { calculateDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 
 export default function ParkingAlertBanner({
   occupancyPct,
@@ -13,6 +16,15 @@ export default function ParkingAlertBanner({
   alternatives: LiveParkingLot[];
   lateBirdExtraMinutes: number;
 }) {
+  const userLocation = useUserLocation();
+  const locatedAlternatives = useMemo(
+    () =>
+      alternatives
+        .map((lot) => ({ ...lot, distanceMeters: userLocation ? calculateDistance(userLocation.lat, userLocation.lng, lot.lat, lot.lng) : lot.distanceMeters }))
+        .sort((a, b) => a.distanceMeters - b.distanceMeters),
+    [alternatives, userLocation],
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -12 }}
@@ -57,9 +69,9 @@ export default function ParkingAlertBanner({
           </div>
         </div>
 
-        {alternatives.length > 0 ? (
+        {locatedAlternatives.length > 0 ? (
           <div className="relative mt-2 flex gap-1.5 overflow-x-auto no-scrollbar">
-            {alternatives.slice(0, 2).map((lot) => (
+            {locatedAlternatives.slice(0, 2).map((lot) => (
               <a
                 key={lot.name}
                 href={lot.mapsUrl}

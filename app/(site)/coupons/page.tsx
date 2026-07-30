@@ -14,7 +14,7 @@ export default async function CouponsPage() {
     .map((c): CouponWithBusiness | null => {
       const place = byId.get(c.placeId);
       if (!place) return null;
-      return { ...c, businessName: place.name, distanceLabel: place.distanceLabel };
+      return { ...c, businessName: place.name, distanceLabel: place.distanceLabel, lat: place.lat, lng: place.lng };
     })
     .filter((c): c is CouponWithBusiness => c !== null);
 

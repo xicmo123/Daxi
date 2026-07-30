@@ -5,7 +5,7 @@ import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "
 import type { BusPosition } from "@/lib/busPositions";
 import type { BusEtaStop, BusRouteMatch } from "@/lib/tdxBusRoutes";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
-import { getCurrentPosition } from "@/lib/geolocation";
+import { useUserLocation } from "@/lib/useUserLocation";
 
 type LeafletModule = typeof import("leaflet");
 type LoadState = "loading" | "ready" | "empty" | "error";
@@ -118,6 +118,7 @@ export default function BusMap() {
   const [buses, setBuses] = useState<BusPosition[]>([]);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const userLocation = useUserLocation();
 
   const [routeMatches, setRouteMatches] = useState<BusRouteMatch[]>([]);
   const [routeSearchState, setRouteSearchState] = useState<RouteSearchState>("idle");
@@ -213,7 +214,10 @@ export default function BusMap() {
       if (cancelled || !mapNodeRef.current || mapRef.current) return;
 
       leafletRef.current = L;
-      const map = L.map(mapNodeRef.current, { attributionControl: true, zoomControl: false }).setView(DAXI_CENTER, 14);
+      const map = L.map(mapNodeRef.current, { attributionControl: true, zoomControl: false }).setView(
+        userLocation ? [userLocation.lat, userLocation.lng] : DAXI_CENTER,
+        userLocation ? LOCATE_ZOOM : 14,
+      );
       mapRef.current = map;
       map.attributionControl.setPrefix("");
 
@@ -225,17 +229,6 @@ export default function BusMap() {
 
       setTimeout(() => map.invalidateSize(), 120);
 
-      getCurrentPosition(
-        (position) => {
-          if (cancelled || !mapRef.current) return;
-          // The fix can arrive before the container has been measured, and
-          // Leaflet silently ignores a fly on a zero-size map — measure first.
-          mapRef.current.invalidateSize();
-          mapRef.current.flyTo([position.coords.latitude, position.coords.longitude], LOCATE_ZOOM, { duration: 1 });
-        },
-        () => {},
-        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 },
-      );
     }
 
     setupMap();
@@ -245,7 +238,7 @@ export default function BusMap() {
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [userLocation]);
 
   const busIcon = useCallback((L: LeafletModule): DivIcon => {
     return L.divIcon({
@@ -258,7 +251,8 @@ export default function BusMap() {
 
   const loadBuses = useCallback(async () => {
     try {
-      const response = await fetch("/api/bus/realtime", { cache: "no-store" });
+      const query = userLocation ? `?lat=${userLocation.lat}&lng=${userLocation.lng}` : "";
+      const response = await fetch(`/api/bus/realtime${query}`, { cache: "no-store" });
       if (!response.ok) throw new Error("Unable to load bus positions.");
       const data = (await response.json()) as { buses: BusPosition[]; updatedAt: string };
       setBuses(data.buses);
@@ -267,7 +261,7 @@ export default function BusMap() {
     } catch {
       setState("error");
     }
-  }, []);
+  }, [userLocation]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -402,7 +396,7 @@ export default function BusMap() {
       ) : null}
 
 	      <div className="relative h-[300px] min-h-[42vh]">
-        <div ref={mapNodeRef} className="absolute inset-0" aria-label="大溪周邊公車即時地圖" />
+        <div ref={mapNodeRef} className="absolute inset-0" aria-label="以目前位置為中心的大溪周邊公車即時地圖" />
         <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-wrap gap-2">
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
             {filteredBuses.length > 0 ? `${filteredBuses.length} 輛` : state === "loading" ? "定位中" : "無符合公車"}
@@ -442,7 +436,7 @@ export default function BusMap() {
                   {bus.route} 路
                 </div>
                 <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
-                  距老街 {bus.distanceMeters < 1000 ? `${Math.round(bus.distanceMeters)}m` : `${(bus.distanceMeters / 1000).toFixed(1)}km`}
+                  距你 {bus.distanceMeters < 1000 ? `${Math.round(bus.distanceMeters)}m` : `${(bus.distanceMeters / 1000).toFixed(1)}km`}
                 </div>
               </div>
               <div className="text-[11px]" style={{ color: "var(--ink-soft)" }}>

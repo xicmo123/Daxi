@@ -8,6 +8,8 @@ import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
 import { readFavoritesRaw, subscribeFavorites } from "@/lib/favorites";
+import { calculateDistance, formatDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 import PlaceholderIcon from "./PlaceholderIcon";
 import BusinessDetailModal from "./BusinessDetailModal";
 
@@ -29,6 +31,7 @@ export default function FavoritesView({
   coupons?: Coupon[];
 }) {
   const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
+  const userLocation = useUserLocation();
   const idsRaw = useSyncExternalStore(subscribeFavorites, readFavoritesRaw, emptyRaw);
 
   const favorites = useMemo(() => {
@@ -39,8 +42,22 @@ export default function FavoritesView({
       ids = [];
     }
     const idSet = new Set(ids);
-    return allPlaces.filter((p) => idSet.has(p.placeId));
-  }, [allPlaces, idsRaw]);
+    return allPlaces.filter((p) => idSet.has(p.placeId)).map((place) => {
+      if (!userLocation) return place;
+      const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, place.lat, place.lng);
+      return { ...place, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+    });
+  }, [allPlaces, idsRaw, userLocation]);
+
+  const locatedAllPlaces = useMemo(
+    () =>
+      allPlaces.map((place) => {
+        if (!userLocation) return place;
+        const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, place.lat, place.lng);
+        return { ...place, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+      }),
+    [allPlaces, userLocation],
+  );
 
   if (favorites.length === 0) {
     return (
@@ -115,7 +132,7 @@ export default function FavoritesView({
           photo={photos[openBusiness.placeId]}
           detail={details[openBusiness.placeId]}
           allDetails={details}
-          allBusinesses={allPlaces}
+          allBusinesses={locatedAllPlaces}
           photos={photos}
           lots={lots}
           coupons={coupons}

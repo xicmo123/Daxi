@@ -4,7 +4,7 @@ import BusMap from "@/components/BusMap";
 export default function ResidentBusPage() {
   return (
     <div className="pt-2">
-      <PageHeader title="客運資訊" subtitle="大溪老街方圓 5 公里內的即時公車位置" tint="river" />
+      <PageHeader title="客運資訊" subtitle="以目前定位為中心的即時公車位置" tint="river" />
 
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
         <BusMap />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type React from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
@@ -12,6 +12,8 @@ import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/place
 import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import { experienceTags } from "@/lib/experience";
+import { calculateDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 import PlaceholderIcon from "./PlaceholderIcon";
 import ReservationBooking from "./ReservationBooking";
 import FavoriteButton from "./FavoriteButton";
@@ -20,7 +22,10 @@ import CouponRedeemModal from "./CouponRedeemModal";
 function nearbyBusinesses(business: Business, all: Business[], limit = 3) {
   return all
     .filter((b) => b.placeId !== business.placeId)
-    .map((b) => ({ business: b, distanceMeters: haversineMeters(business, b) }))
+    .map((b) => {
+      const distanceMeters = haversineMeters(business, b);
+      return { business: b, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+    })
     .sort((a, b) => a.distanceMeters - b.distanceMeters)
     .slice(0, limit);
 }
@@ -41,7 +46,7 @@ type ContactLink = {
 };
 
 export default function BusinessDetailModal({
-  business,
+  business: initialBusiness,
   photo,
   detail,
   allDetails = {},
@@ -67,6 +72,21 @@ export default function BusinessDetailModal({
 }) {
   const [openCoupon, setOpenCoupon] = useState<Coupon | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const userLocation = useUserLocation();
+  const business = useMemo(() => {
+    if (!userLocation) return initialBusiness;
+    const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, initialBusiness.lat, initialBusiness.lng);
+    return { ...initialBusiness, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+  }, [initialBusiness, userLocation]);
+  const locatedBusinesses = useMemo(
+    () =>
+      allBusinesses.map((place) => {
+        if (!userLocation) return place;
+        const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, place.lat, place.lng);
+        return { ...place, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+      }),
+    [allBusinesses, userLocation],
+  );
   const myCoupons = coupons.filter((c) => c.placeId === business.placeId);
   const nearest = findNearestLot(business, lots, business.placeId);
   const recommendedLot = detail?.recommendedParkingName
@@ -83,7 +103,7 @@ export default function BusinessDetailModal({
     : nearest
       ? { ...nearest, isManual: false }
       : null;
-  const nearby = nearbyBusinesses(business, allBusinesses);
+  const nearby = nearbyBusinesses(business, locatedBusinesses);
   const decisionTags = experienceTags(business, detail);
   const couponSet = new Set(couponPlaceIds);
 
@@ -93,7 +113,7 @@ export default function BusinessDetailModal({
   const liveStatus = detail?.liveStatus;
   const isBusy = Boolean(liveStatus?.soldOut) || (liveStatus?.queueMinutes ?? 0) >= 15;
   const overflowPicks = isBusy
-    ? nearbyBusinesses(business, allBusinesses, 8)
+    ? nearbyBusinesses(business, locatedBusinesses, 8)
         .filter(({ business: nb }) => {
           const nbStatus = allDetails[nb.placeId]?.liveStatus;
           return !nbStatus?.soldOut && (nbStatus?.queueMinutes ?? 0) < 15;
@@ -414,7 +434,7 @@ export default function BusinessDetailModal({
                 <path d="M9 21 10.5 3M15 21 13.5 3" />
                 <path d="M12 5.5v2.5M12 11v2.5M12 16.5V19" />
               </svg>
-              <span>距老街 {business.distanceLabel}</span>
+              <span>{userLocation ? "距你" : "距老街"} {business.distanceLabel}</span>
             </div>
             {displayPhone ? (
               <a href={`tel:${displayPhone}`} className="flex items-center gap-2.5 transition-opacity active:opacity-60">

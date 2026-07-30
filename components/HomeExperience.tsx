@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trackClick } from "@/lib/trackClient";
 import { writeIdentity } from "@/lib/identity";
+import { calculateDistance } from "@/lib/geo";
+import { walkTimeLabel } from "@/lib/experience";
+import { useUserLocation } from "@/lib/useUserLocation";
 import type { CouponWithBusiness } from "./CouponList";
 import CouponRedeemModal from "./CouponRedeemModal";
 import PlaceholderIcon from "./PlaceholderIcon";
@@ -19,6 +22,8 @@ export type FeedSpot = {
   category: string;
   walkTime: string;
   distanceMeters: number;
+  lat: number;
+  lng: number;
   featured: boolean;
   photoSrc?: string;
   indoor?: boolean;
@@ -114,6 +119,7 @@ export default function HomeExperience({
   const [query, setQuery] = useState("");
   const [openCoupon, setOpenCoupon] = useState<CouponWithBusiness | null>(null);
   const [switching, setSwitching] = useState(false);
+  const userLocation = useUserLocation();
 
   const goResident = () => {
     setSwitching(true);
@@ -122,7 +128,15 @@ export default function HomeExperience({
   };
 
   const wantsIndoor = weatherMood === "hot" || weatherMood === "rain";
-  const visibleSpots = useMemo(() => spots.slice(0, 8), [spots]);
+  const visibleSpots = useMemo(
+    () =>
+      spots.slice(0, 8).map((spot) => {
+        if (!userLocation) return spot;
+        const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, spot.lat, spot.lng);
+        return { ...spot, distanceMeters, walkTime: walkTimeLabel(distanceMeters) };
+      }),
+    [spots, userLocation],
+  );
   const visibleCoupons = useMemo(() => coupons.slice(0, 6), [coupons]);
 
   const heroGradient =

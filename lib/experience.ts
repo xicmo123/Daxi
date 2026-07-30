@@ -12,8 +12,8 @@ export function experienceTags(business: Business, detail?: PlaceDetail): string
   const category = detail?.category ?? "";
   const distance = business.distanceMeters;
 
-  if (distance <= 450) tags.add("老街步行 5 分鐘");
-  else if (distance <= 900) tags.add("老街步行 10 分鐘");
+  if (distance <= 450) tags.add("步行 5 分鐘");
+  else if (distance <= 900) tags.add("步行 10 分鐘");
 
   if (business.tag === "美食") {
     if (name.includes("豆干") || category.includes("豆干")) tags.add("大溪豆干");

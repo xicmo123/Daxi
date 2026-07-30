@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import type { Business, BusinessTag } from "@/lib/businesses";
@@ -9,6 +9,8 @@ import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/place
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
 import { experienceTags } from "@/lib/experience";
+import { calculateDistance, formatDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 
@@ -58,6 +60,12 @@ function isBusinessTag(value: string | null): value is BusinessTag {
   return value === "美食" || value === "市集";
 }
 
+function withUserDistance(business: Business, location: ReturnType<typeof useUserLocation>): Business {
+  if (!location) return business;
+  const distanceMeters = calculateDistance(location.lat, location.lng, business.lat, business.lng);
+  return { ...business, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+}
+
 export default function BusinessList({
   businesses,
   photos,
@@ -74,11 +82,13 @@ export default function BusinessList({
   coupons?: Coupon[];
 }) {
   const searchParams = useSearchParams();
+  const userLocation = useUserLocation();
   const initialCat = searchParams.get("cat");
   const [active, setActive] = useState<BusinessTag | "全部">(isBusinessTag(initialCat) ? initialCat : "全部");
   const [sort, setSort] = useState<SortKey>("default");
   const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
-  const filtered = active === "全部" ? businesses : businesses.filter((b) => b.tag === active);
+  const locatedBusinesses = useMemo(() => businesses.map((business) => withUserDistance(business, userLocation)), [businesses, userLocation]);
+  const filtered = active === "全部" ? locatedBusinesses : locatedBusinesses.filter((b) => b.tag === active);
   const rows =
     sort === "rating"
       ? [...filtered].sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1))
@@ -254,7 +264,7 @@ export default function BusinessList({
           photo={photos[openBusiness.placeId]}
           detail={details[openBusiness.placeId]}
           allDetails={details}
-          allBusinesses={businesses}
+          allBusinesses={locatedBusinesses}
           photos={photos}
           lots={lots}
           couponPlaceIds={couponPlaceIds}

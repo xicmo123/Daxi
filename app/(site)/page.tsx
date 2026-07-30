@@ -62,6 +62,8 @@ async function HomeFeed() {
       category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
       walkTime: walkTimeLabel(p.distanceMeters),
       distanceMeters: p.distanceMeters,
+      lat: p.lat,
+      lng: p.lng,
       featured: Boolean(details[p.placeId]?.featured),
       photoSrc: photos[p.placeId]?.src,
       indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
@@ -84,7 +86,7 @@ async function HomeFeed() {
     .map((c): CouponWithBusiness | null => {
       const place = byId.get(c.placeId);
       if (!place) return null;
-      return { ...c, businessName: place.name, distanceLabel: place.distanceLabel };
+      return { ...c, businessName: place.name, distanceLabel: place.distanceLabel, lat: place.lat, lng: place.lng };
     })
     .filter((c): c is CouponWithBusiness => c !== null);
 

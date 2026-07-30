@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { Coupon } from "@/lib/coupons";
 import CouponRedeemModal from "./CouponRedeemModal";
 import AboutModal from "./AboutModal";
 import { trackClick } from "@/lib/trackClient";
+import { calculateDistance, formatDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 
-export type CouponWithBusiness = Coupon & { businessName: string; distanceLabel?: string };
+export type CouponWithBusiness = Coupon & { businessName: string; distanceLabel?: string; lat?: number; lng?: number };
 
 function AboutRow() {
   const [showAbout, setShowAbout] = useState(false);
@@ -33,8 +35,18 @@ function AboutRow() {
 
 export default function CouponList({ coupons }: { coupons: CouponWithBusiness[] }) {
   const [open, setOpen] = useState<CouponWithBusiness | null>(null);
+  const userLocation = useUserLocation();
+  const locatedCoupons = useMemo(
+    () =>
+      coupons.map((coupon) => {
+        if (!userLocation || coupon.lat === undefined || coupon.lng === undefined) return coupon;
+        const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, coupon.lat, coupon.lng);
+        return { ...coupon, distanceLabel: formatDistance(distanceMeters) };
+      }),
+    [coupons, userLocation],
+  );
 
-  if (coupons.length === 0) {
+  if (locatedCoupons.length === 0) {
     return (
       <div className="safe-page-x flex flex-col gap-2.5">
         <div className="py-6 text-center text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
@@ -47,7 +59,7 @@ export default function CouponList({ coupons }: { coupons: CouponWithBusiness[] 
 
   return (
     <div className="safe-page-x flex flex-col gap-2.5">
-      {coupons.map((c) => (
+      {locatedCoupons.map((c) => (
         <motion.button
           key={c.id}
           type="button"

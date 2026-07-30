@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "leaflet";
 import { statusBarColor } from "@/lib/status";
 import type { Status } from "@/lib/data";
-import { getCurrentPosition } from "@/lib/geolocation";
+import { calculateDistance, formatDistance } from "@/lib/geo";
+import { useUserLocation, type UserLocation } from "@/lib/useUserLocation";
 
 type LeafletModule = typeof import("leaflet");
 
@@ -34,6 +35,12 @@ const NEARBY_LOT_COUNT = 5;
 // "距老街" label in this app already measures from this exact point.
 const OLD_STREET_LANDMARK: ParkingMapLandmark = { id: "__old-street", name: "大溪老街", lat: 24.8809, lng: 121.2868 };
 
+function popupNote(lot: ParkingMapLot, location: UserLocation | null) {
+  if (!location) return lot.note;
+  const distanceLabel = formatDistance(calculateDistance(location.lat, location.lng, lot.lat, lot.lng));
+  return lot.note.replace(/距老街 [^・]+/, `距你 ${distanceLabel}`);
+}
+
 function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 6371000;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
@@ -56,6 +63,8 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
 
   const [locateState, setLocateState] = useState<"idle" | "locating" | "granted" | "denied">("idle");
   const [query, setQuery] = useState("");
+  const [mapReady, setMapReady] = useState(false);
+  const userLocation = useUserLocation();
 
   const allLandmarks = useMemo(() => [OLD_STREET_LANDMARK, ...landmarks], [landmarks]);
 
@@ -87,6 +96,7 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
 
   useEffect(() => {
     let cancelled = false;
+    const markers = lotMarkersRef.current;
 
     async function setupMap() {
       const L = await import("leaflet");
@@ -110,15 +120,16 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
       lots.forEach((lot) => {
         const color = lot.kind === "private" ? "var(--river-teal)" : lot.isFull ? "var(--ink-soft)" : statusBarColor[lot.status ?? "ok"];
         const marker = L.marker([lot.lat, lot.lng], { icon: buildLotIcon(L, color, false) }).addTo(lotLayerRef.current!);
-        const popupHtml = `<div style="font-size:12.5px;font-weight:600;margin-bottom:2px;">${lot.name}</div><div style="font-size:11.5px;color:#7d6a58;">${lot.note}</div>${
+        const popupHtml = `<div style="font-size:12.5px;font-weight:600;margin-bottom:2px;">${lot.name}</div><div style="font-size:11.5px;color:#7d6a58;">${popupNote(lot, null)}</div>${
           lot.mapsUrl ? `<a href="${lot.mapsUrl}" target="_blank" rel="noopener noreferrer" style="font-size:11.5px;color:#4a7594;font-weight:600;">導航 →</a>` : ""
         }`;
         marker.bindPopup(popupHtml);
-        lotMarkersRef.current.set(lot.id, marker);
+        markers.set(lot.id, marker);
         bounds.push([lot.lat, lot.lng]);
       });
       lotBoundsRef.current = bounds;
       if (bounds.length > 0) map.fitBounds(bounds, { padding: [32, 32], maxZoom: 17 });
+      setMapReady(true);
 
       setTimeout(() => map.invalidateSize(), 120);
     }
@@ -129,11 +140,24 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
       tileRef.current?.remove();
       mapRef.current?.remove();
       mapRef.current = null;
+      markers.clear();
+      setMapReady(false);
     };
     // lots come from a server fetch that doesn't change after mount — the
     // map is built once and markers reflect the initial snapshot.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    lotMarkersRef.current.forEach((marker, id) => {
+      const lot = lots.find((candidate) => candidate.id === id);
+      if (!lot) return;
+      const popupHtml = `<div style="font-size:12.5px;font-weight:600;margin-bottom:2px;">${lot.name}</div><div style="font-size:11.5px;color:#7d6a58;">${popupNote(lot, userLocation)}</div>${
+        lot.mapsUrl ? `<a href="${lot.mapsUrl}" target="_blank" rel="noopener noreferrer" style="font-size:11.5px;color:#4a7594;font-weight:600;">導航 →</a>` : ""
+      }`;
+      marker.setPopupContent(popupHtml);
+    });
+  }, [lots, userLocation]);
 
   // Restyle (never remove) lot markers to reflect the current search, show/
   // hide the landmark pin, and fit the map to whatever's highlighted.
@@ -176,34 +200,30 @@ export default function ParkingMap({ lots, landmarks = [] }: { lots: ParkingMapL
       setLocateState("denied");
       return;
     }
-    setLocateState("locating");
-    getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        layer.clearLayers();
-        const icon = L.divIcon({
-          className: "",
-          html: `<span style="display:block;width:16px;height:16px;border-radius:999px;background:#4a7594;border:3px solid #fff;box-shadow:0 0 0 4px rgba(74,117,148,0.28);"></span>`,
-          iconSize: [16, 16],
-          iconAnchor: [8, 8],
-        });
-        L.marker([latitude, longitude], { icon }).addTo(layer).bindTooltip("你的位置", { direction: "top" });
-        // Fit both the user and every lot in view — flying to the user alone
-        // would strand the lots off-screen if their GPS fix is far off.
-        const combined: Array<[number, number]> = [...lotBoundsRef.current, [latitude, longitude]];
-        map.flyToBounds(combined, { padding: [40, 40], maxZoom: 16, duration: 0.8 });
-        setLocateState("granted");
-      },
-      () => setLocateState("denied"),
-      { enableHighAccuracy: true, timeout: 8000 },
-    );
-  }, []);
+    if (!userLocation) {
+      setLocateState("locating");
+      return;
+    }
+    const { lat, lng } = userLocation;
+    layer.clearLayers();
+    const icon = L.divIcon({
+      className: "",
+      html: `<span style="display:block;width:16px;height:16px;border-radius:999px;background:#4a7594;border:3px solid #fff;box-shadow:0 0 0 4px rgba(74,117,148,0.28);"></span>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+    });
+    L.marker([lat, lng], { icon }).addTo(layer).bindTooltip("你的位置", { direction: "top" });
+    const combined: Array<[number, number]> = [...lotBoundsRef.current, [lat, lng]];
+    map.flyToBounds(combined, { padding: [40, 40], maxZoom: 16, duration: 0.8 });
+    setLocateState("granted");
+  }, [userLocation]);
 
   // Auto-locate on open, per the ask — button stays for re-centering later.
   useEffect(() => {
-    const timer = window.setTimeout(() => locateMe(), 300);
+    if (!mapReady || !userLocation) return;
+    const timer = window.setTimeout(() => locateMe(), 0);
     return () => window.clearTimeout(timer);
-  }, [locateMe]);
+  }, [locateMe, mapReady, userLocation]);
 
   return (
     <div className="overflow-hidden rounded-2xl border" style={{ background: "var(--card)", borderColor: "var(--line)" }}>

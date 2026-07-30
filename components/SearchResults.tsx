@@ -6,6 +6,8 @@ import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { trackClick } from "@/lib/trackClient";
+import { calculateDistance, formatDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 import EmptyState from "@/components/EmptyState";
 
 export default function SearchResults({
@@ -19,6 +21,7 @@ export default function SearchResults({
   initialQuery: string;
 }) {
   const [query, setQuery] = useState(initialQuery);
+  const userLocation = useUserLocation();
   const normalized = query.trim().toLowerCase();
 
   const results = useMemo(() => {
@@ -32,8 +35,13 @@ export default function SearchResults({
           .toLowerCase()
           .includes(normalized);
       })
+      .map((place) => {
+        if (!userLocation) return place;
+        const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, place.lat, place.lng);
+        return { ...place, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+      })
       .slice(0, 40);
-  }, [places, details, normalized]);
+  }, [places, details, normalized, userLocation]);
 
   return (
     <div className="safe-page-x pb-10">
