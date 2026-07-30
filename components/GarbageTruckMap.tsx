@@ -13,6 +13,8 @@ type LoadState = "loading" | "ready" | "empty" | "error";
 
 const DAXI_CENTER: [number, number] = [24.884, 121.288];
 const REFRESH_SECONDS = 15;
+const DAXI_MAP_LOCATION = { lat: DAXI_CENTER[0], lng: DAXI_CENTER[1] };
+const DAXI_SERVICE_RADIUS_METERS = 12_000;
 const OLD_STREET_CENTER: [number, number] = [24.8833, 121.2862];
 const OLD_STREET_LOCATION = { lat: OLD_STREET_CENTER[0], lng: OLD_STREET_CENTER[1] };
 const DEMO_GARBAGE_REALTIME: GarbageRealtime = {
@@ -76,11 +78,6 @@ function vehicleLabel(vehicle: GarbageVehicle) {
   return `${vehicle.routeName ? `${vehicle.routeName} ` : ""}${vehicle.type} ${id}`;
 }
 
-function boundsForVehicles(vehicles: GarbageVehicle[]): Array<[number, number]> | null {
-  const points = vehicles.map((vehicle) => [vehicle.lat, vehicle.lng] as [number, number]);
-  return points.length > 0 ? points : null;
-}
-
 export default function GarbageTruckMap() {
   const mapNodeRef = useRef<HTMLDivElement | null>(null);
   const leafletRef = useRef<LeafletModule | null>(null);
@@ -99,6 +96,12 @@ export default function GarbageTruckMap() {
   const oldStreetDemo = readOldStreetDemo();
   const userLocation = useUserLocation();
   const activeLocation = oldStreetDemo ? OLD_STREET_LOCATION : userLocation;
+  const useActualLocationForMap = Boolean(
+    activeLocation &&
+      calculateDistance(activeLocation.lat, activeLocation.lng, DAXI_MAP_LOCATION.lat, DAXI_MAP_LOCATION.lng) <=
+        DAXI_SERVICE_RADIUS_METERS,
+  );
+  const mapLocation = useActualLocationForMap && activeLocation ? activeLocation : DAXI_MAP_LOCATION;
 
   const drawRealtime = useCallback((realtime: GarbageRealtime, fit: "none" | "auto") => {
     const currentVehicles = activeLocation
@@ -153,13 +156,8 @@ export default function GarbageTruckMap() {
 
     const shouldFit = fit === "auto";
     if (!shouldFit) return;
-    if (activeLocation) {
-      map.flyTo([activeLocation.lat, activeLocation.lng], 16, { duration: 0.8 });
-      return;
-    }
-    const bounds = boundsForVehicles(currentVehicles);
-    if (bounds) map.flyToBounds(bounds, { padding: [24, 24], maxZoom: 16, duration: 0.8 });
-  }, [activeLocation]);
+    map.flyTo([mapLocation.lat, mapLocation.lng], useActualLocationForMap ? 16 : 14, { duration: 0.8 });
+  }, [activeLocation, mapLocation, useActualLocationForMap]);
 
   useEffect(() => {
     let cancelled = false;
@@ -172,7 +170,7 @@ export default function GarbageTruckMap() {
       const map = L.map(mapNodeRef.current, {
         attributionControl: true,
         zoomControl: false,
-      }).setView(activeLocation ? [activeLocation.lat, activeLocation.lng] : DAXI_CENTER, activeLocation ? 16 : 14);
+      }).setView([mapLocation.lat, mapLocation.lng], useActualLocationForMap ? 16 : 14);
       mapRef.current = map;
       map.attributionControl.setPrefix("");
 
@@ -208,7 +206,7 @@ export default function GarbageTruckMap() {
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [activeLocation, oldStreetDemo]);
+  }, [activeLocation, mapLocation, oldStreetDemo, useActualLocationForMap]);
 
   const loadRealtime = useCallback(
     async (fit: "none" | "auto" = "none") => {
