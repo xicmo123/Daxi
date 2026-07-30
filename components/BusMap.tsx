@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "leaflet";
+import type { CircleMarker, DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "leaflet";
 import type { BusPosition } from "@/lib/busPositions";
 import type { BusEtaStop, BusRouteMatch } from "@/lib/tdxBusRoutes";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
@@ -134,6 +134,7 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
   const tileRef = useRef<TileLayer | null>(null);
   const busLayerRef = useRef<LayerGroup | null>(null);
   const busMarkersRef = useRef<Map<string, Marker>>(new Map());
+  const locationMarkerRef = useRef<CircleMarker | null>(null);
 
   const [state, setState] = useState<LoadState>("loading");
   const [buses, setBuses] = useState<BusPosition[]>([]);
@@ -244,6 +245,18 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
       mapRef.current = map;
       map.attributionControl.setPrefix("");
 
+      if (activeLocation) {
+        locationMarkerRef.current = L.circleMarker([activeLocation.lat, activeLocation.lng], {
+          radius: 8,
+          color: "#ffffff",
+          weight: 3,
+          fillColor: "#4a7594",
+          fillOpacity: 1,
+        })
+          .bindTooltip(demoLocation ? "目前位置・大溪老街" : "目前位置", { direction: "top", opacity: 0.95 })
+          .addTo(map);
+      }
+
       tileRef.current = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
@@ -258,6 +271,8 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
     return () => {
       cancelled = true;
       tileRef.current?.remove();
+      locationMarkerRef.current?.remove();
+      locationMarkerRef.current = null;
       mapRef.current?.remove();
       mapRef.current = null;
     };
@@ -434,9 +449,9 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
             每 {REFRESH_SECONDS} 秒更新
           </span>
-          {demoLocation ? (
+          {activeLocation ? (
             <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
-              定位 大溪老街
+              {demoLocation ? "目前位置・大溪老街" : "目前位置"}
             </span>
           ) : null}
           {updatedAt ? (
@@ -474,8 +489,9 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
                   距你 {bus.distanceMeters < 1000 ? `${Math.round(bus.distanceMeters)}m` : `${(bus.distanceMeters / 1000).toFixed(1)}km`}
                 </div>
               </div>
-              <div className="text-[11px]" style={{ color: "var(--ink-soft)" }}>
-                {bus.speedKmh} km/h
+              <div className="text-right text-[11px]" style={{ color: "var(--ink-soft)" }}>
+                <div>{bus.speedKmh} km/h</div>
+                <div className="mt-0.5">{bus.gpsTime ? `GPS ${formatTime(bus.gpsTime)}` : "即時位置"}</div>
               </div>
             </div>
           ))}

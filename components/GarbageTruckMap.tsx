@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "leaflet";
+import type { CircleMarker, DivIcon, LayerGroup, Map as LeafletMap, Marker, TileLayer } from "leaflet";
 import type { GarbageRealtime, GarbageVehicle } from "@/lib/taoyuanGarbage";
 import { animateMarkerTo } from "@/lib/leafletAnimate";
+import { calculateDistance, formatDistance } from "@/lib/geo";
+import { useUserLocation } from "@/lib/useUserLocation";
 
 type LeafletModule = typeof import("leaflet");
 
@@ -12,6 +14,7 @@ type LoadState = "loading" | "ready" | "empty" | "error";
 const DAXI_CENTER: [number, number] = [24.884, 121.288];
 const REFRESH_SECONDS = 15;
 const OLD_STREET_CENTER: [number, number] = [24.8833, 121.2862];
+const OLD_STREET_LOCATION = { lat: OLD_STREET_CENTER[0], lng: OLD_STREET_CENTER[1] };
 const DEMO_GARBAGE_REALTIME: GarbageRealtime = {
   routeId: "demo-old-street",
   vehicles: [
@@ -85,6 +88,7 @@ export default function GarbageTruckMap() {
   const tileRef = useRef<TileLayer | null>(null);
   const vehicleLayerRef = useRef<LayerGroup | null>(null);
   const vehicleMarkersRef = useRef<Map<string, Marker>>(new Map());
+  const locationMarkerRef = useRef<CircleMarker | null>(null);
 
   const [state, setState] = useState<LoadState>("loading");
   const [latestGpsTime, setLatestGpsTime] = useState<number | null>(null);
@@ -93,9 +97,17 @@ export default function GarbageTruckMap() {
   const [mapReady, setMapReady] = useState(false);
   const [vehicles, setVehicles] = useState<GarbageVehicle[]>([]);
   const oldStreetDemo = readOldStreetDemo();
+  const userLocation = useUserLocation();
+  const activeLocation = oldStreetDemo ? OLD_STREET_LOCATION : userLocation;
 
   const drawRealtime = useCallback((realtime: GarbageRealtime, fit: "none" | "auto") => {
-    const currentVehicles = realtime.vehicles;
+    const currentVehicles = activeLocation
+      ? [...realtime.vehicles].sort(
+          (a, b) =>
+            calculateDistance(activeLocation.lat, activeLocation.lng, a.lat, a.lng) -
+            calculateDistance(activeLocation.lat, activeLocation.lng, b.lat, b.lng),
+        )
+      : realtime.vehicles;
 
     setVehicleCount(currentVehicles.length);
     setVehicles(currentVehicles);
@@ -141,9 +153,13 @@ export default function GarbageTruckMap() {
 
     const shouldFit = fit === "auto";
     if (!shouldFit) return;
+    if (activeLocation) {
+      map.flyTo([activeLocation.lat, activeLocation.lng], 16, { duration: 0.8 });
+      return;
+    }
     const bounds = boundsForVehicles(currentVehicles);
     if (bounds) map.flyToBounds(bounds, { padding: [24, 24], maxZoom: 16, duration: 0.8 });
-  }, []);
+  }, [activeLocation]);
 
   useEffect(() => {
     let cancelled = false;
@@ -156,9 +172,21 @@ export default function GarbageTruckMap() {
       const map = L.map(mapNodeRef.current, {
         attributionControl: true,
         zoomControl: false,
-      }).setView(oldStreetDemo ? OLD_STREET_CENTER : DAXI_CENTER, oldStreetDemo ? 16 : 14);
+      }).setView(activeLocation ? [activeLocation.lat, activeLocation.lng] : DAXI_CENTER, activeLocation ? 16 : 14);
       mapRef.current = map;
       map.attributionControl.setPrefix("");
+
+      if (activeLocation) {
+        locationMarkerRef.current = L.circleMarker([activeLocation.lat, activeLocation.lng], {
+          radius: 8,
+          color: "#ffffff",
+          weight: 3,
+          fillColor: "#4a7594",
+          fillOpacity: 1,
+        })
+          .bindTooltip(oldStreetDemo ? "目前位置・大溪老街" : "目前位置", { direction: "top", opacity: 0.95 })
+          .addTo(map);
+      }
 
       tileRef.current = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -175,10 +203,12 @@ export default function GarbageTruckMap() {
     return () => {
       cancelled = true;
       tileRef.current?.remove();
+      locationMarkerRef.current?.remove();
+      locationMarkerRef.current = null;
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [oldStreetDemo]);
+  }, [activeLocation, oldStreetDemo]);
 
   const loadRealtime = useCallback(
     async (fit: "none" | "auto" = "none") => {
@@ -258,9 +288,9 @@ export default function GarbageTruckMap() {
           <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
             每 {REFRESH_SECONDS} 秒更新
           </span>
-          {oldStreetDemo ? (
+          {activeLocation ? (
             <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
-              定位 大溪老街
+              {oldStreetDemo ? "目前位置・大溪老街" : "目前位置"}
             </span>
           ) : null}
           {latestGpsTime ? (
@@ -291,7 +321,9 @@ export default function GarbageTruckMap() {
                     {vehicle.type} {vehicle.id.includes(":") ? vehicle.id.split(":").pop() : vehicle.id}
                   </span>
                   <span className="shrink-0 text-[11px] font-semibold" style={{ color: "var(--river-teal)" }}>
-                    {vehicle.gpsTime ? `GPS ${formatTime(vehicle.gpsTime)}` : vehicle.status ?? "即時位置"}
+                    {activeLocation
+                      ? `距你 ${formatDistance(calculateDistance(activeLocation.lat, activeLocation.lng, vehicle.lat, vehicle.lng))}`
+                      : vehicle.status ?? "即時位置"}
                   </span>
                 </div>
                 {vehicle.address ? (
@@ -299,6 +331,11 @@ export default function GarbageTruckMap() {
                     目前約在 {vehicle.address}
                   </div>
                 ) : null}
+                <div className="mt-0.5 flex flex-wrap gap-x-3 text-[11px]" style={{ color: "var(--ink-soft)" }}>
+                  <span>{vehicle.status ?? "即時位置"}</span>
+                  {vehicle.speed !== null ? <span>{vehicle.speed} km/h</span> : null}
+                  {vehicle.gpsTime ? <span>GPS {formatTime(vehicle.gpsTime)}</span> : null}
+                </div>
               </div>
             ))}
           </div>
