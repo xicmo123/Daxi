@@ -62,11 +62,11 @@ export default function EmptyState({
       className="flex flex-col items-center justify-center gap-2 py-10 text-center"
     >
       {variant === "car" ? <CircleCarIllustration /> : <ConfusedMascotIllustration />}
-      <div className="mt-1 text-[13.5px] font-semibold" style={{ color: "var(--ink)" }}>
+      <div className="mt-1 text-app-label font-semibold" style={{ color: "var(--ink)" }}>
         {title}
       </div>
       {subtitle ? (
-        <div className="max-w-[240px] text-[12px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+        <div className="max-w-[240px] text-app-caption leading-relaxed" style={{ color: "var(--ink-soft)" }}>
           {subtitle}
         </div>
       ) : null}

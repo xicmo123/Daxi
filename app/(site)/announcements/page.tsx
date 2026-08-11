@@ -1,8 +1,20 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import AnnouncementFeed from "@/components/AnnouncementFeed";
 import { ANNOUNCEMENTS_PAGE_URL, fetchDaxiAnnouncements } from "@/lib/announcements";
 
 export const revalidate = 1800;
+
+export const metadata: Metadata = {
+  title: "大溪區公所公告",
+  description: "同步桃園市大溪區公所最新消息與公告，含活動、補助、施工與防災通知。",
+  alternates: { canonical: "/announcements" },
+  openGraph: {
+    title: "大溪區公所公告 ｜ 大溪通",
+    description: "同步桃園市大溪區公所最新消息與公告。",
+    url: "/announcements",
+  },
+};
 
 export default async function AnnouncementsPage() {
   const announcements = await fetchDaxiAnnouncements(30);

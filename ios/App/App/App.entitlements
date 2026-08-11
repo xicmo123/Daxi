@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Universal Links. Pairs with the association file served from
+	  app/.well-known/apple-app-site-association/route.ts — both sides must
+	  agree or iOS silently opens links in Safari with no error anywhere.
+
+	  Requires the "Associated Domains" capability on the App ID in the Apple
+	  Developer portal; automatic signing will fail to produce a profile until
+	  that is enabled.
+	-->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:daxi.zequo.net</string>
+	</array>
+
+	<!--
+	  Remote push. "development" is correct for debug builds; Xcode maps it to
+	  the production APNs environment automatically for App Store and TestFlight
+	  archives, so this value does not need to change at release.
+
+	  Requires the "Push Notifications" capability on the App ID, plus an APNs
+	  key uploaded to the Firebase project that lib/pushSend.ts talks to.
+	-->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

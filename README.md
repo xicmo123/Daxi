@@ -26,10 +26,58 @@ http://localhost:8475
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```
 
-上架前兩個指令都必須通過。
+三個指令都必須通過，`.github/workflows/ci.yml` 會在每次 push / PR 自動跑一次。
+
+測試只涵蓋 `lib/` 底下的純邏輯（距離標籤、外部連結改寫、session 驗證）— 也就是會安靜壞掉、壞掉又看不出來的那些規則。
+
+## 部署
+
+正式站由 PM2 管理，更新流程：
+
+```bash
+npm run build && npx pm2 restart daxi --update-env
+```
+
+## 資料備份
+
+`data/` 裡的商家通行碼、預約、核銷紀錄都不在 git 裡，所以 git 不是它們的備份。
+
+```bash
+DAXI_BACKUP_DIR=/Volumes/外接碟/daxi-backups npm run backup:data
+```
+
+建議用 crontab 每天跑一次，並且 `DAXI_BACKUP_DIR` 要指向**不同顆硬碟**。還原：停掉服務、`tar -xzf <備份檔> -C .`、重新啟動。
+
+## 推播設定
+
+`lib/pushSend.ts` 走 Firebase Cloud Messaging HTTP v1（Android 原生、iOS 轉 APNs）。沒設定憑證時後台仍可用，只是統計對象、不實際送出。
+
+```bash
+FCM_PROJECT_ID=
+FCM_CLIENT_EMAIL=
+FCM_PRIVATE_KEY=
+```
+
+還需要：
+
+1. Firebase 專案，並上傳 APNs Key（Apple Developer → Keys）。
+2. Xcode 開啟 App ID 的 **Push Notifications** capability。
+3. 後台在「大溪人管理 → 推播通知」發送。
+
+## 深層連結設定
+
+分享出去的網址要能開回 App，需要兩個環境變數，缺少時對應的 `.well-known` 路由會回 503：
+
+```bash
+APPLE_TEAM_ID=            # Apple Developer → Membership
+ANDROID_CERT_FINGERPRINT= # Play Console → 應用程式簽署金鑰憑證的 SHA-256（不是本機 debug keystore）
+```
+
+還需要在 Xcode 開啟 App ID 的 **Associated Domains** capability。
 
 ## 必要環境變數
 
@@ -56,7 +104,10 @@ TDX_CLIENT_SECRET=
 - App Store / Google Play 需揭露定位、預約聯絡資料、點擊紀錄、第三方資料來源與商家核銷流程。
 - 需要提供審核帳號：管理後台與商家後台的測試登入資料。
 - 商家正式營運前應改用完整帳號系統：密碼雜湊、登入失敗限制、重設密碼、停權與操作紀錄。
+  目前已有：雜湊、失敗鎖定、停權、操作紀錄、session 到期與強制登出；**仍缺**每商家獨立帳號與重設密碼流程。
 - JSON file store 適合 MVP；正式營運建議搬到資料庫並加上備份與併發寫入保護。
+- **服務仍跑在單一台 Mac 上**（PM2）。這台機器停電、換 IP 或重開機，App Store 上的 App 就只剩離線頁。
+  上架前應搬到雲端主機，這是目前最大的單點風險。
 
 ## 資料來源
 

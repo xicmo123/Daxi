@@ -1,12 +1,10 @@
 // Same JSON-file-on-disk pattern as lib/reservations.ts / lib/placesStore.ts.
 // Coupons are shown on the home feed + /coupons and redeemed via an
 // in-store scan, not a static code — see generateRedemptionToken below.
-import { promises as fs } from "fs";
-import path from "path";
+import { dataPath, mutateJsonList, readJsonFile } from "./jsonStore";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const COUPONS_PATH = path.join(DATA_DIR, "coupons.json");
-const REDEMPTIONS_PATH = path.join(DATA_DIR, "coupon-redemptions.json");
+const COUPONS_PATH = dataPath("coupons.json");
+const REDEMPTIONS_PATH = dataPath("coupon-redemptions.json");
 
 export type RedeemMethod = "scan";
 
@@ -27,22 +25,8 @@ export type Redemption = {
   redeemedAt: string;
 };
 
-async function readJson<T>(filePath: string, fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(filePath: string, data: unknown) {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2) + "\n", "utf-8");
-}
-
 export async function readCoupons(): Promise<Coupon[]> {
-  const coupons = await readJson<unknown>(COUPONS_PATH, []);
+  const coupons = await readJsonFile<unknown>(COUPONS_PATH, []);
   return Array.isArray(coupons) ? (coupons as Coupon[]) : [];
 }
 
@@ -58,30 +42,33 @@ export async function getCouponsForPlace(placeId: string): Promise<Coupon[]> {
 }
 
 export async function upsertCoupon(coupon: Coupon): Promise<void> {
-  const coupons = await readCoupons();
-  const idx = coupons.findIndex((c) => c.id === coupon.id);
-  if (idx === -1) coupons.push(coupon);
-  else coupons[idx] = coupon;
-  await writeJson(COUPONS_PATH, coupons);
+  await mutateJsonList<Coupon, void>(COUPONS_PATH, (coupons) => {
+    const idx = coupons.findIndex((c) => c.id === coupon.id);
+    const next = [...coupons];
+    if (idx === -1) next.push(coupon);
+    else next[idx] = coupon;
+    return { next, result: undefined };
+  });
 }
 
 // Admin-side moderation — merchants otherwise have zero oversight on their
 // own coupon listings (wrong terms, expired-but-still-active, etc.).
 export async function setCouponActive(id: string, active: boolean): Promise<Coupon | null> {
-  const coupons = await readCoupons();
-  const idx = coupons.findIndex((c) => c.id === id);
-  if (idx === -1) return null;
-  coupons[idx] = { ...coupons[idx], active, updatedAt: new Date().toISOString() };
-  await writeJson(COUPONS_PATH, coupons);
-  return coupons[idx];
+  return mutateJsonList<Coupon, Coupon | null>(COUPONS_PATH, (coupons) => {
+    const idx = coupons.findIndex((c) => c.id === id);
+    if (idx === -1) return { next: coupons, result: null };
+    const updated = { ...coupons[idx], active, updatedAt: new Date().toISOString() };
+    const next = [...coupons];
+    next[idx] = updated;
+    return { next, result: updated };
+  });
 }
 
 export async function deleteCoupon(id: string): Promise<boolean> {
-  const coupons = await readCoupons();
-  const next = coupons.filter((c) => c.id !== id);
-  if (next.length === coupons.length) return false;
-  await writeJson(COUPONS_PATH, next);
-  return true;
+  return mutateJsonList<Coupon, boolean>(COUPONS_PATH, (coupons) => {
+    const next = coupons.filter((c) => c.id !== id);
+    return { next, result: next.length !== coupons.length };
+  });
 }
 
 // Rotating redemption token: valid for a short window so a screenshot
@@ -117,11 +104,6 @@ export async function generateRedemptionToken(couponId: string): Promise<{ token
   return { token, issuedAt: bucket * TOKEN_WINDOW_MS, expiresAt: (bucket + 1) * TOKEN_WINDOW_MS };
 }
 
-async function readRedemptions(): Promise<Redemption[]> {
-  const redemptions = await readJson<unknown>(REDEMPTIONS_PATH, []);
-  return Array.isArray(redemptions) ? (redemptions as Redemption[]) : [];
-}
-
 export async function redeemCoupon(
   couponId: string,
   token: string
@@ -134,11 +116,16 @@ export async function redeemCoupon(
   const validTokens = await Promise.all([bucket, bucket - 1].map((b) => signToken(couponId, b)));
   if (!validTokens.includes(token)) return { ok: false, error: "核銷碼已過期，請店家重新出示" };
 
-  const redemptions = await readRedemptions();
-  const alreadyUsed = redemptions.some((r) => r.couponId === couponId && r.token === token);
-  if (alreadyUsed) return { ok: false, error: "此核銷碼已使用過" };
-
-  redemptions.push({ couponId, token, redeemedAt: new Date().toISOString() });
-  await writeJson(REDEMPTIONS_PATH, redemptions);
-  return { ok: true };
+  // The "already used?" check and the write of the redemption record have to
+  // be one locked step. Previously they were a separate read and write, so two
+  // scans of the same code landing together both saw an empty result and both
+  // wrote — the same coupon could be redeemed twice.
+  return mutateJsonList<Redemption, { ok: true } | { ok: false; error: string }>(REDEMPTIONS_PATH, (redemptions) => {
+    const alreadyUsed = redemptions.some((r) => r.couponId === couponId && r.token === token);
+    if (alreadyUsed) return { next: redemptions, result: { ok: false, error: "此核銷碼已使用過" } };
+    return {
+      next: [...redemptions, { couponId, token, redeemedAt: new Date().toISOString() }],
+      result: { ok: true },
+    };
+  });
 }

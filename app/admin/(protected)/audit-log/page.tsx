@@ -5,6 +5,9 @@ export const dynamic = "force-dynamic";
 const ACTION_LABELS: Record<AuditAction, string> = {
   "admin.login.success": "管理員登入成功",
   "admin.login.failure": "管理員登入失敗",
+  "admin.sessions.revoke": "強制登出所有管理員",
+  "merchant.sessions.revoke": "強制登出所有商家",
+  "push.broadcast": "發送推播通知",
   "merchant.create": "開通商家帳號",
   "merchant.update": "編輯商家帳號",
   "merchant.disable": "停用商家帳號",

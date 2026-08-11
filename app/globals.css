@@ -54,6 +54,17 @@
   --block-river: #7da8c9;
   --block-river-deep: #5c86a8;
   --block-fg: #2b2420;
+  /* Secondary text on the pastel blocks.
+
+     Was written inline as rgba(43,36,32,0.7) in a dozen places. Being
+     translucent, it blends toward whatever it sits on: over 杏橘 #d7a06b it
+     resolves to about 2.8:1, well under the 4.5:1 WCAG AA floor — and every
+     place using it is 10.5-12px, the sizes that need the floor most.
+
+     Solid rather than translucent precisely so the surface cannot dilute it:
+     5.3:1 on 杏橘, 4.7:1 on 青綠, 5.0:1 on 霧藍. Fixed across themes, like the
+     blocks it sits on. */
+  --block-fg-soft: #3a3129;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -159,6 +170,17 @@
   --block-river: #7da8c9;
   --block-river-deep: #5c86a8;
   --block-fg: #2b2420;
+  /* Secondary text on the pastel blocks.
+
+     Was written inline as rgba(43,36,32,0.7) in a dozen places. Being
+     translucent, it blends toward whatever it sits on: over 杏橘 #d7a06b it
+     resolves to about 2.8:1, well under the 4.5:1 WCAG AA floor — and every
+     place using it is 10.5-12px, the sizes that need the floor most.
+
+     Solid rather than translucent precisely so the surface cannot dilute it:
+     5.3:1 on 杏橘, 4.7:1 on 青綠, 5.0:1 on 霧藍. Fixed across themes, like the
+     blocks it sits on. */
+  --block-fg-soft: #3a3129;
 }
 
 @theme inline {
@@ -188,6 +210,33 @@
      way every one of them flips without touching each file. */
   --font-serif: var(--font-app-sans);
   --font-sans: var(--font-app-sans);
+
+  /* Type scale.
+
+     The app was written with ~30 distinct one-off sizes (text-[13.5px],
+     text-[11px], text-[10.5px], text-[26px] …), which is why the same kind of
+     label reads at three different sizes depending on the screen. These seven
+     steps cover every existing use; new UI should reach for them instead of an
+     arbitrary bracket value.
+
+     Deliberately in rem, not px: a WebView honours the OS text-size setting
+     for rem but not for px, so the whole app now scales for a resident who has
+     turned type up — which for an app whose audience includes 里長 and older
+     residents is the single highest-value accessibility change available. */
+  --text-app-display: 1.625rem; /* 26px — the one-per-screen page title */
+  --text-app-display--line-height: 1.25;
+  --text-app-title: 1.25rem; /* 20px — section headline */
+  --text-app-title--line-height: 1.3;
+  --text-app-heading: 1.03125rem; /* 16.5px — card title, modal heading */
+  --text-app-heading--line-height: 1.4;
+  --text-app-body: 0.875rem; /* 14px — running text */
+  --text-app-body--line-height: 1.65;
+  --text-app-label: 0.78125rem; /* 12.5px — buttons, list rows */
+  --text-app-label--line-height: 1.45;
+  --text-app-caption: 0.71875rem; /* 11.5px — metadata under a value */
+  --text-app-caption--line-height: 1.35;
+  --text-app-micro: 0.65625rem; /* 10.5px — eyebrows, badges. Floor: nothing smaller. */
+  --text-app-micro--line-height: 1.3;
 }
 
 *,

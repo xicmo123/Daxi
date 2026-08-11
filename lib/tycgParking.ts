@@ -1,4 +1,5 @@
 import type { Status } from "./data";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
 const SOURCE_URL =
   "https://opendata.tycg.gov.tw/api/dataset/f4cc0b12-86ac-40f9-8745-885bddc18f79/resource/0381e141-f7ee-450e-99da-2240208d1773/download";
@@ -92,7 +93,7 @@ function toLot(raw: RawLot): LiveParkingLot {
 // dataset refreshes roughly every minute. Filtered to 大溪區 (Daxi district),
 // sorted by distance from Daxi Old Street.
 export async function fetchDaxiParking(): Promise<LiveParkingLot[]> {
-  const res = await fetch(SOURCE_URL, { next: { revalidate: 60 } });
+  const res = await fetchWithTimeout(SOURCE_URL, { next: { revalidate: 60 } });
   if (!res.ok) {
     throw new Error(`Taoyuan parking API responded ${res.status}`);
   }

@@ -3,10 +3,9 @@
 // File-backed (data/traffic-alerts.json) so new control windows announced
 // during the festival can be posted from /admin/traffic-alerts instead of a
 // code deploy.
-import { promises as fs } from "fs";
-import path from "path";
+import { dataPath, mutateJsonList, readJsonFile } from "./jsonStore";
 
-const DATA_PATH = path.join(process.cwd(), "data", "traffic-alerts.json");
+const DATA_PATH = dataPath("traffic-alerts.json");
 
 export type AlertLevel = "block" | "warn" | "info";
 
@@ -24,24 +23,13 @@ export type TrafficAlertInput = {
   desc: string;
 };
 
-async function readJson<T>(fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(DATA_PATH, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(data: unknown) {
-  await fs.mkdir(path.dirname(DATA_PATH), { recursive: true });
-  await fs.writeFile(DATA_PATH, JSON.stringify(data, null, 2) + "\n", "utf-8");
+function sorted(alerts: TrafficAlert[]): TrafficAlert[] {
+  return [...alerts].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export async function readTrafficAlerts(): Promise<TrafficAlert[]> {
-  const data = await readJson<unknown>([]);
-  const alerts = Array.isArray(data) ? (data as TrafficAlert[]) : [];
-  return [...alerts].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const data = await readJsonFile<unknown>(DATA_PATH, []);
+  return sorted(Array.isArray(data) ? (data as TrafficAlert[]) : []);
 }
 
 export async function getTrafficAlert(id: string): Promise<TrafficAlert | null> {
@@ -50,30 +38,30 @@ export async function getTrafficAlert(id: string): Promise<TrafficAlert | null> 
 }
 
 export async function createTrafficAlert(input: TrafficAlertInput): Promise<TrafficAlert> {
-  const alerts = await readTrafficAlerts();
-  const alert: TrafficAlert = {
-    ...input,
-    id: `alert-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
-    createdAt: new Date().toISOString(),
-  };
-  alerts.push(alert);
-  await writeJson(alerts);
-  return alert;
+  return mutateJsonList<TrafficAlert, TrafficAlert>(DATA_PATH, (alerts) => {
+    const alert: TrafficAlert = {
+      ...input,
+      id: `alert-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      createdAt: new Date().toISOString(),
+    };
+    return { next: [...alerts, alert], result: alert };
+  });
 }
 
 export async function updateTrafficAlert(id: string, input: TrafficAlertInput): Promise<TrafficAlert | null> {
-  const alerts = await readTrafficAlerts();
-  const idx = alerts.findIndex((a) => a.id === id);
-  if (idx === -1) return null;
-  alerts[idx] = { ...alerts[idx], ...input };
-  await writeJson(alerts);
-  return alerts[idx];
+  return mutateJsonList<TrafficAlert, TrafficAlert | null>(DATA_PATH, (alerts) => {
+    const idx = alerts.findIndex((a) => a.id === id);
+    if (idx === -1) return { next: alerts, result: null };
+    const updated = { ...alerts[idx], ...input };
+    const next = [...alerts];
+    next[idx] = updated;
+    return { next, result: updated };
+  });
 }
 
 export async function deleteTrafficAlert(id: string): Promise<boolean> {
-  const alerts = await readTrafficAlerts();
-  const next = alerts.filter((a) => a.id !== id);
-  if (next.length === alerts.length) return false;
-  await writeJson(next);
-  return true;
+  return mutateJsonList<TrafficAlert, boolean>(DATA_PATH, (alerts) => {
+    const next = alerts.filter((a) => a.id !== id);
+    return { next, result: next.length !== alerts.length };
+  });
 }

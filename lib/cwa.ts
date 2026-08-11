@@ -1,5 +1,7 @@
 // 中央氣象署(CWA)開放資料平台 — F-D0047-005「桃園市未來3天天氣預報」，
 // 逐鄉鎮區 3 小時/逐小時預報。需要 CWA_API_KEY (格式 CWA-XXXXXXXX-...)。
+import { fetchWithTimeout } from "./fetchWithTimeout";
+
 const DATASET_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-005";
 
 type ElementValue = Record<string, string>;
@@ -71,7 +73,7 @@ export async function fetchDaxiWeather(): Promise<DaxiWeather> {
   if (!apiKey) throw new Error("CWA_API_KEY is not set");
 
   const url = `${DATASET_URL}?Authorization=${apiKey}&LocationName=${encodeURIComponent("大溪區")}&format=JSON`;
-  const res = await fetch(url, { next: { revalidate: 600 } });
+  const res = await fetchWithTimeout(url, { next: { revalidate: 600 } });
   if (!res.ok) throw new Error(`CWA API responded ${res.status}`);
 
   const json = await res.json();

@@ -87,7 +87,7 @@ export default function PageHeader({
   // made for the "red" gradient card on the resident home page) and needs
   // white instead.
   const ink = tint === "red" ? "#fff" : tint ? "var(--block-fg)" : "var(--ink)";
-  const soft = tint === "red" ? "rgba(255,255,255,0.82)" : tint ? "rgba(43,36,32,0.7)" : "var(--ink-soft)";
+  const soft = tint === "red" ? "rgba(255,255,255,0.82)" : tint ? "var(--block-fg-soft)" : "var(--ink-soft)";
 
   return (
     <div
@@ -101,7 +101,7 @@ export default function PageHeader({
       {tint ? <HeaderShapes /> : null}
       <div className="relative">
         {eyebrow ? (
-          <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-2" style={{ color: soft }}>
+          <div className="text-app-micro font-normal tracking-[0.2em] uppercase mb-2" style={{ color: soft }}>
             {eyebrow}
           </div>
         ) : null}
@@ -109,7 +109,9 @@ export default function PageHeader({
           {title}
         </h1>
         {subtitle ? (
-          <div className="text-[13px] mt-2 font-medium" style={{ color: tint === "red" ? "rgba(255,255,255,0.9)" : tint ? "rgba(43,36,32,0.82)" : "var(--ink)" }}>
+          <div className="text-app-label mt-2 font-medium" // rgba(43,36,32,0.82) on a pastel tint resolves to ~3.8:1 — under AA for
+// this size. --block-fg-soft is solid, so the tint can't dilute it.
+style={{ color: tint === "red" ? "rgba(255,255,255,0.95)" : tint ? "var(--block-fg-soft)" : "var(--ink)" }}>
             {subtitle}
           </div>
         ) : null}

@@ -7,31 +7,16 @@
 // File-backed (data/bulletin-posts.json), same pattern as
 // lib/residentCarousel.ts, so it's editable from /admin/resident-bulletin
 // instead of only through code edits.
-import { promises as fs } from "fs";
-import path from "path";
+import { dataPath, mutateJsonList, readJsonFile } from "./jsonStore";
 import { activeBulletinPosts, isBulletinPostActive, type BulletinPost, type BulletinPostInput, type BulletinTag } from "./bulletinActive";
 
 export type { BulletinTag, BulletinPost, BulletinPostInput };
 export { activeBulletinPosts, isBulletinPostActive };
 
-const DATA_PATH = path.join(process.cwd(), "data", "bulletin-posts.json");
-
-async function readJson<T>(fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(DATA_PATH, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(data: unknown) {
-  await fs.mkdir(path.dirname(DATA_PATH), { recursive: true });
-  await fs.writeFile(DATA_PATH, JSON.stringify(data, null, 2) + "\n", "utf-8");
-}
+const DATA_PATH = dataPath("bulletin-posts.json");
 
 export async function readBulletinPosts(): Promise<BulletinPost[]> {
-  const data = await readJson<unknown>([]);
+  const data = await readJsonFile<unknown>(DATA_PATH, []);
   return Array.isArray(data) ? (data as BulletinPost[]) : [];
 }
 
@@ -41,32 +26,32 @@ export async function getBulletinPost(id: string): Promise<BulletinPost | null> 
 }
 
 export async function createBulletinPost(input: BulletinPostInput): Promise<BulletinPost> {
-  const posts = await readBulletinPosts();
-  const post: BulletinPost = {
-    ...input,
-    id: `bulletin-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
-    postedAt: Date.now(),
-  };
-  posts.push(post);
-  await writeJson(posts);
-  return post;
+  return mutateJsonList<BulletinPost, BulletinPost>(DATA_PATH, (posts) => {
+    const post: BulletinPost = {
+      ...input,
+      id: `bulletin-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      postedAt: Date.now(),
+    };
+    return { next: [...posts, post], result: post };
+  });
 }
 
 export async function updateBulletinPost(id: string, input: Partial<BulletinPostInput>): Promise<BulletinPost | null> {
-  const posts = await readBulletinPosts();
-  const idx = posts.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  posts[idx] = { ...posts[idx], ...input };
-  await writeJson(posts);
-  return posts[idx];
+  return mutateJsonList<BulletinPost, BulletinPost | null>(DATA_PATH, (posts) => {
+    const idx = posts.findIndex((p) => p.id === id);
+    if (idx === -1) return { next: posts, result: null };
+    const updated = { ...posts[idx], ...input };
+    const next = [...posts];
+    next[idx] = updated;
+    return { next, result: updated };
+  });
 }
 
 export async function deleteBulletinPost(id: string): Promise<boolean> {
-  const posts = await readBulletinPosts();
-  const next = posts.filter((p) => p.id !== id);
-  if (next.length === posts.length) return false;
-  await writeJson(next);
-  return true;
+  return mutateJsonList<BulletinPost, boolean>(DATA_PATH, (posts) => {
+    const next = posts.filter((p) => p.id !== id);
+    return { next, result: next.length !== posts.length };
+  });
 }
 
 export function sortedBulletinPosts(posts: BulletinPost[]): BulletinPost[] {

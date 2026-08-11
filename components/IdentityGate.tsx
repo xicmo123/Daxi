@@ -84,7 +84,7 @@ function HomeIdentityGate() {
             <div className="text-[15px] font-bold" style={{ color: "var(--block-fg)" }}>
               我是遊客
             </div>
-            <div className="text-[12px] mt-1" style={{ color: "rgba(43,36,32,0.72)" }}>
+            <div className="text-[12px] mt-1" style={{ color: "var(--block-fg-soft)" }}>
               景點推薦、美食優惠、地圖導覽
             </div>
           </button>
@@ -98,13 +98,34 @@ function HomeIdentityGate() {
             <div className="text-[15px] font-bold" style={{ color: "var(--block-fg)" }}>
               我是大溪人
             </div>
-            <div className="text-[12px] mt-1" style={{ color: "rgba(43,36,32,0.72)" }}>
+            <div className="text-[12px] mt-1" style={{ color: "var(--block-fg-soft)" }}>
               里民服務、區公所公告、停水停電通知
             </div>
           </button>
         </div>
 
-        <p className="text-center text-[11px] mt-6" style={{ color: "var(--ink-soft)" }}>
+        {/* Skippable on purpose.
+
+            This was a hard gate: a first-time visitor could not see a single
+            pixel of 大溪通 without first declaring who they are. That is a
+            bad trade for an app someone opens standing on 老街 wanting to know
+            where to park — and the premise is shaky anyway, since a 大溪人 also
+            wants parking and a visitor also wants to know about road closures.
+
+            Skipping picks the tourist surface (the better cold-start default
+            for someone who has not told us anything) and, because the choice
+            is stored either way, does not re-prompt on the next launch. Both
+            home screens carry a mode toggle, and 我的 has the canonical one. */}
+        <button
+          type="button"
+          onClick={() => choose("tourist")}
+          className="mt-6 w-full text-center text-[12px] underline underline-offset-4 transition-opacity active:opacity-60"
+          style={{ color: "var(--ink-soft)", minHeight: 44 }}
+        >
+          先隨便看看
+        </button>
+
+        <p className="text-center text-[11px] mt-2" style={{ color: "var(--ink-soft)" }}>
           之後可以隨時在「我的」切換身份
         </p>
       </div>

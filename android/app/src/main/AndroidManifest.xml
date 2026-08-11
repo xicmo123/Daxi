@@ -22,6 +22,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!--
+                Android App Links. android:autoVerify makes the OS fetch
+                /.well-known/assetlinks.json (served by
+                app/.well-known/assetlinks.json/route.ts) at install time; when
+                it matches the signing certificate, daxi.zequo.net links open
+                here instead of in Chrome.
+
+                Verification is all-or-nothing per host, so if the fingerprint
+                is wrong the links quietly keep opening in the browser — check
+                with `adb shell pm get-app-links daxi.zequo.net` after install.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="daxi.zequo.net" />
+            </intent-filter>
+
         </activity>
 
         <provider
@@ -40,4 +58,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Required from API 33 (targetSdk is 36): without it the OS silently
+         drops every notification instead of prompting. Covers both the FCM
+         pushes and the local garbage-truck alert. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 </manifest>

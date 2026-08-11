@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import CouponList, { type CouponWithBusiness } from "@/components/CouponList";
 import { listActiveCoupons } from "@/lib/coupons";
 import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStore";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "大溪店家優惠券",
+  description: "大溪老街店家目前可用的優惠券，出示手機由店家掃碼核銷，含使用期限與店家位置。",
+  alternates: { canonical: "/coupons" },
+  openGraph: {
+    title: "大溪店家優惠券 ｜ 大溪通",
+    description: "大溪老街店家目前可用的優惠券與使用期限。",
+    url: "/coupons",
+  },
+};
 
 export default async function CouponsPage() {
   const [coupons, rawPlaces, details] = await Promise.all([listActiveCoupons(), getAllPlaces(), readDetails()]);

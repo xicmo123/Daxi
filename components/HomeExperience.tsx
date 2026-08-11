@@ -15,6 +15,7 @@ import BusModal from "./BusModal";
 import CouponRedeemModal from "./CouponRedeemModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import HeroCarousel, { type HeroSlide } from "./HeroCarousel";
+import TodayPanel, { type TodayStat } from "./TodayPanel";
 import { HeaderShapes } from "./PageHeader";
 
 export type FeedSpot = {
@@ -99,6 +100,7 @@ function QuickActionArrow() {
 
 export default function HomeExperience({
   todayLabel,
+  todayStats = [],
   hasRecentAnnouncement,
   spots,
   coupons,
@@ -108,6 +110,7 @@ export default function HomeExperience({
   initialSlideIndex = 0,
 }: {
   todayLabel: string;
+  todayStats?: TodayStat[];
   hasRecentAnnouncement: boolean;
   spots: FeedSpot[];
   coupons: CouponWithBusiness[];
@@ -175,7 +178,7 @@ export default function HomeExperience({
         {/* 1. "Daxi Today" eyebrow + headline, weather chip + bell + profile */}
         <div className="relative flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase" style={{ color: "rgba(43,36,32,0.7)" }}>
+            <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase" style={{ color: "var(--block-fg-soft)" }}>
               Daxi Today · {todayLabel}
             </div>
             <div className="font-serif text-[19px] font-bold leading-tight" style={{ color: "var(--block-fg)" }}>
@@ -235,7 +238,7 @@ export default function HomeExperience({
               onClick={goResident}
               disabled={switching}
               className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
-              style={{ background: "transparent", color: "rgba(43,36,32,0.72)", opacity: switching ? 0.6 : 1 }}
+              style={{ background: "transparent", color: "var(--block-fg-soft)", opacity: switching ? 0.6 : 1 }}
             >
               {switching ? "切換中…" : "我是大溪人"}
             </button>
@@ -260,118 +263,96 @@ export default function HomeExperience({
         </form>
       </motion.div>
 
-      {/* 4. Event carousel — the festival highlight reel, front and center */}
+      {/* 4. 今天的大溪 — the live numbers, above the carousel. See
+          components/TodayPanel.tsx for why this outranks the highlight reel. */}
+      <TodayPanel stats={todayStats} />
+
+      {/* 5. Event carousel — the festival highlight reel */}
       {heroSlides.length > 0 ? (
         <div id="event-carousel" className="pt-4 fade-in scroll-mt-6">
           <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} compact />
         </div>
       ) : null}
 
-      {/* 4b. Tourist priority actions use the same visual language as the resident home cards. */}
-      <section className="safe-page-x pt-4 fade-in" aria-labelledby="tourist-priority-title">
+      {/* 6. Explore row.
+
+          Was a four-across grid of illustrated cards. At 375px that left each
+          card ~80px, so every label truncated — 「在地店家 …」, 「CCTV / …」 —
+          and the type had been dropped to 8.5px to cope, well under the 11px
+          floor the rest of the app holds to. Three tiles with two-character
+          labels fit honestly at any width, and the live readings those cards
+          were half-duplicating now live in TodayPanel above. */}
+      <section className="safe-page-x pt-5 fade-in" aria-labelledby="tourist-explore-title">
         <div className="mb-2 flex items-end justify-between gap-3">
           <div>
-            <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+            <div className="text-app-micro font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
               旅遊動線
             </div>
-            <h2 id="tourist-priority-title" className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+            <h2 id="tourist-explore-title" className="text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>
               出發前先看
             </h2>
           </div>
-          <span className="text-[11px] font-semibold" style={{ color: "var(--ink-soft)" }}>
-            快速資訊
-          </span>
         </div>
 
-        <div className="grid grid-cols-4 gap-1.5 md:gap-2.5">
+        <div className="grid grid-cols-3 gap-2.5">
           {[
             {
-              href: "/bus",
-              label: "公車資訊",
-              title: "公車在哪",
-              detail: "位置 / 時刻",
-              kind: "bus" as const,
-              background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-moss) 100%)",
-            },
-            {
               href: "/spots",
-              label: "景點資訊",
-              title: "景點去哪裡",
+              title: "景點",
               detail: "熱門 / 地圖",
               kind: "spot" as const,
-              background: "linear-gradient(145deg, var(--block-moss) 0%, var(--block-wood) 100%)",
+              // Flat pastel, not a gradient to the -deep stop — same contrast
+              // reasoning as components/TodayPanel.tsx.
+              background: "var(--block-moss)",
             },
             {
               href: "/businesses",
-              label: "店家資訊",
-              title: "吃喝買什麼",
-              detail: "在地店家 / 優惠",
+              title: "店家",
+              detail: "美食 / 優惠",
               kind: "store" as const,
-              background: "linear-gradient(140deg, var(--block-wood) 0%, var(--block-river) 100%)",
+              background: "var(--block-wood)",
             },
             {
               href: "/weather",
-              label: "即時影像",
-              title: "先看路況",
-              detail: "CCTV / 景點",
+              title: "路況",
+              detail: "即時影像",
               kind: "live" as const,
               live: true,
-              background: "linear-gradient(140deg, var(--block-river) 0%, var(--block-wood) 100%)",
+              background: "var(--block-river)",
             },
-          ].map((action) => {
-            const content = (
-              <>
-                <QuickActionIllustration kind={action.kind} />
-                <div className="relative z-10 flex h-full flex-col justify-between gap-2 text-left">
-                  <div className="min-w-0">
-                    <div className="mb-1 inline-flex max-w-full items-center rounded-full px-1.5 py-0.5 text-[8.5px] font-bold md:mb-1.5 md:px-2 md:text-[10px]" style={{ background: "rgba(255,255,255,0.5)" }}>
-                      {action.label}
-                    </div>
-                    <div className="truncate text-[12px] font-black leading-tight md:text-[15px]">{action.title}</div>
-                  </div>
-                  <div className="flex items-center justify-between gap-1 text-[8.5px] font-bold md:gap-1.5 md:text-[10.5px]">
-                    <span className="min-w-0 truncate leading-tight">{action.detail}</span>
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1 md:h-6 md:w-6" style={{ background: "rgba(255,255,255,0.42)" }}>
-                      <QuickActionArrow />
-                    </span>
-                  </div>
-                </div>
-                {action.live ? (
-                  <span
-                    className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold"
-                    style={{ background: "rgba(255,255,255,0.72)", color: "var(--daxi-red)" }}
-                  >
-                    LIVE
+          ].map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              onClick={() => trackClick("map_card", action.href, action.title, TRACK_TAG)}
+              className="group relative block h-[112px] min-w-0 overflow-hidden rounded-[18px] px-3 py-2.5 transition-transform active:scale-[0.98]"
+              style={{ background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" }}
+            >
+              <QuickActionIllustration kind={action.kind} />
+              <div className="relative z-10 flex h-full flex-col justify-between text-left">
+                <div className="text-app-heading font-black leading-tight">{action.title}</div>
+                <div className="flex items-center justify-between gap-1">
+                  <span className="min-w-0 truncate text-app-micro font-bold leading-tight" style={{ color: "var(--block-fg-soft)" }}>
+                    {action.detail}
                   </span>
-                ) : null}
-              </>
-            );
-            const className = "group relative block h-[112px] min-w-0 overflow-hidden rounded-[16px] px-1.5 py-2 transition-transform active:scale-[0.98] md:h-[138px] md:rounded-[20px] md:px-2.5 md:py-3";
-            const style = { background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" };
-
-            if (action.kind === "bus") {
-              return (
-                <button
-                  key={action.href}
-                  type="button"
-                  onClick={() => {
-                    setShowBusMap(true);
-                    trackClick("map_card", action.href, action.label, TRACK_TAG);
-                  }}
-                  className={className}
-                  style={style}
+                  <span
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1"
+                    style={{ background: "rgba(255,255,255,0.42)" }}
+                  >
+                    <QuickActionArrow />
+                  </span>
+                </div>
+              </div>
+              {action.live ? (
+                <span
+                  className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-app-micro font-bold"
+                  style={{ background: "rgba(255,255,255,0.78)", color: "var(--daxi-red)" }}
                 >
-                  {content}
-                </button>
-              );
-            }
-
-            return (
-              <Link key={action.href} href={action.href} onClick={() => trackClick("map_card", action.href, action.label, TRACK_TAG)} className={className} style={style}>
-                {content}
-              </Link>
-            );
-          })}
+                  LIVE
+                </span>
+              ) : null}
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -424,7 +405,7 @@ export default function HomeExperience({
                     {s.category}
                   </div>
                   <div className="text-[10px] mt-1 font-medium" style={{ color: "rgba(255,255,255,0.92)" }}>
-                    步行 {s.walkTime}
+                    {s.walkTime}
                   </div>
                 </div>
                 {wantsIndoor && s.indoor ? (

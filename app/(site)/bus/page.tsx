@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import BusMap from "@/components/BusMap";
+
+export const metadata: Metadata = {
+  title: "大溪公車即時動態",
+  description: "大溪地區公車即時 GPS 位置與到站時間，資料來源為交通部運輸資料流通服務平台（TDX），每 15 秒更新。",
+  alternates: { canonical: "/bus" },
+  openGraph: {
+    title: "大溪公車即時動態 ｜ 大溪通",
+    description: "大溪地區公車即時位置與到站時間。",
+    url: "/bus",
+  },
+};
 
 export default function BusPage() {
   return (

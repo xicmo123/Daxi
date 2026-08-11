@@ -1,11 +1,13 @@
 import PageHeader from "@/components/PageHeader";
 import EventsList from "@/components/EventsList";
-import { getMergedEvents } from "@/lib/eventsFeed";
+// force-dynamic below zeroes the TTL on every fetch in this segment; the
+// cached wrapper is immune to it. See lib/cachedSources.ts.
+import { getCachedEvents } from "@/lib/cachedSources";
 
 export const dynamic = "force-dynamic";
 
 export default async function ResidentEventsPage() {
-  const slides = await getMergedEvents();
+  const slides = await getCachedEvents();
   const events = slides.map((event) => ({
     key: event.id,
     phase: event.phase,

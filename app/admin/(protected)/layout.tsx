@@ -21,9 +21,16 @@ const residentLinks = [
   { href: "/admin/resident-bulletin", label: "社區佈告欄" },
   { href: "/admin/resident-clinics", label: "醫療輪值地圖" },
   { href: "/admin/useful-links", label: "常用連結" },
+  { href: "/admin/push", label: "推播通知" },
 ];
 
-const RESIDENT_PREFIXES = ["/admin/resident-carousel", "/admin/resident-bulletin", "/admin/resident-clinics", "/admin/useful-links"];
+const RESIDENT_PREFIXES = [
+  "/admin/resident-carousel",
+  "/admin/resident-bulletin",
+  "/admin/resident-clinics",
+  "/admin/useful-links",
+  "/admin/push",
+];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -35,6 +42,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     await fetch("/api/admin/logout", { method: "POST" });
     router.push("/admin/login");
     router.refresh();
+  };
+
+  // Used when a device is lost or a passcode leaks: invalidates every session
+  // in that scope at once (lib/sessionToken.ts). Merchant revocation logs the
+  // shops out but leaves this admin session alone; admin revocation logs the
+  // current user out too, hence the redirect.
+  const revoke = async (scope: "admin" | "merchant") => {
+    const label = scope === "admin" ? "所有管理員" : "所有商家";
+    if (!window.confirm(`確定要把${label}從所有裝置登出嗎？他們需要重新登入。`)) return;
+
+    const res = await fetch("/api/admin/revoke-sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scope }),
+    });
+    if (!res.ok) {
+      window.alert("撤銷失敗，請稍後再試");
+      return;
+    }
+    if (scope === "admin") {
+      router.push("/admin/login");
+      router.refresh();
+      return;
+    }
+    window.alert("已將所有商家登出");
   };
 
   return (
@@ -85,6 +117,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/" target="_blank" className="text-[12.5px] underline" style={{ color: "#766a5d", fontSize: 13 }}>
               查看網站
             </Link>
+            <button
+              onClick={() => revoke("merchant")}
+              title="商家裝置遺失或通行碼外流時使用"
+              className="text-[12.5px] font-medium rounded-lg px-3 py-1.5 transition-opacity active:opacity-70"
+              style={{ border: 0, borderRadius: 8, padding: "6px 12px", background: "#f0e2d0", color: "#7a4b2c", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              強制登出商家
+            </button>
+            <button
+              onClick={() => revoke("admin")}
+              title="管理員裝置遺失時使用，你自己也會被登出"
+              className="text-[12.5px] font-medium rounded-lg px-3 py-1.5 transition-opacity active:opacity-70"
+              style={{ border: 0, borderRadius: 8, padding: "6px 12px", background: "#f0e2d0", color: "#7a4b2c", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              強制登出管理員
+            </button>
             <button
               onClick={logout}
               className="text-[12.5px] font-medium rounded-lg px-3 py-1.5 transition-opacity active:opacity-70"

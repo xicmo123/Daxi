@@ -1,11 +1,27 @@
+import type { Metadata } from "next";
+import ExploreTabs from "@/components/ExploreTabs";
 import PageHeader from "@/components/PageHeader";
 import SpotsList from "@/components/SpotsList";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
-import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+import type { LiveParkingLot } from "@/lib/tycgParking";
+// force-dynamic below zeroes the TTL on every fetch in this segment; the
+// cached wrapper is immune to it. See lib/cachedSources.ts.
+import { getCachedParking } from "@/lib/cachedSources";
 import { buildSuggestedRoutes } from "@/lib/experience";
 import { listActiveCoupons } from "@/lib/coupons";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "大溪景點",
+  description: "大溪老街周邊景點一次看：大溪橋、普濟堂、武德殿、中正公園與石門水庫，含步行距離、順路主題路線與無障礙資訊。",
+  alternates: { canonical: "/spots" },
+  openGraph: {
+    title: "大溪景點 ｜ 大溪通",
+    description: "大溪老街周邊景點、步行距離與順路主題路線。",
+    url: "/spots",
+  },
+};
 
 export default async function SpotsPage() {
   const [rawPlaces, photos, details] = await Promise.all([
@@ -21,7 +37,7 @@ export default async function SpotsPage() {
 
   let lots: LiveParkingLot[] = [];
   try {
-    lots = await fetchDaxiParking();
+    lots = await getCachedParking();
   } catch {
     lots = [];
   }
@@ -36,6 +52,7 @@ export default async function SpotsPage() {
   return (
     <div className="pt-2">
       <PageHeader title="景點" subtitle="老街周邊景點與順路走走" tint="moss" />
+      <ExploreTabs />
 
       <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} routes={routes} coupons={coupons} />
 

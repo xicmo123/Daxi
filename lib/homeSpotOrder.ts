@@ -1,25 +1,9 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { dataPath, readJsonFile, updateJsonFile } from "./jsonStore";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const ORDER_PATH = path.join(DATA_DIR, "home-spot-order.json");
-
-async function readJson<T>(filePath: string, fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(filePath: string, data: unknown) {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2) + "\n", "utf-8");
-}
+const ORDER_PATH = dataPath("home-spot-order.json");
 
 export async function readHomeSpotOrder(): Promise<string[]> {
-  const data = await readJson<unknown>(ORDER_PATH, []);
+  const data = await readJsonFile<unknown>(ORDER_PATH, []);
   return Array.isArray(data) ? data.filter((id): id is string => typeof id === "string") : [];
 }
 
@@ -39,24 +23,34 @@ export function sortByHomeSpotOrder<T extends { placeId: string }>(items: T[], s
   return [...items].sort((a, b) => (rank.get(a.placeId) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.placeId) ?? Number.MAX_SAFE_INTEGER));
 }
 
+// Reordering is the one admin screen where rapid successive clicks are normal
+// ("move this up four places"), so the read-modify-write here is the most
+// likely of all the stores to interleave — hence the locked update.
 export async function moveHomeSpot(placeId: string, direction: "up" | "down", placeIds: string[]): Promise<boolean> {
-  const order = normalizeHomeSpotOrder(placeIds, await readHomeSpotOrder());
-  const index = order.indexOf(placeId);
-  if (index === -1) return false;
-  const swapWith = direction === "up" ? index - 1 : index + 1;
-  if (swapWith < 0 || swapWith >= order.length) return false;
-  [order[index], order[swapWith]] = [order[swapWith], order[index]];
-  await writeJson(ORDER_PATH, order);
-  return true;
+  let moved = false;
+  await updateJsonFile<string[]>(ORDER_PATH, [], (current) => {
+    const order = normalizeHomeSpotOrder(placeIds, Array.isArray(current) ? current : []);
+    const index = order.indexOf(placeId);
+    if (index === -1) return order;
+    const swapWith = direction === "up" ? index - 1 : index + 1;
+    if (swapWith < 0 || swapWith >= order.length) return order;
+    [order[index], order[swapWith]] = [order[swapWith], order[index]];
+    moved = true;
+    return order;
+  });
+  return moved;
 }
 
 export async function setHomeSpotPosition(placeId: string, position: number, placeIds: string[]): Promise<boolean> {
-  const order = normalizeHomeSpotOrder(placeIds, await readHomeSpotOrder());
-  const currentIndex = order.indexOf(placeId);
-  if (currentIndex === -1 || !Number.isInteger(position) || position < 1 || position > order.length) return false;
-
-  order.splice(currentIndex, 1);
-  order.splice(position - 1, 0, placeId);
-  await writeJson(ORDER_PATH, order);
-  return true;
+  let moved = false;
+  await updateJsonFile<string[]>(ORDER_PATH, [], (current) => {
+    const order = normalizeHomeSpotOrder(placeIds, Array.isArray(current) ? current : []);
+    const currentIndex = order.indexOf(placeId);
+    if (currentIndex === -1 || !Number.isInteger(position) || position < 1 || position > order.length) return order;
+    order.splice(currentIndex, 1);
+    order.splice(position - 1, 0, placeId);
+    moved = true;
+    return order;
+  });
+  return moved;
 }

@@ -1,14 +1,17 @@
 {
-  "name": "大溪通 — Daxi Journal",
+  "name": "大溪通 — 桃園大溪在地生活與旅遊資訊",
   "short_name": "大溪通",
-  "description": "桃園大溪周邊活動、停車、天氣路況與旅遊資訊",
+  "description": "桃園大溪的即時停車位、公車動態、老街景點與商家、活動資訊，以及停水停電、道路施工、垃圾清運與診所輪值。",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#efe7d8",
-  "theme_color": "#6f2430",
+  "background_color": "#fdf8f2",
+  "theme_color": "#fdf8f2",
   "orientation": "portrait",
+  "lang": "zh-Hant-TW",
+  "categories": ["travel", "navigation", "news"],
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

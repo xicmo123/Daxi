@@ -57,15 +57,25 @@ export default function HeroCarousel({
     el.scrollLeft = initialIndex * el.clientWidth;
   }, [initialIndex]);
 
-  // Auto-advance every 3s; paused while the detail modal is open.
+  // Auto-advance; paused while the detail modal is open.
+  //
+  // Was 3s, which is less time than it takes to read a slide title like
+  // 「北管、社頭文化、戲劇走讀、音樂展演」 — the carousel moved out from under
+  // anyone actually reading it. 6s is the usual floor for an auto-rotating
+  // hero. A user gesture resets the timer (see resetTimer on the track), so
+  // manual browsing is never interrupted mid-swipe.
   useEffect(() => {
     if (slides.length <= 1 || openSlide) return;
+    // An auto-moving carousel is exactly what prefers-reduced-motion is for —
+    // and it is also a vestibular trigger, not just a preference.
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
     const id = setInterval(() => {
       const el = trackRef.current;
       if (!el || el.clientWidth === 0) return;
       const next = (Math.round(el.scrollLeft / el.clientWidth) + 1) % slides.length;
       el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
-    }, 3000);
+    }, 6000);
     return () => clearInterval(id);
   }, [slides.length, openSlide, timerVersion]);
 

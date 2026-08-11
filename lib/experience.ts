@@ -2,8 +2,36 @@ import type { Business } from "./businesses";
 import type { PlaceDetail } from "./placeDetails";
 import type { LiveParkingLot } from "./tycgParking";
 
+// Average walking pace, metres per minute.
+const WALK_M_PER_MIN = 80;
+// Town driving through 大溪 — 老街 is pedestrianised and the surrounding roads
+// are slow, so this is deliberately below a highway figure.
+const DRIVE_M_PER_MIN = 400;
+// Past this, nobody is walking. 石門水庫 is ~9km from 老街 and the old
+// unbounded formula proudly labelled it 「步行 113 分鐘」 on the home page's
+// first card.
+const WALK_LIMIT_METERS = 1500;
+
+/**
+ * How far away something is, in the terms a visitor actually plans with.
+ *
+ * Returns the full phrase including the mode ("步行 6 分鐘" / "車程約 23 分鐘")
+ * rather than a bare duration, because the mode is the part that changes with
+ * distance — a caller that hardcodes "步行" in front of this is how the bug
+ * above happened.
+ */
 export function walkTimeLabel(distanceMeters: number): string {
-  return `${Math.max(1, Math.round(distanceMeters / 80))} 分鐘`;
+  if (!Number.isFinite(distanceMeters) || distanceMeters < 0) return "距離未知";
+
+  if (distanceMeters <= WALK_LIMIT_METERS) {
+    return `步行 ${Math.max(1, Math.round(distanceMeters / WALK_M_PER_MIN))} 分鐘`;
+  }
+
+  // Beyond ~30km a duration estimate from a flat average is more misleading
+  // than useful, so fall back to the raw distance.
+  if (distanceMeters > 30_000) return `約 ${Math.round(distanceMeters / 1000)} 公里`;
+
+  return `車程約 ${Math.max(2, Math.round(distanceMeters / DRIVE_M_PER_MIN))} 分鐘`;
 }
 
 export function experienceTags(business: Business, detail?: PlaceDetail): string[] {

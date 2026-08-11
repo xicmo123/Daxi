@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./fetchWithTimeout";
+
 const ROADWORKS_URL =
   "https://opendata.tycg.gov.tw/api/dataset/56c616fe-07d7-4b0c-bb75-e8f8cd75500a/resource/52de3762-1490-4a86-a074-0062d746873b/download";
 
@@ -55,7 +57,7 @@ function parseXml(xml: string): Roadwork[] {
 }
 
 export async function fetchDaxiRoadworks(): Promise<Roadwork[]> {
-  const response = await fetch(ROADWORKS_URL, {
+  const response = await fetchWithTimeout(ROADWORKS_URL, {
     cache: "no-store",
     headers: { "User-Agent": "Daxi/0.1 resident roadworks map" },
   });

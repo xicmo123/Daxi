@@ -1,11 +1,16 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, type CSSProperties } from "react";
-import AboutModal from "./AboutModal";
+// Tourist tab bar. Layout, active states and haptics all live in
+// BottomNavBar — this file is only the destinations.
+//
+// Five, per iOS HIG's tab-bar guidance. 景點 and 商家 are one 探索 tab because
+// they're the same mental model (places near you, as a list or on a map) and
+// both routes keep their own URL for deep links and SEO. The fifth slot is 我的
+// in both halves of the app, so a user's own settings never move when they
+// switch modes.
+import BottomNavBar, { type NavTab } from "./BottomNavBar";
 
-const tabs = [
+const tabs: NavTab[] = [
   {
     href: "/",
     label: "首頁",
@@ -35,26 +40,14 @@ const tabs = [
   },
   {
     href: "/spots",
-    label: "景點",
+    label: "探索",
+    alsoActiveOn: ["/businesses"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 21s6.4-5.9 6.4-10.7a6.4 6.4 0 0 0-12.8 0C5.6 15.1 12 21 12 21Z" />
         <circle cx="12" cy="10.3" r="2.2" />
         <path d="m6.3 18.6 3.1-1.2" />
         <path d="m17.7 18.6-3.1-1.2" />
-      </svg>
-    ),
-  },
-  {
-    href: "/businesses",
-    label: "商家",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 9.5h14l-1.1-4h-11.8Z" />
-        <path d="M6 9.5v9h12v-9" />
-        <path d="M8 9.5v1.2a2 2 0 0 0 4 0V9.5" />
-        <path d="M12 9.5v1.2a2 2 0 0 0 4 0V9.5" />
-        <path d="M9 18.5v-4h6v4" />
       </svg>
     ),
   },
@@ -70,120 +63,17 @@ const tabs = [
     ),
   },
   {
-    href: null,
-    label: "關於",
+    href: "/profile",
+    label: "我的",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="8.2" />
-        <path d="M12 11v5.2" />
-        <circle cx="12" cy="7.8" r="0.15" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="12" cy="8.6" r="3.6" />
+        <path d="M5.2 19.4a6.8 6.8 0 0 1 13.6 0" />
       </svg>
     ),
   },
 ];
 
 export default function BottomNav() {
-  const pathname = usePathname();
-  const [showAbout, setShowAbout] = useState(false);
-
-  return (
-    <nav
-      className="app-bottom-nav fixed bottom-0 inset-x-0 z-20 flex glass-nav"
-      style={{
-        position: "fixed",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 20,
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        className="mx-auto flex w-full max-w-md border-t md:max-w-3xl md:border-x lg:max-w-6xl"
-        style={{
-          borderColor: "var(--line)",
-          display: "grid",
-          gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
-          width: "100%",
-        }}
-      >
-        {tabs.map((tab) => {
-          const active = tab.href !== null && pathname === tab.href;
-          const itemStyle: CSSProperties = {
-            color: active ? "var(--daxi-red)" : "var(--ink)",
-            opacity: active ? 1 : 0.54,
-            minHeight: 56,
-            padding: "8px 2px 8px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 4,
-            textDecoration: "none",
-            position: "relative",
-            background: "none",
-            border: "none",
-            width: "100%",
-          };
-          const content = (
-            <>
-              <span
-                aria-hidden
-                className="absolute top-1.5 h-0.5 w-5 rounded-full transition-opacity duration-300"
-                style={{ background: "var(--daxi-red)", opacity: active ? 1 : 0 }}
-              />
-              <span
-                className="w-[22px] h-[22px] rounded-full flex items-center justify-center transition-all duration-300 ease-out"
-                style={{
-                  width: 28,
-                  height: 28,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: active ? "var(--daxi-red-soft)" : "transparent",
-                  transform: active ? "scale(1.08)" : "scale(1)",
-                }}
-              >
-                {tab.icon}
-              </span>
-              <span
-                className="text-[10.5px] font-normal tracking-wide transition-all duration-300"
-                style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}
-              >
-                {tab.label}
-              </span>
-            </>
-          );
-
-          if (tab.href === null) {
-            return (
-              <button
-                key={tab.label}
-                type="button"
-                onClick={() => setShowAbout(true)}
-                className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-                style={itemStyle}
-              >
-                {content}
-              </button>
-            );
-          }
-
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              aria-current={active ? "page" : undefined}
-              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-              style={itemStyle}
-            >
-              {content}
-            </Link>
-          );
-        })}
-      </div>
-      {showAbout ? <AboutModal onClose={() => setShowAbout(false)} /> : null}
-    </nav>
-  );
+  return <BottomNavBar tabs={tabs} accent="var(--daxi-red)" accentSoft="var(--daxi-red-soft)" ariaLabel="主導覽" />;
 }

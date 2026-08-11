@@ -1,11 +1,13 @@
 import Image from "next/image";
 import BottomNav from "@/components/BottomNav";
 import IdentityGate from "@/components/IdentityGate";
+import PullToRefresh from "@/components/PullToRefresh";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <IdentityGate />
+      <PullToRefresh />
 
       {/* Fixed wallpaper — stays put behind scrolling content, faded so it
           never competes with foreground text/cards. Aligned to the same

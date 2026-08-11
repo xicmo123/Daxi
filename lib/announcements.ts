@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./fetchWithTimeout";
+
 export type Announcement = {
   id: string;
   title: string;
@@ -19,14 +21,17 @@ const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
 
 export async function fetchDaxiAnnouncements(limit = 24): Promise<Announcement[]> {
   try {
-    const res = await fetch(ANNOUNCEMENTS_RSS_URL, {
-      headers: {
-        Accept: "application/rss+xml, application/xml, text/xml",
-        "User-Agent": "daxi-guide/1.0",
+    const res = await fetchWithTimeout(
+      ANNOUNCEMENTS_RSS_URL,
+      {
+        headers: {
+          Accept: "application/rss+xml, application/xml, text/xml",
+          "User-Agent": "daxi-guide/1.0",
+        },
+        next: { revalidate: 30 * 60 },
       },
-      next: { revalidate: 30 * 60 },
-      signal: AbortSignal.timeout(12_000),
-    });
+      12_000,
+    );
 
     if (!res.ok) {
       throw new Error(`Daxi announcements RSS returned ${res.status}`);

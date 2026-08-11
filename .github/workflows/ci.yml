@@ -1,0 +1,42 @@
+name: CI
+
+# README says lint and build must both pass before shipping. Nothing was
+# enforcing that, so "must pass" meant "must remember" — and a broken build is
+# only discovered at `cap sync` time, after the version has already been bumped.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        # The API keys are absent in CI on purpose. Every external source in
+        # lib/ is written to degrade rather than throw when its key is missing
+        # (see the try/catch around each fetch in the pages), so a build that
+        # needs a real key is itself the bug this step should catch.
+        # ADMIN_SESSION_SECRET is the one exception: lib/sessionToken.ts throws
+        # without it in production, which is deliberate.
+        env:
+          ADMIN_SESSION_SECRET: ci-build-placeholder-not-a-real-secret
+        run: npm run build

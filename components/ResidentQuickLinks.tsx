@@ -10,17 +10,17 @@ const gradientCard: Record<QuickLinkBlock, { background: string; fg: string; fgS
   wood: {
     background: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
     fg: "var(--block-fg)",
-    fgSoft: "rgba(43,36,32,0.72)",
+    fgSoft: "var(--block-fg-soft)",
   },
   moss: {
     background: "linear-gradient(160deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
     fg: "var(--block-fg)",
-    fgSoft: "rgba(43,36,32,0.72)",
+    fgSoft: "var(--block-fg-soft)",
   },
   river: {
     background: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
     fg: "var(--block-fg)",
-    fgSoft: "rgba(43,36,32,0.72)",
+    fgSoft: "var(--block-fg-soft)",
   },
   red: {
     background: "linear-gradient(160deg, var(--daxi-red) 0%, color-mix(in srgb, var(--daxi-red) 100%, black 28%) 100%)",

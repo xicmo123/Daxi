@@ -1,19 +1,26 @@
-// Append-only admin operation log — same JSON-on-disk pattern as
-// lib/tracking.ts. Records sensitive admin actions (merchant account
-// create/update/disable/delete, admin login attempts) so there is a trail
-// to check after an incident. Not a replacement for a real audit system —
-// single instance, no tamper protection — but enough for the MVP scale
+// Append-only admin operation log. Records sensitive admin actions (merchant
+// account create/update/disable/delete, admin login attempts) so there is a
+// trail to check after an incident. Not a replacement for a real audit system
+// — single instance, no tamper protection — but enough for the MVP scale
 // documented in README.
-import { promises as fs } from "fs";
-import path from "path";
+//
+// Kept as a JSON array rather than the NDJSON used for click events: entries
+// are rare (admin actions only) so rewriting 2000 of them costs nothing, and
+// it avoids migrating the existing data/admin-audit-log.json. The append runs
+// inside updateJsonFile, so two concurrent admin actions can no longer
+// overwrite each other's entry — which for an audit log would be the one
+// failure mode that matters.
+import { dataPath, readJsonFile, updateJsonFile } from "./jsonStore";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const LOG_PATH = path.join(DATA_DIR, "admin-audit-log.json");
+const LOG_PATH = dataPath("admin-audit-log.json");
 const MAX_ENTRIES = 2000;
 
 export type AuditAction =
   | "admin.login.success"
   | "admin.login.failure"
+  | "admin.sessions.revoke"
+  | "merchant.sessions.revoke"
+  | "push.broadcast"
   | "merchant.create"
   | "merchant.update"
   | "merchant.disable"
@@ -28,25 +35,15 @@ export type AuditEntry = {
   ip?: string;
 };
 
-async function readLog(): Promise<AuditEntry[]> {
-  try {
-    const raw = await fs.readFile(LOG_PATH, "utf-8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as AuditEntry[]) : [];
-  } catch {
-    return [];
-  }
-}
-
 export async function appendAuditLog(entry: Omit<AuditEntry, "at">): Promise<void> {
-  const log = await readLog();
-  log.push({ ...entry, at: new Date().toISOString() });
-  const trimmed = log.length > MAX_ENTRIES ? log.slice(log.length - MAX_ENTRIES) : log;
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(LOG_PATH, JSON.stringify(trimmed, null, 2) + "\n", "utf-8");
+  await updateJsonFile<AuditEntry[]>(LOG_PATH, [], (current) => {
+    const log = Array.isArray(current) ? current : [];
+    const next = [...log, { ...entry, at: new Date().toISOString() }];
+    return next.length > MAX_ENTRIES ? next.slice(next.length - MAX_ENTRIES) : next;
+  });
 }
 
 export async function readAuditLog(limit = 300): Promise<AuditEntry[]> {
-  const log = await readLog();
-  return log.slice(-limit).reverse();
+  const log = await readJsonFile<AuditEntry[]>(LOG_PATH, []);
+  return (Array.isArray(log) ? log : []).slice(-limit).reverse();
 }

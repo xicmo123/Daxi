@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MERCHANT_SESSION_COOKIE, checkMerchantLogin, merchantSessionToken } from "@/lib/merchantAuth";
+import { MERCHANT_COOKIE_MAX_AGE, MERCHANT_SESSION_COOKIE, checkMerchantLogin, merchantSessionToken } from "@/lib/merchantAuth";
 import { clearAttempts, clientIp, isRateLimited, recordFailedAttempt } from "@/lib/rateLimit";
 
 export async function POST(request: NextRequest) {
@@ -26,10 +26,11 @@ export async function POST(request: NextRequest) {
   const res = NextResponse.json({ ok: true, businessName: account.businessName });
   res.cookies.set(MERCHANT_SESSION_COOKIE, token, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 14,
+    // Matches the expiry now signed into the token itself.
+    maxAge: MERCHANT_COOKIE_MAX_AGE,
     priority: "high",
   });
   return res;

@@ -7,34 +7,11 @@
 // this file only verifies logins/sessions.
 import { readMerchantAccounts, updateMerchantAccount, type MerchantAccount } from "./merchantAccounts";
 import { hashPasscode, isHashedPasscode, verifyPasscode } from "./passcodeHash";
+import { MERCHANT_SESSION_TTL_MS, bumpEpoch, signSession, verifySession } from "./sessionToken";
 
 export const MERCHANT_SESSION_COOKIE = "daxi_merchant_session";
 
 export type { MerchantAccount };
-
-function sessionSecret(): string {
-  const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD;
-  if (secret) return secret;
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Merchant auth secret is not set");
-  }
-  return "daxi-merchant-dev-secret";
-}
-
-function toHex(buf: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-async function signPlaceId(placeId: string): Promise<string> {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey("raw", enc.encode(sessionSecret()), { name: "HMAC", hash: "SHA-256" }, false, [
-    "sign",
-  ]);
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(`daxi-merchant:${placeId}`));
-  return toHex(sig);
-}
 
 export async function checkMerchantLogin(placeId: string, passcode: string): Promise<MerchantAccount | null | "disabled"> {
   const accounts = await readMerchantAccounts();
@@ -53,21 +30,26 @@ export async function checkMerchantLogin(placeId: string, passcode: string): Pro
 }
 
 export async function merchantSessionToken(placeId: string): Promise<string> {
-  return `${placeId}.${await signPlaceId(placeId)}`;
+  return signSession("merchant", placeId, MERCHANT_SESSION_TTL_MS);
 }
 
 export async function verifyMerchantSession(token: string | undefined): Promise<{ placeId: string } | null> {
-  if (!token) return null;
-  const [placeId, sig] = token.split(".");
-  if (!placeId || !sig) return null;
-  const expected = await signPlaceId(placeId);
-  if (sig !== expected) return null;
+  const session = await verifySession("merchant", token).catch(() => null);
+  if (!session || !session.subject) return null;
 
   // Re-check disabled status on every request (not just at login) so an
   // admin disabling a merchant takes effect immediately, not at next login.
   const accounts = await readMerchantAccounts();
-  const account = accounts[placeId];
+  const account = accounts[session.subject];
   if (!account || account.disabled) return null;
 
-  return { placeId };
+  return { placeId: session.subject };
 }
+
+/** Log out every merchant device at once, without touching admin sessions. */
+export async function revokeAllMerchantSessions(): Promise<void> {
+  await bumpEpoch("merchant");
+}
+
+/** Seconds — keeps the cookie's own lifetime in step with the signed expiry. */
+export const MERCHANT_COOKIE_MAX_AGE = Math.floor(MERCHANT_SESSION_TTL_MS / 1000);

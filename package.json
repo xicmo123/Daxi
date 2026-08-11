@@ -1,6 +1,6 @@
 {
   "name": "daxi",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 8475",
@@ -9,16 +9,26 @@
     "lint": "eslint",
     "refresh:businesses": "node --env-file=.env.local scripts/fetch-businesses.mjs",
     "refresh:spots": "node scripts/fetch-tycg-spots.mjs",
-    "cap:sync": "cap sync",
+    "cap:shell": "node scripts/build-capacitor-shell.mjs",
+    "cap:sync": "npm run cap:shell && cap sync",
     "cap:open:ios": "cap open ios",
-    "cap:open:android": "cap open android"
+    "cap:open:android": "cap open android",
+    "release:version": "node scripts/bump-version.mjs",
+    "backup:data": "node scripts/backup-data.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@capacitor/android": "8.4.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/browser": "^8.0.4",
     "@capacitor/cli": "8.4.2",
     "@capacitor/core": "8.4.2",
     "@capacitor/geolocation": "8.2.0",
+    "@capacitor/haptics": "^8.0.2",
     "@capacitor/ios": "8.4.2",
+    "@capacitor/local-notifications": "^8.2.1",
+    "@capacitor/push-notifications": "^8.1.2",
     "canvas-confetti": "^1.9.4",
     "framer-motion": "^12.42.2",
     "jszip": "^3.10.1",
@@ -40,12 +50,14 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   },
   "allowScripts": {
     "sharp@0.34.5": true,
     "sharp@0.35.3": true,
-    "unrs-resolver@1.12.2": true
+    "unrs-resolver@1.12.2": true,
+    "esbuild@0.28.1": true
   },
   "overrides": {
     "next": {

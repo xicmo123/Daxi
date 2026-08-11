@@ -1,12 +1,28 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
+import ExploreTabs from "@/components/ExploreTabs";
 import PageHeader from "@/components/PageHeader";
 import BusinessList from "@/components/BusinessList";
 import { businessesGeneratedAt } from "@/lib/businesses";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
-import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+import type { LiveParkingLot } from "@/lib/tycgParking";
+// force-dynamic below zeroes the TTL on every fetch in this segment; the
+// cached wrapper is immune to it. See lib/cachedSources.ts.
+import { getCachedParking } from "@/lib/cachedSources";
 import { listActiveCoupons } from "@/lib/coupons";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "大溪美食與商家",
+  description: "大溪老街的豆干、小吃、伴手禮與市集商家清單，含營業狀態、排隊情況、優惠券與步行距離。",
+  alternates: { canonical: "/businesses" },
+  openGraph: {
+    title: "大溪美食與商家 ｜ 大溪通",
+    description: "大溪老街豆干、小吃與伴手禮商家，含營業狀態與優惠券。",
+    url: "/businesses",
+  },
+};
 
 const updatedLabel = new Intl.DateTimeFormat("zh-TW", {
   month: "numeric",
@@ -23,7 +39,7 @@ export default async function BusinessesPage() {
 
   let lots: LiveParkingLot[] = [];
   try {
-    lots = await fetchDaxiParking();
+    lots = await getCachedParking();
   } catch {
     lots = [];
   }
@@ -39,6 +55,7 @@ export default async function BusinessesPage() {
   return (
     <div className="pt-2">
       <PageHeader title="商家" subtitle={`美食・市集・${updatedLabel} 更新`} tint="wood" />
+      <ExploreTabs />
       <Suspense fallback={null}>
         <BusinessList businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} coupons={coupons} />
       </Suspense>

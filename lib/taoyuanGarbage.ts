@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./fetchWithTimeout";
+
 const OFFICIAL_BASE = "https://route.tyoem.gov.tw";
 const DATA_AGENT_URL = `${OFFICIAL_BASE}/web/dataManagerAgentWeb.jsp`;
 const DAXI_GID = "lagi2-007";
@@ -117,7 +119,7 @@ function routeLabel(routeName: string) {
 }
 
 async function createOfficialSession() {
-  const response = await fetch(OFFICIAL_BASE, {
+  const response = await fetchWithTimeout(OFFICIAL_BASE, {
     cache: "no-store",
     headers: {
       "User-Agent": "Daxi/0.1 resident garbage map",
@@ -141,7 +143,7 @@ async function officialPost<T>(dcfid: string, params: Record<string, string>): P
     random_form: session.token,
     ...params,
   });
-  const response = await fetch(DATA_AGENT_URL, {
+  const response = await fetchWithTimeout(DATA_AGENT_URL, {
     method: "POST",
     cache: "no-store",
     headers: {

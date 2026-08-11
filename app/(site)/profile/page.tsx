@@ -1,8 +1,12 @@
 import PageHeader from "@/components/PageHeader";
 import FavoritesView from "@/components/FavoritesView";
 import IdentitySwitchCard from "@/components/IdentitySwitchCard";
+import AboutLinkCard from "@/components/AboutLinkCard";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
-import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
+import type { LiveParkingLot } from "@/lib/tycgParking";
+// force-dynamic below zeroes the TTL on every fetch in this segment; the
+// cached wrapper is immune to it. See lib/cachedSources.ts.
+import { getCachedParking } from "@/lib/cachedSources";
 import { listActiveCoupons } from "@/lib/coupons";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +17,7 @@ export default async function ProfilePage() {
 
   let lots: LiveParkingLot[] = [];
   try {
-    lots = await fetchDaxiParking();
+    lots = await getCachedParking();
   } catch {
     lots = [];
   }
@@ -32,6 +36,7 @@ export default async function ProfilePage() {
       <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
         <FavoritesView allPlaces={allPlaces} photos={photos} details={details} lots={lots} coupons={coupons} />
         <IdentitySwitchCard currentLabel="遊客" switchToHref="/resident" switchToLabel="切換為大溪人模式" switchToIdentity="resident" />
+        <AboutLinkCard />
       </div>
     </div>
   );

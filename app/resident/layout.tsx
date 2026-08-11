@@ -1,5 +1,6 @@
 import Image from "next/image";
 import ResidentBottomNav from "@/components/ResidentBottomNav";
+import PullToRefresh from "@/components/PullToRefresh";
 
 // Separate layout/segment from app/(site) — residents get their own bottom
 // nav and page set entirely, not just a reordered tourist home. Shares the
@@ -7,6 +8,7 @@ import ResidentBottomNav from "@/components/ResidentBottomNav";
 export default function ResidentLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <PullToRefresh />
       <div className="fixed inset-0 flex justify-center pointer-events-none" aria-hidden>
         <div className="relative w-full max-w-md overflow-hidden md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
           <Image

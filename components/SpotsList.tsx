@@ -7,7 +7,7 @@ import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
-import { experienceTags, type SuggestedRoute } from "@/lib/experience";
+import { experienceTags, walkTimeLabel, type SuggestedRoute } from "@/lib/experience";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
 import BusinessDetailModal from "./BusinessDetailModal";
@@ -50,7 +50,9 @@ export default function SpotsList({
         ...route,
         stops: route.stops.map((stop) => {
           const business = locatedAllBusinesses.find((candidate) => candidate.placeId === stop.placeId);
-          return business ? { ...stop, walkTime: `${Math.max(1, Math.round(business.distanceMeters / 80))} 分鐘` } : stop;
+          // Was an inline copy of the old unbounded walking formula; the
+          // shared helper now switches to a driving estimate past 1.5km.
+          return business ? { ...stop, walkTime: walkTimeLabel(business.distanceMeters) } : stop;
         }),
       })),
     [locatedAllBusinesses, routes],

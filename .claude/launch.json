@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 8475
+    },
+    {
+      "name": "daxi-verify",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "-p", "8476"],
+      "port": 8476
     }
   ]
 }

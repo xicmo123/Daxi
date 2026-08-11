@@ -218,7 +218,7 @@ export default function FeaturesPage() {
       >
         <HeaderShapes />
         <div className="relative">
-          <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "rgba(43,36,32,0.7)" }}>
+          <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-fg-soft)" }}>
             Product Map
           </div>
           <h1 className="mt-1 text-[28px] font-black leading-tight sm:text-[34px]" style={{ color: "var(--block-fg)" }}>

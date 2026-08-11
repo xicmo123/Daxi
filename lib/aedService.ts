@@ -27,9 +27,15 @@ async function getAgent(): Promise<https.Agent> {
   return cachedAgent;
 }
 
+// This one can't use lib/fetchWithTimeout: the AED feed serves an incomplete
+// TLS chain, so it needs the custom https.Agent built above. The timeout is
+// therefore wired by hand — without it a stalled connection would hang the
+// 尋找 AED page indefinitely, which is the worst page in the app to hang.
+const AED_REQUEST_TIMEOUT_MS = 20_000;
+
 function httpsGetText(url: string, agent: https.Agent): Promise<string> {
   return new Promise((resolve, reject) => {
-    https
+    const request = https
       .get(url, { agent, headers: { "User-Agent": "Daxi/0.1 resident AED finder" } }, (res) => {
         if (res.statusCode !== 200) {
           reject(new Error(`AED open-data request failed: ${res.statusCode}`));
@@ -42,6 +48,10 @@ function httpsGetText(url: string, agent: https.Agent): Promise<string> {
         res.on("error", reject);
       })
       .on("error", reject);
+
+    request.setTimeout(AED_REQUEST_TIMEOUT_MS, () => {
+      request.destroy(new Error(`AED open-data request timed out after ${AED_REQUEST_TIMEOUT_MS}ms`));
+    });
   });
 }
 

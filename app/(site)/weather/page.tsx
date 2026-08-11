@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import LiveModeSwitcher from "@/components/LiveModeSwitcher";
 import { fetchDaxiRoadCctvs, type RoadCctvFeed } from "@/lib/tdxRoadCctv";
 import { readTrafficAlerts } from "@/lib/trafficAlerts";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "大溪天氣與路況",
+  description: "大溪即時天氣、逐時預報、公路即時影像與交通管制公告，資料來源為中央氣象署與交通部 TDX。",
+  alternates: { canonical: "/weather" },
+  openGraph: {
+    title: "大溪天氣與路況 ｜ 大溪通",
+    description: "大溪即時天氣、公路影像與交通管制公告。",
+    url: "/weather",
+  },
+};
 
 const alertDot: Record<string, string> = {
   block: "var(--bordeaux)",

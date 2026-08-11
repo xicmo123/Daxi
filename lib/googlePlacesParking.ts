@@ -1,4 +1,5 @@
 import { OLD_STREET_CENTER, haversineMeters, formatDistance } from "./tycgParking";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
 const RADIUS_METERS = 3000;
 const MAX_RESULTS = 20;
@@ -60,7 +61,7 @@ export async function fetchNearbyParking(
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) return [];
 
-  const res = await fetch("https://places.googleapis.com/v1/places:searchNearby", {
+  const res = await fetchWithTimeout("https://places.googleapis.com/v1/places:searchNearby", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -82,7 +82,7 @@ export default function ParkingAlertBanner({
               >
                 <span className="truncate">{lot.name}</span>
                 <span className="shrink-0" style={{ color: "rgba(255,255,255,0.85)" }}>
-                  步行 {walkTimeLabel(lot.distanceMeters)}・剩 {lot.surplus ?? "—"}
+                  {walkTimeLabel(lot.distanceMeters)}・剩 {lot.surplus ?? "—"}
                 </span>
               </a>
             ))}

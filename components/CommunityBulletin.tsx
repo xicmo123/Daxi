@@ -125,13 +125,15 @@ function BulletinModal({ post, onClose }: { post: BulletinPost | null; onClose: 
   );
 }
 
+// min-h rather than the old fixed h-[200px]: a one-line notice left a ~90px
+// hole inside the blackboard frame, which read as a rendering bug.
 function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void }) {
   const range = formatRange(post);
   return (
     <button
       type="button"
       onClick={onOpen}
-      className="relative flex h-[200px] w-full flex-col overflow-hidden rounded-[18px] border px-4 py-3.5 text-left transition-opacity active:opacity-80"
+      className="relative flex min-h-[152px] w-full flex-col overflow-hidden rounded-[18px] border px-4 py-3.5 text-left transition-opacity active:opacity-80"
       style={
         post.urgent
           ? { background: "rgba(255,246,226,0.94)", borderColor: "rgba(215,160,107,0.9)", boxShadow: "0 10px 22px rgba(0,0,0,0.18)" }

@@ -2,6 +2,7 @@
 // refreshed daily by the Tourism Administration. No API key needed. Same
 // fetch-a-zip-and-unzip pattern as the Taipower outage feed in outages.ts.
 import JSZip from "jszip";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
 const EVENT_ZIP_URL = "https://media.taiwan.net.tw/XMLReleaseAll_public/v2.0/Zh_tw/Event-json.zip";
 const EVENT_JSON_ENTRY = "EventList.json";
@@ -33,7 +34,8 @@ export type TourismEvent = {
 // Refetched every 6h — the source itself only updates once a day, so this
 // is just about not re-downloading/unzipping on every request.
 export async function fetchDaxiTourismEvents(): Promise<TourismEvent[]> {
-  const res = await fetch(EVENT_ZIP_URL, { next: { revalidate: 21600 } });
+  // ZIP download — same longer budget as the 台電 outage archive.
+  const res = await fetchWithTimeout(EVENT_ZIP_URL, { next: { revalidate: 21600 } }, 20_000);
   if (!res.ok) throw new Error(`Tourism event feed responded ${res.status}`);
 
   const buf = await res.arrayBuffer();

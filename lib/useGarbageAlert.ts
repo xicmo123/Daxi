@@ -2,6 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { calculateDistance } from "@/lib/geo";
+import {
+  NOTIFICATION_IDS,
+  currentPermission,
+  notificationsSupported,
+  notifyNow,
+  requestNotificationPermission,
+  type NotificationPermissionState,
+} from "@/lib/notifications";
 import type { GarbageRealtime } from "@/lib/taoyuanGarbage";
 
 const STORAGE_KEY = "daxi-garbage-alert-point";
@@ -12,7 +20,7 @@ const POLL_INTERVAL_MS = 15000; // matches GarbageTruckMap's own refresh cadence
 const RENOTIFY_COOLDOWN_MS = 10 * 60 * 1000;
 
 export type GarbageAlertPoint = { lat: number; lng: number };
-export type NotificationPermissionState = "unsupported" | "default" | "granted" | "denied";
+export type { NotificationPermissionState };
 
 function readStoredPoint(): GarbageAlertPoint | null {
   try {
@@ -33,11 +41,22 @@ export function useGarbageAlert() {
   const [point, setPointState] = useState<GarbageAlertPoint | null>(() =>
     typeof window === "undefined" ? null : readStoredPoint(),
   );
-  const [permission, setPermission] = useState<NotificationPermissionState>(() => {
-    if (typeof window === "undefined") return "default";
-    return typeof window.Notification === "undefined" ? "unsupported" : (Notification.permission as NotificationPermissionState);
-  });
+  const [permission, setPermission] = useState<NotificationPermissionState>(() =>
+    typeof window === "undefined" || notificationsSupported() ? "default" : "unsupported",
+  );
   const lastNotifiedAtRef = useRef(0);
+
+  // The real state has to be read asynchronously on native (it's a bridge
+  // call), so the initial value above is only a placeholder until this lands.
+  useEffect(() => {
+    let cancelled = false;
+    void currentPermission().then((state) => {
+      if (!cancelled) setPermission(state);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const setPoint = useCallback((next: GarbageAlertPoint | null) => {
     setPointState(next);
@@ -52,12 +71,8 @@ export function useGarbageAlert() {
   }, []);
 
   const requestPermission = useCallback(async () => {
-    if (typeof window.Notification === "undefined") {
-      setPermission("unsupported");
-      return "unsupported" as const;
-    }
-    const result = await Notification.requestPermission();
-    setPermission(result as NotificationPermissionState);
+    const result = await requestNotificationPermission();
+    setPermission(result);
     return result;
   }, []);
 
@@ -82,10 +97,10 @@ export function useGarbageAlert() {
           const now = Date.now();
           if (now - lastNotifiedAtRef.current > RENOTIFY_COOLDOWN_MS) {
             lastNotifiedAtRef.current = now;
-            new Notification("垃圾車即將抵達", {
+            void notifyNow({
+              id: NOTIFICATION_IDS.garbageTruck,
+              title: "垃圾車即將抵達",
               body: `距離你設定的倒垃圾點剩餘約 ${Math.round(nearestMeters)} 公尺！`,
-              icon: "/icon-192.png",
-              tag: "daxi-garbage-alert",
             });
           }
         }

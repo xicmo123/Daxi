@@ -11,7 +11,8 @@ export type StatusButton = {
   label: string;
   block: StatusBlock;
   icon: ReactNode;
-  count?: number;
+  /** `null` means the upstream source could not be read — not "zero". */
+  count: number | null;
 };
 
 function compactLabel(label: string) {
@@ -41,22 +42,33 @@ export default function ResidentStatusButtons({ items }: { items: StatusButton[]
           </div>
         </div>
         <div className="grid min-w-0 flex-1 grid-cols-3 gap-1">
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex min-w-0 items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-center transition-opacity active:opacity-70"
-              style={{ background: "rgba(255,255,255,0.38)" }}
-            >
-              <span className="w-3 h-3 shrink-0">{item.icon}</span>
-              <span className="text-[15px] font-black leading-none tabular-nums" style={{ color: "var(--ink)" }}>
-                {item.count ?? 0}
-              </span>
-              <span className="truncate text-[10.5px] font-bold" style={{ color: "var(--ink-soft)" }}>
-                {compactLabel(item.label)}
-              </span>
-            </Link>
-          ))}
+          {items.map((item) => {
+            // A dash, not a 0. Rendering "停水停電 0" when 台水/台電 is
+            // unreachable tells a resident "nothing is wrong today", which is
+            // the opposite of what we actually know.
+            const unknown = item.count === null;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-label={unknown ? `${item.label}：資料暫時無法取得` : `${item.label}：${item.count} 筆`}
+                title={unknown ? "資料來源暫時無回應，點入看官方頁面" : undefined}
+                className="flex min-w-0 items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-center transition-opacity active:opacity-70"
+                style={{ background: "rgba(255,255,255,0.38)" }}
+              >
+                <span className="w-3 h-3 shrink-0">{item.icon}</span>
+                <span
+                  className="text-[15px] font-black leading-none tabular-nums"
+                  style={{ color: unknown ? "var(--ink-soft)" : "var(--ink)" }}
+                >
+                  {unknown ? "—" : item.count}
+                </span>
+                <span className="truncate text-[10.5px] font-bold" style={{ color: "var(--ink-soft)" }}>
+                  {compactLabel(item.label)}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </motion.div>
     </div>

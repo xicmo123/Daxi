@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>大溪通 — 目前無法連線</title>
+    <!--
+      Capacitor `server.errorPath` target. The app loads its UI from
+      https://daxi.zequo.net, so with no fallback a dropped connection showed
+      WKWebView's own English "cannot connect to server" page: no branding, no
+      retry, and — on a civic app whose whole point is 停水停電/AED — no way to
+      reach an emergency number.
+
+      This file ships inside the app bundle, so everything here must be
+      self-contained: no external CSS, fonts, images or scripts.
+    -->
+    <style>
+      :root {
+        --paper: #fdf8f2;
+        --ink: #2b2420;
+        --ink-soft: #7d6a58;
+        --accent: #a06a3a;
+        --card: #ffffff;
+        --line: rgba(43, 36, 32, 0.12);
+        --danger: #b3261e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #1a1611;
+          --ink: #f2ebe0;
+          --ink-soft: #bfae9c;
+          --accent: #d7a06b;
+          --card: #262019;
+          --line: rgba(242, 235, 224, 0.12);
+        }
+      }
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+        background: var(--paper);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans CJK TC", "Noto Sans TC", sans-serif;
+        line-height: 1.65;
+        text-align: center;
+      }
+      .wrap { width: 100%; max-width: 320px; }
+      h1 { font-size: 18px; font-weight: 700; margin: 8px 0; }
+      p { font-size: 13px; color: var(--ink-soft); margin: 0 0 20px; }
+      button, a.btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 48px;
+        border: none;
+        border-radius: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .primary { background: var(--accent); color: #fff; }
+      .card {
+        margin-top: 24px;
+        padding: 16px;
+        border-radius: 16px;
+        background: var(--card);
+        border: 1px solid var(--line);
+      }
+      .label {
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 10px;
+      }
+      .calls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .call {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 56px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .call strong { font-size: 17px; color: var(--danger); }
+      .call span { font-size: 11px; color: var(--ink-soft); }
+      .status { margin-top: 16px; font-size: 11px; color: var(--ink-soft); min-height: 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div style="font-size: 40px" aria-hidden="true">📡</div>
+      <h1>目前連不上大溪通</h1>
+      <p>可能是手機沒有網路，或伺服器正在維護。恢復連線後即可繼續使用。</p>
+
+      <button class="primary" type="button" id="retry">重新連線</button>
+
+      <div class="card">
+        <div class="label">離線也能撥打</div>
+        <div class="calls">
+          <a class="call" href="tel:110"><strong>110</strong><span>警察報案</span></a>
+          <a class="call" href="tel:119"><strong>119</strong><span>消防救護</span></a>
+          <a class="call" href="tel:1999"><strong>1999</strong><span>市民專線</span></a>
+          <a class="call" href="tel:1911"><strong>1911</strong><span>台電客服</span></a>
+        </div>
+      </div>
+
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </div>
+
+    <script>
+      (function () {
+        var status = document.getElementById("status");
+        var retry = document.getElementById("retry");
+
+        function go() {
+          status.textContent = "重新連線中…";
+          // Replace rather than assign so the failed page doesn't pile up in
+          // the webview's history and trap the user behind a back button.
+          window.location.replace("https://daxi.zequo.net/");
+        }
+
+        retry.addEventListener("click", go);
+
+        // If the OS reports the network is back, recover without a tap.
+        window.addEventListener("online", go);
+
+        if (!navigator.onLine) {
+          status.textContent = "裝置目前沒有網路連線";
+        }
+      })();
+    </script>
+  </body>
+</html>

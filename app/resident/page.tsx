@@ -1,5 +1,9 @@
 import { Suspense } from "react";
-import { fetchDaxiAnnouncements } from "@/lib/announcements";
+import type { Metadata } from "next";
+import { readSource } from "@/lib/fetchWithTimeout";
+// force-dynamic below zeroes the TTL on every fetch in this segment; the
+// cached wrapper is immune to it. See lib/cachedSources.ts.
+import { getCachedAnnouncements } from "@/lib/cachedSources";
 import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
@@ -10,6 +14,17 @@ import ResidentQuickLinks from "@/components/ResidentQuickLinks";
 import ResidentStatusButtons, { type StatusButton } from "@/components/ResidentStatusButtons";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "大溪人生活資訊",
+  description: "大溪居民每天要用的資訊：停水停電、道路施工、區公所公告、垃圾清運、診所輪值、AED 位置與陳情報修管道。",
+  alternates: { canonical: "/resident" },
+  openGraph: {
+    title: "大溪人生活資訊 ｜ 大溪通",
+    description: "停水停電、道路施工、垃圾清運、診所輪值與陳情報修。",
+    url: "/resident",
+  },
+};
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short" });
 
@@ -91,26 +106,19 @@ const quickLinks: Array<{ href: string; label: string; desc: string; block: Bloc
 ];
 
 async function TodayStatusRow() {
-  let outageCount = 0;
-  let roadworkCount = 0;
-  let announcementCount = 0;
+  // Each source is read independently and a failure yields null, not 0 — the
+  // row can then draw "—" for "we don't know" instead of claiming there are no
+  // outages when 台水/台電 simply didn't answer. Run in parallel so one slow
+  // upstream doesn't serialise behind the others.
+  const [outages, roadworks, announcements] = await Promise.all([
+    readSource(() => listUpcomingOutages()),
+    readSource(() => fetchDaxiRoadworks()),
+    readSource(() => getCachedAnnouncements(10)),
+  ]);
 
-  try {
-    outageCount = (await listUpcomingOutages()).length;
-  } catch {
-    outageCount = 0;
-  }
-  try {
-    roadworkCount = (await fetchDaxiRoadworks()).length;
-  } catch {
-    roadworkCount = 0;
-  }
-  try {
-    const items = await fetchDaxiAnnouncements(10);
-    announcementCount = items.length;
-  } catch {
-    announcementCount = 0;
-  }
+  const outageCount = outages.ok ? outages.data.length : null;
+  const roadworkCount = roadworks.ok ? roadworks.data.length : null;
+  const announcementCount = announcements.ok ? announcements.data.length : null;
 
   const items: StatusButton[] = [
     {

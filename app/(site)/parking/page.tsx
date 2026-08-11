@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import Link from "next/link";
 import { fetchDaxiParking, type LiveParkingLot } from "@/lib/tycgParking";
@@ -9,6 +10,17 @@ import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStor
 
 // Rough average walking pace (~80m/min) — a static, indicative label only.
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "大溪停車場即時空位",
+  description: "大溪老街周邊停車場即時剩餘車位、擁擠程度與步行到老街的時間，資料來源為桃園市政府停車場開放資料。",
+  alternates: { canonical: "/parking" },
+  openGraph: {
+    title: "大溪停車場即時空位 ｜ 大溪通",
+    description: "大溪老街周邊停車場即時剩餘車位與步行時間。",
+    url: "/parking",
+  },
+};
 
 type Row =
   | ({ kind: "public" } & LiveParkingLot)

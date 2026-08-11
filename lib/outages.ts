@@ -15,6 +15,7 @@
 // back to fabricated data, since showing wrong utility-outage info is
 // worse than showing none.
 import JSZip from "jszip";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
 export type OutageType = "water" | "power";
 
@@ -50,28 +51,47 @@ function toDateKey(iso: string): string {
   return iso.slice(0, 10);
 }
 
+// The 台水 endpoint returns every case island-wide — ~2.8MB — and we keep only
+// the 大溪 rows. That is over Next.js's 2MB data-cache ceiling, so the
+// `next: { revalidate: 1800 }` below was silently a no-op and the server logged
+// "items over 2MB can not be cached" on every request while re-downloading the
+// whole payload. Caching the *filtered* result in module scope instead is what
+// lib/aedService.ts already does for the same reason.
+const WATER_CACHE_TTL_MS = 30 * 60 * 1000;
+let cachedWaterOutages: { data: Outage[]; fetchedAt: number } | null = null;
+
 async function fetchWaterOutages(): Promise<Outage[]> {
+  if (cachedWaterOutages && Date.now() - cachedWaterOutages.fetchedAt < WATER_CACHE_TTL_MS) {
+    return cachedWaterOutages.data;
+  }
+
   const now = new Date();
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
   const oneMonthOut = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   const fmt = (d: Date) => d.toISOString().slice(0, 10);
 
-  const res = await fetch(WATER_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      mode: 1,
-      startDate: fmt(yesterday),
-      endDate: fmt(oneMonthOut),
-      keyword: undefined,
-      address: undefined,
-      admin: undefined,
-      government: undefined,
-    }),
-    next: { revalidate: 1800 },
-    signal: AbortSignal.timeout(10_000),
-  });
+  const res = await fetchWithTimeout(
+    WATER_API,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: 1,
+        startDate: fmt(yesterday),
+        endDate: fmt(oneMonthOut),
+        keyword: undefined,
+        address: undefined,
+        admin: undefined,
+        government: undefined,
+      }),
+      // Explicitly uncached: the response is too big for the data cache, and
+      // asking for it only produced a log line on every request. The module
+      // cache above is what actually holds the result.
+      cache: "no-store",
+    },
+    10_000,
+  );
   if (!res.ok) throw new Error(`water API ${res.status}`);
   const cases: Array<{
     id: number;
@@ -84,7 +104,7 @@ async function fetchWaterOutages(): Promise<Outage[]> {
     status?: number;
   }> = await res.json();
 
-  return cases
+  const outages: Outage[] = cases
     .filter((c) => Array.isArray(c.affectedTowns) && c.affectedTowns.includes(DAXI_TOWN_CODE))
     .filter((c) => c.status !== 4) // 4 = withdrawn/cancelled
     .map((c) => ({
@@ -97,6 +117,9 @@ async function fetchWaterOutages(): Promise<Outage[]> {
       reason: c.waterOffReason ?? "",
       source: "台灣自來水公司",
     }));
+
+  cachedWaterOutages = { data: outages, fetchedAt: Date.now() };
+  return outages;
 }
 
 function parseCsvLine(line: string): string[] {
@@ -106,10 +129,10 @@ function parseCsvLine(line: string): string[] {
 }
 
 async function fetchPowerOutages(): Promise<Outage[]> {
-  const res = await fetch(POWER_ZIP_URL, {
-    next: { revalidate: 1800 },
-    signal: AbortSignal.timeout(15_000),
-  });
+  // A multi-megabyte ZIP, so it gets a much longer budget than the 6s default
+  // the JSON endpoints use — the timeout now lives in the one argument rather
+  // than a separate signal that the wrapper would have raced against.
+  const res = await fetchWithTimeout(POWER_ZIP_URL, { next: { revalidate: 1800 } }, 20_000);
   if (!res.ok) throw new Error(`power zip ${res.status}`);
   const buf = await res.arrayBuffer();
   const zip = await JSZip.loadAsync(buf);

@@ -1,11 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, type CSSProperties } from "react";
-import AboutModal from "./AboutModal";
+// Resident tab bar — same component as the tourist one, different
+// destinations and accent. See components/BottomNavBar.tsx.
+//
+// 關於 used to occupy the fifth slot here (opening a modal) while the tourist
+// bar used it for 我的. That meant switching modes moved the user's own
+// settings; 關於 now lives as a row inside 我的 on both sides, where the
+// notification settings and identity switch already are.
+import BottomNavBar, { type NavTab } from "./BottomNavBar";
 
-const tabs = [
+const tabs: NavTab[] = [
   {
     href: "/resident",
     label: "首頁",
@@ -52,148 +56,17 @@ const tabs = [
     ),
   },
   {
-    href: null,
-    label: "關於",
+    href: "/resident/profile",
+    label: "我的",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="8.2" />
-        <path d="M12 11v5.2" />
-        <circle cx="12" cy="7.8" r="0.15" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="12" cy="8.6" r="3.6" />
+        <path d="M5.2 19.4a6.8 6.8 0 0 1 13.6 0" />
       </svg>
     ),
   },
 ];
 
 export default function ResidentBottomNav() {
-  const pathname = usePathname();
-  const [showAbout, setShowAbout] = useState(false);
-
-  return (
-    <nav
-      className="app-bottom-nav fixed bottom-0 inset-x-0 z-20 flex glass-nav"
-      style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20, display: "flex", justifyContent: "center" }}
-    >
-      <div
-        className="mx-auto flex w-full max-w-md border-t md:max-w-3xl md:border-x lg:max-w-6xl"
-        style={{
-          borderColor: "var(--line)",
-          display: "grid",
-          gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
-          width: "100%",
-        }}
-      >
-        {tabs.map((tab) => {
-          const active = tab.href !== null && pathname === tab.href;
-
-          // Center tab gets a raised filled-circle treatment — borrowed from
-          // iRead 臺北市立圖書館's home screen, where its primary action
-          // ("手機借書") floats above the bar instead of sitting flush with
-          // the other four. Same link/behavior as before, just visually
-          // promoted since 服務 is the resident tab's equivalent primary action.
-          if (tab.href === "/resident/services") {
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                aria-current={active ? "page" : undefined}
-                className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1 py-2 transition-transform active:scale-95"
-                style={{ textDecoration: "none", position: "relative" }}
-              >
-                <span
-                  className="flex items-center justify-center rounded-full"
-                  style={{
-                    width: 46,
-                    height: 46,
-                    marginTop: -26,
-                    background: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
-                    boxShadow: "var(--shadow-float)",
-                    border: "3px solid var(--paper)",
-                    color: "var(--block-fg)",
-                  }}
-                >
-                  <span className="w-[20px] h-[20px] block">{tab.icon}</span>
-                </span>
-                <span
-                  className="text-[10.5px] font-normal tracking-wide"
-                  style={{ color: active ? "var(--river-teal)" : "var(--ink)", opacity: active ? 1 : 0.68 }}
-                >
-                  {tab.label}
-                </span>
-              </Link>
-            );
-          }
-
-          const itemStyle: CSSProperties = {
-            color: active ? "var(--river-teal)" : "var(--ink)",
-            opacity: active ? 1 : 0.54,
-            minHeight: 56,
-            padding: "8px 2px 8px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 4,
-            textDecoration: "none",
-            position: "relative",
-            background: "none",
-            border: "none",
-            width: "100%",
-          };
-          const content = (
-            <>
-              <span
-                aria-hidden
-                className="absolute top-1.5 h-0.5 w-5 rounded-full transition-opacity duration-300"
-                style={{ background: "var(--river-teal)", opacity: active ? 1 : 0 }}
-              />
-              <span
-                className="w-[22px] h-[22px] rounded-full flex items-center justify-center transition-all duration-300 ease-out"
-                style={{
-                  width: 28,
-                  height: 28,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: active ? "var(--river-teal-soft)" : "transparent",
-                  transform: active ? "scale(1.08)" : "scale(1)",
-                }}
-              >
-                {tab.icon}
-              </span>
-              <span className="text-[10.5px] font-normal tracking-wide transition-all duration-300" style={{ fontSize: 10.5, fontWeight: 400, lineHeight: 1.1 }}>
-                {tab.label}
-              </span>
-            </>
-          );
-
-          if (tab.href === null) {
-            return (
-              <button
-                key={tab.label}
-                type="button"
-                onClick={() => setShowAbout(true)}
-                className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-                style={itemStyle}
-              >
-                {content}
-              </button>
-            );
-          }
-
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              aria-current={active ? "page" : undefined}
-              className="flex-1 min-h-12 flex flex-col items-center justify-center gap-1.5 py-3 transition-opacity active:opacity-70"
-              style={itemStyle}
-            >
-              {content}
-            </Link>
-          );
-        })}
-      </div>
-      {showAbout ? <AboutModal onClose={() => setShowAbout(false)} /> : null}
-    </nav>
-  );
+  return <BottomNavBar tabs={tabs} accent="var(--river-teal)" accentSoft="var(--river-teal-soft)" ariaLabel="大溪人導覽" />;
 }
