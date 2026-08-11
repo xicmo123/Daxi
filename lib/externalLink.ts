@@ -99,6 +99,38 @@ export function nativeMapsUrl(raw: string, platform: string): string | null {
   return null;
 }
 
+/**
+ * The same destination as an https Apple Maps link, for the plain website.
+ *
+ * `maps://` is the right scheme inside the app, where the Capacitor delegate
+ * hands it to the OS, but a browser tab has no such delegate — a custom scheme
+ * either does nothing or throws up an "address invalid" sheet. maps.apple.com
+ * is the universal link: it opens the Apple Maps app on iOS/macOS and falls
+ * back to Apple's web map everywhere else.
+ */
+export function webAppleMapsUrl(raw: string): string | null {
+  const url = safeUrl(raw);
+  if (!url) return null;
+
+  const target = parseMapsTarget(url);
+  if (!target) return null;
+
+  const destination = target.isCoordinates ? target.destination : encodeURIComponent(target.destination);
+  return `https://maps.apple.com/?daddr=${destination}&dirflg=${target.dirflg}`;
+}
+
+/**
+ * Is this browser on a device where offering Apple Maps makes sense?
+ *
+ * Offering it on a Windows desktop or an Android phone would send the user to
+ * a web map they never asked for, so the website only shows the chooser to
+ * Apple hardware. iPadOS 13+ reports itself as "Macintosh", which is fine —
+ * Apple Maps exists on macOS too, so both belong in the same bucket.
+ */
+export function prefersAppleMaps(userAgent: string): boolean {
+  return /iPhone|iPad|iPod|Macintosh/.test(userAgent);
+}
+
 /** Hand a maps URL (native scheme or https) to the OS / in-app browser. */
 export async function openMapsChoice(url: string): Promise<void> {
   // Non-http scheme: the webview delegate passes it to the OS rather than

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isMapsLink, nativeMapsUrl } from "./externalLink";
+import { isMapsLink, nativeMapsUrl, prefersAppleMaps, webAppleMapsUrl } from "./externalLink";
 
 // Navigation links are baked into data/ as Google Maps directions URLs. Inside
 // the Capacitor webview they must become a native maps scheme, or the user is
@@ -50,6 +50,32 @@ describe("nativeMapsUrl", () => {
 
   it("does not throw on a malformed href", () => {
     expect(nativeMapsUrl("not a url", "ios")).toBeNull();
+  });
+});
+
+// The plain website shows the same chooser, but a browser tab has no Capacitor
+// delegate to hand `maps://` to — it needs Apple's universal link instead.
+describe("webAppleMapsUrl", () => {
+  it("uses the maps.apple.com universal link, travel mode and all", () => {
+    expect(webAppleMapsUrl("https://www.google.com/maps/dir/?api=1&destination=24.88,121.28&travelmode=walking")).toBe(
+      "https://maps.apple.com/?daddr=24.88,121.28&dirflg=w",
+    );
+  });
+
+  it("stays null for anything that is not a maps link", () => {
+    expect(webAppleMapsUrl("https://www.daxi.tycg.gov.tw/cp.aspx?n=7509")).toBeNull();
+  });
+});
+
+describe("prefersAppleMaps", () => {
+  it("offers Apple Maps on Apple hardware — iPadOS reports itself as Macintosh", () => {
+    expect(prefersAppleMaps("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)")).toBe(true);
+    expect(prefersAppleMaps("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")).toBe(true);
+  });
+
+  it("leaves everyone else with the one-tap Google link", () => {
+    expect(prefersAppleMaps("Mozilla/5.0 (Linux; Android 14; Pixel 8)")).toBe(false);
+    expect(prefersAppleMaps("Mozilla/5.0 (Windows NT 10.0; Win64; x64)")).toBe(false);
   });
 });
 
