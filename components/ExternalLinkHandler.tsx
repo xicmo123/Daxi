@@ -22,6 +22,13 @@ import {
 } from "@/lib/externalLink";
 import MapsAppSheet, { type MapsChoices } from "./MapsAppSheet";
 
+function closestAnchor(target: EventTarget | null): HTMLAnchorElement | null {
+  if (!(target instanceof Node)) return null;
+
+  const element = target instanceof Element ? target : target.parentElement;
+  return element?.closest<HTMLAnchorElement>("a") ?? null;
+}
+
 export default function ExternalLinkHandler() {
   const [choices, setChoices] = useState<MapsChoices | null>(null);
 
@@ -31,7 +38,7 @@ export default function ExternalLinkHandler() {
       if (event.defaultPrevented || event.button !== 0) return;
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
-      const anchor = (event.target as Element | null)?.closest?.("a");
+      const anchor = closestAnchor(event.target);
       if (!anchor) return;
 
       const href = anchor.getAttribute("href");
