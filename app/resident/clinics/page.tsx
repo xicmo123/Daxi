@@ -1,5 +1,5 @@
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { readClinics, withOpenStatus } from "@/lib/clinicData";
 import { pageMetadata } from "@/lib/seo";
 

@@ -1,7 +1,8 @@
 .masthead,
 .content {
   --interior-gutter: clamp(1rem, 4vw, 2rem);
-  --interior-serif: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+  /* Sans, to match the Jeju-style skin's bold titles (was a CJK serif). */
+  --interior-serif: var(--font-app-sans);
 }
 
 .masthead {

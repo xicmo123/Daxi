@@ -3,15 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "./ResidentSkin.module.css";
+import styles from "./Skin.module.css";
 
-export type ResidentHeroSlide = {
+export type SkinHeroSlide = {
   id: string;
   tag: string;
   title: string;
   subtitle?: string;
   href?: string;
-  photo: { src: string; author: string; sourceUrl: string };
+  ctaLabel?: string;
+  photo: { src: string; author?: string; sourceUrl?: string };
 };
 
 const AUTOPLAY_MS = 6000;
@@ -24,16 +25,20 @@ function pad(n: number) {
 // in the lower-left, and a counter / progress / pause / prev-next strip under
 // it. Slides come from the admin-editable resident carousel; the photo is
 // assigned per position so admins don't have to manage images.
-export default function ResidentHero({
+export default function SkinHero({
   slides,
   todayLabel,
   weather,
+  initialIndex = 0,
+  label = "大溪今日重點",
 }: {
-  slides: ResidentHeroSlide[];
+  slides: SkinHeroSlide[];
   todayLabel: string;
   weather: { temp: number; icon: string; text: string } | null;
+  initialIndex?: number;
+  label?: string;
 }) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(initialIndex);
   const [playing, setPlaying] = useState(true);
   const touchX = useRef<number | null>(null);
   const count = slides.length;
@@ -56,7 +61,7 @@ export default function ResidentHero({
       <section
         className={styles.hero}
         aria-roledescription="carousel"
-        aria-label="大溪今日重點"
+        aria-label={label}
         onTouchStart={(e) => {
           touchX.current = e.touches[0]?.clientX ?? null;
         }}
@@ -74,6 +79,7 @@ export default function ResidentHero({
               alt=""
               fill
               sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, 1152px"
+              unoptimized={slide.photo.src.startsWith("http")}
               loading={i === 0 ? "eager" : "lazy"}
               fetchPriority={i === 0 ? "high" : "auto"}
             />
@@ -102,7 +108,7 @@ export default function ResidentHero({
           {current.subtitle ? <p>{current.subtitle}</p> : null}
           {current.href ? (
             <Link href={current.href} className={styles.heroCta}>
-              立即查看
+              {current.ctaLabel ?? "立即查看"}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
@@ -143,9 +149,11 @@ export default function ResidentHero({
           </div>
         ) : null}
 
-        <a className={styles.heroCredit} href={current.photo.sourceUrl} target="_blank" rel="noreferrer">
-          攝影 {current.photo.author}
-        </a>
+        {current.photo.author && current.photo.sourceUrl ? (
+          <a className={styles.heroCredit} href={current.photo.sourceUrl} target="_blank" rel="noreferrer">
+            攝影 {current.photo.author}
+          </a>
+        ) : null}
       </section>
     </div>
   );

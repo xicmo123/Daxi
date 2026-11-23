@@ -4,7 +4,7 @@ import NotificationSettings from "@/components/NotificationSettings";
 import ResidentAreaCard from "@/components/ResidentAreaCard";
 import ResidentIdCard from "@/components/ResidentIdCard";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({

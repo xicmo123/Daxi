@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
 export default function OldStreetWalkPage() {
   return (
     <main>
-      <TouristPageHeader title={daxiWalkTitle} subtitle="從和平老街出發。可依序散步，也可選一站直接導航。">
+      <TouristPageHeader href={daxiWalkHref} title={daxiWalkTitle} subtitle="從和平老街出發。可依序散步，也可選一站直接導航。">
         <div className={styles.walkMeta}>
           <span>4 站 · {daxiWalkLength}</span>
           <span>步行約 15 分鐘</span>

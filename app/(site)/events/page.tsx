@@ -34,7 +34,7 @@ export default async function EventsPage() {
 
   return (
     <div>
-      <TouristPageHeader
+      <TouristPageHeader href="/events"
         title="大溪活動"
         subtitle="查找老街周邊的展覽、市集與地方慶典。"
         photo={{

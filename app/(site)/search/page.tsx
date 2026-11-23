@@ -25,7 +25,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const { q } = await searchParams;
   return (
     <div>
-      <TouristPageHeader title="搜尋" subtitle="搜尋景點和店家" />
+      <TouristPageHeader href="/search" title="搜尋" subtitle="搜尋景點和店家" />
       <Suspense>
         <Results q={q ?? ""} />
       </Suspense>

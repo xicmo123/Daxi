@@ -1,8 +1,8 @@
 import Link from "next/link";
-import ResidentIcon from "@/components/resident/ResidentIcon";
+import SkinIcon from "@/components/skin/SkinIcon";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
 import { DAXI_OFFICE_URL } from "@/components/resident/ResidentFooter";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { readUsefulLinks } from "@/lib/usefulLinks";
 import { pageMetadata } from "@/lib/seo";
 
@@ -42,7 +42,7 @@ export default async function ResidentServicesPage() {
         <section id="report" className={styles.panel} aria-labelledby="report-title">
           <h2 id="report-title" className={styles.panelTitle}>
             <span>
-              <ResidentIcon name="report" size={18} />
+              <SkinIcon name="report" size={18} />
             </span>
             陳情 / 報修
           </h2>
@@ -60,7 +60,7 @@ export default async function ResidentServicesPage() {
         <section id="emergency" className={styles.panel} aria-labelledby="emergency-title">
           <h2 id="emergency-title" className={styles.panelTitle}>
             <span>
-              <ResidentIcon name="phone" size={18} />
+              <SkinIcon name="phone" size={18} />
             </span>
             緊急聯絡
           </h2>
@@ -80,7 +80,7 @@ export default async function ResidentServicesPage() {
         <section id="links" className={styles.panel} aria-labelledby="links-title">
           <h2 id="links-title" className={styles.panelTitle}>
             <span>
-              <ResidentIcon name="link" size={18} />
+              <SkinIcon name="link" size={18} />
             </span>
             常用連結
           </h2>

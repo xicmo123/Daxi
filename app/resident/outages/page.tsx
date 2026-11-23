@@ -1,7 +1,7 @@
 import OutagesList from "@/components/OutagesList";
-import ResidentIcon from "@/components/resident/ResidentIcon";
+import SkinIcon from "@/components/skin/SkinIcon";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { listUpcomingOutages } from "@/lib/outages";
 import { pageMetadata } from "@/lib/seo";
 
@@ -30,7 +30,7 @@ export default async function OutagesPage() {
           {stats.map((item) => (
             <div key={item.label} className={styles.stat} data-alert={item.value > 0 ? "true" : undefined}>
               <span className={styles.statIcon}>
-                <ResidentIcon name="outage" size={18} />
+                <SkinIcon name="outage" size={18} />
               </span>
               <span>
                 <span className={styles.statLabel}>{item.label}</span>

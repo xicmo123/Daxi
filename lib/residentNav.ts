@@ -2,41 +2,11 @@
 // about it. The header's full menu, the home 生活指南 tabs, the finder and the
 // footer all read from here, so a new feature is added in exactly one place.
 
-export type ResidentIconKey =
-  | "outage"
-  | "garbage"
-  | "roadworks"
-  | "announcement"
-  | "bus"
-  | "camera"
-  | "clinic"
-  | "aed"
-  | "phone"
-  | "bulletin"
-  | "event"
-  | "report"
-  | "link"
-  | "profile";
+import { allNavItems, findNavItems, navTrail, type SiteIconKey, type SiteNavGroup, type SiteNavItem } from "./siteNav";
 
-export type ResidentNavItem = {
-  key: string;
-  label: string;
-  desc: string;
-  href: string;
-  icon: ResidentIconKey;
-  /** Extra words the finder should match on. */
-  keywords: string[];
-  /** Opens an in-page sheet on /resident instead of a separate route. */
-  sheet?: "garbage";
-};
-
-export type ResidentNavGroup = {
-  key: string;
-  label: string;
-  intro: string;
-  photo: { src: string; author: string; sourceUrl: string };
-  items: ResidentNavItem[];
-};
+export type ResidentIconKey = SiteIconKey;
+export type ResidentNavItem = SiteNavItem;
+export type ResidentNavGroup = SiteNavGroup;
 
 export const GARBAGE_SHEET_HREF = "/resident?open=garbage";
 
@@ -213,27 +183,12 @@ export const RESIDENT_PROFILE_ITEM: ResidentNavItem = {
   keywords: ["設定", "通知", "推播", "我的", "里別", "居民卡"],
 };
 
-/** Every distinct destination, first occurrence wins (施工 appears twice). */
 export function allResidentItems(): ResidentNavItem[] {
-  const seen = new Set<string>();
-  const out: ResidentNavItem[] = [];
-  for (const item of [...RESIDENT_NAV.flatMap((g) => g.items), RESIDENT_PROFILE_ITEM]) {
-    if (seen.has(item.href)) continue;
-    seen.add(item.href);
-    out.push(item);
-  }
-  return out;
+  return allNavItems(RESIDENT_NAV, [RESIDENT_PROFILE_ITEM]);
 }
 
 export function findResidentItems(query: string): ResidentNavItem[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-  return allResidentItems().filter(
-    (item) =>
-      item.label.toLowerCase().includes(q) ||
-      item.desc.toLowerCase().includes(q) ||
-      item.keywords.some((k) => k.toLowerCase().includes(q) || q.includes(k.toLowerCase())),
-  );
+  return findNavItems(allResidentItems(), query);
 }
 
 /** Hashtag chips under the finder — the things residents look up most. */
@@ -248,10 +203,6 @@ export const RESIDENT_HASHTAGS: Array<{ label: string; href: string }> = [
 
 /** Breadcrumb trail for a resident sub-page, from the nav map. */
 export function residentTrail(href: string): { group?: ResidentNavGroup; item?: ResidentNavItem } {
-  for (const group of RESIDENT_NAV) {
-    const item = group.items.find((i) => i.href === href);
-    if (item) return { group, item };
-  }
   if (href === RESIDENT_PROFILE_ITEM.href) return { item: RESIDENT_PROFILE_ITEM };
-  return {};
+  return navTrail(RESIDENT_NAV, href);
 }

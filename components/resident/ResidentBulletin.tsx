@@ -3,9 +3,9 @@
 import { useCallback, useMemo, useState } from "react";
 import type { BulletinPost } from "@/lib/bulletinData";
 import { DAXI_VILLAGES } from "@/lib/daxiVillages";
-import ResidentRail from "./ResidentRail";
-import ResidentSheet from "./ResidentSheet";
-import styles from "./ResidentSkin.module.css";
+import SkinRail from "@/components/skin/SkinRail";
+import SkinSheet from "@/components/skin/SkinSheet";
+import styles from "@/components/skin/Skin.module.css";
 
 const ALL = "全部";
 const postedFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", timeZone: "Asia/Taipei" });
@@ -81,7 +81,7 @@ export default function ResidentBulletin({ posts }: { posts: BulletinPost[] }) {
           換個里別看看，或稍後再回來
         </div>
       ) : (
-        <ResidentRail label="社區公告">
+        <SkinRail label="社區公告">
           {shown.map((post) => {
             const range = formatRange(post);
             return (
@@ -105,17 +105,17 @@ export default function ResidentBulletin({ posts }: { posts: BulletinPost[] }) {
               </button>
             );
           })}
-        </ResidentRail>
+        </SkinRail>
       )}
 
       {openPost ? (
-        <ResidentSheet title={openPost.title} eyebrow={<Badges post={openPost} />} onClose={closePost}>
+        <SkinSheet title={openPost.title} eyebrow={<Badges post={openPost} />} onClose={closePost}>
           <div className="mb-3 text-app-label" style={{ color: "var(--rj-ink-soft)" }}>
             {postedFormatter.format(new Date(openPost.postedAt))} 發布
           </div>
           <p>{openPost.body}</p>
           {formatRange(openPost) ? <div className={styles.sheetNote}>有效期間：{formatRange(openPost)}</div> : null}
-        </ResidentSheet>
+        </SkinSheet>
       ) : null}
     </>
   );

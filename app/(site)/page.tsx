@@ -1,12 +1,22 @@
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import type { Metadata } from "next";
-import HomeExperience, { type FeedSpot } from "@/components/HomeExperience";
-import TouristHomeHeader from "@/components/TouristHomeHeader";
+import Link from "next/link";
+import Image from "next/image";
 import type { CouponWithBusiness } from "@/components/CouponList";
+import TouristWelcome from "@/components/TouristWelcome";
+import SkinHero, { type SkinHeroSlide } from "@/components/skin/SkinHero";
+import SkinFinder from "@/components/skin/SkinFinder";
+import SkinGuide from "@/components/skin/SkinGuide";
+import SkinEventsRail from "@/components/skin/SkinEventsRail";
+import SkinWeatherCard from "@/components/skin/SkinWeatherCard";
+import styles from "@/components/skin/Skin.module.css";
+import { CouponRail, SpotRail, type HomeSpot } from "@/components/tourist/TouristHomeRails";
+import { daxiWalkHref, daxiWalkVisitTime, oldStreetPhoto } from "@/lib/daxiWalk";
+import { TOURIST_GUIDE_GROUPS, TOURIST_HASHTAGS, allTouristItems } from "@/lib/touristNav";
 import { getCachedEvents, getCachedWeather } from "@/lib/cachedSources";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { isEventExpired } from "@/lib/eventsFeed";
-import { weatherMood } from "@/lib/cwa";
+import { weatherMood, type DaxiWeather } from "@/lib/cwa";
 import { isIndoorSpot } from "@/lib/experience";
 import { getAllPlaces, filterVisiblePlaces, readDetails, readPhotos } from "@/lib/placesStore";
 import { categoryLabel } from "@/lib/placeDetails";
@@ -81,15 +91,90 @@ async function pickInitialSlide() {
   return { slides, initialSlideIndex };
 }
 
-async function HomeFeed() {
-  const [rawPlaces, details, activeCoupons, photos, homeSpotOrder, weather, hero] = await Promise.all([
+const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short", timeZone: "Asia/Taipei" });
+const phaseTag = { ongoing: "進行中", upcoming: "即將登場", past: "已結束" } as const;
+
+// Scenic backgrounds for the event slides of the hero, in order.
+const FALLBACK_PHOTOS = [
+  { src: "/images/puji-temple.jpg", author: "Taiwankengo", sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_Daxi_Puji_Temple.jpg" },
+  { src: "/images/daxi-bridge.jpg", author: "Taiwankengo", sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_Daxi_Bridge.jpg" },
+  { src: "/images/tea-factory.jpg", author: "Taiwankengo", sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_Daxi_Tea_Factory_i.jpg" },
+];
+
+function SectionHead({ id, eyebrow, title, lead, more }: { id: string; eyebrow: string; title: string; lead?: string; more?: string }) {
+  return (
+    <div className={styles.sectionHead}>
+      <div className="min-w-0">
+        <span className={styles.eyebrow}>{eyebrow}</span>
+        <h2 id={id} className={styles.sectionTitle}>
+          {title}
+        </h2>
+        {lead ? <p className={styles.sectionLead}>{lead}</p> : null}
+      </div>
+      {more ? (
+        <Link href={more} className={styles.more}>
+          more <span aria-hidden>+</span>
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function BlockSkeleton({ height = 220 }: { height?: number }) {
+  return <div className="skeleton" style={{ height, borderRadius: 20, background: "var(--rj-surface)" }} />;
+}
+
+async function Hero() {
+  const [hero, weather] = await Promise.all([
+    pickInitialSlide().catch(() => ({ slides: [], initialSlideIndex: 0 })),
+    getCachedWeather().catch(() => null),
+  ]);
+  // The old-street walk always leads: it is what a first-time visitor came
+  // for. Live festival milestones follow, then the next events.
+  const slides: SkinHeroSlide[] = [
+    {
+      id: "walk",
+      tag: "推薦路線",
+      title: "走進大溪老街",
+      subtitle: `從和平路的老牌樓，走到普濟堂、公園和武德殿。4 站步行導覽，${daxiWalkVisitTime}。`,
+      href: daxiWalkHref,
+      ctaLabel: "開始老街散步",
+      photo: { src: oldStreetPhoto.src, author: oldStreetPhoto.author, sourceUrl: oldStreetPhoto.sourceUrl },
+    },
+    ...hero.slides.slice(0, MAX_HERO_SLIDES - 1).map((s, i): SkinHeroSlide => ({
+      id: s.id,
+      tag: phaseTag[s.phase],
+      title: s.title,
+      subtitle: s.time ? `${s.date} · ${s.time}` : s.date,
+      href: "/events",
+      ctaLabel: "看活動資訊",
+      // Event posters are full of their own lettering, which fights the
+      // hero title; the hero uses scenery and the posters stay in the rail.
+      photo: FALLBACK_PHOTOS[i % FALLBACK_PHOTOS.length],
+    })),
+  ];
+  // During the festival, open on today's milestone (shifted by the walk slide).
+  const initialIndex = hero.initialSlideIndex > 0 && hero.initialSlideIndex < MAX_HERO_SLIDES - 1 ? hero.initialSlideIndex + 1 : 0;
+  return (
+    <SkinHero
+      slides={slides}
+      initialIndex={initialIndex}
+      label="大溪旅遊重點"
+      todayLabel={dateFormatter.format(new Date())}
+      weather={weather ? { temp: weather.currentTemp, icon: weather.currentIcon, text: weather.weatherText } : null}
+    />
+  );
+}
+
+// Three sections read the same places/coupons; cache() makes that one read per request.
+const loadHomeData = cache(async () => {
+  const [rawPlaces, details, activeCoupons, photos, homeSpotOrder, weather] = await Promise.all([
     getAllPlaces(),
     readDetails(),
     listActiveCoupons(),
     readPhotos(),
     readHomeSpotOrder(),
-    getCachedWeather().catch(() => null),
-    pickInitialSlide().catch(() => ({ slides: [], initialSlideIndex: 0 })),
+    getCachedWeather().catch((): DaxiWeather | null => null),
   ]);
   const places = filterVisiblePlaces(rawPlaces, details);
   const byId = new Map(places.map((p) => [p.placeId, p]));
@@ -97,21 +182,20 @@ async function HomeFeed() {
     const photo = photos[theme.placeId];
     return photo && byId.has(theme.placeId) ? [{ ...theme, photo }] : [];
   });
-
-  const spotPlaces = places.filter((p) => p.tag === "景點");
-  const spots: FeedSpot[] = sortByHomeSpotOrder(
-    spotPlaces.map((p) => ({
-      placeId: p.placeId,
-      name: p.name,
-      category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
-      distanceLabel: p.distanceLabel,
-      featured: Boolean(details[p.placeId]?.featured),
-      photoSrc: photos[p.placeId]?.src,
-      indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
-    })),
+  const spots: HomeSpot[] = sortByHomeSpotOrder(
+    places
+      .filter((p) => p.tag === "景點")
+      .map((p) => ({
+        placeId: p.placeId,
+        name: p.name,
+        category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
+        distanceLabel: p.distanceLabel,
+        featured: Boolean(details[p.placeId]?.featured),
+        photoSrc: photos[p.placeId]?.src,
+        indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
+      })),
     homeSpotOrder,
   ).slice(0, 8);
-
   const coupons: CouponWithBusiness[] = activeCoupons
     .map((c): CouponWithBusiness | null => {
       const place = byId.get(c.placeId);
@@ -119,40 +203,95 @@ async function HomeFeed() {
       return { ...c, businessName: place.name, distanceLabel: place.distanceLabel, lat: place.lat, lng: place.lng };
     })
     .filter((c): c is CouponWithBusiness => c !== null)
-    .slice(0, 6);
+    .slice(0, 8);
+  return { themes, spots, coupons, weather };
+});
 
+async function Spots() {
+  const { spots, weather } = await loadHomeData();
+  if (spots.length === 0) return null;
+  return <SpotRail spots={spots} preferIndoor={weather ? weatherMood(weather) !== "normal" : false} />;
+}
+
+async function Themes() {
+  const { themes } = await loadHomeData();
+  if (themes.length === 0) return null;
   return (
-    <HomeExperience
-      spots={spots}
-      themes={themes}
-      coupons={coupons}
-      weatherMood={weather ? weatherMood(weather) : "normal"}
-      heroSlides={hero.slides.map((s) => ({
-        key: s.id,
-        phase: s.phase,
-        date: s.date,
-        time: s.time,
-        title: s.title,
-        desc: s.desc,
-        history: s.history,
-        theme: s.theme,
-        badges: s.badges,
-        ctaLabel: s.ctaLabel,
-        ctaUrl: s.ctaUrl,
-        photoSrc: s.photoSrc,
-        photoHistorical: s.photoHistorical,
-        source: s.source,
-      }))}
-      initialSlideIndex={hero.initialSlideIndex}
-    />
+    <div className={styles.themeGrid}>
+      {themes.map((theme) => (
+        <div key={theme.placeId} className={`${styles.guideFeature} ${styles.themeCard}`}>
+          <Image src={theme.photo.src} alt="" fill sizes="(max-width: 767px) 100vw, 380px" unoptimized={theme.photo.src.startsWith("http")} />
+          <h3>
+            <Link href={{ pathname: "/spots", query: { place: theme.placeId } }} className={styles.stretchedLink}>
+              {theme.title}
+            </Link>
+          </h3>
+          <p>{theme.description}</p>
+          {theme.photo.author && theme.photo.sourceUrl ? (
+            <a className={styles.guideCredit} href={theme.photo.sourceUrl} target="_blank" rel="noreferrer">
+              攝影 {theme.photo.author}
+            </a>
+          ) : null}
+        </div>
+      ))}
+    </div>
   );
 }
 
-function HomeFeedSkeleton() {
+async function Coupons() {
+  const { coupons } = await loadHomeData();
+  if (coupons.length === 0) return null;
   return (
-    <div className="safe-page-x pb-8" aria-hidden>
-      <div className="mb-4 h-7 w-32 rounded-lg skeleton" style={{ background: "var(--line)" }} />
-      <div className="h-36 w-full rounded-2xl skeleton" style={{ background: "var(--line)" }} />
+    <section className={styles.section} aria-labelledby="coupons-title">
+      <SectionHead id="coupons-title" eyebrow="DEALS" title="店家優惠" lead="到店出示核銷碼，店員掃碼即可使用" more="/coupons" />
+      <CouponRail coupons={coupons} />
+    </section>
+  );
+}
+
+async function Essentials() {
+  const weather = await getCachedWeather().catch(() => null);
+  return (
+    <div className={styles.essentials}>
+      <SkinWeatherCard weather={weather} />
+
+      <div className={styles.essCard}>
+        <h3>第一次來大溪？</h3>
+        <p>先認識老街的故事，再照著路線走一圈。</p>
+        <div className={styles.essLinks}>
+          <TouristWelcome className={styles.essLink} label={<>讀大溪的故事 <span aria-hidden>→</span></>} />
+          <Link href={daxiWalkHref} className={styles.essLink}>
+            老街散步路線 <span aria-hidden>→</span>
+          </Link>
+          <Link href="/businesses?cat=美食" className={styles.essLink}>
+            找在地美食 <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </div>
+
+      <div className={styles.essCard}>
+        <h3>交通與停車</h3>
+        <p>假日老街周邊車多，出發前先看空位。</p>
+        <div className={styles.essLinks}>
+          <Link href="/parking" className={styles.essLink}>
+            周邊停車與即時空位 <span aria-hidden>→</span>
+          </Link>
+          <Link href="/bus" className={styles.essLink}>
+            大溪公車路線 <span aria-hidden>→</span>
+          </Link>
+          <Link href="/weather" className={styles.essLink}>
+            路況即時影像 <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HeroSkeleton() {
+  return (
+    <div className={styles.heroWrap}>
+      <div className={`${styles.hero} skeleton`} />
     </div>
   );
 }
@@ -161,10 +300,55 @@ export default function Home() {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(DESTINATION_JSON_LD) }} />
-      <TouristHomeHeader />
-      <Suspense fallback={<HomeFeedSkeleton />}>
-        <HomeFeed />
+      <h1 className="sr-only">大溪通：桃園大溪旅遊指南（老街散步、景點、美食、活動與停車）</h1>
+      <Suspense fallback={<HeroSkeleton />}>
+        <Hero />
       </Suspense>
+
+      <SkinFinder
+        items={allTouristItems()}
+        hashtags={TOURIST_HASHTAGS}
+        placeholder="想去哪裡？例如：大溪橋、豆干、停車"
+        searchHref="/search"
+        label="搜尋大溪景點與店家"
+      />
+
+      <section className={styles.section} aria-labelledby="guide-title">
+        <SectionHead id="guide-title" eyebrow="TRAVEL GUIDE" title="大溪怎麼玩" more="/spots" />
+        <SkinGuide groups={TOURIST_GUIDE_GROUPS} label="旅遊指南分類" />
+      </section>
+
+      <section className={styles.section} aria-labelledby="spots-title">
+        <SectionHead id="spots-title" eyebrow="MUST SEE" title="熱門景點" lead="大溪人推薦的必去地點" more="/spots" />
+        <Suspense fallback={<BlockSkeleton height={300} />}>
+          <Spots />
+        </Suspense>
+      </section>
+
+      <section className={styles.section} aria-labelledby="themes-title">
+        <SectionHead id="themes-title" eyebrow="THEMES" title="主題旅遊" lead="挑一個主題，慢慢走" />
+        <Suspense fallback={<BlockSkeleton height={260} />}>
+          <Themes />
+        </Suspense>
+      </section>
+
+      <section className={styles.section} aria-labelledby="events-title">
+        <SectionHead id="events-title" eyebrow="EVENTS" title="近期活動" more="/events" />
+        <Suspense fallback={<BlockSkeleton height={300} />}>
+          <SkinEventsRail href="/events" />
+        </Suspense>
+      </section>
+
+      <Suspense fallback={null}>
+        <Coupons />
+      </Suspense>
+
+      <section className={styles.section} aria-labelledby="essentials-title">
+        <SectionHead id="essentials-title" eyebrow="ESSENTIALS" title="旅遊必備資訊" />
+        <Suspense fallback={<BlockSkeleton height={210} />}>
+          <Essentials />
+        </Suspense>
+      </section>
     </main>
   );
 }

@@ -1,23 +1,22 @@
 import { Suspense } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { readSource } from "@/lib/fetchWithTimeout";
 // force-dynamic below zeroes the TTL on every fetch in this segment; the
 // cached wrappers are immune to it. See lib/cachedSources.ts.
-import { getCachedAnnouncements, getCachedEvents, getCachedWeather } from "@/lib/cachedSources";
-import { isEventExpired } from "@/lib/eventsFeed";
+import { getCachedAnnouncements, getCachedWeather } from "@/lib/cachedSources";
 import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
 import { listActiveResidentSlides } from "@/lib/residentCarousel";
 import { GARBAGE_SHEET_HREF, RESIDENT_NAV } from "@/lib/residentNav";
-import ResidentHero, { type ResidentHeroSlide } from "@/components/resident/ResidentHero";
+import SkinHero, { type SkinHeroSlide } from "@/components/skin/SkinHero";
 import ResidentFinder from "@/components/resident/ResidentFinder";
 import ResidentBulletin from "@/components/resident/ResidentBulletin";
 import ResidentLifeGuide from "@/components/resident/ResidentLifeGuide";
-import ResidentRail from "@/components/resident/ResidentRail";
-import ResidentIcon from "@/components/resident/ResidentIcon";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import SkinEventsRail from "@/components/skin/SkinEventsRail";
+import SkinWeatherCard from "@/components/skin/SkinWeatherCard";
+import SkinIcon from "@/components/skin/SkinIcon";
+import styles from "@/components/skin/Skin.module.css";
 import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -56,7 +55,7 @@ async function Hero() {
     getCachedWeather().catch(() => null),
   ]);
   const source = slides.length > 0 ? slides : FALLBACK_SLIDES;
-  const heroSlides: ResidentHeroSlide[] = source.slice(0, 5).map((s, i) => ({
+  const heroSlides: SkinHeroSlide[] = source.slice(0, 5).map((s, i) => ({
     id: s.id,
     tag: s.tag,
     title: s.title,
@@ -66,7 +65,7 @@ async function Hero() {
     photo: HERO_PHOTOS[i % HERO_PHOTOS.length],
   }));
   return (
-    <ResidentHero
+    <SkinHero
       slides={heroSlides}
       todayLabel={dateFormatter.format(new Date())}
       weather={weather ? { temp: weather.currentTemp, icon: weather.currentIcon, text: weather.weatherText } : null}
@@ -99,7 +98,7 @@ async function TodayStats() {
       {items.map((item) => (
         <Link key={item.href} href={item.href} className={styles.stat} data-alert={item.alertWhenAny && (item.count ?? 0) > 0 ? "true" : undefined}>
           <span className={styles.statIcon}>
-            <ResidentIcon name={item.icon} size={18} />
+            <SkinIcon name={item.icon} size={18} />
           </span>
           <span>
             <span className={styles.statLabel}>{item.label}</span>
@@ -129,77 +128,11 @@ async function Bulletin() {
   return <ResidentBulletin posts={sortedBulletinPosts(activeBulletinPosts(posts))} />;
 }
 
-const phaseLabel = { ongoing: "進行中", upcoming: "即將登場", past: "已結束" } as const;
-
-async function Events() {
-  const events = (await getCachedEvents().catch(() => [])).filter((e) => !isEventExpired(e) && e.phase !== "past").slice(0, 8);
-  if (events.length === 0) {
-    return (
-      <div className={styles.empty}>
-        <strong>近期沒有活動</strong>
-        新活動公布後會出現在這裡
-      </div>
-    );
-  }
-  return (
-    <ResidentRail label="近期活動">
-      {events.map((e) => (
-        <Link key={e.id} href="/resident/events" className={styles.eventCard} role="listitem">
-          <div className={styles.eventPhoto}>
-            <Image
-              src={e.photoSrc ?? "/images/puji-temple.jpg"}
-              alt=""
-              fill
-              sizes="(max-width: 767px) 82vw, (max-width: 1023px) 340px, 340px"
-              unoptimized={Boolean(e.photoSrc?.startsWith("http"))}
-            />
-            <span className={`${styles.badge} ${styles.eventPhase}`} data-tone={e.phase === "ongoing" ? "ok" : "main"} style={{ background: e.phase === "ongoing" ? undefined : "var(--rj-bg)" }}>
-              {phaseLabel[e.phase]}
-            </span>
-          </div>
-          <h3>{e.title}</h3>
-          <p>
-            {e.date}
-            {e.time ? ` · ${e.time}` : ""}
-          </p>
-        </Link>
-      ))}
-    </ResidentRail>
-  );
-}
-
 async function Essentials() {
   const weather = await getCachedWeather().catch(() => null);
   return (
     <div className={styles.essentials}>
-      <div className={styles.essCard} data-tone="main">
-        <h3>大溪天氣</h3>
-        <p>{weather ? weather.description || weather.weatherText : "氣象署資料暫時無法取得"}</p>
-        {weather ? (
-          <>
-            <div className={styles.weatherNow}>
-              <span aria-hidden>{weather.currentIcon}</span>
-              <b>{Math.round(weather.currentTemp)}°</b>
-              <span style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4 }}>
-                {weather.weatherText}
-                <br />
-                體感 {Math.round(weather.apparentTemp)}° · 濕度 {weather.humidity}%
-              </span>
-            </div>
-            {weather.hourly.length > 0 ? (
-              <div className={styles.weatherHours}>
-                {weather.hourly.slice(0, 4).map((h) => (
-                  <div key={h.hour}>
-                    {h.hour}
-                    <br />
-                    <span aria-hidden>{h.icon}</span> {h.temp}
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </>
-        ) : null}
-      </div>
+      <SkinWeatherCard weather={weather} />
 
       <div className={styles.essCard}>
         <h3>緊急聯絡</h3>
@@ -299,7 +232,7 @@ export default function ResidentHome() {
       <section className={styles.section} aria-labelledby="events-title">
         <SectionHead id="events-title" eyebrow="EVENTS" title="近期在地活動" more="/resident/events" />
         <Suspense fallback={<BlockSkeleton height={280} />}>
-          <Events />
+          <SkinEventsRail href="/resident/events" />
         </Suspense>
       </section>
 

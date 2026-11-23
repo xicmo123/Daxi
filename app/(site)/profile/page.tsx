@@ -39,7 +39,7 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <TouristPageHeader title="我的" subtitle="收藏的景點與店家" />
+      <TouristPageHeader href="/profile" title="我的收藏" subtitle="收藏的景點與店家" />
 
       <div className="safe-page-x page-after-header pb-10 fade-in flex flex-col gap-3">
         <FavoritesView allPlaces={allPlaces} photos={photos} details={details} lots={lots} coupons={coupons} />

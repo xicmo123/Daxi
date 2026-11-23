@@ -14,7 +14,7 @@ export default function WeatherOverview({ weather }: { weather: DaxiWeather | nu
 
   return (
     <section className="safe-page-x page-after-header pb-5" aria-labelledby="weather-title">
-      <div className="rounded-2xl p-4" style={{ background: "var(--block-river)", color: "var(--block-fg)", boxShadow: "var(--shadow-card)" }}>
+      <div className="rounded-2xl p-4" style={{ background: "var(--rj-main, var(--block-river))", color: "var(--rj-on-main, var(--block-fg))", borderRadius: 20 }}>
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="text-app-label font-bold" style={{ color: "var(--block-fg-soft)" }}>大溪天氣</div>
@@ -29,7 +29,7 @@ export default function WeatherOverview({ weather }: { weather: DaxiWeather | nu
         <p className="mt-3 text-app-label leading-relaxed" style={{ color: "var(--block-fg-soft)" }}>{weather.description}</p>
         <div className="mt-4 grid grid-cols-4 gap-2">
           {weather.hourly.map((hour) => (
-            <div key={hour.hour} className="rounded-xl px-2 py-2 text-center" style={{ background: "rgba(255,255,255,0.34)" }}>
+            <div key={hour.hour} className="rounded-xl px-2 py-2 text-center" style={{ background: "rgba(255,255,255,0.18)" }}>
               <div className="text-app-label font-bold">{hour.hour}</div>
               <div className="mt-1 text-app-body">{hour.icon} {hour.temp}</div>
             </div>

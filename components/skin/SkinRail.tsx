@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import styles from "./ResidentSkin.module.css";
+import styles from "./Skin.module.css";
 
 // Horizontal snap-scrolling card row with the Jeju festival-swiper footer: a
 // thin progress track showing which part of the row is in view, plus prev /
 // next buttons for mouse users. Native scrolling, so touch flicks just work.
-export default function ResidentRail({ label, children }: { label: string; children: ReactNode }) {
+export default function SkinRail({ label, children }: { label: string; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [view, setView] = useState({ start: 0, size: 1 });
 

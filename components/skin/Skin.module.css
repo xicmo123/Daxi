@@ -4,7 +4,7 @@
    full-bleed photo hero with a counter/pause control, a search box with
    hashtag chips, and big bold section titles with a "more +" pill.
    Colour tokens (--rj-*) are defined in app/globals.css on
-   :root:has(.resident-skin) so portalled sheets and modals pick them up too. */
+   :root:has(.daxi-skin) so portalled sheets and modals pick them up too. */
 
 /* ───────── Header ───────── */
 
@@ -1586,7 +1586,7 @@
 /* ───────── Sub-page header ───────── */
 
 .pageHead {
-  padding: 22px clamp(16px, 4vw, 32px) 0;
+  padding: 22px clamp(16px, 4vw, 32px) 18px;
 }
 
 .crumbs {
@@ -1708,7 +1708,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px clamp(16px, 4vw, 32px) 0;
+  padding: 6px clamp(16px, 4vw, 32px) 0;
 }
 
 .panel {
@@ -1911,4 +1911,54 @@
   .related {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+/* ───────── Theme cards (推薦主題) ───────── */
+
+.themeGrid {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .themeGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+.themeCard {
+  min-height: 240px;
+  text-decoration: none;
+  transition: transform var(--rj-fast);
+}
+
+@media (min-width: 768px) {
+  .themeCard {
+    min-height: 320px;
+  }
+}
+
+.themeCard:hover {
+  transform: translateY(-2px);
+}
+
+.themeCard h3 {
+  font-size: 22px;
+}
+
+.stretchedLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.stretchedLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.guideCredit {
+  z-index: 2;
 }

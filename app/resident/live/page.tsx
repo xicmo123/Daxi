@@ -1,6 +1,6 @@
 import LiveModeSwitcher from "@/components/LiveModeSwitcher";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { fetchDaxiRoadCctvs, type RoadCctvFeed } from "@/lib/tdxRoadCctv";
 import { pageMetadata } from "@/lib/seo";
 
@@ -23,7 +23,7 @@ export default async function ResidentLivePage() {
   return (
     <main>
       <ResidentPageHeader href="/resident/live" title="即時影像" lead="出門前先看大溪道路與景點畫面。" />
-      <div className="pt-4">
+      <div>
         <LiveModeSwitcher roadFeed={roadCctvResult.feed} roadError={roadCctvResult.error} />
       </div>
       <div className={styles.body}>

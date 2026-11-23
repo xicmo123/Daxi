@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
 export default function BusPage() {
   return (
     <div>
-      <TouristPageHeader title="大溪公車" subtitle="查路線、停靠站和到站時間，並在地圖上看即時車輛位置。">
+      <TouristPageHeader href="/bus" title="大溪公車" subtitle="查路線、停靠站和到站時間，並在地圖上看即時車輛位置。">
         <Link href="/parking" className={styles.secondaryLink}>找停車場 <span aria-hidden>→</span></Link>
       </TouristPageHeader>
 

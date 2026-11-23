@@ -1,6 +1,6 @@
 import AnnouncementFeed from "@/components/AnnouncementFeed";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { ANNOUNCEMENTS_PAGE_URL, fetchDaxiAnnouncements } from "@/lib/announcements";
 import { pageMetadata } from "@/lib/seo";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ function getServerStatus() {
   return "pending";
 }
 
-export default function TouristWelcome() {
+export default function TouristWelcome({ className, label = "讀大溪的故事" }: { className?: string; label?: ReactNode } = {}) {
   const router = useRouter();
   const status = useSyncExternalStore(subscribe, getWelcomeStatus, getServerStatus);
   const [showStory, setShowStory] = useState<boolean | null>(null);
@@ -61,10 +61,10 @@ export default function TouristWelcome() {
       <button
         ref={triggerRef}
         type="button"
-        className={styles.heroSecondary}
+        className={className ?? styles.heroSecondary}
         onClick={() => setShowStory(true)}
       >
-        讀大溪的故事
+        {label}
       </button>
       {status !== "resident" && (showStory ?? status === "new") ? (
         <Modal label="大溪的故事" onClose={close} className={styles.storyDialog}>

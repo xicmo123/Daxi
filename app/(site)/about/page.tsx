@@ -16,7 +16,7 @@ const card = { background: "var(--card)", border: "1px solid var(--line)" } as c
 export default function AboutPage() {
   return (
     <div>
-      <TouristPageHeader title="關於" subtitle="一個大溪孩子做給大溪的平台。" photo={oldStreetPhoto} />
+      <TouristPageHeader href="/about" title="關於" subtitle="一個大溪孩子做給大溪的平台。" photo={oldStreetPhoto} />
 
       <div className="safe-page-x page-after-header pb-10 fade-in flex flex-col gap-3">
         <section className="rounded-2xl px-5 py-5" style={card} aria-labelledby="about-story">

@@ -1,6 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import ExploreTabs from "@/components/ExploreTabs";
 import TouristPageHeader from "@/components/TouristPageHeader";
 import SpotsList from "@/components/SpotsList";
 import styles from "@/components/TouristGuide.module.css";
@@ -49,10 +48,9 @@ export default async function SpotsPage() {
 
   return (
     <div>
-      <TouristPageHeader title="探索大溪景點" subtitle="從老街、木藝展館，到大漢溪畔的步道。" photo={photos["custom-tycg-414"]} />
-      <ExploreTabs />
+      <TouristPageHeader href="/spots" title="探索大溪景點" subtitle="從老街、木藝展館，到大漢溪畔的步道。" photo={photos["custom-tycg-414"]} />
 
-      <div className="safe-page-x pb-4">
+      <div className="safe-page-x pt-4 pb-4">
         <Link className={styles.routeEntry} href={daxiWalkHref}>
           <span><strong>{daxiWalkTitle}</strong><small>4 站步行導覽 · {daxiWalkVisitTime}</small></span>
           <span aria-hidden>→</span>

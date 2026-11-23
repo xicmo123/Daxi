@@ -1,7 +1,7 @@
 import Link from "next/link";
-import ResidentIcon from "@/components/resident/ResidentIcon";
+import SkinIcon from "@/components/skin/SkinIcon";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { pageMetadata } from "@/lib/seo";
 import { ABOUT_CONTACT_EMAIL as CONTACT_EMAIL, ABOUT_PARAGRAPHS } from "@/lib/aboutOwner";
 
@@ -29,7 +29,7 @@ export default function ResidentAboutPage() {
         <section className={styles.panel} aria-labelledby="about-story">
           <h2 id="about-story" className={styles.panelTitle}>
             <span>
-              <ResidentIcon name="bulletin" size={18} />
+              <SkinIcon name="bulletin" size={18} />
             </span>
             為什麼做這個網站
           </h2>
@@ -43,7 +43,7 @@ export default function ResidentAboutPage() {
         <section className={styles.panel} aria-labelledby="about-contact">
           <h2 id="about-contact" className={styles.panelTitle}>
             <span>
-              <ResidentIcon name="report" size={18} />
+              <SkinIcon name="report" size={18} />
             </span>
             聯絡我
           </h2>

@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import styles from "./ResidentSkin.module.css";
+import styles from "./Skin.module.css";
 
 const noopSubscribe = () => () => {};
 
 // Bottom sheet on phones, centred dialog from 640px up. Shared by the
 // bulletin detail and the garbage-truck map so both close the same way:
 // Escape, backdrop tap, or a downward swipe on the header.
-export default function ResidentSheet({
+export default function SkinSheet({
   title,
   eyebrow,
   wide,

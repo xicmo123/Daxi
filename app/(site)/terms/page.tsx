@@ -12,7 +12,7 @@ const updatedAt = "2026-07-28";
 export default function TermsPage() {
   return (
     <div>
-      <TouristPageHeader title="服務條款" subtitle={`最後更新：${updatedAt}`} />
+      <TouristPageHeader href="/terms" title="服務條款" subtitle={`最後更新：${updatedAt}`} />
 
       <main className="safe-page-x page-after-header pb-24 fade-in">
         <div className="rounded-2xl border px-5 py-5 text-app-body leading-relaxed" style={{ background: "var(--card)", borderColor: "var(--line)", color: "var(--ink)" }}>

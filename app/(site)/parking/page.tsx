@@ -49,7 +49,7 @@ export default async function ParkingPage() {
 
   return (
     <main>
-      <TouristPageHeader title="周邊停車" subtitle="查看老街周邊停車場、已回報的即時空位和開車導航。" />
+      <TouristPageHeader href="/parking" title="周邊停車" subtitle="查看老街周邊停車場、已回報的即時空位和開車導航。" />
       {congestion.isCongested ? (
         <div className="pt-3">
           <ParkingAlertBanner

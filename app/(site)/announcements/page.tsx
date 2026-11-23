@@ -18,7 +18,7 @@ export default async function AnnouncementsPage() {
 
   return (
     <div>
-      <TouristPageHeader title="區公所公告" subtitle="同步大溪區公所最新消息" />
+      <TouristPageHeader href="/announcements" title="區公所公告" subtitle="同步大溪區公所最新消息" />
 
       <div className="safe-page-x page-after-header pb-24 fade-in">
         <a

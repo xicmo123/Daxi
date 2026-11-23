@@ -1,6 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
-import ExploreTabs from "@/components/ExploreTabs";
 import TouristPageHeader from "@/components/TouristPageHeader";
 import BusinessList from "@/components/BusinessList";
 import { businessesGeneratedAt } from "@/lib/businesses";
@@ -49,8 +48,7 @@ export default async function BusinessesPage() {
 
   return (
     <div>
-      <TouristPageHeader title="大溪美食與店家" subtitle={`逛市場、找小吃和伴手禮 · ${updatedLabel} 更新`} photo={photos["ChIJR01hKyIYaDQRQCD0hbGmyUA"]} />
-      <ExploreTabs />
+      <TouristPageHeader href="/businesses" title="大溪美食與店家" subtitle={`逛市場、找小吃和伴手禮 · ${updatedLabel} 更新`} photo={photos["ChIJR01hKyIYaDQRQCD0hbGmyUA"]} />
       <Suspense fallback={null}>
         <BusinessList businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} coupons={coupons} />
       </Suspense>

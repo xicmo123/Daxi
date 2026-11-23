@@ -34,7 +34,7 @@ export default async function RoadConditionsPage() {
 
   return (
     <div>
-      <TouristPageHeader title="天氣與即時影像" subtitle="大溪天氣、道路 CCTV 與景點直播" />
+      <TouristPageHeader href="/weather" title="天氣與即時影像" subtitle="大溪天氣、道路 CCTV 與景點直播" />
 
       <WeatherOverview weather={weather} />
 

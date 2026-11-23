@@ -562,7 +562,7 @@ button:focus-visible {
 }
 
 /* 「我是大溪人」 skin — Visit Jeju-style white canvas with one burnt-orange
-   (Each selector is wrapped in :is() with a plain `.resident-skin` twin:
+   (Each selector is wrapped in :is() with a plain `.daxi-skin` twin:
    :is() is forgiving, so Safari < 15.4 — no :has(), still allowed by the
    iOS 15.0 app target — drops the :has() half and keeps the page skinned.
    Only portalled sheets miss the tokens there.)
@@ -570,7 +570,7 @@ button:focus-visible {
    and modals portalled to <body> pick up the same palette. The legacy tokens
    are remapped too, so shared components (maps, outage list, event list)
    blend in without per-component overrides. */
-:is(:root:has(.resident-skin), .resident-skin) {
+:is(:root:has(.daxi-skin), .daxi-skin) {
   --rj-bg: #ffffff;
   --rj-surface: #f4f4f2;
   --rj-surface-strong: #ebebe8;
@@ -597,8 +597,10 @@ button:focus-visible {
   --accent: var(--rj-main);
   --river-teal: var(--rj-main);
   --river-teal-soft: var(--rj-main-soft);
-  --daxi-red: var(--rj-alert);
-  --daxi-red-soft: rgba(200, 55, 45, 0.1);
+  /* --daxi-red is the app-wide accent (buttons, active tabs), not an alert
+     colour, so it follows the skin's main orange. Alerts use --rj-alert. */
+  --daxi-red: var(--rj-main);
+  --daxi-red-soft: var(--rj-main-soft);
   --status-ok: var(--rj-ok);
   --status-warn: var(--rj-main);
   --cognac-deep: var(--rj-main);
@@ -609,19 +611,19 @@ button:focus-visible {
 }
 
 @media (min-width: 768px) {
-  :is(:root:has(.resident-skin), .resident-skin) {
+  :is(:root:has(.daxi-skin), .daxi-skin) {
     --rj-radius: 30px;
   }
 }
 
 @media (min-width: 1024px) {
-  :is(:root:has(.resident-skin), .resident-skin) {
+  :is(:root:has(.daxi-skin), .daxi-skin) {
     --rj-radius: 36px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  :is(:root:not([data-theme="light"]):has(.resident-skin), :root:not([data-theme="light"]) .resident-skin) {
+  :is(:root:not([data-theme="light"]):has(.daxi-skin), :root:not([data-theme="light"]) .daxi-skin) {
     --rj-bg: #141414;
     --rj-surface: #1f1f1f;
     --rj-surface-strong: #2a2a2a;
@@ -636,11 +638,10 @@ button:focus-visible {
     --rj-alert: #ff6b5e;
     --rj-ok: #5cc28a;
     --accent-fg: #1a1007;
-    --daxi-red-soft: rgba(255, 107, 94, 0.15);
   }
 }
 
-:is(:root[data-theme="dark"]:has(.resident-skin), :root[data-theme="dark"] .resident-skin) {
+:is(:root[data-theme="dark"]:has(.daxi-skin), :root[data-theme="dark"] .daxi-skin) {
   --rj-bg: #141414;
   --rj-surface: #1f1f1f;
   --rj-surface-strong: #2a2a2a;
@@ -655,9 +656,8 @@ button:focus-visible {
   --rj-alert: #ff6b5e;
   --rj-ok: #5cc28a;
   --accent-fg: #1a1007;
-  --daxi-red-soft: rgba(255, 107, 94, 0.15);
 }
 
-:root:has(.resident-skin) body {
+:root:has(.daxi-skin) body {
   background: var(--rj-bg);
 }

@@ -1,6 +1,6 @@
 import EmergencyPanel from "@/components/EmergencyPanel";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { fetchDaxiAEDStations } from "@/lib/aedService";
 import { pageMetadata } from "@/lib/seo";
 

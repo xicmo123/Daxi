@@ -44,7 +44,7 @@ export default async function ResidentEventsPage() {
           sourceUrl: "https://commons.wikimedia.org/wiki/File:大溪普濟堂關聖帝君聖誕慶典.jpg",
         }}
       />
-      <div className="pt-6">
+      <div>
         <EventsList events={events} />
       </div>
     </main>

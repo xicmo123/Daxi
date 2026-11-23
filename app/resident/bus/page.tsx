@@ -1,6 +1,6 @@
 import BusMap from "@/components/BusMap";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
-import styles from "@/components/resident/ResidentSkin.module.css";
+import styles from "@/components/skin/Skin.module.css";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
