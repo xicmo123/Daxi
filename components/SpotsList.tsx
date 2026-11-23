@@ -158,7 +158,7 @@ export default function SpotsList({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 safe-page-x pb-10 fade-in md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 safe-page-x pb-10 fade-in md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {rows.map((spot) => placeCard(spot))}
         {rows.length === 0 ? (
           <div className="col-span-full">

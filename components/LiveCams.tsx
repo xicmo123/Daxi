@@ -32,7 +32,7 @@ export default function LiveCams() {
           </button>
         ))}
       </div>
-      <div className="px-6">
+      <div className="safe-page-x">
         <div
           className="relative w-full overflow-hidden rounded-2xl card-shadow"
           style={{ aspectRatio: "16 / 9", background: "#000" }}

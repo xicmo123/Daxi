@@ -42,7 +42,7 @@ export default function LiveModeSwitcher({ roadFeed, roadError }: { roadFeed: Ro
 
       {mode === "road" ? (
         <>
-          <div className="px-6 pb-4">
+          <div className="safe-page-x pb-4">
             <div className="text-app-label font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
               Road Live
             </div>
@@ -52,7 +52,7 @@ export default function LiveModeSwitcher({ roadFeed, roadError }: { roadFeed: Ro
         </>
       ) : (
         <>
-          <div className="px-6 pb-4">
+          <div className="safe-page-x pb-4">
             <div className="text-app-label font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
               Scenic Live
             </div>

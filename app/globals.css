@@ -586,6 +586,12 @@ button:focus-visible {
   --rj-ok: #2f7d4f;
   --rj-radius: 20px;
   --rj-radius-sm: 20px;
+  /* Side padding for every full-bleed band: grows with the viewport, and
+     past 1600px of content it becomes whatever centres a 1600px column.
+     vw, not %, so a rail can bleed by exactly the same amount from inside
+     an already-padded section. */
+  --rj-max: 1600px;
+  --rj-gutter: max(clamp(16px, 4vw, 56px), calc((100vw - var(--rj-max)) / 2));
   --rj-fast: 0.15s ease;
 
   --paper: var(--rj-bg);
@@ -660,4 +666,23 @@ button:focus-visible {
 
 :root:has(.daxi-skin) body {
   background: var(--rj-bg);
+}
+
+/* Shared list/detail components pad themselves with .safe-page-x; inside the
+   skin they follow the same centred gutter as everything else. */
+.daxi-skin .safe-page-x {
+  padding-left: var(--rj-gutter);
+  padding-right: var(--rj-gutter);
+}
+
+/* Desktop navigates from the header (GNB + full menu); the tab bar is a
+   phone/tablet affordance, so drop it and the space reserved for it. */
+@media (min-width: 1024px) {
+  .daxi-skin.app-screen {
+    padding-bottom: var(--app-safe-bottom);
+  }
+
+  :root:has(.daxi-skin) .app-bottom-nav {
+    display: none;
+  }
 }

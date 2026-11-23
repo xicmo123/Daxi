@@ -1,6 +1,6 @@
 .masthead,
 .content {
-  --interior-gutter: clamp(1rem, 4vw, 2rem);
+  --interior-gutter: var(--rj-gutter, clamp(1rem, 4vw, 2rem));
   /* Sans, to match the Jeju-style skin's bold titles (was a CJK serif). */
   --interior-serif: var(--font-app-sans);
 }
@@ -279,7 +279,7 @@
 }
 
 .placeBody h3 {
-  font-family: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+  font-family: var(--font-app-sans);
   font-size: 1.07rem;
   font-weight: 750;
   line-height: 1.4;
@@ -292,7 +292,7 @@
 
 .sectionTitle {
   margin-bottom: 0.45rem;
-  font-family: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+  font-family: var(--font-app-sans);
   font-size: clamp(1.25rem, 3vw, 1.6rem);
   font-weight: 750;
 }

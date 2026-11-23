@@ -11,7 +11,7 @@ export default function ResidentLayout({ children }: { children: React.ReactNode
     <>
       <PullToRefresh />
       <div className="daxi-skin app-screen relative z-10 flex-1">
-        <div className="mx-auto w-full max-w-md md:max-w-3xl lg:max-w-6xl">
+        <div className="w-full">
           <ResidentHeader />
           {children}
           <ResidentFooter />

@@ -9,7 +9,7 @@ export default function TouristSkinHeader() {
       sub="桃園大溪旅遊指南"
       homeHref="/"
       gnb={[
-        { href: "/spots", label: "景點", alsoActiveOn: ["/businesses"] },
+        { href: "/spots", label: "景點" },
         { href: daxiWalkHref, label: "老街散步" },
         { href: "/businesses", label: "美食" },
         { href: "/events", label: "活動" },

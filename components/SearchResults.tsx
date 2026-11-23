@@ -70,7 +70,7 @@ export default function SearchResults({
       ) : results.length === 0 ? (
         <EmptyState variant="mascot" title={`找不到「${query}」相關結果`} subtitle="換個關鍵字試試，或許是我們還沒收錄" />
       ) : (
-        <div className="grid gap-2 md:grid-cols-2">
+        <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
           {results.map((p) => (
             <Link
               key={p.placeId}

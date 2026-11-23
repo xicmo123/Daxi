@@ -18,7 +18,7 @@
   gap: 12px;
   height: calc(60px + var(--app-safe-top));
   margin-top: calc(-1 * var(--app-safe-top));
-  padding: var(--app-safe-top) clamp(16px, 4vw, 32px) 0;
+  padding: var(--app-safe-top) var(--rj-gutter) 0;
   background: var(--rj-bg);
   background: color-mix(in srgb, var(--rj-bg) 92%, transparent);
   backdrop-filter: saturate(1.4) blur(14px);
@@ -244,7 +244,7 @@
 /* ───────── Hero visual ───────── */
 
 .heroWrap {
-  padding: 14px clamp(16px, 4vw, 32px) 0;
+  padding: 14px var(--rj-gutter) 0;
 }
 
 .hero {
@@ -510,6 +510,40 @@
   }
 }
 
+/* Desktop: the visual runs (almost) edge to edge like Visit Jeju's, while
+   its copy and controls stay aligned with the page's centred content. */
+@media (min-width: 1024px) {
+  .heroWrap {
+    --hero-inset: max(40px, calc(var(--rj-gutter) - 20px + 8px));
+    padding: 16px 20px 0;
+  }
+
+  .hero {
+    height: clamp(560px, 70vh, 760px);
+  }
+
+  .heroTop {
+    left: var(--hero-inset);
+    right: var(--hero-inset);
+  }
+
+  .heroCopy {
+    left: var(--hero-inset);
+    right: auto;
+    max-width: 720px;
+    bottom: 136px;
+  }
+
+  .heroControls {
+    left: var(--hero-inset);
+    bottom: 72px;
+  }
+
+  .heroCredit {
+    right: calc(var(--hero-inset) + 2px);
+  }
+}
+
 /* ───────── Finder (search + hashtags) ───────── */
 
 .finder {
@@ -654,13 +688,13 @@
 /* ───────── Sections ───────── */
 
 .section {
-  padding: 48px clamp(16px, 4vw, 32px) 0;
+  padding: 40px var(--rj-gutter) 0;
   scroll-margin-top: 70px;
 }
 
 @media (min-width: 1024px) {
   .section {
-    padding-top: 72px;
+    padding-top: 64px;
   }
 }
 
@@ -809,11 +843,11 @@
   grid-auto-flow: column;
   grid-auto-columns: 82%;
   gap: 12px;
-  margin: 0 calc(clamp(16px, 4vw, 32px) * -1);
-  padding: 2px clamp(16px, 4vw, 32px) 6px;
+  margin: 0 calc(var(--rj-gutter) * -1);
+  padding: 2px var(--rj-gutter) 6px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 clamp(16px, 4vw, 32px);
+  scroll-padding: 0 var(--rj-gutter);
   scrollbar-width: none;
 }
 
@@ -827,14 +861,21 @@
 
 @media (min-width: 768px) {
   .rail {
-    grid-auto-columns: calc((100% - 2 * clamp(16px, 4vw, 32px) - 24px) / 2.2);
+    grid-auto-columns: calc((100% - 32px) / 2.3);
     gap: 16px;
   }
 }
 
 @media (min-width: 1024px) {
   .rail {
-    grid-auto-columns: calc((100% - 2 * clamp(16px, 4vw, 32px) - 48px) / 3.2);
+    grid-auto-columns: calc((100% - 48px) / 3.3);
+  }
+}
+
+@media (min-width: 1280px) {
+  .rail {
+    grid-auto-columns: calc((100% - 60px) / 4.25);
+    gap: 20px;
   }
 }
 
@@ -1493,7 +1534,7 @@
 
 .footer {
   margin-top: 64px;
-  padding: 36px clamp(16px, 4vw, 32px) 28px;
+  padding: 36px var(--rj-gutter) 28px;
   background: var(--rj-surface);
   color: var(--rj-ink-soft);
   font-size: 13px;
@@ -1586,7 +1627,7 @@
 /* ───────── Sub-page header ───────── */
 
 .pageHead {
-  padding: 22px clamp(16px, 4vw, 32px) 18px;
+  padding: 22px var(--rj-gutter) 18px;
 }
 
 .crumbs {
@@ -1708,7 +1749,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 6px clamp(16px, 4vw, 32px) 0;
+  padding: 6px var(--rj-gutter) 0;
 }
 
 .panel {
@@ -1961,4 +2002,27 @@
 
 .guideCredit {
   z-index: 2;
+}
+
+/* Wide screens: scale the headline type with the wider canvas. */
+@media (min-width: 1280px) {
+  .sectionTitle {
+    font-size: 40px;
+  }
+
+  .sectionLead {
+    font-size: 15.5px;
+  }
+
+  .pageTitle {
+    font-size: 52px;
+  }
+
+  .heroCopy h2 {
+    font-size: 64px;
+  }
+
+  .heroCopy p {
+    font-size: 17px;
+  }
 }

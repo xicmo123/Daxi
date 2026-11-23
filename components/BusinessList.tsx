@@ -236,7 +236,7 @@ export default function BusinessList({
                 </svg>
               </span>
             </div>
-            <div className="grid grid-cols-1 gap-3 safe-page-x min-[365px]:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 safe-page-x min-[365px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {section.rows.map(renderCard)}
             </div>
           </section>

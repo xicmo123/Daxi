@@ -44,7 +44,7 @@ export default function BottomNavBar({
   return (
     <nav className="app-bottom-nav fixed bottom-0 inset-x-0 z-20 flex justify-center glass-nav" aria-label={ariaLabel}>
       <div
-        className="mx-auto grid w-full max-w-md border-t md:max-w-3xl md:border-x lg:max-w-6xl"
+        className="mx-auto grid w-full border-t"
         style={{ borderColor: "var(--line)", gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
       >
         {tabs.map((tab) => {

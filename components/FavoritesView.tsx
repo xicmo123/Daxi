@@ -83,7 +83,7 @@ export default function FavoritesView({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {favorites.map((b) => {
           const photo = photos[b.placeId];
           return (
