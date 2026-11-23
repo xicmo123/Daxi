@@ -4,24 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const touristLinks = [
-  { href: "/admin", label: "景點/商家管理" },
-  { href: "/admin/home-spots", label: "首頁熱門景點" },
-  { href: "/admin/events", label: "活動管理" },
-  { href: "/admin/carousel", label: "首頁輪播" },
-  { href: "/admin/amenities", label: "友善設施" },
-  { href: "/admin/routes", label: "主題路線" },
-  { href: "/admin/traffic-alerts", label: "交通管制公告" },
-  { href: "/admin/coupons", label: "優惠券管理" },
-  { href: "/admin/merchants", label: "商家帳號" },
-  { href: "/admin/audit-log", label: "操作紀錄" },
+  { href: "/admin", label: "總覽", short: "總覽" }, { href: "/admin/home-spots", label: "首頁熱門景點", short: "熱門" }, { href: "/admin/events", label: "活動管理", short: "活動" }, { href: "/admin/carousel", label: "首頁輪播", short: "輪播" }, { href: "/admin/amenities", label: "友善設施", short: "設施" }, { href: "/admin/routes", label: "主題路線", short: "路線" }, { href: "/admin/traffic-alerts", label: "交通管制公告", short: "交通" }, { href: "/admin/coupons", label: "優惠券管理", short: "優惠" }, { href: "/admin/merchants", label: "商家帳號", short: "商家" }, { href: "/admin/audit-log", label: "操作紀錄", short: "紀錄" },
 ];
 
 const residentLinks = [
-  { href: "/admin/resident-carousel", label: "首頁輪播" },
-  { href: "/admin/resident-bulletin", label: "社區佈告欄" },
-  { href: "/admin/resident-clinics", label: "醫療輪值地圖" },
-  { href: "/admin/useful-links", label: "常用連結" },
-  { href: "/admin/push", label: "推播通知" },
+  { href: "/admin/resident-carousel", label: "首頁輪播", short: "輪播" }, { href: "/admin/resident-bulletin", label: "社區佈告欄", short: "公告" }, { href: "/admin/resident-clinics", label: "醫療輪值地圖", short: "醫療" }, { href: "/admin/useful-links", label: "常用連結", short: "連結" }, { href: "/admin/push", label: "推播通知", short: "推播" },
 ];
 
 const RESIDENT_PREFIXES = [
@@ -69,99 +56,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     window.alert("已將所有商家登出");
   };
 
-  return (
-    <div className="min-h-screen" style={{ minHeight: "100vh", background: "#f4eee4", color: "#2f261f" }}>
-      <header
-        className="sticky top-0 z-10"
-        style={{ position: "sticky", top: 0, zIndex: 10, background: "#fffaf1", borderBottom: "1px solid #dfd1bf" }}
-      >
-        <div
-          className="flex items-center justify-between px-6 py-4"
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 24px" }}
-        >
-          <div className="flex items-center gap-5" style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <Link href="/admin" className="text-[17px] font-bold" style={{ color: "#2f261f", fontSize: 17, fontWeight: 700, textDecoration: "none" }}>
-              大溪通後台
-            </Link>
-
-            {/* 遊客/大溪人 scope switch — one admin session, two content
-                zones. Switching just navigates to that zone's default page;
-                nav links below re-render based on the resulting pathname. */}
-            <div className="inline-flex p-1 rounded-full" style={{ background: "#f4eee4", border: "1px solid #dfd1bf" }}>
-              <button
-                type="button"
-                onClick={() => router.push("/admin")}
-                className="rounded-full px-3 py-1.5 text-[12.5px] font-semibold transition-opacity"
-                style={{
-                  background: scope === "tourist" ? "#a06a3a" : "transparent",
-                  color: scope === "tourist" ? "#fff" : "#766a5d",
-                }}
-              >
-                遊客管理
-              </button>
-              <button
-                type="button"
-                onClick={() => router.push("/admin/resident-carousel")}
-                className="rounded-full px-3 py-1.5 text-[12.5px] font-semibold transition-opacity"
-                style={{
-                  background: scope === "resident" ? "#4a7594" : "transparent",
-                  color: scope === "resident" ? "#fff" : "#766a5d",
-                }}
-              >
-                大溪人管理
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4" style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <Link href="/" target="_blank" className="text-[12.5px] underline" style={{ color: "#766a5d", fontSize: 13 }}>
-              查看網站
-            </Link>
-            <button
-              onClick={() => revoke("merchant")}
-              title="商家裝置遺失或通行碼外流時使用"
-              className="text-[12.5px] font-medium rounded-lg px-3 py-1.5 transition-opacity active:opacity-70"
-              style={{ border: 0, borderRadius: 8, padding: "6px 12px", background: "#f0e2d0", color: "#7a4b2c", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-            >
-              強制登出商家
-            </button>
-            <button
-              onClick={() => revoke("admin")}
-              title="管理員裝置遺失時使用，你自己也會被登出"
-              className="text-[12.5px] font-medium rounded-lg px-3 py-1.5 transition-opacity active:opacity-70"
-              style={{ border: 0, borderRadius: 8, padding: "6px 12px", background: "#f0e2d0", color: "#7a4b2c", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-            >
-              強制登出管理員
-            </button>
-            <button
-              onClick={logout}
-              className="text-[12.5px] font-medium rounded-lg px-3 py-1.5 transition-opacity active:opacity-70"
-              style={{ border: 0, borderRadius: 8, padding: "6px 12px", background: "#dfd1bf", color: "#2f261f", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-            >
-              登出
-            </button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-5 px-6 pb-3" style={{ display: "flex", alignItems: "center", gap: 20, padding: "0 24px 12px" }}>
-          {links.map((l) => {
-            const active = pathname === l.href;
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-[12.5px] font-medium"
-                style={{ color: active ? "#2f261f" : "#766a5d", fontSize: 13, fontWeight: 600, textDecoration: "none" }}
-              >
-                {l.label}
-              </Link>
-            );
-          })}
-        </div>
-      </header>
-      <main className="max-w-3xl mx-auto px-6 py-8" style={{ width: "100%", maxWidth: 768, boxSizing: "border-box", margin: "0 auto", padding: "32px 24px" }}>
-        {children}
-      </main>
-    </div>
-  );
+  return <div className={`admin-shell admin-shell--${scope}`}><header className="admin-topbar"><Link href="/admin" className="admin-brand"><span className="admin-brand__mark">大</span><span><strong>大溪通</strong><small>內容管理中心</small></span></Link><div className="admin-scope"><button type="button" onClick={() => router.push("/admin")} aria-pressed={scope === "tourist"}>遊客版</button><button type="button" onClick={() => router.push("/admin/resident-carousel")} aria-pressed={scope === "resident"}>大溪人版</button></div><div className="admin-topbar__actions"><Link href={scope === "resident" ? "/resident" : "/"} target="_blank" className="admin-preview">預覽前台 ↗</Link><details className="admin-actions-menu"><summary aria-label="更多管理操作">•••</summary><div><button onClick={() => revoke("merchant")}>強制登出商家</button><button onClick={() => revoke("admin")}>強制登出管理員</button><button onClick={logout}>登出後台</button></div></details></div></header><div className="admin-workspace"><aside className="admin-sidebar"><p className="admin-sidebar__label">{scope === "resident" ? "大溪人服務" : "遊客體驗"}</p><nav>{links.map((link) => <Link key={link.href} href={link.href} data-active={pathname === link.href || (link.href !== "/admin" && pathname.startsWith(`${link.href}/`))}>{link.label}</Link>)}</nav><p className="admin-sidebar__hint">切換模式即可管理另一個前台體驗。</p></aside><nav className="admin-mobile-nav no-scrollbar">{links.map((link) => <Link key={link.href} href={link.href} data-active={pathname === link.href || (link.href !== "/admin" && pathname.startsWith(`${link.href}/`))}>{link.short}</Link>)}</nav><main className="admin-content">{children}</main></div></div>;
 }

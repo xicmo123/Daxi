@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+import Link from "next/link";
 import ExploreTabs from "@/components/ExploreTabs";
-import PageHeader from "@/components/PageHeader";
+import TouristPageHeader from "@/components/TouristPageHeader";
 import SpotsList from "@/components/SpotsList";
+import styles from "@/components/TouristGuide.module.css";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 // force-dynamic below zeroes the TTL on every fetch in this segment; the
@@ -9,19 +11,15 @@ import type { LiveParkingLot } from "@/lib/tycgParking";
 import { getCachedParking } from "@/lib/cachedSources";
 import { buildSuggestedRoutes } from "@/lib/experience";
 import { listActiveCoupons } from "@/lib/coupons";
+import { daxiWalkHref, daxiWalkTitle, daxiWalkVisitTime } from "@/lib/daxiWalk";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/spots",
   title: "大溪景點",
   description: "大溪老街周邊景點一次看：大溪橋、普濟堂、武德殿、中正公園與石門水庫，含步行距離、順路主題路線與無障礙資訊。",
-  alternates: { canonical: "/spots" },
-  openGraph: {
-    title: "大溪景點 ｜ 大溪通",
-    description: "大溪老街周邊景點、步行距離與順路主題路線。",
-    url: "/spots",
-  },
-};
+});
 
 export default async function SpotsPage() {
   const [rawPlaces, photos, details] = await Promise.all([
@@ -50,14 +48,20 @@ export default async function SpotsPage() {
   }
 
   return (
-    <div className="pt-2">
-      <PageHeader title="景點" subtitle="老街周邊景點與順路走走" tint="moss" />
+    <div>
+      <TouristPageHeader title="探索大溪景點" subtitle="從老街、木藝展館，到大漢溪畔的步道。" photo={photos["custom-tycg-414"]} />
       <ExploreTabs />
 
+      <div className="safe-page-x pb-4">
+        <Link className={styles.routeEntry} href={daxiWalkHref}>
+          <span><strong>{daxiWalkTitle}</strong><small>4 站步行導覽 · {daxiWalkVisitTime}</small></span>
+          <span aria-hidden>→</span>
+        </Link>
+      </div>
       <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} routes={routes} coupons={coupons} />
 
       {creditedSpots.length > 0 ? (
-        <div className="safe-page-x pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+        <div className="safe-page-x pb-10 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
           景點圖片來源：Wikimedia Commons（CC BY-SA）／桃園市政府觀光旅遊局，攝影：
           <>
             {creditedSpots.map((b, i) => (

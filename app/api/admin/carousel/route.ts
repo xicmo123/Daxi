@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createSlide, readSlides, type CarouselSlide } from "@/lib/carousel";
 
 const VALID_PHASES: CarouselSlide["phase"][] = ["past", "ongoing", "upcoming"];
@@ -42,6 +43,8 @@ export async function POST(request: NextRequest) {
     ctaLabel: typeof ctaLabel === "string" && ctaLabel.trim() ? ctaLabel.trim() : undefined,
     ctaUrl: typeof ctaUrl === "string" && ctaUrl.trim() ? ctaUrl.trim() : undefined,
   });
+
+  revalidateTag("events", { expire: 0 });
 
   return NextResponse.json({ ok: true, slide });
 }

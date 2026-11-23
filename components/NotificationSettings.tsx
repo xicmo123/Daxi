@@ -87,7 +87,7 @@ export default function NotificationSettings() {
     return (
       <div>
         <SectionLabel className="mb-2">通知設定</SectionLabel>
-        <div className="rounded-2xl px-4 py-3.5 text-[13px]" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+        <div className="rounded-2xl px-4 py-3.5 text-app-body" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
           停水停電、道路施工等即時提醒需要在「大溪通」App 中開啟。
         </div>
       </div>
@@ -106,10 +106,10 @@ export default function NotificationSettings() {
           className="w-full rounded-2xl px-4 py-4 text-left transition-opacity active:opacity-80 disabled:opacity-60"
           style={{ background: "var(--card)", boxShadow: "var(--shadow-card)" }}
         >
-          <div className="text-[15px] font-bold" style={{ color: "var(--ink)" }}>
+          <div className="text-app-heading font-bold" style={{ color: "var(--ink)" }}>
             {busy ? "設定中…" : "開啟通知"}
           </div>
-          <div className="mt-1 text-[12.5px]" style={{ color: "var(--ink-soft)" }}>
+          <div className="mt-1 text-app-label" style={{ color: "var(--ink-soft)" }}>
             停水停電、道路施工、區公所公告，發生時第一時間通知你
           </div>
         </button>
@@ -127,10 +127,10 @@ export default function NotificationSettings() {
                 aria-pressed={on}
               >
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-bold" style={{ color: "var(--ink)" }}>
+                  <span className="block text-app-body font-bold" style={{ color: "var(--ink)" }}>
                     {PUSH_TOPIC_LABELS[topic]}
                   </span>
-                  <span className="mt-0.5 block text-[12px]" style={{ color: "var(--ink-soft)" }}>
+                  <span className="mt-0.5 block text-app-label" style={{ color: "var(--ink-soft)" }}>
                     {TOPIC_HINTS[topic]}
                   </span>
                 </span>

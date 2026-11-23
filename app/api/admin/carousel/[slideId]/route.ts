@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { deleteSlide, updateSlide, type CarouselSlide } from "@/lib/carousel";
 
 const VALID_PHASES: CarouselSlide["phase"][] = ["past", "ongoing", "upcoming"];
@@ -31,6 +32,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   const slide = await updateSlide(slideId, update);
   if (!slide) return NextResponse.json({ error: "找不到這個輪播項目" }, { status: 404 });
+  revalidateTag("events", { expire: 0 });
   return NextResponse.json({ ok: true, slide });
 }
 
@@ -38,5 +40,6 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
   const { slideId } = await params;
   const ok = await deleteSlide(slideId);
   if (!ok) return NextResponse.json({ error: "找不到這個輪播項目" }, { status: 404 });
+  revalidateTag("events", { expire: 0 });
   return NextResponse.json({ ok: true });
 }

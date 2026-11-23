@@ -187,7 +187,7 @@ export default function SpotsMap({
               key={r.id}
               type="button"
               onClick={() => setSelectedRouteId(r.id)}
-              className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-opacity active:opacity-70"
+              className="rounded-full px-3 py-1.5 text-app-label font-semibold transition-opacity active:opacity-70"
               style={{
                 background: selectedRouteId === r.id ? "var(--river-teal-soft)" : "var(--paper-2)",
                 color: selectedRouteId === r.id ? "var(--river-teal)" : "var(--ink-soft)",
@@ -211,14 +211,14 @@ export default function SpotsMap({
       ) : null}
 
       {accessibleOn && selectedRoute ? (
-        <div className="flex items-center justify-between gap-3 px-4 py-3 text-[12px]" style={{ color: "var(--ink-soft)" }}>
+        <div className="flex items-center justify-between gap-3 px-4 py-3 text-app-label" style={{ color: "var(--ink-soft)" }}>
           <span>
             <span className="font-semibold" style={{ color: "var(--ink)" }}>
               {selectedRoute.name}
             </span>
             ・約 {(selectedRoute.totalDistanceMeters / 1000).toFixed(1)} 公里・{selectedRoute.estimatedMinutes} 分鐘
           </span>
-          <span className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
+          <span className="shrink-0 rounded-full px-2.5 py-1 text-app-label font-semibold" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
             ♿ 無障礙友善
           </span>
         </div>
@@ -246,7 +246,7 @@ function FilterButton({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={active}
-      className="flex min-h-11 items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-opacity active:opacity-70 disabled:opacity-45"
+      className="flex min-h-11 items-center gap-1.5 rounded-full px-4 py-2.5 text-app-body font-semibold transition-opacity active:opacity-70 disabled:opacity-45"
       style={{
         background: active ? "var(--river-teal-soft)" : "var(--paper-2)",
         color: active ? "var(--river-teal)" : "var(--ink-soft)",
@@ -261,7 +261,7 @@ function FilterButton({
 
 function EmptyNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-4 py-3 text-[12px]" style={{ color: "var(--ink-soft)" }}>
+    <div className="px-4 py-3 text-app-label" style={{ color: "var(--ink-soft)" }}>
       {children}
     </div>
   );

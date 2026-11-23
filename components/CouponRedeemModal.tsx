@@ -30,6 +30,7 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
       const redeemUrl = new URL("/merchant/redeem", window.location.origin);
       redeemUrl.searchParams.set("couponId", coupon.id);
       redeemUrl.searchParams.set("token", data.token);
+      redeemUrl.searchParams.set("claimId", data.claimId);
       const dataUrl = await QRCode.toDataURL(redeemUrl.toString(), {
         errorCorrectionLevel: "M",
         margin: 1,
@@ -103,13 +104,13 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
         style={{ background: "var(--paper)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="text-[11px] font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--daxi-red)" }}>
+        <div className="text-app-label font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--daxi-red)" }}>
           到店掃碼核銷
         </div>
         <div className="font-serif text-lg font-bold mb-0.5" style={{ color: "var(--ink)" }}>
           {coupon.title}
         </div>
-        <div className="text-[12px] mb-4" style={{ color: "var(--ink-soft)" }}>
+        <div className="text-app-label mb-4" style={{ color: "var(--ink-soft)" }}>
           {businessName}
         </div>
 
@@ -129,22 +130,22 @@ export default function CouponRedeemModal({ coupon, businessName, onClose }: { c
           )}
         </div>
 
-        <div className="text-[12px] font-medium mb-1" style={{ color: status === "error" ? "var(--daxi-red)" : "var(--ink)" }}>
+        <div className="text-app-label font-medium mb-1" style={{ color: status === "error" ? "var(--daxi-red)" : "var(--ink)" }}>
           {status === "error" ? "核銷碼取得失敗，請重新整理" : `請於 ${remaining} 秒內請店員掃描`}
         </div>
         {token ? (
-          <div className="font-mono text-[11px] tracking-[0.08em] mb-2" style={{ color: "var(--ink-soft)" }}>
+          <div className="font-mono text-app-label tracking-[0.08em] mb-2" style={{ color: "var(--ink-soft)" }}>
             {token}
           </div>
         ) : null}
-        <div className="text-[10.5px] leading-relaxed mb-4" style={{ color: "var(--ink-soft)" }}>
-          此 QR Code 每 90 秒自動更新，僅限現場出示，請勿截圖轉發。
+        <div className="text-app-label leading-relaxed mb-4" style={{ color: "var(--ink-soft)" }}>
+          此 QR Code 僅限現場出示，90 秒後失效；每張優惠券在此裝置限使用一次。
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="w-full rounded-full py-2.5 text-[13px] font-medium transition-opacity active:opacity-70"
+          className="w-full rounded-full py-2.5 text-app-body font-medium transition-opacity active:opacity-70"
           style={{ background: "var(--card)", color: "var(--ink)", border: "1px solid var(--line)" }}
         >
           關閉

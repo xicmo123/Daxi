@@ -1,228 +1,314 @@
 import { Suspense } from "react";
-import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { readSource } from "@/lib/fetchWithTimeout";
 // force-dynamic below zeroes the TTL on every fetch in this segment; the
-// cached wrapper is immune to it. See lib/cachedSources.ts.
-import { getCachedAnnouncements } from "@/lib/cachedSources";
+// cached wrappers are immune to it. See lib/cachedSources.ts.
+import { getCachedAnnouncements, getCachedEvents, getCachedWeather } from "@/lib/cachedSources";
+import { isEventExpired } from "@/lib/eventsFeed";
 import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
-import CommunityBulletin from "@/components/CommunityBulletin";
-import ResidentHomeHero from "@/components/ResidentHomeHero";
-import ResidentPriorityActions from "@/components/ResidentPriorityActions";
-import ResidentQuickLinks from "@/components/ResidentQuickLinks";
-import ResidentStatusButtons, { type StatusButton } from "@/components/ResidentStatusButtons";
+import { listActiveResidentSlides } from "@/lib/residentCarousel";
+import { GARBAGE_SHEET_HREF, RESIDENT_NAV } from "@/lib/residentNav";
+import ResidentHero, { type ResidentHeroSlide } from "@/components/resident/ResidentHero";
+import ResidentFinder from "@/components/resident/ResidentFinder";
+import ResidentBulletin from "@/components/resident/ResidentBulletin";
+import ResidentLifeGuide from "@/components/resident/ResidentLifeGuide";
+import ResidentRail from "@/components/resident/ResidentRail";
+import ResidentIcon from "@/components/resident/ResidentIcon";
+import styles from "@/components/resident/ResidentSkin.module.css";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "大溪人生活資訊",
-  description: "大溪居民每天要用的資訊：停水停電、道路施工、區公所公告、垃圾清運、診所輪值、AED 位置與陳情報修管道。",
-  alternates: { canonical: "/resident" },
-  openGraph: {
-    title: "大溪人生活資訊 ｜ 大溪通",
-    description: "停水停電、道路施工、垃圾清運、診所輪值與陳情報修。",
-    url: "/resident",
-  },
-};
+export const metadata = pageMetadata({
+  path: "/resident",
+  title: "我是大溪人：大溪居民生活資訊",
+  description: "大溪居民每天要用的資訊一次看：停水停電、垃圾車即時位置、道路施工、區公所公告、診所輪值、AED 位置與陳情報修管道。",
+});
 
-const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short" });
+const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short", timeZone: "Asia/Taipei" });
 
-type Block = "wood" | "moss" | "river" | "red";
-
-const quickLinks: Array<{ href: string; label: string; desc: string; block: Block; icon: React.ReactNode }> = [
+// Hero photos, assigned by slide position — admins edit slide text in the
+// resident-carousel admin, not imagery.
+const HERO_PHOTOS = [
+  RESIDENT_NAV[0].photo,
   {
-    href: "/resident/services#report",
-    label: "陳情 / 報修",
-    desc: "路燈壞了、道路坑洞怎麼通報",
-    block: "wood",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4.5 12c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5-3.4 7.5-7.5 7.5c-1.2 0-2.3-.3-3.3-.8L4.5 20l1.3-3.7C5 15.1 4.5 13.6 4.5 12Z" />
-        <path d="M9 12h6M12 9v6" />
-      </svg>
-    ),
+    src: "/images/old-street-crowd.jpg",
+    author: "Andrewhaimerl",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daxi_Old_Street_Crowd.jpg",
   },
-  {
-    href: "/resident/services#emergency",
-    label: "緊急聯絡",
-    desc: "警消／衛生所／市民專線",
-    block: "red",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6.5 4.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 6.7a2 2 0 0 1 2-2.2Z" />
-      </svg>
-    ),
-  },
-  {
-    href: "/resident/roadworks",
-    label: "道路施工",
-    desc: "目前施工與申挖位置",
-    block: "river",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 19h14" />
-        <path d="M7.5 19 10 7h4l2.5 12" />
-        <path d="M9 12h6" />
-        <path d="M8.2 15.5h7.6" />
-      </svg>
-    ),
-  },
-  {
-    href: "/resident/events",
-    label: "在地活動",
-    desc: "大溪大禧與老街周邊活動",
-    block: "moss",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 4.5h12v15H6z" />
-        <path d="M9 3v3M15 3v3M6 9.5h12" />
-      </svg>
-    ),
-  },
-  {
-    href: "/resident/clinics",
-    label: "醫療輪值",
-    desc: "現在有開的診所與藥局",
-    block: "red",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 4.5v15M4.5 12h15" />
-        <rect x="4.5" y="4.5" width="15" height="15" rx="4" />
-      </svg>
-    ),
-  },
-  {
-    href: "/resident/aed",
-    label: "尋找ＡＥＤ",
-    desc: "找到最近的自動體外心臟電擊去顫器",
-    block: "red",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M13 3 5.5 13.5h4.8L11 21l7.5-10.5h-4.8L13 3Z" />
-      </svg>
-    ),
-  },
+  RESIDENT_NAV[3].photo,
+  RESIDENT_NAV[1].photo,
+  RESIDENT_NAV[2].photo,
 ];
 
-async function TodayStatusRow() {
-  // Each source is read independently and a failure yields null, not 0 — the
-  // row can then draw "—" for "we don't know" instead of claiming there are no
-  // outages when 台水/台電 simply didn't answer. Run in parallel so one slow
-  // upstream doesn't serialise behind the others.
+const FALLBACK_SLIDES = [
+  { id: "f-outages", tag: "緊急", title: "停水停電通知", subtitle: "預告中的停水停電整理", href: "/resident/outages" },
+  { id: "f-garbage", tag: "一般", title: "垃圾車即時地圖", subtitle: "查看附近的清運車", href: GARBAGE_SHEET_HREF },
+  { id: "f-roadworks", tag: "一般", title: "道路施工地圖", subtitle: "查看今日道路申挖與施工位置", href: "/resident/roadworks" },
+];
+
+async function Hero() {
+  const [slides, weather] = await Promise.all([
+    listActiveResidentSlides().catch(() => []),
+    getCachedWeather().catch(() => null),
+  ]);
+  const source = slides.length > 0 ? slides : FALLBACK_SLIDES;
+  const heroSlides: ResidentHeroSlide[] = source.slice(0, 5).map((s, i) => ({
+    id: s.id,
+    tag: s.tag,
+    title: s.title,
+    subtitle: s.subtitle,
+    // The garbage map has no route of its own — point it at the home sheet.
+    href: "featureKey" in s && s.featureKey === "garbage" ? GARBAGE_SHEET_HREF : s.href,
+    photo: HERO_PHOTOS[i % HERO_PHOTOS.length],
+  }));
+  return (
+    <ResidentHero
+      slides={heroSlides}
+      todayLabel={dateFormatter.format(new Date())}
+      weather={weather ? { temp: weather.currentTemp, icon: weather.currentIcon, text: weather.weatherText } : null}
+    />
+  );
+}
+
+function HeroSkeleton() {
+  return (
+    <div className={styles.heroWrap}>
+      <div className={`${styles.hero} skeleton`} />
+    </div>
+  );
+}
+
+async function TodayStats() {
+  // A failed source is null, not 0 — "—" means "we don't know", never "none".
   const [outages, roadworks, announcements] = await Promise.all([
     readSource(() => listUpcomingOutages()),
     readSource(() => fetchDaxiRoadworks()),
     readSource(() => getCachedAnnouncements(10)),
   ]);
-
-  const outageCount = outages.ok ? outages.data.length : null;
-  const roadworkCount = roadworks.ok ? roadworks.data.length : null;
-  const announcementCount = announcements.ok ? announcements.data.length : null;
-
-  const items: StatusButton[] = [
-    {
-      href: "/resident/outages",
-      label: "停水停電",
-      block: "red",
-      count: outageCount,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M13 3 5.5 13.5h4.8L11 21l7.5-10.5h-4.8L13 3Z" />
-        </svg>
-      ),
-    },
-    {
-      href: "/resident/roadworks",
-      label: "道路施工",
-      block: "river",
-      count: roadworkCount,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 19h14" />
-          <path d="M7.5 19 10 7h4l2.5 12" />
-          <path d="M9 12h6" />
-          <path d="M8.2 15.5h7.6" />
-        </svg>
-      ),
-    },
-    {
-      href: "/resident/announcements",
-      label: "區公所公告",
-      block: "moss",
-      count: announcementCount,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6.5 20.2V5.8a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v14.4" />
-          <path d="M4.8 20.2h14.4" />
-          <path d="M9.2 8h5.6" />
-          <path d="M9.2 11.2h5.6" />
-          <path d="M9.2 14.4h3.4" />
-        </svg>
-      ),
-    },
+  const items = [
+    { href: "/resident/outages", label: "停水停電預告", icon: "outage" as const, count: outages.ok ? outages.data.length : null, unit: "則", alertWhenAny: true },
+    { href: "/resident/roadworks", label: "道路施工中", icon: "roadworks" as const, count: roadworks.ok ? roadworks.data.length : null, unit: "處", alertWhenAny: false },
+    { href: "/resident/announcements", label: "區公所公告", icon: "announcement" as const, count: announcements.ok ? announcements.data.length : null, unit: "則", alertWhenAny: false },
   ];
-
   return (
-    <div className="fade-in-delay-1">
-      <ResidentStatusButtons items={items} />
+    <div className={styles.stats}>
+      {items.map((item) => (
+        <Link key={item.href} href={item.href} className={styles.stat} data-alert={item.alertWhenAny && (item.count ?? 0) > 0 ? "true" : undefined}>
+          <span className={styles.statIcon}>
+            <ResidentIcon name={item.icon} size={18} />
+          </span>
+          <span>
+            <span className={styles.statLabel}>{item.label}</span>
+            <span className={styles.statValue} style={{ display: "block" }}>
+              {item.count ?? "—"}
+              {item.count !== null ? <small>{item.unit}</small> : null}
+            </span>
+          </span>
+        </Link>
+      ))}
     </div>
   );
 }
 
-function TodayStatusSkeleton() {
+function StatsSkeleton() {
   return (
-    <div className="safe-page-x">
-      <div className="h-[58px] rounded-2xl skeleton" style={{ background: "var(--line)", boxShadow: "var(--shadow-card)" }} />
-    </div>
-  );
-}
-
-function ListSkeleton() {
-  return (
-    <div className="safe-page-x flex flex-col gap-2.5">
-      {[0, 1].map((i) => (
-        <div key={i} className="h-[64px] rounded-2xl skeleton" style={{ background: "var(--line)" }} />
+    <div className={styles.stats}>
+      {[0, 1, 2].map((i) => (
+        <div key={i} className={`${styles.stat} skeleton`} />
       ))}
     </div>
   );
 }
 
 async function Bulletin() {
-  const posts = await readBulletinPosts();
-  return <CommunityBulletin posts={sortedBulletinPosts(activeBulletinPosts(posts))} />;
+  const posts = await readBulletinPosts().catch(() => []);
+  return <ResidentBulletin posts={sortedBulletinPosts(activeBulletinPosts(posts))} />;
+}
+
+const phaseLabel = { ongoing: "進行中", upcoming: "即將登場", past: "已結束" } as const;
+
+async function Events() {
+  const events = (await getCachedEvents().catch(() => [])).filter((e) => !isEventExpired(e) && e.phase !== "past").slice(0, 8);
+  if (events.length === 0) {
+    return (
+      <div className={styles.empty}>
+        <strong>近期沒有活動</strong>
+        新活動公布後會出現在這裡
+      </div>
+    );
+  }
+  return (
+    <ResidentRail label="近期活動">
+      {events.map((e) => (
+        <Link key={e.id} href="/resident/events" className={styles.eventCard} role="listitem">
+          <div className={styles.eventPhoto}>
+            <Image
+              src={e.photoSrc ?? "/images/puji-temple.jpg"}
+              alt=""
+              fill
+              sizes="(max-width: 767px) 82vw, (max-width: 1023px) 340px, 340px"
+              unoptimized={Boolean(e.photoSrc?.startsWith("http"))}
+            />
+            <span className={`${styles.badge} ${styles.eventPhase}`} data-tone={e.phase === "ongoing" ? "ok" : "main"} style={{ background: e.phase === "ongoing" ? undefined : "var(--rj-bg)" }}>
+              {phaseLabel[e.phase]}
+            </span>
+          </div>
+          <h3>{e.title}</h3>
+          <p>
+            {e.date}
+            {e.time ? ` · ${e.time}` : ""}
+          </p>
+        </Link>
+      ))}
+    </ResidentRail>
+  );
+}
+
+async function Essentials() {
+  const weather = await getCachedWeather().catch(() => null);
+  return (
+    <div className={styles.essentials}>
+      <div className={styles.essCard} data-tone="main">
+        <h3>大溪天氣</h3>
+        <p>{weather ? weather.description || weather.weatherText : "氣象署資料暫時無法取得"}</p>
+        {weather ? (
+          <>
+            <div className={styles.weatherNow}>
+              <span aria-hidden>{weather.currentIcon}</span>
+              <b>{Math.round(weather.currentTemp)}°</b>
+              <span style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4 }}>
+                {weather.weatherText}
+                <br />
+                體感 {Math.round(weather.apparentTemp)}° · 濕度 {weather.humidity}%
+              </span>
+            </div>
+            {weather.hourly.length > 0 ? (
+              <div className={styles.weatherHours}>
+                {weather.hourly.slice(0, 4).map((h) => (
+                  <div key={h.hour}>
+                    {h.hour}
+                    <br />
+                    <span aria-hidden>{h.icon}</span> {h.temp}
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+
+      <div className={styles.essCard}>
+        <h3>緊急聯絡</h3>
+        <p>點一下直接撥號</p>
+        <div className={styles.callList}>
+          <a className={styles.call} href="tel:110">
+            <b>110</b>
+            <small>警察</small>
+          </a>
+          <a className={styles.call} href="tel:119">
+            <b>119</b>
+            <small>消防救護</small>
+          </a>
+          <a className={styles.call} href="tel:165">
+            <b>165</b>
+            <small>反詐騙</small>
+          </a>
+        </div>
+        <Link href="/resident/aed" className={styles.essLink} style={{ marginTop: 8 }}>
+          尋找最近的 AED <span aria-hidden>→</span>
+        </Link>
+      </div>
+
+      <div className={styles.essCard}>
+        <h3>陳情與服務</h3>
+        <p>路燈、坑洞、路樹，這樣通報最快</p>
+        <div className={styles.essLinks}>
+          <a href="tel:1999" className={styles.essLink}>
+            撥打市民專線 1999 <span aria-hidden>☎</span>
+          </a>
+          <Link href="/resident/services#report" className={styles.essLink}>
+            線上陳情 / 報修 <span aria-hidden>→</span>
+          </Link>
+          <Link href="/resident/services#links" className={styles.essLink}>
+            戶政・地政・稅務連結 <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BlockSkeleton({ height = 196 }: { height?: number }) {
+  return <div className="skeleton" style={{ height, borderRadius: 20, background: "var(--rj-surface)" }} />;
+}
+
+function SectionHead({ id, eyebrow, title, lead, more }: { id: string; eyebrow: string; title: string; lead?: string; more?: string }) {
+  return (
+    <div className={styles.sectionHead}>
+      <div className="min-w-0">
+        <span className={styles.eyebrow}>{eyebrow}</span>
+        <h2 id={id} className={styles.sectionTitle}>
+          {title}
+        </h2>
+        {lead ? <p className={styles.sectionLead}>{lead}</p> : null}
+      </div>
+      {more ? (
+        <Link href={more} className={styles.more}>
+          more <span aria-hidden>+</span>
+        </Link>
+      ) : null}
+    </div>
+  );
 }
 
 export default function ResidentHome() {
-  const todayLabel = dateFormatter.format(new Date());
-
   return (
-    <div>
-      <ResidentHomeHero todayLabel={todayLabel} />
+    <main>
+      <h1 className="sr-only">我是大溪人：大溪居民生活資訊（停水停電、垃圾車、道路施工、公告、診所與 AED）</h1>
+      <Suspense fallback={<HeroSkeleton />}>
+        <Hero />
+      </Suspense>
 
-      <div className="pt-1 fade-in-delay-1">
-        <div className="flex items-center gap-1.5 safe-page-x mb-2.5">
-          <span aria-hidden>📋</span>
-          <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
-            社區佈告欄
-          </div>
-        </div>
-        <Suspense fallback={<ListSkeleton />}>
+      <ResidentFinder />
+
+      <section className={styles.section} aria-labelledby="today-title">
+        <SectionHead id="today-title" eyebrow="TODAY" title="今日大溪快報" lead="即時串接官方資料，數字點進去看細節" />
+        <Suspense fallback={<StatsSkeleton />}>
+          <TodayStats />
+        </Suspense>
+      </section>
+
+      <section id="bulletin" className={styles.section} aria-labelledby="bulletin-title">
+        <SectionHead id="bulletin-title" eyebrow="COMMUNITY" title="社區佈告欄" lead="里長發布的里內消息" />
+        <Suspense fallback={<BlockSkeleton />}>
           <Bulletin />
         </Suspense>
-      </div>
+      </section>
 
-      <div className="pt-3">
-        <Suspense fallback={<TodayStatusSkeleton />}>
-          <TodayStatusRow />
+      <section className={styles.section} aria-labelledby="guide-title">
+        <SectionHead id="guide-title" eyebrow="LIFE GUIDE" title="大溪生活指南" more="/resident/services" />
+        <Suspense fallback={<BlockSkeleton height={320} />}>
+          <ResidentLifeGuide />
         </Suspense>
-      </div>
+      </section>
 
-      <ResidentPriorityActions />
+      <section className={styles.section} aria-labelledby="events-title">
+        <SectionHead id="events-title" eyebrow="EVENTS" title="近期在地活動" more="/resident/events" />
+        <Suspense fallback={<BlockSkeleton height={280} />}>
+          <Events />
+        </Suspense>
+      </section>
 
-      <ResidentQuickLinks links={quickLinks} />
-
-      <div className="pb-10" />
-    </div>
+      <section className={styles.section} aria-labelledby="essentials-title">
+        <SectionHead id="essentials-title" eyebrow="ESSENTIALS" title="生活必備資訊" />
+        <Suspense fallback={<BlockSkeleton height={210} />}>
+          <Essentials />
+        </Suspense>
+      </section>
+    </main>
   );
 }

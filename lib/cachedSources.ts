@@ -24,7 +24,8 @@
 // not a drop-in. Worth doing later; this file is the seam where it happens.
 import { unstable_cache } from "next/cache";
 import { fetchDaxiWeather } from "./cwa";
-import { fetchDaxiParking } from "./tycgParking";
+import { fetchDaxiParkingSnapshot, withoutStaleParkingCounts } from "./parkingFeed";
+import { fetchNearbyParking } from "./googlePlacesParking";
 import { fetchNearbyBuses } from "./busPositions";
 import { getMergedEvents } from "./eventsFeed";
 import { fetchDaxiAnnouncements } from "./announcements";
@@ -38,8 +39,8 @@ const TTL = {
   parking: 60,
   /** Bus GPS. Short, but not per-request: the map has its own live polling. */
   buses: 30,
-  /** Event dates move rarely, and admin edits go through data/ not this feed. */
-  events: 900,
+  /** Official events and their end dates change often enough to refresh within five minutes. */
+  events: 300,
   /** 區公所 posts a few times a week. */
   announcements: 1800,
 } as const;
@@ -49,9 +50,21 @@ export const getCachedWeather = unstable_cache(async () => fetchDaxiWeather(), [
   tags: ["weather"],
 });
 
-export const getCachedParking = unstable_cache(async () => fetchDaxiParking(), ["daxi-parking"], {
+const readCachedParkingSnapshot = unstable_cache(fetchDaxiParkingSnapshot, ["daxi-parking-xml"], {
   revalidate: TTL.parking,
   tags: ["parking"],
+});
+
+export async function getCachedParkingSnapshot() {
+  return withoutStaleParkingCounts(await readCachedParkingSnapshot());
+}
+
+export async function getCachedParking() {
+  return (await getCachedParkingSnapshot()).lots;
+}
+
+export const getCachedNearbyParking = unstable_cache(() => fetchNearbyParking(), ["daxi-nearby-parking"], {
+  revalidate: 3600,
 });
 
 export const getCachedBuses = unstable_cache(async () => fetchNearbyBuses(), ["daxi-buses"], {
@@ -59,7 +72,9 @@ export const getCachedBuses = unstable_cache(async () => fetchNearbyBuses(), ["d
   tags: ["buses"],
 });
 
-export const getCachedEvents = unstable_cache(async () => getMergedEvents(), ["daxi-events"], {
+// Keep a version on the key.  This lets a correction to date/expiry logic
+// invalidate historical entries that were serialized under an older shape.
+export const getCachedEvents = unstable_cache(async () => getMergedEvents(), ["daxi-events-v2"], {
   revalidate: TTL.events,
   tags: ["events"],
 });

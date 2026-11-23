@@ -1,7 +1,7 @@
+import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
-import type { Metadata } from "next";
 import ExploreTabs from "@/components/ExploreTabs";
-import PageHeader from "@/components/PageHeader";
+import TouristPageHeader from "@/components/TouristPageHeader";
 import BusinessList from "@/components/BusinessList";
 import { businessesGeneratedAt } from "@/lib/businesses";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "@/lib/placesStore";
@@ -13,16 +13,11 @@ import { listActiveCoupons } from "@/lib/coupons";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/businesses",
   title: "大溪美食與商家",
   description: "大溪老街的豆干、小吃、伴手禮與市集商家清單，含營業狀態、排隊情況、優惠券與步行距離。",
-  alternates: { canonical: "/businesses" },
-  openGraph: {
-    title: "大溪美食與商家 ｜ 大溪通",
-    description: "大溪老街豆干、小吃與伴手禮商家，含營業狀態與優惠券。",
-    url: "/businesses",
-  },
-};
+});
 
 const updatedLabel = new Intl.DateTimeFormat("zh-TW", {
   month: "numeric",
@@ -53,16 +48,16 @@ export default async function BusinessesPage() {
   const couponPlaceIds = Array.from(new Set(coupons.map((c) => c.placeId)));
 
   return (
-    <div className="pt-2">
-      <PageHeader title="商家" subtitle={`美食・市集・${updatedLabel} 更新`} tint="wood" />
+    <div>
+      <TouristPageHeader title="大溪美食與店家" subtitle={`逛市場、找小吃和伴手禮 · ${updatedLabel} 更新`} photo={photos["ChIJR01hKyIYaDQRQCD0hbGmyUA"]} />
       <ExploreTabs />
       <Suspense fallback={null}>
         <BusinessList businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} coupons={coupons} />
       </Suspense>
-      <div className="safe-page-x pb-2 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="safe-page-x pb-2 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：Google Maps Places API（依 Google 使用者評論數排序，每類別各取前 20 名，半徑 3 公里內；資料每週更新一次，非即時）
       </div>
-      <div className="safe-page-x pb-10 text-[10.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="safe-page-x pb-10 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         圖片來源：Wikimedia Commons（CC BY / CC BY-SA）／桃園市政府觀光旅遊局，攝影：
         {listable
           .filter((b) => photos[b.placeId]?.author)

@@ -47,10 +47,10 @@ export default function ErrorScreen({
         <path d="M46 76q10-8 20 0" stroke="var(--ink)" strokeWidth="3" strokeLinecap="round" fill="none" />
       </svg>
 
-      <h1 className="text-[17px] font-bold" style={{ color: "var(--ink)" }}>
+      <h1 className="text-app-heading font-bold" style={{ color: "var(--ink)" }}>
         {title}
       </h1>
-      <p className="mt-2 max-w-[280px] text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <p className="mt-2 max-w-[280px] text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         {description}
       </p>
 
@@ -65,7 +65,7 @@ export default function ErrorScreen({
 
       {showEmergency ? (
         <div className="mt-6 w-full max-w-[280px]">
-          <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--ink-soft)" }}>
+          <div className="mb-2 text-app-label font-bold uppercase tracking-[0.18em]" style={{ color: "var(--ink-soft)" }}>
             緊急聯絡
           </div>
           <div className="flex gap-2">
@@ -80,7 +80,7 @@ export default function ErrorScreen({
       ) : null}
 
       {error.digest ? (
-        <div className="mt-6 text-[10.5px]" style={{ color: "var(--ink-soft)" }}>
+        <div className="mt-6 text-app-label" style={{ color: "var(--ink-soft)" }}>
           錯誤代碼 {error.digest}
         </div>
       ) : null}

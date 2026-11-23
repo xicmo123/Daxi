@@ -135,14 +135,14 @@ export type ParkingCongestion = {
 // "Near the old street" lots at >80% occupancy is the trigger for the
 //防塞預警 banner — surfaces outer, still-open lots as the alternative.
 export function parkingCongestion(lots: LiveParkingLot[]): ParkingCongestion {
-  const nearLots = lots.filter((l) => l.distanceMeters <= OLD_STREET_RADIUS_METERS && !l.isOpenAccess && l.total > 0);
+  const nearLots = lots.filter((l) => l.distanceMeters <= OLD_STREET_RADIUS_METERS && l.surplus !== null && l.total > 0);
   const totalCapacity = nearLots.reduce((sum, l) => sum + l.total, 0);
   const totalSurplus = nearLots.reduce((sum, l) => sum + (l.surplus ?? 0), 0);
   const occupancyPct = totalCapacity > 0 ? Math.round(((totalCapacity - totalSurplus) / totalCapacity) * 100) : 0;
   const isCongested = nearLots.length > 0 && occupancyPct > 80;
 
   const alternatives = lots
-    .filter((l) => l.distanceMeters > OLD_STREET_RADIUS_METERS && l.status !== "full")
+    .filter((l) => l.distanceMeters > OLD_STREET_RADIUS_METERS && l.surplus !== null && l.surplus > 0)
     .sort((a, b) => a.distanceMeters - b.distanceMeters)
     .slice(0, 3);
 

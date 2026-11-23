@@ -1,53 +1,47 @@
-import PageHeader from "@/components/PageHeader";
 import AnnouncementFeed from "@/components/AnnouncementFeed";
+import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
+import styles from "@/components/resident/ResidentSkin.module.css";
 import { ANNOUNCEMENTS_PAGE_URL, fetchDaxiAnnouncements } from "@/lib/announcements";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/resident/announcements",
+  title: "大溪區公所最新公告",
+  description: "即時同步桃園市大溪區公所最新消息：補助申請、活動、施工與防災通知，大溪居民一次看完。",
+});
 
 export const revalidate = 1800;
 
-// Same data source as app/(site)/announcements — duplicated here rather than
-// shared because the resident layout has its own bottom nav/wallpaper and
-// this list is small enough that duplication is cheaper than an abstraction.
 export default async function ResidentAnnouncementsPage() {
-  const announcements = await fetchDaxiAnnouncements(30);
+  const announcements = await fetchDaxiAnnouncements(30).catch(() => []);
 
   return (
-    <div className="pt-2">
-      <PageHeader title="區公所公告" subtitle="同步大溪區公所最新消息" tint="river" />
+    <main>
+      <ResidentPageHeader href="/resident/announcements" title="區公所公告" lead="同步桃園市大溪區公所的最新消息。" />
 
-      <div className="px-6 pb-24 fade-in">
-        <a
-          href={ANNOUNCEMENTS_PAGE_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="mb-4 flex items-center justify-between rounded-xl px-4 py-3 text-[12.5px] transition-opacity active:opacity-70"
-          style={{ background: "var(--river-teal-soft)", border: "1px solid var(--line)", color: "var(--ink)" }}
-        >
-          <span>資料來源：桃園市大溪區公所</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-
+      <div className={styles.body}>
         {announcements.length > 0 ? (
-          <AnnouncementFeed items={announcements} tint="var(--river-teal)" tintSoft="var(--river-teal-soft)" />
+          <AnnouncementFeed items={announcements} tint="var(--rj-main)" tintSoft="var(--rj-main-soft)" />
         ) : (
-          <div className="rounded-xl px-5 py-8 text-center" style={{ background: "var(--card)", border: "1px solid var(--line)" }}>
-            <div className="text-lg font-semibold" style={{ color: "var(--ink)" }}>
-              目前無法取得公告
+          <div className={styles.empty}>
+            <strong>目前無法取得公告</strong>
+            區公所資料源暫時沒有回應，請稍後再試，或直接前往官方公告頁查看。
+            <div className="mt-4">
+              <a href={ANNOUNCEMENTS_PAGE_URL} target="_blank" rel="noreferrer" className={styles.btn}>
+                前往區公所官網 ↗
+              </a>
             </div>
-            <p className="mt-2 text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-              區公所資料源暫時沒有回應，請稍後再試，或直接前往官方公告頁查看。
-            </p>
-            <a
-              href={ANNOUNCEMENTS_PAGE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex rounded-full px-4 py-2 text-[13px] font-semibold transition-opacity active:opacity-70"
-              style={{ background: "var(--river-teal)", color: "#fff" }}
-            >
-              前往區公所官網
-            </a>
           </div>
         )}
+
+        <p className={styles.note}>
+          資料來源：
+          <a href={ANNOUNCEMENTS_PAGE_URL} target="_blank" rel="noreferrer">
+            桃園市大溪區公所 ↗
+          </a>
+          ，每 30 分鐘更新。
+        </p>
       </div>
-    </div>
+    </main>
   );
 }

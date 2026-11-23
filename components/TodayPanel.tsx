@@ -31,12 +31,11 @@ export type TodayStat = {
 // roughly 3.7:1 against them — under the 4.5:1 AA floor for text this size.
 // On the flat pastel, --block-fg-soft clears 4.7:1 everywhere. The gradient
 // was decoration; the number being readable is the entire point of the tile.
-const TONE_STYLES: Record<TodayStat["tone"], { background: string; color: string }> = {
-  wood: { background: "var(--block-wood)", color: "var(--block-fg)" },
-  moss: { background: "var(--block-moss)", color: "var(--block-fg)" },
-  river: { background: "var(--block-river)", color: "var(--block-fg)" },
-  // For "no data right now" — a coloured tile would imply a live reading.
-  muted: { background: "var(--card)", color: "var(--ink)" },
+const TONE_STYLES: Record<TodayStat["tone"], { accent: string; icon: string }> = {
+  wood: { accent: "var(--block-wood-deep)", icon: "☼" },
+  moss: { accent: "var(--block-moss-deep)", icon: "⌁" },
+  river: { accent: "var(--river-teal)", icon: "◉" },
+  muted: { accent: "var(--ink-soft)", icon: "—" },
 };
 
 export default function TodayPanel({ stats }: { stats: TodayStat[] }) {
@@ -44,37 +43,34 @@ export default function TodayPanel({ stats }: { stats: TodayStat[] }) {
 
   return (
     <section className="safe-page-x pt-5" aria-labelledby="today-panel-heading">
-      <SectionLabel className="mb-2">
-        <span id="today-panel-heading">今天的大溪</span>
-      </SectionLabel>
+      <div className="mb-2 flex items-center justify-between">
+        <SectionLabel>
+          <span id="today-panel-heading">現在的大溪</span>
+        </SectionLabel>
+        <span className="text-app-micro font-semibold" style={{ color: "var(--ink-soft)" }}>即時資訊</span>
+      </div>
 
-      {/* 2×2 rather than a 4-across row: at 375px four tiles left ~80px each,
-          which truncated every label ("在地店家 …", "CCTV / …"). */}
-      <div className="grid grid-cols-2 gap-2.5">
+      {/* On a phone this remains an easy-to-scan two-by-two grid; on wider
+          screens it becomes a four-card dashboard.  The old full-width rows
+          made each tiny live reading occupy a disproportionate amount of
+          vertical space. */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
         {stats.map((stat) => {
           const tone = TONE_STYLES[stat.tone];
           return (
             <Link
               key={stat.key}
               href={stat.href}
-              className="flex flex-col justify-between rounded-2xl px-3.5 py-3 transition-transform active:scale-[0.98]"
-              style={{ ...tone, minHeight: 92, boxShadow: "var(--shadow-card)" }}
+              className="group relative min-w-0 overflow-hidden rounded-2xl border px-3 py-3.5 transition-transform active:scale-[0.98]"
+              style={{ background: "var(--card)", borderColor: "var(--line)", boxShadow: "var(--shadow-card)" }}
             >
-              {/* A solid secondary colour rather than opacity on the inherited
-                  one: opacity blends toward the tile and was how the old
-                  rgba(43,36,32,0.7) ended up failing contrast. */}
-              <span className="text-app-caption font-bold" style={{ color: stat.tone === "muted" ? "var(--ink-soft)" : "var(--block-fg-soft)" }}>
-                {stat.label}
+              <span className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl text-app-label font-black" style={{ background: `color-mix(in srgb, ${tone.accent} 16%, transparent)`, color: tone.accent }} aria-hidden>{tone.icon}</span>
+              <span className="block min-w-0">
+                <span className="block text-app-label font-bold" style={{ color: "var(--ink-soft)" }}>{stat.label}</span>
+                <span className="mt-0.5 block truncate text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>{stat.value}</span>
+                <span className="mt-1 block truncate text-app-caption" style={{ color: "var(--ink-soft)" }}>{stat.hint}</span>
               </span>
-              <span className="mt-1.5 block">
-                <span className="block text-app-title font-black leading-tight">{stat.value}</span>
-                <span
-                  className="mt-0.5 block text-app-caption"
-                  style={{ color: stat.tone === "muted" ? "var(--ink-soft)" : "var(--block-fg-soft)" }}
-                >
-                  {stat.hint}
-                </span>
-              </span>
+              <span className="absolute right-3 top-3 text-app-heading transition-transform group-hover:translate-x-0.5" style={{ color: "var(--ink-soft)" }} aria-hidden>›</span>
             </Link>
           );
         })}

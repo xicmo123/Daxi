@@ -68,14 +68,14 @@ export default function TrafficControlBanner() {
           aria-hidden
         />
         <div className="min-w-0 flex-1">
-          <div className="text-[12.5px] font-semibold leading-snug" style={{ color: "var(--ink)" }}>
+          <div className="text-app-label font-semibold leading-snug" style={{ color: "var(--ink)" }}>
             {hasControl ? `大溪目前有 ${roadworks.length} 處交通管制／道路施工` : "大溪目前暫無交通管制"}
           </div>
-          <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+          <div className="text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
             {syncedAt ? `最後更新 ${formatTime(syncedAt)} · 每 10 分鐘自動更新` : "同步中"}
           </div>
         </div>
-        <span className="text-[12px] shrink-0" style={{ color: "var(--river-teal)" }} aria-hidden>
+        <span className="text-app-label shrink-0" style={{ color: "var(--river-teal)" }} aria-hidden>
           查看 ↗
         </span>
       </Link>

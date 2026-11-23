@@ -31,27 +31,27 @@ export default function AnnouncementFeed({
             style={{ background: "var(--card)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(58, 45, 33, 0.08)" }}
           >
             <div className="mb-2 flex items-center justify-between gap-3">
-              <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold tracking-wide" style={{ background: tintSoft, color: tint }}>
+              <span className="rounded-full px-2.5 py-1 text-app-label font-semibold tracking-wide" style={{ background: tintSoft, color: tint }}>
                 官方公告
               </span>
               {item.date ? (
-                <span className="shrink-0 text-[11px] tabular-nums" style={{ color: "var(--ink-soft)" }}>
+                <span className="shrink-0 text-app-label tabular-nums" style={{ color: "var(--ink-soft)" }}>
                   {item.date}
                 </span>
               ) : null}
             </div>
 
-            <h2 className="text-[16px] font-semibold leading-snug" style={{ color: "var(--ink)" }}>
+            <h2 className="text-app-heading font-semibold leading-snug" style={{ color: "var(--ink)" }}>
               {item.title}
             </h2>
 
             {item.summary ? (
-              <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+              <p className="mt-2 line-clamp-2 text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
                 {item.summary}
               </p>
             ) : null}
 
-            <div className="mt-3 text-[12px] font-semibold" style={{ color: tint }}>
+            <div className="mt-3 text-app-label font-semibold" style={{ color: tint }}>
               查看摘要
             </div>
           </button>

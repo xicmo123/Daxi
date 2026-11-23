@@ -17,6 +17,10 @@ describe("nativeMapsUrl", () => {
     expect(nativeMapsUrl(directions, "android")).toBe("geo:24.8829454,121.2862657?q=24.8829454,121.2862657");
   });
 
+  it("keeps walking directions in the original URL on Android", () => {
+    expect(nativeMapsUrl(`${directions}&travelmode=walking&dir_action=navigate`, "android")).toBeNull();
+  });
+
   it("leaves the web alone", () => {
     expect(nativeMapsUrl(directions, "web")).toBeNull();
   });

@@ -25,7 +25,7 @@ export default function MapsAppSheet({
 }) {
   return (
     <Modal onClose={onClose} label="選擇導航地圖" align="bottom" className="p-4">
-      <p className="px-1 pb-3 pt-1 text-center text-[13px] font-semibold" style={{ color: "var(--ink-soft)" }}>
+      <p className="px-1 pb-3 pt-1 text-center text-app-body font-semibold" style={{ color: "var(--ink-soft)" }}>
         使用哪個地圖導航？
       </p>
 
@@ -37,7 +37,7 @@ export default function MapsAppSheet({
       <button
         type="button"
         onClick={onClose}
-        className="mt-3 min-h-12 w-full rounded-2xl text-[16px] font-bold transition-opacity active:opacity-70"
+        className="mt-3 min-h-12 w-full rounded-2xl text-app-heading font-bold transition-opacity active:opacity-70"
         style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}
       >
         取消
@@ -51,10 +51,10 @@ function Choice({ label, icon, onClick }: { label: string; icon: string; onClick
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-[17px] font-bold transition-opacity active:opacity-70"
+      className="flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-app-heading font-bold transition-opacity active:opacity-70"
       style={{ background: "var(--paper-2)", color: "var(--ink)" }}
     >
-      <span aria-hidden className="text-[20px]">
+      <span aria-hidden className="text-app-title">
         {icon}
       </span>
       {label}

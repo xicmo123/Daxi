@@ -55,13 +55,13 @@ export default function RoadCctvLive({ feed, error }: { feed: RoadCctvFeed | nul
     return (
       <div className="safe-page-x">
         <div className="rounded-2xl border p-4" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
-          <div className="flex items-center gap-2 text-[13px] font-bold" style={{ color: "var(--ink)" }}>
+          <div className="flex items-center gap-2 text-app-body font-bold" style={{ color: "var(--ink)" }}>
             <span className="h-8 w-8 rounded-full flex items-center justify-center" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
               <CameraIcon />
             </span>
             道路 CCTV 暫時無法載入
           </div>
-          <p className="mt-3 text-[12.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+          <p className="mt-3 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
             {error ?? "目前沒有可顯示的大溪道路鏡頭，請稍後再試。"}
           </p>
         </div>
@@ -104,26 +104,26 @@ export default function RoadCctvLive({ feed, error }: { feed: RoadCctvFeed | nul
                   </svg>
                 </span>
                 <span className="absolute left-4 bottom-4 max-w-[78%]">
-                  <span className="block text-[13px] font-bold text-white">{activeCamera?.title}</span>
-                  <span className="mt-1 block text-[11px]" style={{ color: "rgba(255,255,255,0.72)" }}>
+                  <span className="block text-app-body font-bold text-white">{activeCamera?.title}</span>
+                  <span className="mt-1 block text-app-label" style={{ color: "rgba(255,255,255,0.72)" }}>
                     預設靜音，點擊後載入即時道路影像
                   </span>
                 </span>
               </button>
             )}
             <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2">
-              <span className="rounded-full px-2.5 py-1 text-[10px] font-bold text-white" style={{ background: "rgba(15,23,42,0.72)" }}>
+              <span className="rounded-full px-2.5 py-1 text-app-label font-bold text-white" style={{ background: "rgba(15,23,42,0.72)" }}>
                 LIVE
               </span>
               {playing ? (
-                <span className="rounded-full px-2.5 py-1 text-[10px] font-bold text-white" style={{ background: "rgba(15,23,42,0.45)" }}>
+                <span className="rounded-full px-2.5 py-1 text-app-label font-bold text-white" style={{ background: "rgba(15,23,42,0.45)" }}>
                   靜音播放
                 </span>
               ) : null}
             </div>
             {playing ? (
               <div
-                className="pointer-events-none absolute inset-x-0 bottom-0 px-4 py-3 text-[11px] font-medium text-white"
+                className="pointer-events-none absolute inset-x-0 bottom-0 px-4 py-3 text-app-label font-medium text-white"
                 style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.62) 100%)" }}
               >
                 若畫面未播放，可點右下方「開啟」查看原始影像。
@@ -133,11 +133,11 @@ export default function RoadCctvLive({ feed, error }: { feed: RoadCctvFeed | nul
           <div className="p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.58)" }}>
+                <div className="text-app-label font-bold tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.58)" }}>
                   Daxi Road CCTV
                 </div>
-                <h2 className="mt-1 text-[17px] font-bold leading-tight text-white">{activeCamera?.title}</h2>
-                <p className="mt-1 text-[12px] leading-relaxed" style={{ color: "rgba(255,255,255,0.68)" }}>
+                <h2 className="mt-1 text-app-heading font-bold leading-tight text-white">{activeCamera?.title}</h2>
+                <p className="mt-1 text-app-label leading-relaxed" style={{ color: "rgba(255,255,255,0.68)" }}>
                   {activeCamera?.location}
                 </p>
               </div>
@@ -145,13 +145,13 @@ export default function RoadCctvLive({ feed, error }: { feed: RoadCctvFeed | nul
                 href={activeCamera?.streamUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold"
+                className="shrink-0 rounded-full px-3 py-1.5 text-app-label font-bold"
                 style={{ background: "rgba(255,255,255,0.12)", color: "#fff" }}
               >
                 開啟
               </a>
             </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px]" style={{ color: "rgba(255,255,255,0.62)" }}>
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-app-label" style={{ color: "rgba(255,255,255,0.62)" }}>
               <span className="rounded-full px-2.5 py-1" style={{ background: "rgba(255,255,255,0.1)" }}>
                 {activeCamera?.areaGroup}
               </span>
@@ -168,7 +168,7 @@ export default function RoadCctvLive({ feed, error }: { feed: RoadCctvFeed | nul
             type="button"
             onClick={() => chooseGroup(item)}
             aria-pressed={item === group}
-            className="shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-transform active:scale-95"
+            className="shrink-0 rounded-full px-3.5 py-1.5 text-app-label font-bold transition-transform active:scale-95"
             style={
               item === group
                 ? { background: "var(--river-teal)", color: "#fff" }
@@ -200,21 +200,21 @@ export default function RoadCctvLive({ feed, error }: { feed: RoadCctvFeed | nul
               <CameraIcon />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[13px] font-bold" style={{ color: "var(--ink)" }}>
+              <span className="block truncate text-app-body font-bold" style={{ color: "var(--ink)" }}>
                 {camera.title}
               </span>
-              <span className="mt-0.5 block truncate text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+              <span className="mt-0.5 block truncate text-app-label" style={{ color: "var(--ink-soft)" }}>
                 {camera.location}
               </span>
             </span>
-            <span className="shrink-0 rounded-full px-2 py-1 text-[10px] font-bold" style={{ background: "rgba(88,139,154,0.13)", color: "var(--river-teal)" }}>
+            <span className="shrink-0 rounded-full px-2 py-1 text-app-label font-bold" style={{ background: "rgba(88,139,154,0.13)", color: "var(--river-teal)" }}>
               LIVE
             </span>
           </button>
         ))}
       </div>
 
-      <div className="safe-page-x pt-3 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <div className="safe-page-x pt-3 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：{feed?.sourceName}。目前以大溪區周邊座標與道路名稱自動篩選，影像為即時路況參考，實際交通狀況仍以現場與官方公告為準。
       </div>
     </div>

@@ -15,9 +15,8 @@ export default function ExploreTabs() {
   const pathname = usePathname();
 
   return (
-    <div className="safe-page-x pb-3">
+    <div className="safe-page-x page-after-header pb-3">
       <div
-        role="tablist"
         aria-label="探索分類"
         className="grid gap-1 rounded-2xl p-1"
         style={{ background: "var(--cognac-tint)", gridTemplateColumns: `repeat(${segments.length}, minmax(0, 1fr))` }}
@@ -28,9 +27,8 @@ export default function ExploreTabs() {
             <Link
               key={segment.href}
               href={segment.href}
-              role="tab"
-              aria-selected={active}
-              className="flex items-center justify-center rounded-xl text-[13px] font-bold transition-opacity active:opacity-75"
+              aria-current={active ? "page" : undefined}
+              className="flex items-center justify-center rounded-xl text-app-body font-bold transition-opacity active:opacity-75"
               style={{
                 minHeight: 40,
                 background: active ? "var(--card)" : "transparent",

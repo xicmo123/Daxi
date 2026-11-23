@@ -1,0 +1,363 @@
+.masthead,
+.content {
+  --interior-gutter: clamp(1rem, 4vw, 2rem);
+  --interior-serif: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+}
+
+.masthead {
+  display: grid;
+  overflow: hidden;
+  margin: 0 var(--interior-gutter);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.mastheadCopy {
+  min-width: 0;
+  align-self: center;
+  padding: clamp(1.2rem, 4.3vw, 2.85rem);
+}
+
+.mastheadCopy h1 {
+  font-family: var(--interior-serif);
+  font-size: clamp(1.8rem, 4.2vw, 3.35rem);
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.23;
+}
+
+.mastheadCopy p {
+  max-width: 35rem;
+  margin-top: 0.5rem;
+  color: var(--ink-soft);
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  line-height: 1.65;
+}
+
+.mastheadPhoto {
+  position: relative;
+  min-height: 8rem;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.mastheadPhoto img,
+.placePhoto img {
+  object-fit: cover;
+}
+
+.mastheadPhoto a {
+  position: absolute;
+  bottom: 0.45rem;
+  right: 0.45rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.4rem;
+  background: #261912dc;
+  color: #fff7e9;
+  font-size: 0.68rem;
+}
+
+.mastheadPhoto a:hover {
+  text-decoration: underline;
+}
+
+.secondaryLink,
+.navigation,
+.refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding-inline: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.secondaryLink {
+  margin-top: 0.7rem;
+}
+
+.navigation {
+  border-color: transparent;
+  background: var(--ink);
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.secondaryLink:hover,
+.refresh:hover {
+  border-color: var(--ink-soft);
+}
+
+.navigation:hover {
+  filter: brightness(0.9);
+}
+
+.content {
+  padding: 1rem var(--interior-gutter) 2.5rem;
+}
+
+.parkingNotice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem 1rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--card);
+}
+
+.parkingNotice strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.parkingNotice p,
+.parkingNotice time {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.refresh {
+  cursor: pointer;
+}
+
+.refresh:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.parkingGrid {
+  display: grid;
+  align-items: start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.parkingSection {
+  min-width: 0;
+}
+
+.parkingSection h2 {
+  margin-bottom: 0.55rem;
+  font-family: var(--interior-serif);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 750;
+}
+
+.lotList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--card);
+  overflow: auto;
+}
+
+.lotRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.55rem 0.65rem;
+  align-items: center;
+  padding: 0.9rem;
+}
+
+.lotRow + .lotRow {
+  border-top: 1px solid var(--line);
+}
+
+.lotRow h3 {
+  font-size: 0.96rem;
+  font-weight: 740;
+  line-height: 1.45;
+}
+
+.lotRow p {
+  margin-top: 0.25rem;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.available,
+.unknown,
+.full,
+.almostFull {
+  display: inline-flex;
+  width: max-content;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.42rem;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 0.77rem;
+  font-weight: 720;
+}
+
+.available {
+  background: var(--card);
+  background: color-mix(in srgb, var(--status-ok) 15%, var(--card));
+}
+
+.almostFull,
+.full {
+  background: var(--card);
+  background: color-mix(in srgb, var(--status-warn) 20%, var(--card));
+}
+
+.unknown {
+  color: var(--ink-soft);
+}
+
+.lotAction {
+  display: grid;
+  justify-items: end;
+  gap: 0.45rem;
+}
+
+.parkingRelated {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block: 0.4rem 0.8rem;
+}
+
+.source {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.source a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.placeCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  color: var(--ink);
+  background: var(--card);
+}
+
+.placeCard:hover {
+  border-color: var(--cognac);
+}
+
+.placePhoto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bordeaux-surface);
+}
+
+.placeBody {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.placeBody h3 {
+  font-family: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+  font-size: 1.07rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.placeBody p {
+  color: var(--ink-soft);
+  font-size: 0.83rem;
+}
+
+.sectionTitle {
+  margin-bottom: 0.45rem;
+  font-family: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 750;
+}
+
+.featuredRail {
+  display: flex;
+  gap: 0.8rem;
+  padding-bottom: 0.45rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.featuredSpot {
+  flex: 0 0 min(82%, 21rem);
+  scroll-snap-align: start;
+}
+
+.featuredSpot:focus-visible {
+  outline-offset: -3px;
+}
+
+.placeTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.placeTags span {
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.4rem;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+}
+
+.resultPhoto {
+  position: relative;
+  overflow: hidden;
+  flex: none;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 0.55rem;
+  background: var(--paper-2);
+}
+
+.resultPhoto img {
+  object-fit: cover;
+}
+
+@media (min-width: 640px) {
+  .withPhoto {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.07fr);
+  }
+
+  .mastheadPhoto {
+    min-height: 10.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .parkingGrid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+
+  .lotList {
+    max-height: 32rem;
+  }
+}

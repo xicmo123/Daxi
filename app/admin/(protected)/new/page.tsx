@@ -1,9 +1,9 @@
 import NewPlaceForm from "@/components/admin/NewPlaceForm";
-import { fetchDaxiParking } from "@/lib/tycgParking";
+import { getCachedParking } from "@/lib/cachedSources";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewPlacePage() {
-  const parkingLots = await fetchDaxiParking().catch(() => []);
+  const parkingLots = await getCachedParking().catch(() => []);
   return <NewPlaceForm parkingLots={parkingLots} />;
 }

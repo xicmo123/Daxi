@@ -9,7 +9,7 @@ import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import type { Coupon } from "@/lib/coupons";
 import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/placeDetails";
-import { findNearestLot, haversineMeters, formatDistance, type LiveParkingLot } from "@/lib/tycgParking";
+import { findNearestLot, haversineMeters, formatDistance, parkingAvailabilityLabel, type LiveParkingLot } from "@/lib/tycgParking";
 import { statusBarColor } from "@/lib/status";
 import { experienceTags } from "@/lib/experience";
 import { calculateDistance } from "@/lib/geo";
@@ -246,14 +246,14 @@ export default function BusinessDetailModal({
           </button>
           <div className="absolute left-5 right-5 bottom-4">
             <span
-              className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2"
+              className="inline-flex text-app-label tracking-wide rounded-full px-2.5 py-1 mb-2"
               style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
             >
               {categoryLabel(detail?.category, business.googleType, business.tag)}
             </span>
             {business.businessStatus && business.businessStatus !== "OPERATIONAL" ? (
               <span
-                className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                className="inline-flex text-app-label tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
                 style={{ background: "rgba(224,90,70,0.28)", color: "#ffd9d0" }}
               >
                 {business.businessStatus === "CLOSED_PERMANENTLY" ? "已歇業" : "暫停營業"}
@@ -261,7 +261,7 @@ export default function BusinessDetailModal({
             ) : null}
             {liveStatus?.queueStatus ? (
               <span
-                className="inline-flex text-[10.5px] font-bold tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                className="inline-flex text-app-label font-bold tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
                 style={{ background: QUEUE_STATUS_BADGE[liveStatus.queueStatus].bg, color: QUEUE_STATUS_BADGE[liveStatus.queueStatus].fg }}
               >
                 {liveStatus.queueStatus}
@@ -269,14 +269,14 @@ export default function BusinessDetailModal({
             ) : null}
             {liveStatus?.soldOut ? (
               <span
-                className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                className="inline-flex text-app-label tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
                 style={{ background: "rgba(15,17,22,0.55)", color: "#fff" }}
               >
                 今日已完售
               </span>
             ) : liveStatus?.queueMinutes ? (
               <span
-                className="inline-flex text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                className="inline-flex text-app-label tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
                 style={{ background: "rgba(224,90,70,0.55)", color: "#fff" }}
               >
                 大排長龍・約等 {liveStatus.queueMinutes} 分鐘
@@ -284,24 +284,24 @@ export default function BusinessDetailModal({
             ) : null}
             {detail?.acceptsLuggage ? (
               <span
-                className="inline-flex items-center gap-1 text-[10.5px] tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
+                className="inline-flex items-center gap-1 text-app-label tracking-wide rounded-full px-2.5 py-1 mb-2 ml-1.5"
                 style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
               >
                 <span aria-hidden="true">🎒</span>
                 可寄放伴手禮
               </span>
             ) : null}
-            <h3 className="font-serif font-semibold text-[20px] text-white mb-1.5">{business.name}</h3>
+            <h3 className="font-serif font-semibold text-app-title text-white mb-1.5">{business.name}</h3>
           </div>
         </div>
 
         <div className="p-5 sm:p-6 lg:p-7">
           {detail?.story ? (
             <div className="mb-5 rounded-xl px-4 py-3" style={{ background: "var(--paper-2)", border: "1px solid var(--line)" }}>
-              <div className="mb-1 text-[10.5px] tracking-[0.16em] uppercase" style={{ color: "var(--ink-soft)" }}>
+              <div className="mb-1 text-app-label tracking-[0.16em] uppercase" style={{ color: "var(--ink-soft)" }}>
                 推薦重點
               </div>
-              <p className="font-serif text-[14px] leading-relaxed" style={{ color: "var(--ink)" }}>
+              <p className="font-serif text-app-body leading-relaxed" style={{ color: "var(--ink)" }}>
                 {detail.story}
               </p>
             </div>
@@ -309,7 +309,7 @@ export default function BusinessDetailModal({
 
           {myCoupons.length > 0 ? (
             <div className="mb-5 flex flex-col gap-2">
-              <div className="text-[10.5px] tracking-[0.16em] uppercase" style={{ color: "var(--daxi-red)" }}>
+              <div className="text-app-label tracking-[0.16em] uppercase" style={{ color: "var(--daxi-red)" }}>
                 本店優惠
               </div>
               {myCoupons.map((c) => (
@@ -336,14 +336,14 @@ export default function BusinessDetailModal({
                     </svg>
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--ink)" }}>
+                    <div className="text-app-label font-semibold truncate" style={{ color: "var(--ink)" }}>
                       {c.title}
                     </div>
-                    <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
+                    <div className="text-app-label mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
                       {c.desc}
                     </div>
                   </div>
-                  <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+                  <span className="shrink-0 text-app-label font-medium rounded-full px-2 py-0.5" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
                     掃碼核銷
                   </span>
                 </button>
@@ -353,7 +353,7 @@ export default function BusinessDetailModal({
 
           {overflowPicks.length > 0 ? (
             <div className="mb-5 rounded-xl px-4 py-4" style={{ background: "var(--daxi-red-soft)" }}>
-              <div className="mb-3 text-[12.5px] font-semibold" style={{ color: "var(--daxi-red)" }}>
+              <div className="mb-3 text-app-label font-semibold" style={{ color: "var(--daxi-red)" }}>
                 {liveStatus?.soldOut ? "已完售，先逛逛這幾家吧" : "現場大排長龍，免排隊優質好店推薦"}
               </div>
               <div className="flex flex-col gap-2">
@@ -379,16 +379,16 @@ export default function BusinessDetailModal({
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[13px] font-semibold truncate" style={{ color: "var(--ink)" }}>
+                        <div className="text-app-body font-semibold truncate" style={{ color: "var(--ink)" }}>
                           {nb.name}
                         </div>
-                        <div className="text-[10.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+                        <div className="text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
                           {nb.distanceLabel}
                         </div>
                       </div>
                       {hasCoupon ? (
                         <span
-                          className="shrink-0 text-[9.5px] font-semibold rounded-full px-2 py-1"
+                          className="shrink-0 text-app-label font-semibold rounded-full px-2 py-1"
                           style={{ background: "var(--daxi-red)", color: "#fff" }}
                         >
                           限時優惠
@@ -410,7 +410,7 @@ export default function BusinessDetailModal({
               {decisionTags.map((t) => (
                 <span
                   key={t}
-                  className="text-[11px] tracking-wide rounded-full px-2.5 py-1"
+                  className="text-app-label tracking-wide rounded-full px-2.5 py-1"
                   style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}
                 >
                   {t}
@@ -419,7 +419,7 @@ export default function BusinessDetailModal({
             </div>
           ) : null}
 
-          <div className="flex flex-col gap-3 text-[13.5px]" style={{ color: "var(--ink)" }}>
+          <div className="flex flex-col gap-3 text-app-body" style={{ color: "var(--ink)" }}>
             {business.address ? (
               <div className="flex items-start gap-2.5">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="mt-0.5 shrink-0" style={{ color: "var(--ink-soft)" }}>
@@ -464,7 +464,7 @@ export default function BusinessDetailModal({
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-[12.5px] font-semibold transition-opacity active:opacity-80"
+                  className="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-app-label font-semibold transition-opacity active:opacity-80"
                   style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -486,28 +486,21 @@ export default function BusinessDetailModal({
                 <path d="M10 16V8h3.2a2.6 2.6 0 1 1 0 5.2H10" />
               </svg>
               <div className="min-w-0 flex-1">
-                <div className="text-[10.5px] mb-0.5" style={{ color: "var(--ink-soft)" }}>
+                <div className="text-app-label mb-0.5" style={{ color: "var(--ink-soft)" }}>
                   {parking.isManual ? "推薦停車場" : "距此最近的停車場"}・直線距離 {parking.distanceLabel}
                   {parking.crossesRiver ? "・需過橋" : ""}
                 </div>
-                <div className="text-[13px] font-medium truncate" style={{ color: "var(--ink)" }}>
+                <div className="text-app-body font-medium truncate" style={{ color: "var(--ink)" }}>
                   {parking.lot.name}
                 </div>
               </div>
               <div className="shrink-0 text-left sm:text-right">
-                {parking.lot.status === "full" ? (
-                  <span className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
-                    已滿
-                  </span>
-                ) : parking.lot.isOpenAccess ? (
-                  <span className="text-[12px] font-medium" style={{ color: "var(--status-ok)" }}>
-                    開放中
-                  </span>
-                ) : (
-                  <span className="text-[13px] font-medium tabular-nums" style={{ color: statusBarColor[parking.lot.status] }}>
-                    剩餘 {parking.lot.surplus}/{parking.lot.total}
-                  </span>
-                )}
+                <span
+                  className="text-app-label font-medium tabular-nums"
+                  style={{ color: parking.lot.status ? statusBarColor[parking.lot.status] : "var(--ink-soft)" }}
+                >
+                  {parkingAvailabilityLabel(parking.lot)}
+                </span>
               </div>
             </div>
           ) : null}
@@ -516,7 +509,7 @@ export default function BusinessDetailModal({
             href={business.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-[13px] font-semibold transition-opacity active:opacity-80"
+            className="mt-6 flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-app-body font-semibold transition-opacity active:opacity-80"
             style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
           >
             開啟導航
@@ -529,7 +522,7 @@ export default function BusinessDetailModal({
         {/* Explore nearby — geographic proximity, not a curated theme */}
         {nearby.length > 0 ? (
           <div className="pb-6">
-            <div className="px-5 mb-3 text-[11px] tracking-[0.15em] uppercase sm:px-6" style={{ color: "var(--ink-soft)" }}>
+            <div className="px-5 mb-3 text-app-label tracking-[0.15em] uppercase sm:px-6" style={{ color: "var(--ink-soft)" }}>
               周邊探索
             </div>
             <div className="flex gap-3 overflow-x-auto px-5 no-scrollbar sm:px-6">
@@ -563,10 +556,10 @@ export default function BusinessDetailModal({
                         </div>
                       )}
                     </div>
-                    <div className="text-[12px] font-medium truncate" style={{ color: "var(--ink)" }}>
+                    <div className="text-app-label font-medium truncate" style={{ color: "var(--ink)" }}>
                       {nb.name}
                     </div>
-                    <div className="text-[10.5px]" style={{ color: "var(--ink-soft)" }}>
+                    <div className="text-app-label" style={{ color: "var(--ink-soft)" }}>
                       {formatDistance(distanceMeters)}
                     </div>
                   </button>

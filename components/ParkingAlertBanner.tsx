@@ -52,17 +52,17 @@ export default function ParkingAlertBanner({
           <motion.span
             animate={{ rotate: [0, -8, 8, 0] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            className="shrink-0 text-[15px]"
+            className="shrink-0 text-app-heading"
             aria-hidden="true"
           >
             🚗💦
           </motion.span>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[12.5px] font-bold leading-snug">
-              老街周邊停車場已滿載 {occupancyPct}%，建議改停外圍
+            <div className="truncate text-app-label font-bold leading-snug">
+              老街周邊有回報的車場約 {occupancyPct}% 滿
             </div>
             {lateBirdExtraMinutes > 0 ? (
-              <div className="truncate text-[10.5px]" style={{ color: "rgba(255,255,255,0.85)" }}>
+              <div className="truncate text-app-label" style={{ color: "rgba(255,255,255,0.85)" }}>
                 晚鳥逃脫預估：現在進場恐多花 {lateBirdExtraMinutes} 分鐘找車位
               </div>
             ) : null}
@@ -77,7 +77,7 @@ export default function ParkingAlertBanner({
                 href={lot.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition-opacity active:opacity-80"
+                className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-app-label font-medium transition-opacity active:opacity-80"
                 style={{ background: "rgba(255,255,255,0.16)" }}
               >
                 <span className="truncate">{lot.name}</span>

@@ -1,126 +1,104 @@
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
+import ResidentIcon from "@/components/resident/ResidentIcon";
+import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
+import { DAXI_OFFICE_URL } from "@/components/resident/ResidentFooter";
+import styles from "@/components/resident/ResidentSkin.module.css";
 import { readUsefulLinks } from "@/lib/usefulLinks";
+import { pageMetadata } from "@/lib/seo";
 
-const DAXI_OFFICE_URL = "https://www.daxi.tycg.gov.tw";
+export const metadata = pageMetadata({
+  path: "/resident/services",
+  title: "大溪里民服務：陳情報修與緊急電話",
+  description: "大溪居民陳情報修管道、1999 市民專線、110/119/165 緊急電話，以及戶政、地政、稅務常用連結。",
+});
 
 export const dynamic = "force-dynamic";
 
-function SectionCard({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
-  return (
-    <section id={id} className="scroll-mt-6 rounded-2xl border px-4 py-4" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
-      <h2 className="text-[14px] font-bold mb-3" style={{ color: "var(--ink)" }}>
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-function ContactRow({ label, phone }: { label: string; phone: string }) {
-  return (
-    <a
-      href={`tel:${phone}`}
-      className="flex items-center justify-between py-2.5 border-b last:border-b-0 transition-opacity active:opacity-70"
-      style={{ borderColor: "var(--line)" }}
-    >
-      <span className="text-[13px]" style={{ color: "var(--ink)" }}>
-        {label}
-      </span>
-      <span className="text-[13px] font-semibold tabular-nums" style={{ color: "var(--river-teal)" }}>
-        {phone}
-      </span>
-    </a>
-  );
-}
+const CONTACTS = [
+  { label: "警察報案", phone: "110" },
+  { label: "消防／救護", phone: "119" },
+  { label: "婦幼保護專線", phone: "113" },
+  { label: "反詐騙諮詢專線", phone: "165" },
+  { label: "桃園市民專線", phone: "1999" },
+];
 
 export default async function ResidentServicesPage() {
   const usefulLinks = await readUsefulLinks();
 
   return (
-    <div className="pt-2">
-      <PageHeader title="里民服務" subtitle="生活大小事，這裡先找" tint="river" />
+    <main>
+      <ResidentPageHeader
+        href="/resident/services"
+        title="里民服務"
+        lead="生活大小事，這裡先找。"
+        tabs={[
+          { href: "#report", label: "陳情 / 報修" },
+          { href: "#emergency", label: "緊急聯絡" },
+          { href: "#links", label: "常用連結" },
+        ]}
+      />
 
-      <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
-        <SectionCard id="report" title="陳情 / 報修">
-          <p className="text-[12.5px] leading-relaxed mb-3" style={{ color: "var(--ink-soft)" }}>
-            路燈故障、道路坑洞、路樹倒伏等問題，可撥打市民專線或前往區公所網站陳情信箱通報。
-          </p>
-          <div className="flex flex-col gap-2">
-            <a
-              href="tel:1999"
-              className="flex items-center justify-between rounded-xl px-4 py-3 transition-opacity active:opacity-70"
-              style={{ background: "var(--river-teal-soft)" }}
-            >
-              <span className="text-[13px] font-medium" style={{ color: "var(--ink)" }}>
-                撥打市民專線 1999
-              </span>
-              <span className="text-[13px] font-semibold" style={{ color: "var(--river-teal)" }}>
-                撥打
-              </span>
+      <div className={styles.body}>
+        <section id="report" className={styles.panel} aria-labelledby="report-title">
+          <h2 id="report-title" className={styles.panelTitle}>
+            <span>
+              <ResidentIcon name="report" size={18} />
+            </span>
+            陳情 / 報修
+          </h2>
+          <p className={styles.panelLead}>路燈故障、道路坑洞、路樹倒伏等問題，可撥打市民專線或前往區公所網站陳情信箱通報。</p>
+          <div className={styles.btnRow}>
+            <a href="tel:1999" className={styles.btn}>
+              撥打市民專線 1999
             </a>
-            <a
-              href={DAXI_OFFICE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between rounded-xl px-4 py-3 transition-opacity active:opacity-70"
-              style={{ border: "1px solid var(--line)" }}
-            >
-              <span className="text-[13px] font-medium" style={{ color: "var(--ink)" }}>
-                前往區公所線上陳情
-              </span>
-              <span aria-hidden="true" style={{ color: "var(--ink-soft)" }}>
-                ↗
-              </span>
+            <a href={DAXI_OFFICE_URL} target="_blank" rel="noreferrer" className={styles.btn} data-variant="line">
+              前往區公所線上陳情 ↗
             </a>
           </div>
-        </SectionCard>
+        </section>
 
-        <SectionCard id="emergency" title="緊急聯絡">
+        <section id="emergency" className={styles.panel} aria-labelledby="emergency-title">
+          <h2 id="emergency-title" className={styles.panelTitle}>
+            <span>
+              <ResidentIcon name="phone" size={18} />
+            </span>
+            緊急聯絡
+          </h2>
           <div>
-            <ContactRow label="警察報案" phone="110" />
-            <ContactRow label="消防／救護" phone="119" />
-            <ContactRow label="婦幼保護專線" phone="113" />
-            <ContactRow label="反詐騙諮詢專線" phone="165" />
-            <ContactRow label="桃園市民專線" phone="1999" />
+            {CONTACTS.map((c) => (
+              <a key={c.phone} href={`tel:${c.phone}`} className={styles.row}>
+                <strong>{c.label}</strong>
+                <span className={styles.rowValue}>{c.phone}</span>
+              </a>
+            ))}
           </div>
-          <Link
-            href="/resident/aed"
-            className="mt-3 flex items-center justify-between rounded-xl px-4 py-3 text-[13px] font-bold transition-opacity active:opacity-70"
-            style={{ background: "var(--daxi-red)", color: "#fff" }}
-          >
-            🚨 尋找最近的 AED
-            <span aria-hidden="true">→</span>
+          <Link href="/resident/aed" className={styles.btn} data-variant="alert" style={{ width: "100%", marginTop: 14 }}>
+            尋找最近的 AED <span aria-hidden>→</span>
           </Link>
-        </SectionCard>
+        </section>
 
-        <SectionCard id="links" title="常用連結">
-          <div className="flex flex-col gap-2">
+        <section id="links" className={styles.panel} aria-labelledby="links-title">
+          <h2 id="links-title" className={styles.panelTitle}>
+            <span>
+              <ResidentIcon name="link" size={18} />
+            </span>
+            常用連結
+          </h2>
+          <div>
             {usefulLinks.map((l) => (
-              <a
-                key={l.id}
-                href={l.href}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between rounded-xl px-4 py-3 transition-opacity active:opacity-70"
-                style={{ border: "1px solid var(--line)" }}
-              >
+              <a key={l.id} href={l.href} target="_blank" rel="noreferrer" className={styles.row}>
                 <span>
-                  <span className="block text-[13px] font-medium" style={{ color: "var(--ink)" }}>
-                    {l.label}
-                  </span>
-                  <span className="block text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
-                    {l.note}
-                  </span>
+                  <strong>{l.label}</strong>
+                  {l.note ? <small>{l.note}</small> : null}
                 </span>
-                <span aria-hidden="true" style={{ color: "var(--ink-soft)" }}>
+                <span aria-hidden style={{ color: "var(--rj-ink-faint)" }}>
                   ↗
                 </span>
               </a>
             ))}
           </div>
-        </SectionCard>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

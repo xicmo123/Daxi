@@ -302,6 +302,35 @@ button:focus-visible {
   padding-right: clamp(1rem, 4vw, 2rem);
 }
 
+/* Admin console: a higher-contrast workspace, intentionally separate from
+   the softer consumer-facing palette. */
+.admin-shell { --admin-accent: #9a5a2e; --admin-accent-soft: #fff0e6; --admin-canvas: #f5f7fa; --admin-surface: #fff; --admin-ink: #182230; --admin-muted: #667385; --admin-line: #dce3ea; background: var(--admin-canvas); color: var(--admin-ink); min-height: 100dvh; }
+.admin-shell--resident { --admin-accent: #176b78; --admin-accent-soft: #e2f5f4; }
+.admin-topbar { align-items: center; background: var(--admin-surface); border-bottom: 1px solid var(--admin-line); display: flex; gap: 1.25rem; min-height: 4.5rem; padding: .75rem clamp(1rem,3vw,2.5rem); position: sticky; top: 0; z-index: 20; }
+.admin-brand { align-items: center; color: var(--admin-ink); display: flex; flex-shrink: 0; gap: .65rem; line-height: 1.1; text-decoration: none; }.admin-brand__mark { align-items: center; background: var(--admin-accent); border-radius: .65rem; color: #fff; display: flex; font-size: 1.05rem; font-weight: 800; height: 2.25rem; justify-content: center; width: 2.25rem; }.admin-brand strong,.admin-brand small { display:block; }.admin-brand strong { font-size:.92rem; letter-spacing:.04em; }.admin-brand small { color:var(--admin-muted); font-size:.66rem; margin-top:.18rem; }
+.admin-scope { background:#edf1f5; border-radius:.65rem; display:flex; padding:.2rem; }.admin-scope button { background:transparent; border:0; border-radius:.48rem; color:var(--admin-muted); cursor:pointer; font-size:.78rem; font-weight:700; padding:.45rem .7rem; }.admin-scope button[aria-pressed="true"] { background:var(--admin-surface); box-shadow:0 1px 3px rgba(24,34,48,.16); color:var(--admin-accent); }
+.admin-topbar__actions { align-items:center; display:flex; gap:.85rem; margin-left:auto; }.admin-preview { color:var(--admin-muted); font-size:.78rem; font-weight:650; text-decoration:none; }.admin-actions-menu { position:relative; }.admin-actions-menu summary { background:#edf1f5; border-radius:.5rem; color:var(--admin-ink); cursor:pointer; font-weight:800; list-style:none; padding:.35rem .6rem .5rem; }.admin-actions-menu summary::-webkit-details-marker { display:none; }.admin-actions-menu div { background:var(--admin-surface); border:1px solid var(--admin-line); border-radius:.65rem; box-shadow:0 12px 28px rgba(24,34,48,.14); min-width:11rem; padding:.35rem; position:absolute; right:0; top:2.5rem; }.admin-actions-menu button { background:transparent; border:0; border-radius:.4rem; color:var(--admin-ink); cursor:pointer; display:block; font-size:.78rem; padding:.6rem; text-align:left; width:100%; }.admin-actions-menu button:hover { background:#f2f5f7; }
+.admin-workspace { display:grid; grid-template-columns:14rem minmax(0,1fr); margin:0 auto; max-width:90rem; }.admin-sidebar { border-right:1px solid var(--admin-line); min-height:calc(100dvh - 4.5rem); padding:1.8rem 1rem; }.admin-sidebar__label { color:var(--admin-muted); font-size:.68rem; font-weight:800; letter-spacing:.09em; margin:0 .7rem .65rem; text-transform:uppercase; }.admin-sidebar nav { display:grid; gap:.18rem; }.admin-sidebar nav a { border-radius:.55rem; color:var(--admin-muted); font-size:.82rem; font-weight:650; padding:.68rem .7rem; text-decoration:none; }.admin-sidebar nav a:hover { background:#edf1f5; color:var(--admin-ink); }.admin-sidebar nav a[data-active="true"] { background:var(--admin-accent-soft); color:var(--admin-accent); }.admin-sidebar__hint { border-top:1px solid var(--admin-line); color:var(--admin-muted); font-size:.72rem; line-height:1.6; margin:1.5rem .7rem 0; padding-top:1rem; }.admin-content { max-width:70rem; min-width:0; padding:clamp(1.4rem,3vw,2.75rem); width:100%; }.admin-mobile-nav { display:none; }
+@media (max-width:720px) { .admin-topbar { gap:.7rem; min-height:4rem; padding:.6rem 1rem; }.admin-brand small { display:none; }.admin-brand__mark { border-radius:.55rem; height:2rem; width:2rem; }.admin-scope { margin-left:auto; }.admin-scope button { font-size:.72rem; padding:.4rem .5rem; }.admin-preview { display:none; }.admin-workspace { display:block; }.admin-sidebar { display:none; }.admin-mobile-nav { background:var(--admin-surface); border-bottom:1px solid var(--admin-line); display:flex; gap:.3rem; overflow-x:auto; padding:.55rem 1rem; white-space:nowrap; }.admin-mobile-nav a { border:1px solid var(--admin-line); border-radius:999px; color:var(--admin-muted); font-size:.73rem; font-weight:700; padding:.35rem .65rem; text-decoration:none; }.admin-mobile-nav a[data-active="true"] { background:var(--admin-accent); border-color:var(--admin-accent); color:#fff; }.admin-content { padding:1.25rem 1rem calc(2rem + env(safe-area-inset-bottom)); } }
+
+/* Legacy administration components use inline values.  Map their original
+   beige/blue values into the console tokens so both areas now share the same
+   contrast, surfaces and mode accent without risking their data behaviour. */
+.admin-shell [style*="#fffaf1"] { background: var(--admin-surface) !important; }
+.admin-shell [style*="#f4eee4"] { background: #f1f4f7 !important; }
+.admin-shell [style*="#dfd1bf"] { border-color: var(--admin-line) !important; }
+.admin-shell [style*="#2f261f"] { color: var(--admin-ink) !important; }
+.admin-shell [style*="#766a5d"] { color: var(--admin-muted) !important; }
+.admin-shell [style*="#b0503f"] { color: #b7443c !important; }
+@media (max-width: 520px) { .admin-content > div > .flex.items-center.justify-between { align-items:flex-start; gap:.8rem; }.admin-content > div > .flex.items-center.justify-between > a { white-space:nowrap; }.admin-content .grid.grid-cols-2 { gap:.6rem; }.admin-content input,.admin-content select,.admin-content textarea { font-size:16px !important; } }
+
+/* A consistent rhythm for page content below a colour header.  Individual
+   feature pages still control their own cards, but this prevents a lone map,
+   filter bar, or first list item from feeling detached from its heading. */
+.page-after-header {
+  padding-top: clamp(0.875rem, 2vw, 1.25rem);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -337,6 +366,7 @@ button:focus-visible {
 }
 
 .glass-nav {
+  background: var(--paper);
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -529,4 +559,105 @@ button:focus-visible {
     animation: none;
     opacity: 0.75;
   }
+}
+
+/* 「我是大溪人」 skin — Visit Jeju-style white canvas with one burnt-orange
+   (Each selector is wrapped in :is() with a plain `.resident-skin` twin:
+   :is() is forgiving, so Safari < 15.4 — no :has(), still allowed by the
+   iOS 15.0 app target — drops the :has() half and keeps the page skinned.
+   Only portalled sheets miss the tokens there.)
+   accent. Scoped with :has() on the root (not on the layout div) so sheets
+   and modals portalled to <body> pick up the same palette. The legacy tokens
+   are remapped too, so shared components (maps, outage list, event list)
+   blend in without per-component overrides. */
+:is(:root:has(.resident-skin), .resident-skin) {
+  --rj-bg: #ffffff;
+  --rj-surface: #f4f4f2;
+  --rj-surface-strong: #ebebe8;
+  --rj-ink: #222222;
+  --rj-ink-soft: #666666;
+  --rj-ink-faint: #9a9a9a;
+  --rj-line: rgba(0, 0, 0, 0.09);
+  --rj-line-strong: rgba(0, 0, 0, 0.18);
+  --rj-main: #b34f00;
+  --rj-main-soft: rgba(179, 79, 0, 0.1);
+  --rj-on-main: #ffffff;
+  --rj-alert: #c8372d;
+  --rj-ok: #2f7d4f;
+  --rj-radius: 20px;
+  --rj-radius-sm: 20px;
+  --rj-fast: 0.15s ease;
+
+  --paper: var(--rj-bg);
+  --paper-2: var(--rj-surface);
+  --card: var(--rj-bg);
+  --ink: var(--rj-ink);
+  --ink-soft: var(--rj-ink-soft);
+  --line: var(--rj-line);
+  --accent: var(--rj-main);
+  --river-teal: var(--rj-main);
+  --river-teal-soft: var(--rj-main-soft);
+  --daxi-red: var(--rj-alert);
+  --daxi-red-soft: rgba(200, 55, 45, 0.1);
+  --status-ok: var(--rj-ok);
+  --status-warn: var(--rj-main);
+  --cognac-deep: var(--rj-main);
+  --block-wood-deep: var(--rj-main);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --shadow-float: 0 14px 34px rgba(0, 0, 0, 0.12);
+  background: var(--rj-bg);
+}
+
+@media (min-width: 768px) {
+  :is(:root:has(.resident-skin), .resident-skin) {
+    --rj-radius: 30px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :is(:root:has(.resident-skin), .resident-skin) {
+    --rj-radius: 36px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :is(:root:not([data-theme="light"]):has(.resident-skin), :root:not([data-theme="light"]) .resident-skin) {
+    --rj-bg: #141414;
+    --rj-surface: #1f1f1f;
+    --rj-surface-strong: #2a2a2a;
+    --rj-ink: #f2f2f2;
+    --rj-ink-soft: #ababab;
+    --rj-ink-faint: #7a7a7a;
+    --rj-line: rgba(255, 255, 255, 0.1);
+    --rj-line-strong: rgba(255, 255, 255, 0.22);
+    --rj-main: #ff9447;
+    --rj-main-soft: rgba(255, 148, 71, 0.15);
+    --rj-on-main: #1a1007;
+    --rj-alert: #ff6b5e;
+    --rj-ok: #5cc28a;
+    --accent-fg: #1a1007;
+    --daxi-red-soft: rgba(255, 107, 94, 0.15);
+  }
+}
+
+:is(:root[data-theme="dark"]:has(.resident-skin), :root[data-theme="dark"] .resident-skin) {
+  --rj-bg: #141414;
+  --rj-surface: #1f1f1f;
+  --rj-surface-strong: #2a2a2a;
+  --rj-ink: #f2f2f2;
+  --rj-ink-soft: #ababab;
+  --rj-ink-faint: #7a7a7a;
+  --rj-line: rgba(255, 255, 255, 0.1);
+  --rj-line-strong: rgba(255, 255, 255, 0.22);
+  --rj-main: #ff9447;
+  --rj-main-soft: rgba(255, 148, 71, 0.15);
+  --rj-on-main: #1a1007;
+  --rj-alert: #ff6b5e;
+  --rj-ok: #5cc28a;
+  --accent-fg: #1a1007;
+  --daxi-red-soft: rgba(255, 107, 94, 0.15);
+}
+
+:root:has(.resident-skin) body {
+  background: var(--rj-bg);
 }

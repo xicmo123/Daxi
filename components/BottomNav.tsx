@@ -7,8 +7,9 @@
 // they're the same mental model (places near you, as a list or on a map) and
 // both routes keep their own URL for deep links and SEO. The fifth slot is 我的
 // in both halves of the app, so a user's own settings never move when they
-// switch modes.
+// switch modes. That slot is now 關於 on both sides (2026-11).
 import BottomNavBar, { type NavTab } from "./BottomNavBar";
+import { daxiWalkHref } from "@/lib/daxiWalk";
 
 const tabs: NavTab[] = [
   {
@@ -41,7 +42,7 @@ const tabs: NavTab[] = [
   {
     href: "/spots",
     label: "探索",
-    alsoActiveOn: ["/businesses"],
+    alsoActiveOn: ["/businesses", daxiWalkHref],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 21s6.4-5.9 6.4-10.7a6.4 6.4 0 0 0-12.8 0C5.6 15.1 12 21 12 21Z" />
@@ -63,12 +64,16 @@ const tabs: NavTab[] = [
     ),
   },
   {
-    href: "/profile",
-    label: "我的",
+    // 關於 replaces 我的: the owner's note and contact. 我的收藏 (/profile)
+    // is linked from the About page and keeps this tab lit while open.
+    href: "/about",
+    label: "關於",
+    alsoActiveOn: ["/profile"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8.6" r="3.6" />
-        <path d="M5.2 19.4a6.8 6.8 0 0 1 13.6 0" />
+        <circle cx="12" cy="12" r="8" />
+        <path d="M12 11v5" />
+        <path d="M12 8h.01" />
       </svg>
     ),
   },

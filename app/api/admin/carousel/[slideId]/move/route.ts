@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { moveSlide } from "@/lib/carousel";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ slideId: string }> }) {
@@ -10,5 +11,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   }
   const ok = await moveSlide(slideId, direction);
   if (!ok) return NextResponse.json({ error: "無法移動（已在邊界或找不到項目）" }, { status: 400 });
+  revalidateTag("events", { expire: 0 });
   return NextResponse.json({ ok: true });
 }

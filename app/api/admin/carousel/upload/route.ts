@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { promises as fs } from "fs";
 import path from "path";
 import sharp from "sharp";
@@ -55,6 +56,7 @@ export async function POST(request: NextRequest) {
       historical: historical === "true" ? true : undefined,
     },
   });
+  revalidateTag("events", { expire: 0 });
 
   return NextResponse.json({ ok: true, slide: updated });
 }
@@ -71,6 +73,7 @@ export async function DELETE(request: NextRequest) {
     await fs.unlink(path.join(IMAGES_DIR, filename)).catch(() => {});
   }
   await updateSlide(slideId, { photo: null });
+  revalidateTag("events", { expire: 0 });
 
   return NextResponse.json({ ok: true });
 }

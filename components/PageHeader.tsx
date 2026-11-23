@@ -3,10 +3,12 @@ import type { ReactNode } from "react";
 export type PageTint = "wood" | "moss" | "river" | "red";
 
 const tintBg: Record<PageTint, string> = {
-  wood: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
-  moss: "linear-gradient(160deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
-  river: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
-  red: "linear-gradient(160deg, var(--daxi-red) 0%, color-mix(in srgb, var(--daxi-red) 100%, black 28%) 100%)",
+  // Keep these surfaces flat. The darker gradient stops made the small
+  // subtitles fail contrast even though the light end passed it.
+  wood: "var(--block-wood)",
+  moss: "var(--block-moss)",
+  river: "var(--block-river)",
+  red: "var(--daxi-red)",
 };
 
 // Solid color-block banner behind the title, chicTrip-style — each section
@@ -91,7 +93,7 @@ export default function PageHeader({
 
   return (
     <div
-      className="relative overflow-hidden safe-page-x pt-8 pb-7 text-center sm:pt-10 sm:pb-8 lg:pt-12"
+      className="relative overflow-hidden safe-page-x pt-5 pb-5 text-center sm:pt-6 sm:pb-6 lg:pt-7 lg:pb-7"
       style={
         tint
           ? { background: tintBg[tint], borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }
@@ -105,7 +107,7 @@ export default function PageHeader({
             {eyebrow}
           </div>
         ) : null}
-        <h1 className="text-2xl font-bold tracking-wide sm:text-[28px] lg:text-[32px]" style={{ color: ink }}>
+        <h1 className="text-app-display font-black tracking-wide sm:text-[28px]" style={{ color: ink }}>
           {title}
         </h1>
         {subtitle ? (
@@ -116,7 +118,7 @@ style={{ color: tint === "red" ? "rgba(255,255,255,0.95)" : tint ? "var(--block-
           </div>
         ) : null}
       </div>
-      {right ? <div className="absolute right-4 top-8 sm:right-6 sm:top-10">{right}</div> : null}
+      {right ? <div className="absolute right-4 top-5 sm:right-6 sm:top-6">{right}</div> : null}
     </div>
   );
 }

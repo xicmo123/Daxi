@@ -14,21 +14,22 @@ export default function ResidentAreaCard() {
 
   return (
     <div className="rounded-2xl border px-4 py-4" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
-      <div className="text-[13px] font-bold mb-1" style={{ color: "var(--ink)" }}>
+      <div className="text-app-body font-bold mb-1" style={{ color: "var(--ink)" }}>
         我住的地方
       </div>
-      <p className="text-[11.5px] leading-relaxed mb-3" style={{ color: "var(--ink-soft)" }}>
+      <p className="text-app-label leading-relaxed mb-3" style={{ color: "var(--ink-soft)" }}>
         輸入街名或聚落（例如「仁美街」），停水停電通知會把跟你有關的排在最前面。
       </p>
       <div className="flex gap-2">
         <input
+          aria-label="居住街名或聚落"
           value={draft}
           onChange={(e) => {
             setDraft(e.target.value);
             setJustSaved(false);
           }}
           placeholder="例如：仁美街"
-          className="min-w-0 flex-1 rounded-xl px-3.5 py-2.5 text-[13px] outline-none"
+          className="min-w-0 flex-1 rounded-xl px-3.5 py-2.5 text-app-body outline-none"
           style={{ background: "var(--paper-2)", color: "var(--ink)" }}
         />
         <button
@@ -37,7 +38,7 @@ export default function ResidentAreaCard() {
             writeResidentArea(draft);
             setJustSaved(true);
           }}
-          className="shrink-0 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-opacity active:opacity-70"
+          className="shrink-0 rounded-xl px-4 py-2.5 text-app-body font-semibold transition-opacity active:opacity-70"
           style={{ background: "var(--river-teal)", color: "#fff" }}
         >
           {justSaved && draft === saved ? "已儲存" : "儲存"}

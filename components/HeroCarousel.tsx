@@ -25,6 +25,7 @@ export type HeroSlide = {
   ctaUrl?: string;
   photoSrc?: string;
   photoHistorical?: boolean;
+  source?: "admin" | "official";
 };
 
 export default function HeroCarousel({
@@ -90,7 +91,7 @@ export default function HeroCarousel({
         className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
       >
         {slides.map((s) => (
-          <div key={s.key} className="w-full shrink-0 snap-center safe-page-x">
+          <div key={s.key} className="w-full shrink-0 snap-center">
             <button
               onClick={() => setOpenSlide(s)}
               className={
@@ -132,8 +133,8 @@ export default function HeroCarousel({
                 <div
                   className={
                     compact
-                      ? "inline-flex items-center gap-1 text-[9.5px] rounded-full px-2 py-0.5 mb-1"
-                      : "inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-2"
+                      ? "inline-flex items-center gap-1 text-app-label rounded-full px-2 py-0.5 mb-1"
+                      : "inline-flex items-center gap-1.5 text-app-label rounded-full px-2.5 py-1 mb-2"
                   }
                   style={{ background: "rgba(244,236,226,0.14)", border: "1px solid rgba(244,236,226,0.3)" }}
                 >
@@ -146,7 +147,7 @@ export default function HeroCarousel({
                 <h3
                   className={
                     compact
-                      ? "font-serif text-[13px] font-semibold leading-tight sm:text-[15px]"
+                      ? "font-serif text-app-body font-semibold leading-tight sm:text-app-heading"
                       : "font-serif text-lg font-semibold mb-1.5 sm:text-2xl lg:text-[30px]"
                   }
                   style={compact ? { display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" } : undefined}
@@ -156,7 +157,7 @@ export default function HeroCarousel({
                 {compact ? null : (
                   <>
                     <p
-                      className="text-[12.5px] leading-snug mb-3"
+                      className="text-app-label leading-snug mb-3"
                       style={{
                         color: "rgba(242,239,233,0.78)",
                         display: "-webkit-box",
@@ -168,7 +169,7 @@ export default function HeroCarousel({
                       {s.desc}
                     </p>
                     <span
-                      className="inline-flex items-center gap-1.5 text-[12.5px] font-medium rounded-full px-3.5 py-1.5"
+                      className="inline-flex items-center gap-1.5 text-app-label font-medium rounded-full px-3.5 py-1.5"
                       style={{ border: "1px solid rgba(242,239,233,0.4)", color: "#f2efe9" }}
                     >
                       查看詳情 →

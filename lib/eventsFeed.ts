@@ -46,31 +46,70 @@ function computePhase(startIso: string | null, endIso: string | null): "past" | 
   return "ongoing";
 }
 
+/**
+ * Admin slides predate the live feed and store a display date rather than a
+ * machine-readable range. Parse their common `7/19－8/5` form so an old
+ * campaign cannot remain "進行中" forever just because nobody edited it.
+ */
+function adminDateRange(slide: Awaited<ReturnType<typeof readSlides>>[number]): { start: string | null; end: string | null } {
+  if (slide.isoDate) return { start: slide.isoDate, end: slide.isoDate };
+  const matches = [...slide.date.matchAll(/(\d{1,2})\/(\d{1,2})/g)];
+  if (matches.length === 0) return { start: null, end: null };
+  const year = new Date().getFullYear();
+  const toIso = (match: RegExpMatchArray) => `${year}-${match[1].padStart(2, "0")}-${match[2].padStart(2, "0")}`;
+  return { start: toIso(matches[0]), end: toIso(matches[matches.length - 1]) };
+}
+
+/**
+ * Last-resort expiry guard for cached or hand-entered slides.  `phase` is
+ * display metadata and can be stale; a concrete date must always win.
+ */
+export function isEventExpired(event: Pick<EventFeedSlide, "phase" | "isoDate" | "date">, now = new Date()): boolean {
+  let endIso = event.isoDate;
+  if (!endIso) {
+    const matches = [...event.date.matchAll(/(\d{1,2})\/(\d{1,2})/g)];
+    if (matches.length > 0) {
+      const end = matches[matches.length - 1];
+      endIso = `${now.getFullYear()}-${end[1].padStart(2, "0")}-${end[2].padStart(2, "0")}`;
+    }
+  }
+
+  if (endIso && /^\d{4}-\d{2}-\d{2}$/.test(endIso)) {
+    // Dates in the Taiwanese feeds have no time. Treat the entire local day
+    // as valid rather than marking an event over at midnight UTC.
+    return now.getTime() > new Date(`${endIso}T23:59:59+08:00`).getTime();
+  }
+  return event.phase === "past";
+}
+
 function normalizeTitle(title: string): string {
   return title.replace(/\s+/g, "").toLowerCase();
 }
 
 export async function getMergedEvents(): Promise<EventFeedSlide[]> {
   const adminSlides = await readSlides();
-  const adminMapped: EventFeedSlide[] = adminSlides.map((s) => ({
-    id: s.id,
-    order: s.order,
-    phase: s.phase,
-    date: s.date,
-    time: s.time,
-    title: s.title,
-    desc: s.desc,
-    history: s.history,
-    theme: s.theme,
-    badges: s.badges,
-    ctaLabel: s.ctaLabel,
-    ctaUrl: s.ctaUrl,
-    photoSrc: s.photo?.src,
-    photoHistorical: s.photo?.historical,
-    isoDate: s.isoDate,
-    showInCarousel: isSlideInCarousel(s),
-    source: "admin",
-  }));
+  const adminMapped: EventFeedSlide[] = adminSlides.map((s) => {
+    const range = adminDateRange(s);
+    return {
+      id: s.id,
+      order: s.order,
+      phase: range.start ? computePhase(range.start, range.end) : s.phase,
+      date: s.date,
+      time: s.time,
+      title: s.title,
+      desc: s.desc,
+      history: s.history,
+      theme: s.theme,
+      badges: s.badges,
+      ctaLabel: s.ctaLabel,
+      ctaUrl: s.ctaUrl,
+      photoSrc: s.photo?.src,
+      photoHistorical: s.photo?.historical,
+      isoDate: range.start ?? s.isoDate,
+      showInCarousel: isSlideInCarousel(s),
+      source: "admin",
+    };
+  });
 
   let official: EventFeedSlide[] = [];
   try {
@@ -107,5 +146,11 @@ export async function getMergedEvents(): Promise<EventFeedSlide[]> {
   const adminTitles = new Set(adminMapped.map((s) => normalizeTitle(s.title)));
   const dedupedOfficial = official.filter((e) => !adminTitles.has(normalizeTitle(e.title)));
 
-  return [...adminMapped, ...dedupedOfficial].sort((a, b) => a.order - b.order);
+  const phaseOrder = { ongoing: 0, upcoming: 1, past: 2 } as const;
+  return [...adminMapped, ...dedupedOfficial].sort((a, b) => {
+    const phaseDiff = phaseOrder[a.phase] - phaseOrder[b.phase];
+    if (phaseDiff !== 0) return phaseDiff;
+    const dateDiff = (a.isoDate ?? "9999-12-31").localeCompare(b.isoDate ?? "9999-12-31");
+    return dateDiff !== 0 ? dateDiff : a.order - b.order;
+  });
 }

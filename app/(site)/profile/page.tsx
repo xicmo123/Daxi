@@ -1,4 +1,5 @@
-import PageHeader from "@/components/PageHeader";
+import { pageMetadata } from "@/lib/seo";
+import TouristPageHeader from "@/components/TouristPageHeader";
 import FavoritesView from "@/components/FavoritesView";
 import IdentitySwitchCard from "@/components/IdentitySwitchCard";
 import AboutLinkCard from "@/components/AboutLinkCard";
@@ -8,6 +9,13 @@ import type { LiveParkingLot } from "@/lib/tycgParking";
 // cached wrapper is immune to it. See lib/cachedSources.ts.
 import { getCachedParking } from "@/lib/cachedSources";
 import { listActiveCoupons } from "@/lib/coupons";
+
+export const metadata = pageMetadata({
+  path: "/profile",
+  title: "我的收藏",
+  description: "收藏的大溪景點與店家。",
+  noindex: true,
+});
 
 export const dynamic = "force-dynamic";
 
@@ -30,10 +38,10 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="pt-2">
-      <PageHeader title="我的" subtitle="收藏的景點與店家" tint="wood" />
+    <div>
+      <TouristPageHeader title="我的" subtitle="收藏的景點與店家" />
 
-      <div className="safe-page-x pb-10 fade-in flex flex-col gap-4">
+      <div className="safe-page-x page-after-header pb-10 fade-in flex flex-col gap-3">
         <FavoritesView allPlaces={allPlaces} photos={photos} details={details} lots={lots} coupons={coupons} />
         <IdentitySwitchCard currentLabel="遊客" switchToHref="/resident" switchToLabel="切換為大溪人模式" switchToIdentity="resident" />
         <AboutLinkCard />

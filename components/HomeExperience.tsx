@@ -1,483 +1,155 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { trackClick } from "@/lib/trackClient";
-import { writeIdentity } from "@/lib/identity";
-import { calculateDistance } from "@/lib/geo";
-import { walkTimeLabel } from "@/lib/experience";
-import { useUserLocation } from "@/lib/useUserLocation";
 import type { CouponWithBusiness } from "./CouponList";
-import BusModal from "./BusModal";
 import CouponRedeemModal from "./CouponRedeemModal";
-import PlaceholderIcon from "./PlaceholderIcon";
 import HeroCarousel, { type HeroSlide } from "./HeroCarousel";
-import TodayPanel, { type TodayStat } from "./TodayPanel";
-import { HeaderShapes } from "./PageHeader";
+import PlaceholderIcon from "./PlaceholderIcon";
+import type { PhotoCredit } from "@/lib/data";
+import { trackClick } from "@/lib/trackClient";
+import styles from "./TouristGuide.module.css";
 
 export type FeedSpot = {
   placeId: string;
   name: string;
   category: string;
-  walkTime: string;
-  distanceMeters: number;
-  lat: number;
-  lng: number;
-  featured: boolean;
+  distanceLabel: string;
   photoSrc?: string;
-  indoor?: boolean;
+  indoor: boolean;
 };
 
-// Tag used only for click-tracking context, not for reordering content
-// anymore — "我是大溪人" now navigates to the separate /resident section
-// (see IdentityGate) rather than re-sorting this page in place.
-const TRACK_TAG = "tourist";
-
-type TouristQuickActionKind = "bus" | "spot" | "store" | "live";
-
-function QuickActionIllustration({ kind }: { kind: TouristQuickActionKind }) {
-  if (kind === "bus") {
-    return (
-      <svg viewBox="0 0 180 132" aria-hidden="true" className="absolute bottom-0 right-0 h-[48px] w-[62px] opacity-90 md:h-[66px] md:w-[84px]">
-        <path d="M16 104c21-34 39-52 64-54 31-3 55 19 84-18" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="8" strokeLinecap="round" />
-        <path d="M24 110h124" stroke="rgba(43,36,32,0.18)" strokeWidth="5" strokeLinecap="round" />
-        <rect x="50" y="38" width="90" height="52" rx="17" fill="rgba(255,255,255,0.9)" />
-        <path d="M63 54h26M101 54h25" stroke="#4a7594" strokeWidth="10" strokeLinecap="round" />
-        <path d="M66 74h58" stroke="#2b2420" strokeOpacity="0.18" strokeWidth="5" strokeLinecap="round" />
-        <circle cx="72" cy="91" r="10" fill="#2b2420" />
-        <circle cx="119" cy="91" r="10" fill="#2b2420" />
-        <circle cx="72" cy="91" r="4" fill="#d7a06b" />
-        <circle cx="119" cy="91" r="4" fill="#d7a06b" />
-      </svg>
-    );
-  }
-
-  if (kind === "spot") {
-    return (
-      <svg viewBox="0 0 120 88" aria-hidden="true" className="absolute bottom-0 right-0 h-[46px] w-[66px] opacity-90 md:h-[62px] md:w-[88px]">
-        <path d="M8 72 39 38l18 18 16-24 39 40Z" fill="rgba(255,255,255,0.72)" />
-        <path d="m8 72 31-34 18 18 16-24 39 40" fill="none" stroke="#4f8478" strokeWidth="4" strokeLinejoin="round" />
-        <circle cx="92" cy="23" r="9" fill="rgba(255,255,255,0.72)" />
-        <path d="M92 17v12M86 23h12" stroke="#b8814c" strokeWidth="3" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  if (kind === "store") {
-    return (
-      <svg viewBox="0 0 120 84" aria-hidden="true" className="absolute bottom-0 right-0 h-[46px] w-[66px] opacity-90 md:h-[60px] md:w-[88px]">
-        <path d="M15 35h90l-7-18H22Z" fill="rgba(255,255,255,0.84)" />
-        <path d="M17 35v36h86V35" fill="rgba(255,255,255,0.46)" />
-        <path d="M17 35v7a10 10 0 0 0 20 0v-7a10 10 0 0 0 20 0v-7a10 10 0 0 0 20 0v7a10 10 0 0 0 20 0v-7" fill="none" stroke="#4a7594" strokeWidth="5" />
-        <path d="M49 71V51h22v20M28 50h10M82 50h10" fill="none" stroke="#2b2420" strokeOpacity="0.28" strokeWidth="4" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 120 78" aria-hidden="true" className="absolute bottom-0 right-0 h-[44px] w-[68px] opacity-95 md:h-[58px] md:w-[88px]">
-      <path d="M10 58c22-18 40-24 58-18 18 7 28 2 42-14" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="7" strokeLinecap="round" />
-      <rect x="34" y="22" width="47" height="31" rx="9" fill="rgba(255,255,255,0.88)" />
-      <path d="m81 32 23-10v31L81 43Z" fill="rgba(255,255,255,0.7)" />
-      <circle cx="55" cy="38" r="9" fill="#2b2420" fillOpacity="0.18" />
-      <circle cx="55" cy="38" r="4" fill="#4a7594" />
-      <path d="M44 58h31" stroke="rgba(43,36,32,0.2)" strokeWidth="5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function QuickActionArrow() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M5 12h14" />
-      <path d="m13 6 6 6-6 6" />
-    </svg>
-  );
-}
+export type HomeTheme = {
+  placeId: string;
+  title: string;
+  description: string;
+  photo: PhotoCredit;
+};
 
 export default function HomeExperience({
-  todayLabel,
-  todayStats = [],
-  hasRecentAnnouncement,
   spots,
+  themes,
   coupons,
-  weatherMood = "normal",
-  weatherSummary = null,
-  heroSlides = [],
-  initialSlideIndex = 0,
+  weatherMood,
+  heroSlides,
+  initialSlideIndex,
 }: {
-  todayLabel: string;
-  todayStats?: TodayStat[];
-  hasRecentAnnouncement: boolean;
   spots: FeedSpot[];
+  themes: HomeTheme[];
   coupons: CouponWithBusiness[];
-  weatherMood?: "hot" | "rain" | "normal";
-  weatherSummary?: { icon: string; temp: number; text: string } | null;
-  heroSlides?: HeroSlide[];
-  initialSlideIndex?: number;
+  weatherMood: "hot" | "rain" | "normal";
+  heroSlides: HeroSlide[];
+  initialSlideIndex: number;
 }) {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [showBusMap, setShowBusMap] = useState(false);
   const [openCoupon, setOpenCoupon] = useState<CouponWithBusiness | null>(null);
-  const [switching, setSwitching] = useState(false);
-  const userLocation = useUserLocation();
-
-  const goResident = () => {
-    setSwitching(true);
-    writeIdentity("resident");
-    router.push("/resident");
-  };
-
-  const wantsIndoor = weatherMood === "hot" || weatherMood === "rain";
-  const visibleSpots = useMemo(
-    () =>
-      spots.slice(0, 8).map((spot) => {
-        if (!userLocation) return spot;
-        const distanceMeters = calculateDistance(userLocation.lat, userLocation.lng, spot.lat, spot.lng);
-        return { ...spot, distanceMeters, walkTime: walkTimeLabel(distanceMeters) };
-      }),
-    [spots, userLocation],
-  );
-  const visibleCoupons = useMemo(() => coupons.slice(0, 6), [coupons]);
-
-  const heroGradient =
-    weatherMood === "hot"
-      ? "linear-gradient(160deg, rgba(224,122,79,0.95) 0%, rgba(196,84,60,0.92) 100%)"
-      : weatherMood === "rain"
-        ? "linear-gradient(160deg, rgba(90,124,150,0.95) 0%, rgba(58,90,115,0.92) 100%)"
-        : "linear-gradient(160deg, rgba(215,160,107,0.94) 0%, rgba(184,129,76,0.92) 100%)";
-
-  const onSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = query.trim();
-    if (!q) return;
-    trackClick("map_card", "search", q, TRACK_TAG);
-    router.push(`/search?q=${encodeURIComponent(q)}`);
-  };
+  const wantsIndoor = weatherMood !== "normal";
 
   return (
-    <div>
-      {/* Hero color-block banner: greeting/bell + identity switcher + search all
-          sit on one solid coral panel, chicTrip-style, instead of blending
-          into the page background. */}
-      <motion.div
-        className="relative overflow-hidden safe-page-x pt-6 pb-5 fade-in"
-        animate={{ background: heroGradient }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        style={{
-          borderBottomLeftRadius: 28,
-          borderBottomRightRadius: 28,
-          boxShadow: "var(--shadow-float)",
-        }}
-      >
-        <HeaderShapes />
-        {/* 1. "Daxi Today" eyebrow + headline, weather chip + bell + profile */}
-        <div className="relative flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase" style={{ color: "var(--block-fg-soft)" }}>
-              Daxi Today · {todayLabel}
-            </div>
-            <div className="font-serif text-[19px] font-bold leading-tight" style={{ color: "var(--block-fg)" }}>
-              臺灣十大觀光小城 - 大溪
-            </div>
+    <div className={styles.homeFeed}>
+      {themes.length > 0 ? (
+        <section aria-labelledby="home-themes">
+          <div className={styles.sectionHeading}>
+            <h2 id="home-themes">大溪怎麼玩</h2>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {weatherSummary ? (
-              <span
-                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold"
-                style={{ background: "rgba(255,255,255,0.32)", color: "var(--block-fg)" }}
-              >
-                {weatherSummary.icon} {weatherSummary.temp}°
-              </span>
-            ) : null}
-            <Link
-              href="/announcements"
-              aria-label="通知"
-              className="relative w-9 h-9 rounded-full flex items-center justify-center transition-opacity active:opacity-70"
-              style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 10.5a6 6 0 0 1 12 0c0 3.5 1 5 1.6 5.8H4.4C5 15.5 6 14 6 10.5Z" />
-                <path d="M10.2 19.5a1.9 1.9 0 0 0 3.6 0" />
-              </svg>
-              {hasRecentAnnouncement ? (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: "var(--accent)", boxShadow: "0 0 0 1.5px rgba(255,255,255,0.9)" }} aria-hidden />
-              ) : null}
-            </Link>
-            <Link
-              href="/profile"
-              aria-label="我的"
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity active:opacity-70"
-              style={{ background: "rgba(255,255,255,0.2)", color: "var(--block-fg)" }}
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="8.3" r="3.3" />
-                <path d="M5.3 19.8c1-3.2 3.6-5 6.7-5s5.7 1.8 6.7 5" />
-              </svg>
-            </Link>
+          <div className={styles.themeGrid}>
+            {themes.map((theme) => (
+              <article key={theme.placeId} className={styles.themeCard}>
+                <Link
+                  className={styles.themeLink}
+                  href={{ pathname: "/spots", query: { place: theme.placeId } }}
+                  onClick={() => trackClick("spot", theme.placeId, theme.title, "tourist")}
+                >
+                  <div className={styles.themePhoto}>
+                    <Image src={theme.photo.src} alt="" fill sizes="(max-width: 767px) 280px, (max-width: 1023px) 230px, 355px" />
+                  </div>
+                  <div className={styles.themeBody}>
+                    <div>
+                      <h3>{theme.title}</h3>
+                      <p>{theme.description}</p>
+                    </div>
+                    <span className={styles.themeArrow} aria-hidden>→</span>
+                  </div>
+                </Link>
+                {theme.photo.author && theme.photo.sourceUrl ? (
+                  <a className={styles.themeCredit} href={theme.photo.sourceUrl} target="_blank" rel="noreferrer">
+                    攝影來源 {theme.photo.author}
+                  </a>
+                ) : null}
+              </article>
+            ))}
           </div>
-        </div>
-
-        {/* 2. Identity switcher — 我是遊客 stays here; 我是大溪人 leaves for
-            the separate /resident section entirely (different nav, different
-            content), not just a re-sort of this page. */}
-        <div className="relative pt-4">
-          <div className="inline-flex p-1 rounded-full" style={{ background: "rgba(255,255,255,0.18)" }}>
-            <span
-              className="px-4 py-1.5 rounded-full text-[12.5px] font-medium"
-              style={{ background: "#ffffff", color: "var(--block-wood-deep)" }}
-            >
-              我是遊客
-            </span>
-            <button
-              type="button"
-              onClick={goResident}
-              disabled={switching}
-              className="px-4 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
-              style={{ background: "transparent", color: "var(--block-fg-soft)", opacity: switching ? 0.6 : 1 }}
-            >
-              {switching ? "切換中…" : "我是大溪人"}
-            </button>
-          </div>
-        </div>
-
-        {/* 3. Search bar */}
-        <form onSubmit={onSearch} className="relative pt-3">
-          <div className="flex items-center gap-2 rounded-full px-4 py-2.5" style={{ background: "#ffffff" }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ color: "var(--ink-soft)" }}>
-              <circle cx="10.5" cy="10.5" r="6.5" />
-              <path d="m20 20-4.3-4.3" />
-            </svg>
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="搜尋景點、店家、活動"
-              className="flex-1 bg-transparent text-[13px] outline-none"
-              style={{ color: "var(--ink)" }}
-            />
-          </div>
-        </form>
-      </motion.div>
-
-      {/* 4. 今天的大溪 — the live numbers, above the carousel. See
-          components/TodayPanel.tsx for why this outranks the highlight reel. */}
-      <TodayPanel stats={todayStats} />
-
-      {/* 5. Event carousel — the festival highlight reel */}
-      {heroSlides.length > 0 ? (
-        <div id="event-carousel" className="pt-4 fade-in scroll-mt-6">
-          <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} compact />
-        </div>
+        </section>
       ) : null}
 
-      {/* 6. Explore row.
-
-          Was a four-across grid of illustrated cards. At 375px that left each
-          card ~80px, so every label truncated — 「在地店家 …」, 「CCTV / …」 —
-          and the type had been dropped to 8.5px to cope, well under the 11px
-          floor the rest of the app holds to. Three tiles with two-character
-          labels fit honestly at any width, and the live readings those cards
-          were half-duplicating now live in TodayPanel above. */}
-      <section className="safe-page-x pt-5 fade-in" aria-labelledby="tourist-explore-title">
-        <div className="mb-2 flex items-end justify-between gap-3">
-          <div>
-            <div className="text-app-micro font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
-              旅遊動線
-            </div>
-            <h2 id="tourist-explore-title" className="text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>
-              出發前先看
-            </h2>
+      {spots.length > 0 ? (
+        <section aria-labelledby="home-spots">
+          <div className={styles.sectionHeading}>
+            <h2 id="home-spots">熱門景點</h2>
+            <Link className={styles.sectionLink} href="/spots">全部景點 <span aria-hidden>→</span></Link>
           </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2.5">
-          {[
-            {
-              href: "/spots",
-              title: "景點",
-              detail: "熱門 / 地圖",
-              kind: "spot" as const,
-              // Flat pastel, not a gradient to the -deep stop — same contrast
-              // reasoning as components/TodayPanel.tsx.
-              background: "var(--block-moss)",
-            },
-            {
-              href: "/businesses",
-              title: "店家",
-              detail: "美食 / 優惠",
-              kind: "store" as const,
-              background: "var(--block-wood)",
-            },
-            {
-              href: "/weather",
-              title: "路況",
-              detail: "即時影像",
-              kind: "live" as const,
-              live: true,
-              background: "var(--block-river)",
-            },
-          ].map((action) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              onClick={() => trackClick("map_card", action.href, action.title, TRACK_TAG)}
-              className="group relative block h-[112px] min-w-0 overflow-hidden rounded-[18px] px-3 py-2.5 transition-transform active:scale-[0.98]"
-              style={{ background: action.background, boxShadow: "var(--shadow-float)", color: "var(--block-fg)" }}
-            >
-              <QuickActionIllustration kind={action.kind} />
-              <div className="relative z-10 flex h-full flex-col justify-between text-left">
-                <div className="text-app-heading font-black leading-tight">{action.title}</div>
-                <div className="flex items-center justify-between gap-1">
-                  <span className="min-w-0 truncate text-app-micro font-bold leading-tight" style={{ color: "var(--block-fg-soft)" }}>
-                    {action.detail}
-                  </span>
-                  <span
-                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1"
-                    style={{ background: "rgba(255,255,255,0.42)" }}
-                  >
-                    <QuickActionArrow />
-                  </span>
-                </div>
-              </div>
-              {action.live ? (
-                <span
-                  className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-app-micro font-bold"
-                  style={{ background: "rgba(255,255,255,0.78)", color: "var(--daxi-red)" }}
-                >
-                  LIVE
-                </span>
-              ) : null}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {showBusMap ? <BusModal onClose={() => setShowBusMap(false)} /> : null}
-
-      {/* 5. Featured spots — horizontal cards */}
-      {visibleSpots.length > 0 ? (
-        <div className="pt-5 fade-in">
-          <div className="flex items-center justify-between safe-page-x mb-2">
-            <div className="text-[11px] font-semibold tracking-[0.18em] uppercase" style={{ color: "var(--daxi-red)" }}>
-              熱門景點
-            </div>
-            <Link href="/spots" className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
-              查看全部
-            </Link>
-          </div>
-          <div className="flex gap-3 overflow-x-auto safe-page-x pb-1" style={{ scrollbarWidth: "none" }}>
-            {visibleSpots.map((s) => (
+          <div className={styles.spotRail}>
+            {spots.map((spot) => (
               <Link
-                key={s.placeId}
-                href="/spots"
-                onClick={() => trackClick("spot", s.placeId, s.name, TRACK_TAG)}
-                className="group relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden card-shadow transition-transform active:scale-[0.98]"
-                style={{ background: "var(--card)" }}
+                key={spot.placeId}
+                href={{ pathname: "/spots", query: { place: spot.placeId } }}
+                className={styles.spotCard}
+                onClick={() => trackClick("spot", spot.placeId, spot.name, "tourist")}
               >
-                {s.photoSrc ? (
-                  <Image
-                    src={s.photoSrc}
-                    alt={s.name}
-                    fill
-                    sizes="144px"
-                    className="object-cover transition-transform duration-500 group-active:scale-[1.03]"
-                    style={{ filter: "saturate(0.9) contrast(0.98)" }}
-                  />
-                ) : (
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)" }}
-                  >
+                <div className={styles.spotPhoto}>
+                  {spot.photoSrc ? (
+                    <Image src={spot.photoSrc} alt="" fill sizes="(max-width: 767px) 196px, 25vw" />
+                  ) : (
                     <PlaceholderIcon kind="景點" />
-                  </div>
-                )}
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,0.08) 48%, rgba(15,23,42,0.74) 100%)" }}
-                />
-                <div className="absolute inset-x-0 bottom-0 p-2.5">
-                  <div className="text-[12.5px] font-semibold leading-tight text-white truncate">{s.name}</div>
-                  <div className="text-[10.5px] mt-1 truncate" style={{ color: "rgba(255,255,255,0.78)" }}>
-                    {s.category}
-                  </div>
-                  <div className="text-[10px] mt-1 font-medium" style={{ color: "rgba(255,255,255,0.92)" }}>
-                    {s.walkTime}
-                  </div>
+                  )}
+                  {wantsIndoor && spot.indoor ? <span className={styles.indoorBadge}>室內景點</span> : null}
                 </div>
-                {wantsIndoor && s.indoor ? (
-                  <span
-                    className="absolute right-2 top-2 rounded-full px-2 py-0.5 text-[9.5px] font-semibold"
-                    style={{ background: "rgba(255,255,255,0.92)", color: "var(--river-teal)" }}
-                  >
-                    室內冷氣
-                  </span>
-                ) : null}
+                <div className={styles.spotBody}>
+                  <h3>{spot.name}</h3>
+                  <p>{spot.category} · 距老街 {spot.distanceLabel}</p>
+                </div>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       ) : null}
 
-      {/* 6. Today's coupons */}
-      {visibleCoupons.length > 0 ? (
-        <div className="pt-5 fade-in">
-          <div className="flex items-center justify-between safe-page-x mb-2">
-            <div className="text-[11px] font-semibold tracking-[0.18em] uppercase" style={{ color: "var(--daxi-red)" }}>
-              今日優惠店家
-            </div>
-            <Link href="/coupons" className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
-              查看全部
-            </Link>
+      {heroSlides.length > 0 ? (
+        <section aria-labelledby="home-events">
+          <div className={styles.sectionHeading}>
+            <h2 id="home-events">近期活動</h2>
+            <Link className={styles.sectionLink} href="/events">全部活動 <span aria-hidden>→</span></Link>
           </div>
-          <div className="flex flex-col gap-2.5 safe-page-x">
-            {visibleCoupons.map((c, i) => (
+          <HeroCarousel slides={heroSlides} initialIndex={initialSlideIndex} compact />
+        </section>
+      ) : null}
+
+      {coupons.length > 0 ? (
+        <section aria-labelledby="home-coupons">
+          <div className={styles.sectionHeading}>
+            <h2 id="home-coupons">目前可用優惠</h2>
+            <Link className={styles.sectionLink} href="/coupons">全部優惠 <span aria-hidden>→</span></Link>
+          </div>
+          <div className={styles.couponGrid}>
+            {coupons.map((coupon) => (
               <button
-                key={c.id}
+                key={coupon.id}
                 type="button"
+                className={styles.coupon}
                 onClick={() => {
-                  trackClick("coupon", c.id, c.title, TRACK_TAG);
-                  setOpenCoupon(c);
+                  trackClick("coupon", coupon.id, coupon.title, "tourist");
+                  setOpenCoupon(coupon);
                 }}
-                className="relative flex items-center gap-3 overflow-hidden rounded-2xl border px-3.5 py-3 card-shadow text-left transition-opacity active:opacity-70"
-                style={{ background: "var(--card)", borderColor: "var(--line)" }}
               >
-                <span
-                  className="absolute inset-y-3 left-0 w-1 rounded-r-full"
-                  style={{ background: i % 2 === 0 ? "var(--block-wood)" : "var(--block-moss)" }}
-                  aria-hidden
-                />
-                <span
-                  className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{
-                    background: i % 2 === 0 ? "var(--daxi-red-soft)" : "rgba(111,169,155,0.18)",
-                    color: i % 2 === 0 ? "var(--daxi-red)" : "var(--status-ok)",
-                  }}
-                  aria-hidden
-                >
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3.5 9.8a2.2 2.2 0 0 0 0-3.6V5.5a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v.7a2.2 2.2 0 0 0 0 3.6v3.4a2.2 2.2 0 0 0 0 3.6v.7a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-.7a2.2 2.2 0 0 0 0-3.6Z" />
-                    <path d="M9.5 5v14" strokeDasharray="1.6 1.8" />
-                  </svg>
+                <span>
+                  <strong>{coupon.title}</strong>
+                  <small>{coupon.businessName}</small>
                 </span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[12.5px] font-semibold truncate" style={{ color: "var(--ink)" }}>
-                    {c.title}
-                  </div>
-                  <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
-                    {c.businessName}
-                  </div>
-                </div>
-                <span className="shrink-0 text-[9.5px] font-medium rounded-full px-2 py-0.5" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
-                  掃碼核銷
-                </span>
+                <span aria-hidden>→</span>
               </button>
             ))}
           </div>
-        </div>
+        </section>
       ) : null}
 
       {openCoupon ? <CouponRedeemModal coupon={openCoupon} businessName={openCoupon.businessName} onClose={() => setOpenCoupon(null)} /> : null}

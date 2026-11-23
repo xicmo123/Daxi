@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function MerchantRedeemResult({ couponId, token }: { couponId: string; token: string }) {
+export default function MerchantRedeemResult({ couponId, token, claimId }: { couponId: string; token: string; claimId: string }) {
   const [state, setState] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("正在核銷優惠券…");
 
@@ -14,7 +14,7 @@ export default function MerchantRedeemResult({ couponId, token }: { couponId: st
         const res = await fetch("/api/coupons/redeem", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ couponId, token }),
+          body: JSON.stringify({ couponId, token, claimId }),
         });
         const data = await res.json().catch(() => ({}));
         if (cancelled) return;
@@ -36,7 +36,7 @@ export default function MerchantRedeemResult({ couponId, token }: { couponId: st
     return () => {
       cancelled = true;
     };
-  }, [couponId, token]);
+  }, [couponId, token, claimId]);
 
   const success = state === "success";
 

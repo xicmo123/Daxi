@@ -6,26 +6,22 @@ import Link from "next/link";
 
 export type QuickLinkBlock = "wood" | "moss" | "river" | "red";
 
-const gradientCard: Record<QuickLinkBlock, { background: string; fg: string; fgSoft: string }> = {
+const cardTone: Record<QuickLinkBlock, { background: string; fg: string }> = {
   wood: {
-    background: "linear-gradient(160deg, var(--block-wood) 0%, var(--block-wood-deep) 100%)",
+    background: "var(--block-wood)",
     fg: "var(--block-fg)",
-    fgSoft: "var(--block-fg-soft)",
   },
   moss: {
-    background: "linear-gradient(160deg, var(--block-moss) 0%, var(--block-moss-deep) 100%)",
+    background: "var(--block-moss)",
     fg: "var(--block-fg)",
-    fgSoft: "var(--block-fg-soft)",
   },
   river: {
-    background: "linear-gradient(160deg, var(--block-river) 0%, var(--block-river-deep) 100%)",
+    background: "var(--block-river)",
     fg: "var(--block-fg)",
-    fgSoft: "var(--block-fg-soft)",
   },
   red: {
-    background: "linear-gradient(160deg, var(--daxi-red) 0%, color-mix(in srgb, var(--daxi-red) 100%, black 28%) 100%)",
+    background: "var(--daxi-red)",
     fg: "#fff",
-    fgSoft: "rgba(255,255,255,0.82)",
   },
 };
 
@@ -42,7 +38,7 @@ export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[
       <div className="flex items-center justify-between safe-page-x mb-2.5">
         <div className="flex items-center gap-1.5">
           <span aria-hidden>🔗</span>
-          <div className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+          <div className="text-app-label font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
             常用服務
           </div>
         </div>
@@ -54,7 +50,7 @@ export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1 safe-page-x" style={{ scrollbarWidth: "none" }}>
         {links.map((q, i) => {
-          const card = gradientCard[q.block];
+          const card = cardTone[q.block];
           return (
             <motion.div
               key={q.href}
@@ -84,7 +80,7 @@ export default function ResidentQuickLinks({ links, extra }: { links: QuickLink[
                     {q.icon}
                   </motion.span>
                 </span>
-                <div className="text-[10.5px] font-semibold leading-tight text-center" style={{ color: "var(--ink)" }}>
+                <div className="text-app-label font-semibold leading-tight text-center" style={{ color: "var(--ink)" }}>
                   {q.label}
                 </div>
               </Link>

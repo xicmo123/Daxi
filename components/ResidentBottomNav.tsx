@@ -3,10 +3,9 @@
 // Resident tab bar — same component as the tourist one, different
 // destinations and accent. See components/BottomNavBar.tsx.
 //
-// 關於 used to occupy the fifth slot here (opening a modal) while the tourist
-// bar used it for 我的. That meant switching modes moved the user's own
-// settings; 關於 now lives as a row inside 我的 on both sides, where the
-// notification settings and identity switch already are.
+// The fifth slot is 關於 (/resident/about) — the owner's note and contact.
+// 我的 settings (/resident/profile) are linked from that page and the full
+// menu, and keep this tab lit while open.
 import BottomNavBar, { type NavTab } from "./BottomNavBar";
 
 const tabs: NavTab[] = [
@@ -56,12 +55,16 @@ const tabs: NavTab[] = [
     ),
   },
   {
-    href: "/resident/profile",
-    label: "我的",
+    // 關於 replaces 我的 on the resident side; the personal settings (居民卡、
+    // 里別、通知) are one tap away from the About page and in the full menu.
+    href: "/resident/about",
+    label: "關於",
+    alsoActiveOn: ["/resident/profile"],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8.6" r="3.6" />
-        <path d="M5.2 19.4a6.8 6.8 0 0 1 13.6 0" />
+        <circle cx="12" cy="12" r="8" />
+        <path d="M12 11v5" />
+        <path d="M12 8h.01" />
       </svg>
     ),
   },

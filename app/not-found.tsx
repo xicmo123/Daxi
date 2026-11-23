@@ -12,10 +12,10 @@ export default function NotFound() {
       <div className="text-[40px]" aria-hidden>
         🗺️
       </div>
-      <h1 className="mt-2 text-[17px] font-bold" style={{ color: "var(--ink)" }}>
+      <h1 className="mt-2 text-app-heading font-bold" style={{ color: "var(--ink)" }}>
         找不到這個頁面
       </h1>
-      <p className="mt-2 max-w-[280px] text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <p className="mt-2 max-w-[280px] text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         這個連結可能已經失效，或是活動、優惠券已經結束了。
       </p>
       <div className="mt-5 flex w-full max-w-[280px] flex-col gap-2">

@@ -136,15 +136,15 @@ export default function ResidentCarousel({ slides }: { slides: ResidentCarouselS
       }}
     >
       <SlideIcon featureKey={slide.kind === "feature" ? slide.featureKey : undefined} />
-      <span className="shrink-0 text-[10.5px] font-semibold rounded-full px-2.5 py-1" style={{ background: style.bg, color: style.fg }}>
+      <span className="shrink-0 text-app-label font-semibold rounded-full px-2.5 py-1" style={{ background: style.bg, color: style.fg }}>
         {slide.tag}
       </span>
       <span className="flex-1 min-w-0">
-        <span className="block text-[13px] font-semibold truncate" style={{ color: "var(--ink)" }}>
+        <span className="block text-app-body font-semibold truncate" style={{ color: "var(--ink)" }}>
           {slide.title}
         </span>
         {slide.subtitle ? (
-          <span className="block text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
+          <span className="block text-app-label mt-0.5 truncate" style={{ color: "var(--ink-soft)" }}>
             {slide.subtitle}
           </span>
         ) : null}

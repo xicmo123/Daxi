@@ -33,10 +33,10 @@ export default function ResidentLinksCard({
           <span className="w-[19px] h-[19px] block">{icon}</span>
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[13.5px] font-bold" style={{ color: "var(--ink)" }}>
+          <div className="text-app-body font-bold" style={{ color: "var(--ink)" }}>
             常用連結
           </div>
-          <div className="text-[10.5px] mt-0.5 leading-snug" style={{ color: "var(--ink-soft)" }}>
+          <div className="text-app-label mt-0.5 leading-snug" style={{ color: "var(--ink-soft)" }}>
             戶政／地政／區公所服務
           </div>
         </div>
@@ -68,10 +68,10 @@ export default function ResidentLinksCard({
               style={{ background: "var(--paper-2)" }}
             >
               <span>
-                <span className="block text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+                <span className="block text-app-label font-semibold" style={{ color: "var(--ink)" }}>
                   {l.label}
                 </span>
-                <span className="block text-[10.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+                <span className="block text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
                   {l.note}
                 </span>
               </span>

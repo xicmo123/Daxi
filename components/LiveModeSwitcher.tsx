@@ -30,8 +30,8 @@ export default function LiveModeSwitcher({ roadFeed, roadError }: { roadFeed: Ro
                   color: mode === item.id ? "#fff" : "var(--ink)",
                 }}
               >
-                <span className="block text-[13px] font-bold">{item.label}</span>
-                <span className="mt-0.5 block text-[11px]" style={{ color: mode === item.id ? "rgba(255,255,255,0.76)" : "var(--ink-soft)" }}>
+                <span className="block text-app-body font-bold">{item.label}</span>
+                <span className="mt-0.5 block text-app-label" style={{ color: mode === item.id ? "rgba(255,255,255,0.76)" : "var(--ink-soft)" }}>
                   {item.desc}
                 </span>
               </button>
@@ -43,20 +43,20 @@ export default function LiveModeSwitcher({ roadFeed, roadError }: { roadFeed: Ro
       {mode === "road" ? (
         <>
           <div className="px-6 pb-4">
-            <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
+            <div className="text-app-label font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
               Road Live
             </div>
-            <h2 className="font-serif text-[17px] font-semibold">大溪道路 CCTV</h2>
+            <h2 className="font-serif text-app-heading font-semibold">大溪道路 CCTV</h2>
           </div>
           <RoadCctvLive feed={roadFeed} error={roadError} />
         </>
       ) : (
         <>
           <div className="px-6 pb-4">
-            <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
+            <div className="text-app-label font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
               Scenic Live
             </div>
-            <h2 className="font-serif text-[17px] font-semibold">景點直播</h2>
+            <h2 className="font-serif text-app-heading font-semibold">景點直播</h2>
           </div>
           <LiveCams />
         </>

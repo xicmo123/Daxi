@@ -1,33 +1,22 @@
-import Image from "next/image";
+import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
-import IdentityGate from "@/components/IdentityGate";
 import PullToRefresh from "@/components/PullToRefresh";
+import styles from "@/components/TouristGuide.module.css";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <IdentityGate />
       <PullToRefresh />
 
-      {/* Fixed wallpaper — stays put behind scrolling content, faded so it
-          never competes with foreground text/cards. Aligned to the same
-          max-w-md column as the app itself, not the full browser viewport. */}
-      <div className="fixed inset-0 flex justify-center pointer-events-none" aria-hidden>
-        <div className="relative w-full max-w-md overflow-hidden md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
-          <Image
-            src="/images/old-street-sketch-2.jpg"
-            alt=""
-            fill
-            sizes="448px"
-            className="object-cover"
-            style={{ objectPosition: "center top", filter: "blur(7px)", transform: "scale(1.08)" }}
-          />
-          <div className="absolute inset-0" style={{ background: "var(--paper)", opacity: "var(--wallpaper-fade-opacity)" }} />
-        </div>
-      </div>
-
-      <div className="app-screen relative z-10 flex-1">
-        <div className="mx-auto w-full max-w-md md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
+      <div className="app-screen relative z-10 flex flex-1 justify-center">
+        <div className="w-full min-w-0 max-w-md md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)", background: "var(--paper)" }}>
+          <header className={styles.topbar}>
+            <Link href="/" className={styles.wordmark} aria-label="大溪通首頁">大溪通</Link>
+            <nav className={styles.headerLinks} aria-label="大溪旅遊資訊">
+              <Link href="/weather" className={styles.headerLink}>天氣與路況</Link>
+              <Link href="/announcements" className={styles.headerLink}>公告</Link>
+            </nav>
+          </header>
           {children}
         </div>
       </div>

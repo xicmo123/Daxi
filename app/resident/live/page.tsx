@@ -1,6 +1,14 @@
-import PageHeader from "@/components/PageHeader";
 import LiveModeSwitcher from "@/components/LiveModeSwitcher";
+import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
+import styles from "@/components/resident/ResidentSkin.module.css";
 import { fetchDaxiRoadCctvs, type RoadCctvFeed } from "@/lib/tdxRoadCctv";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/resident/live",
+  title: "大溪即時影像與路況",
+  description: "大溪道路 CCTV 與景點即時影像，出門前先看塞不塞車，資料來源交通部 TDX。",
+});
 
 export const dynamic = "force-dynamic";
 
@@ -13,12 +21,16 @@ export default async function ResidentLivePage() {
     }));
 
   return (
-    <div className="pt-2">
-      <PageHeader title="即時影像" subtitle="出門前先看大溪道路與景點畫面" tint="river" />
-      <LiveModeSwitcher roadFeed={roadCctvResult.feed} roadError={roadCctvResult.error} />
-      <div className="safe-page-x pt-4 pb-10 text-[11px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-        道路 CCTV 以大溪區周邊座標與常用道路名稱篩選；影像僅供出門前判斷路況參考，實際交通仍以現場與官方公告為準。
+    <main>
+      <ResidentPageHeader href="/resident/live" title="即時影像" lead="出門前先看大溪道路與景點畫面。" />
+      <div className="pt-4">
+        <LiveModeSwitcher roadFeed={roadCctvResult.feed} roadError={roadCctvResult.error} />
       </div>
-    </div>
+      <div className={styles.body}>
+        <p className={styles.note}>
+          道路 CCTV 以大溪區周邊座標與常用道路名稱篩選；影像僅供出門前判斷路況參考，實際交通仍以現場與官方公告為準。
+        </p>
+      </div>
+    </main>
   );
 }

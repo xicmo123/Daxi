@@ -1,5 +1,15 @@
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import { HeaderShapes, type PageTint } from "@/components/PageHeader";
+import type { PageTint } from "@/components/PageHeader";
+import TouristPageHeader from "@/components/TouristPageHeader";
+
+// An internal feature/status checklist, not something a visitor searches for.
+export const metadata = pageMetadata({
+  path: "/features",
+  title: "功能總覽",
+  description: "大溪通目前提供的功能與資料來源一覽。",
+  noindex: true,
+});
 
 type FeatureStatus = "已上線" | "資料串接" | "後台可控" | "可優化";
 
@@ -164,18 +174,18 @@ function FeatureCard({ item }: { item: FeatureItem }) {
   const content = (
     <>
       <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-        <h3 className="min-w-0 text-[15px] font-black leading-snug" style={{ color: "var(--ink)" }}>
+        <h3 className="min-w-0 text-app-heading font-black leading-snug" style={{ color: "var(--ink)" }}>
           {item.title}
         </h3>
-        <span className="w-fit shrink-0 rounded-full px-2.5 py-1 text-[10.5px] font-bold leading-none" style={{ background: tone.bg, color: tone.fg }}>
+        <span className="w-fit shrink-0 rounded-full px-2.5 py-1 text-app-label font-bold leading-none" style={{ background: tone.bg, color: tone.fg }}>
           {item.status}
         </span>
       </div>
-      <p className="mt-2 text-[12.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+      <p className="mt-2 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         {item.desc}
       </p>
       {item.href ? (
-        <div className="mt-3 flex items-center gap-1.5 text-[11.5px] font-bold" style={{ color: "var(--daxi-red)" }}>
+        <div className="mt-3 flex items-center gap-1.5 text-app-label font-bold" style={{ color: "var(--daxi-red)" }}>
           <span>{hrefLabel}</span>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M5 12h14M13 6l6 6-6 6" />
@@ -207,41 +217,19 @@ function FeatureCard({ item }: { item: FeatureItem }) {
 export default function FeaturesPage() {
   return (
     <div className="overflow-x-hidden">
-      <section
-        className="relative overflow-hidden safe-page-x pt-7 pb-6 fade-in"
-        style={{
-          background: "linear-gradient(160deg, var(--block-river) 0%, var(--block-moss) 56%, var(--block-wood) 100%)",
-          borderBottomLeftRadius: 28,
-          borderBottomRightRadius: 28,
-          boxShadow: "var(--shadow-float)",
-        }}
-      >
-        <HeaderShapes />
-        <div className="relative">
-          <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-fg-soft)" }}>
-            Product Map
-          </div>
-          <h1 className="mt-1 text-[28px] font-black leading-tight sm:text-[34px]" style={{ color: "var(--block-fg)" }}>
-            大溪通功能總覽
-          </h1>
-          <p className="mt-2 max-w-2xl break-words text-[13px] font-semibold leading-relaxed" style={{ color: "rgba(43,36,32,0.78)" }}>
-            目前 app 已分成遊客、大溪人、商家與營運後台四條主軸；這裡把所有已做出的功能集中盤點，方便下一步安排首頁入口、資料優先級與開發順序。
-          </p>
-        </div>
-
-        <div className="relative mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <TouristPageHeader title="大溪通功能總覽" subtitle="查看遊客、大溪人、商家與營運後台的功能。" />
+      <div className="safe-page-x grid grid-cols-2 gap-2 sm:grid-cols-4">
           {totals.map((total) => (
-            <div key={total.label} className="min-w-0 rounded-2xl px-2 py-3 text-center" style={{ background: "rgba(255,255,255,0.28)", border: "1px solid rgba(255,255,255,0.28)" }}>
-              <div className="text-[21px] font-black leading-none" style={{ color: "var(--block-fg)" }}>
+            <div key={total.label} className="min-w-0 rounded-2xl px-2 py-3 text-center" style={{ background: "var(--card)", border: "1px solid var(--line)" }}>
+              <div className="text-[21px] font-black leading-none" style={{ color: "var(--ink)" }}>
                 {total.value}
               </div>
-              <div className="mt-1 text-[10.5px] font-bold" style={{ color: "rgba(43,36,32,0.68)" }}>
+              <div className="mt-1 text-app-label font-bold" style={{ color: "var(--ink-soft)" }}>
                 {total.label}
               </div>
             </div>
           ))}
-        </div>
-      </section>
+      </div>
 
       <div className="safe-page-x pt-4">
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
@@ -249,7 +237,7 @@ export default function FeaturesPage() {
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="shrink-0 rounded-full border px-4 py-2 text-[12.5px] font-black"
+              className="shrink-0 rounded-full border px-4 py-2 text-app-label font-black"
               style={{ background: "var(--card)", borderColor: "var(--line)", color: "var(--ink)", textDecoration: "none" }}
             >
               {section.title}
@@ -265,14 +253,14 @@ export default function FeaturesPage() {
               <SectionGlyph tint={section.tint} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-[20px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+                  <h2 className="text-app-title font-black leading-tight" style={{ color: "var(--ink)" }}>
                     {section.title}
                   </h2>
-                  <span className="rounded-full px-2 py-0.5 text-[10.5px] font-bold" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+                  <span className="rounded-full px-2 py-0.5 text-app-label font-bold" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
                     {section.count} 項
                   </span>
                 </div>
-                <p className="mt-0.5 text-[12.5px] leading-snug" style={{ color: "var(--ink-soft)" }}>
+                <p className="mt-0.5 text-app-label leading-snug" style={{ color: "var(--ink-soft)" }}>
                   {section.subtitle}
                 </p>
               </div>

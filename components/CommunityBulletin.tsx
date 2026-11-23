@@ -78,17 +78,17 @@ function BulletinModal({ post, onClose }: { post: BulletinPost | null; onClose: 
         <div className="mb-3 flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-wrap items-center gap-1.5">
             {post.urgent ? (
-              <span className="rounded-full px-2.5 py-1 text-[10.5px] font-bold tracking-wide" style={{ background: "var(--daxi-red)", color: "#fff" }}>
+              <span className="rounded-full px-2.5 py-1 text-app-label font-bold tracking-wide" style={{ background: "var(--daxi-red)", color: "#fff" }}>
                 緊急
               </span>
             ) : null}
             {post.village ? (
-              <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
+              <span className="rounded-full px-2.5 py-1 text-app-label font-semibold" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
                 {post.village}
               </span>
             ) : null}
             {post.tags.map((tag) => (
-              <span key={tag} className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold" style={{ background: "rgba(0,0,0,0.06)", color: TAG_COLOR[tag] }}>
+              <span key={tag} className="rounded-full px-2.5 py-1 text-app-label font-semibold" style={{ background: "rgba(0,0,0,0.06)", color: TAG_COLOR[tag] }}>
                 {tag}
               </span>
             ))}
@@ -106,17 +106,17 @@ function BulletinModal({ post, onClose }: { post: BulletinPost | null; onClose: 
           </button>
         </div>
 
-        <div className="mb-1.5 text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+        <div className="mb-1.5 text-app-label" style={{ color: "var(--ink-soft)" }}>
           {formatPostedAt(post.postedAt)}
         </div>
-        <h2 className="text-[16.5px] font-bold leading-snug" style={{ color: post.urgent ? "var(--daxi-red)" : "var(--ink)" }}>
+        <h2 className="text-app-heading font-bold leading-snug" style={{ color: post.urgent ? "var(--daxi-red)" : "var(--ink)" }}>
           {post.title}
         </h2>
-        <p className="mt-3 whitespace-pre-wrap text-[13.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+        <p className="mt-3 whitespace-pre-wrap text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
           {post.body}
         </p>
         {range ? (
-          <div className="mt-4 rounded-2xl px-3 py-2 text-[12px] font-medium" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
+          <div className="mt-4 rounded-2xl px-3 py-2 text-app-label font-medium" style={{ background: "var(--river-teal-soft)", color: "var(--river-teal)" }}>
             有效期間：{range}
           </div>
         ) : null}
@@ -133,11 +133,11 @@ function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void
     <button
       type="button"
       onClick={onOpen}
-      className="relative flex min-h-[152px] w-full flex-col overflow-hidden rounded-[18px] border px-4 py-3.5 text-left transition-opacity active:opacity-80"
+      className={`relative flex min-h-[152px] w-full flex-col px-4 py-3.5 text-left transition-opacity active:opacity-80${post.urgent ? " overflow-hidden rounded-[18px] border" : ""}`}
       style={
         post.urgent
           ? { background: "rgba(255,246,226,0.94)", borderColor: "rgba(215,160,107,0.9)", boxShadow: "0 10px 22px rgba(0,0,0,0.18)" }
-          : { background: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.16)" }
+          : undefined
       }
     >
       <span
@@ -153,13 +153,13 @@ function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void
       <div className="relative flex items-center justify-between gap-2 mb-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
           {post.urgent ? (
-            <span className="rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide" style={{ background: "var(--daxi-red)", color: "#fff" }}>
+            <span className="rounded-full px-2 py-0.5 text-app-label font-bold tracking-wide" style={{ background: "var(--daxi-red)", color: "#fff" }}>
               緊急
             </span>
           ) : null}
           {post.village ? (
             <span
-              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              className="rounded-full px-2 py-0.5 text-app-label font-semibold"
               style={post.urgent ? { background: "var(--river-teal-soft)", color: "var(--river-teal)" } : { background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.88)" }}
             >
               {post.village}
@@ -168,35 +168,35 @@ function BulletinCard({ post, onOpen }: { post: BulletinPost; onOpen: () => void
           {post.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              className="rounded-full px-2 py-0.5 text-app-label font-semibold"
               style={post.urgent ? { background: "rgba(0,0,0,0.06)", color: TAG_COLOR[tag] } : { background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.78)" }}
             >
               {tag}
             </span>
           ))}
         </div>
-        <span className="shrink-0 text-[10.5px]" style={{ color: post.urgent ? "var(--ink-soft)" : "rgba(255,255,255,0.66)" }}>
+        <span className="shrink-0 text-app-label" style={{ color: post.urgent ? "var(--ink-soft)" : "rgba(255,255,255,0.66)" }}>
           {formatPostedAt(post.postedAt)}
         </span>
       </div>
       <div
-        className="relative mb-1 overflow-hidden text-[18px] font-black leading-snug"
+        className="relative mb-1 overflow-hidden text-app-title font-black leading-snug"
         style={{ color: post.urgent ? "var(--daxi-red)" : "rgba(255,255,255,0.94)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}
       >
         {post.title}
       </div>
       <p
-        className="relative overflow-hidden text-[12.5px] leading-relaxed"
+        className="relative overflow-hidden text-app-label leading-relaxed"
         style={{ color: post.urgent ? "var(--ink-soft)" : "rgba(255,255,255,0.74)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}
       >
         {truncateText(post.body)}
       </p>
       {range ? (
-        <div className="relative mt-1.5 shrink-0 text-[11px] font-medium" style={{ color: post.urgent ? "var(--river-teal)" : "rgba(215,160,107,0.95)" }}>
+        <div className="relative mt-1.5 shrink-0 text-app-label font-medium" style={{ color: post.urgent ? "var(--river-teal)" : "rgba(215,160,107,0.95)" }}>
           {range}
         </div>
       ) : null}
-      <div className="relative mt-auto shrink-0 pt-2 text-[11.5px] font-semibold" style={{ color: post.urgent ? "var(--block-wood-deep)" : "rgba(255,255,255,0.88)" }}>
+      <div className="relative mt-auto shrink-0 pt-2 text-app-label font-semibold" style={{ color: post.urgent ? "var(--block-wood-deep)" : "rgba(255,255,255,0.88)" }}>
         查看完整內容
       </div>
     </button>
@@ -267,7 +267,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
               setIndex(0);
               resetTimer();
             }}
-            className="shrink-0 rounded-full px-3 py-1.5 text-[12px] font-bold transition-opacity active:opacity-70"
+            className="shrink-0 rounded-full px-3 py-1.5 text-app-label font-bold transition-opacity active:opacity-70"
             style={
               selectedVillages.length === 0
                 ? { background: "var(--river-teal)", color: "#fff" }
@@ -283,7 +283,7 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
                 key={village}
                 type="button"
                 onClick={() => toggleVillage(village)}
-                className="shrink-0 rounded-full px-3 py-1.5 text-[12px] font-bold transition-opacity active:opacity-70"
+                className="shrink-0 rounded-full px-3 py-1.5 text-app-label font-bold transition-opacity active:opacity-70"
                 style={selected ? { background: "var(--river-teal)", color: "#fff" } : { background: "var(--paper-2)", color: "var(--ink-soft)" }}
               >
                 {village}
@@ -328,13 +328,13 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
 
           <div className="relative">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <div className="min-w-0 text-[11px] font-black tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.86)" }}>
+              <div className="min-w-0 text-app-label font-black tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.86)" }}>
                 里內公告
               </div>
               <div className="flex shrink-0 items-center gap-1.5">
                 {filteredPosts.length > 1 ? (
                   <>
-                    <span className="text-[10.5px] font-semibold tabular-nums" style={{ color: "rgba(255,255,255,0.62)" }}>
+                    <span className="text-app-label font-semibold tabular-nums" style={{ color: "rgba(255,255,255,0.62)" }}>
                       {currentIndex + 1} / {filteredPosts.length}
                     </span>
                     <button
@@ -366,10 +366,10 @@ export default function CommunityBulletin({ posts }: { posts: BulletinPost[] }) 
 
             {filteredPosts.length === 0 ? (
               <div className="relative rounded-[18px] border px-4 py-5 text-center" style={{ borderColor: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.78)" }}>
-                <div className="text-[14px] font-bold">
+                <div className="text-app-body font-bold">
                   {selectedVillages.length === 0 ? ALL_FILTER : selectedVillages.join("、")} 目前沒有公告
                 </div>
-                <div className="mt-1 text-[12px]">換個里別看看，或稍後再回來</div>
+                <div className="mt-1 text-app-label">換個里別看看，或稍後再回來</div>
               </div>
             ) : (
               <>

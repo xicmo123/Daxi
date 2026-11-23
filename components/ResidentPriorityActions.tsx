@@ -80,14 +80,14 @@ export default function ResidentPriorityActions() {
       <section className="safe-page-x pt-3 fade-in-delay-1" aria-labelledby="resident-priority-title">
       <div className="mb-2 flex items-end justify-between gap-3">
         <div>
-          <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+          <div className="text-app-label font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
             生活動線
           </div>
-          <h2 id="resident-priority-title" className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+          <h2 id="resident-priority-title" className="text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>
             出門前先看
           </h2>
         </div>
-        <span className="text-[11px] font-semibold" style={{ color: "var(--ink-soft)" }}>
+        <span className="text-app-label font-semibold" style={{ color: "var(--ink-soft)" }}>
           即時資訊
         </span>
       </div>
@@ -106,12 +106,12 @@ export default function ResidentPriorityActions() {
           <BusIllustration />
           <div className="relative z-10 flex h-full flex-col justify-between gap-2">
             <div>
-              <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.48)" }}>
+              <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-app-label font-bold" style={{ background: "rgba(255,255,255,0.48)" }}>
                 客運資訊
               </div>
-              <div className="text-[15px] font-black leading-tight">客運在哪</div>
+              <div className="text-app-heading font-black leading-tight">客運在哪</div>
             </div>
-            <div className="flex items-center justify-between gap-1.5 text-[10.5px] font-bold">
+            <div className="flex items-center justify-between gap-1.5 text-app-label font-bold">
               <span className="min-w-0 truncate leading-tight">位置 / 時刻</span>
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ background: "rgba(255,255,255,0.42)" }}>
                 <ArrowIcon />
@@ -133,12 +133,12 @@ export default function ResidentPriorityActions() {
           <GarbageIllustration />
           <div className="relative z-10 flex h-full flex-col justify-between gap-2">
             <div className="min-w-0">
-              <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
+              <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-app-label font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
                 垃圾清運
               </div>
-              <div className="text-[15px] font-black leading-tight">即時清運</div>
+              <div className="text-app-heading font-black leading-tight">即時清運</div>
             </div>
-            <div className="flex items-center justify-between gap-1.5 text-[10.5px] font-bold">
+            <div className="flex items-center justify-between gap-1.5 text-app-label font-bold">
               <span className="min-w-0 truncate leading-tight">即時位置</span>
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ background: "rgba(255,255,255,0.38)" }}>
                 <ArrowIcon />
@@ -159,12 +159,12 @@ export default function ResidentPriorityActions() {
           <CameraIllustration />
           <div className="relative z-10 flex h-full flex-col justify-between gap-2">
             <div className="min-w-0">
-              <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
+              <div className="mb-1.5 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-app-label font-bold" style={{ background: "rgba(255,255,255,0.5)" }}>
                 即時影像
               </div>
-              <div className="text-[15px] font-black leading-tight">先看路況</div>
+              <div className="text-app-heading font-black leading-tight">先看路況</div>
             </div>
-            <div className="flex items-center justify-between gap-1.5 text-[10.5px] font-bold">
+            <div className="flex items-center justify-between gap-1.5 text-app-label font-bold">
               <span className="min-w-0 truncate leading-tight">CCTV / 景點</span>
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ background: "rgba(255,255,255,0.38)" }}>
                 <ArrowIcon />
@@ -182,10 +182,10 @@ export default function ResidentPriorityActions() {
           <div className="relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl shadow-2xl sm:rounded-3xl" style={{ background: "var(--paper)" }}>
             <div className="flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3" style={{ borderColor: "var(--line)" }}>
               <div className="min-w-0">
-                <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+                <div className="text-app-label font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
                   垃圾清運
                 </div>
-                <h2 id="garbage-map-title" className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+                <h2 id="garbage-map-title" className="text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>
                   即時清運車
                 </h2>
               </div>

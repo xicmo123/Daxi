@@ -1,31 +1,20 @@
-import Image from "next/image";
 import ResidentBottomNav from "@/components/ResidentBottomNav";
 import PullToRefresh from "@/components/PullToRefresh";
+import ResidentHeader from "@/components/resident/ResidentHeader";
+import ResidentFooter from "@/components/resident/ResidentFooter";
 
-// Separate layout/segment from app/(site) — residents get their own bottom
-// nav and page set entirely, not just a reordered tourist home. Shares the
-// wallpaper treatment for brand consistency but nothing else from SiteLayout.
+// 「我是大溪人」 has its own skin (components/resident/ResidentSkin.module.css,
+// tokens in app/globals.css under .resident-skin): a white Visit Jeju-style
+// canvas with a sticky header + full menu on every page and a site-map footer.
 export default function ResidentLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <PullToRefresh />
-      <div className="fixed inset-0 flex justify-center pointer-events-none" aria-hidden>
-        <div className="relative w-full max-w-md overflow-hidden md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
-          <Image
-            src="/images/old-street-sketch-2.jpg"
-            alt=""
-            fill
-            sizes="448px"
-            className="object-cover"
-            style={{ objectPosition: "center top", filter: "blur(7px)", transform: "scale(1.08)" }}
-          />
-          <div className="absolute inset-0" style={{ background: "var(--paper)", opacity: "var(--wallpaper-fade-opacity)" }} />
-        </div>
-      </div>
-
-      <div className="app-screen relative z-10 flex-1">
-        <div className="mx-auto w-full max-w-md md:max-w-3xl md:border-x lg:max-w-6xl" style={{ borderColor: "var(--line)" }}>
+      <div className="resident-skin app-screen relative z-10 flex-1">
+        <div className="mx-auto w-full max-w-md md:max-w-3xl lg:max-w-6xl">
+          <ResidentHeader />
           {children}
+          <ResidentFooter />
         </div>
       </div>
       <ResidentBottomNav />

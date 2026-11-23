@@ -25,14 +25,14 @@ export default function ResidentHomeHero({ todayLabel }: { todayLabel: string })
     >
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase" style={{ color: "var(--ink-soft)" }}>
+          <div className="text-app-label font-bold tracking-[0.16em] uppercase" style={{ color: "var(--ink-soft)" }}>
             大溪今日 · {todayLabel}
           </div>
           <div className="font-serif text-[22px] font-black leading-tight flex items-center gap-1.5" style={{ color: "var(--ink)" }}>
             大溪居民您好
             <motion.span
               aria-hidden="true"
-              className="text-[18px]"
+              className="text-app-title"
               style={{ display: "inline-block", transformOrigin: "70% 70%" }}
               animate={{ rotate: [0, 16, -8, 16, 0] }}
               transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
@@ -57,7 +57,7 @@ export default function ResidentHomeHero({ todayLabel }: { todayLabel: string })
       <div className="mt-3 flex items-center justify-between gap-3">
         <div className="inline-flex p-1 rounded-full" style={{ background: "var(--paper-2)", border: "1px solid var(--line)" }}>
           <span
-            className="px-3.5 py-1 rounded-full text-[12px] font-bold"
+            className="px-3.5 py-1 rounded-full text-app-label font-bold"
             style={{ background: "var(--card)", color: "var(--river-teal)", boxShadow: "0 1px 5px rgba(43,36,32,0.08)" }}
           >
             我是大溪人
@@ -66,13 +66,13 @@ export default function ResidentHomeHero({ todayLabel }: { todayLabel: string })
             type="button"
             onClick={goTourist}
             disabled={switching}
-            className="px-3.5 py-1 rounded-full text-[12px] font-bold transition-all"
+            className="px-3.5 py-1 rounded-full text-app-label font-bold transition-all"
             style={{ background: "transparent", color: "var(--ink-soft)", opacity: switching ? 0.6 : 1 }}
           >
             {switching ? "切換中…" : "遊客"}
           </button>
         </div>
-        <span className="truncate text-[11.5px] font-semibold" style={{ color: "var(--ink-soft)" }}>
+        <span className="truncate text-app-label font-semibold" style={{ color: "var(--ink-soft)" }}>
           公告、交通、清運，一眼掌握
         </span>
       </div>

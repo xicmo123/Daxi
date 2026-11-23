@@ -114,26 +114,26 @@ export default function RoadworksMap() {
     <div className="overflow-hidden rounded-2xl border" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
       <div className="flex items-center justify-between border-b px-4 py-3" style={{ borderColor: "var(--line)" }}>
         <div>
-          <div className="text-[13px] font-semibold" style={{ color: "var(--ink)" }}>
+          <div className="text-app-body font-semibold" style={{ color: "var(--ink)" }}>
             目前道路施工
           </div>
-          <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+          <div className="text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
             {syncedAt ? `最後同步 ${formatTime(syncedAt)} · 每 10 分鐘` : "同步中 · 每 10 分鐘"}
           </div>
         </div>
-        <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+        <span className="rounded-full px-2.5 py-1 text-app-label font-semibold" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
           {state === "loading" ? "載入中" : `${roadworks.length} 件`}
         </span>
       </div>
       <div className="relative h-[360px]">
         <div ref={mapNodeRef} className="absolute inset-0" aria-label="大溪道路施工地圖" />
         {state === "empty" ? (
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
             目前沒有大溪道路申挖資料
           </div>
         ) : null}
         {state === "error" ? (
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--daxi-red)" }}>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--daxi-red)" }}>
             道路施工資料暫時無法載入
           </div>
         ) : null}
@@ -142,10 +142,10 @@ export default function RoadworksMap() {
         <div className="flex max-h-56 flex-col overflow-auto border-t" style={{ borderColor: "var(--line)" }}>
           {roadworks.map((item) => (
             <div key={item.id} className="px-4 py-3 border-b last:border-b-0" style={{ borderColor: "var(--line)" }}>
-              <div className="text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+              <div className="text-app-label font-semibold" style={{ color: "var(--ink)" }}>
                 {item.location || item.name}
               </div>
-              <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+              <div className="text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
                 {item.start ?? "未提供開始時間"} - {item.stop ?? "未提供結束時間"}
               </div>
             </div>

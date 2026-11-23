@@ -41,7 +41,7 @@ export default function AnnouncementModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-3">
-          <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold tracking-wide" style={{ background: tintSoft, color: tint }}>
+          <span className="rounded-full px-2.5 py-1 text-app-label font-semibold tracking-wide" style={{ background: tintSoft, color: tint }}>
             官方公告
           </span>
           <button
@@ -58,17 +58,17 @@ export default function AnnouncementModal({
         </div>
 
         {item.date ? (
-          <div className="text-[11.5px] mb-1.5" style={{ color: "var(--ink-soft)" }}>
+          <div className="text-app-label mb-1.5" style={{ color: "var(--ink-soft)" }}>
             {item.date}
           </div>
         ) : null}
 
-        <h2 className="text-[16.5px] font-bold leading-snug" style={{ color: "var(--ink)" }}>
+        <h2 className="text-app-heading font-bold leading-snug" style={{ color: "var(--ink)" }}>
           {item.title}
         </h2>
 
         {item.summary ? (
-          <p className="mt-3 text-[13.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+          <p className="mt-3 text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
             {item.summary}
           </p>
         ) : null}
@@ -77,7 +77,7 @@ export default function AnnouncementModal({
           href={item.href}
           target="_blank"
           rel="noreferrer"
-          className="mt-5 flex items-center justify-center gap-1.5 rounded-full px-4 py-3 text-[13.5px] font-semibold transition-opacity active:opacity-70"
+          className="mt-5 flex items-center justify-center gap-1.5 rounded-full px-4 py-3 text-app-body font-semibold transition-opacity active:opacity-70"
           style={{ background: tint, color: "#fff" }}
         >
           查看完整公告

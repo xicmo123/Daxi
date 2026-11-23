@@ -70,13 +70,13 @@ function TimetableSheet({
     <div className="mt-3 rounded-3xl px-3 pb-3 pt-3" style={{ background: "var(--card)", border: "1px solid var(--line)", boxShadow: "var(--shadow-card)" }}>
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
+            <div className="text-app-label font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
               路線時刻
             </div>
-            <h2 className="text-[17px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+            <h2 className="text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>
               {route.routeName} 路
             </h2>
-            <div className="mt-0.5 text-[12px] font-semibold" style={{ color: "var(--river-teal)" }}>
+            <div className="mt-0.5 text-app-label font-semibold" style={{ color: "var(--river-teal)" }}>
               {routeDirectionLabel(route)}
             </div>
           </div>
@@ -94,19 +94,19 @@ function TimetableSheet({
         </div>
 
         {state === "loading" ? (
-          <div className="rounded-2xl px-4 py-5 text-center text-[12.5px]" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+          <div className="rounded-2xl px-4 py-5 text-center text-app-label" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
             載入站牌時刻中…
           </div>
         ) : null}
 
         {state === "error" ? (
-          <div className="rounded-2xl px-4 py-5 text-center text-[12.5px] font-semibold" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
+          <div className="rounded-2xl px-4 py-5 text-center text-app-label font-semibold" style={{ background: "var(--daxi-red-soft)", color: "var(--daxi-red)" }}>
             時刻表暫時無法載入
           </div>
         ) : null}
 
         {state === "ready" && stops.length === 0 ? (
-          <div className="rounded-2xl px-4 py-5 text-center text-[12.5px]" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+          <div className="rounded-2xl px-4 py-5 text-center text-app-label" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
             此方向暫無站牌時刻資料
           </div>
         ) : null}
@@ -115,10 +115,10 @@ function TimetableSheet({
           <div className="max-h-72 overflow-auto rounded-2xl" style={{ border: "1px solid var(--line)" }}>
             {stops.map((stop) => (
               <div key={`${stop.sequence}-${stop.stopName}`} className="flex items-center justify-between gap-3 border-b px-3 py-2.5 last:border-b-0" style={{ borderColor: "var(--line)" }}>
-                <span className="min-w-0 text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+                <span className="min-w-0 text-app-label font-semibold" style={{ color: "var(--ink)" }}>
                   {stop.sequence}. {stop.stopName}
                 </span>
-                <span className="shrink-0 rounded-full px-2 py-1 text-[11px] font-bold" style={{ background: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red-soft)" : "var(--paper-2)", color: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red)" : "var(--ink-soft)" }}>
+                <span className="shrink-0 rounded-full px-2 py-1 text-app-label font-bold" style={{ background: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red-soft)" : "var(--paper-2)", color: stop.estimateMinutes !== null && stop.estimateMinutes <= 3 ? "var(--daxi-red)" : "var(--ink-soft)" }}>
                   {stop.state}
                 </span>
               </div>
@@ -366,7 +366,7 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
 	            value={query}
 	            onChange={(e) => setQuery(e.target.value)}
 	            placeholder="輸入路線、目的地或站名"
-	            className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
+	            className="min-w-0 flex-1 bg-transparent text-app-body outline-none"
 	            style={{ color: "var(--ink)" }}
 	          />
 	        </div>
@@ -375,19 +375,19 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
       {query.trim() ? (
         <div className="border-b px-3 py-3" style={{ borderColor: "var(--line)" }}>
           {routeSearchState === "loading" ? (
-            <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
+            <div className="text-app-label" style={{ color: "var(--ink-soft)" }}>
               搜尋路線中…
             </div>
           ) : null}
 
           {routeSearchState === "ready" && routeMatches.length === 0 ? (
-            <div className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
+            <div className="text-app-label" style={{ color: "var(--ink-soft)" }}>
               沒有找到符合「{query}」的路線、目的地或停靠站
             </div>
           ) : null}
 
           {routeSearchState === "error" ? (
-            <div className="text-[12px]" style={{ color: "var(--daxi-red)" }}>
+            <div className="text-app-label" style={{ color: "var(--daxi-red)" }}>
               路線搜尋暫時無法使用
             </div>
           ) : null}
@@ -395,10 +395,10 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
           {routeMatches.length > 0 ? (
             <div>
               <div className="mb-2 flex items-center justify-between gap-3">
-                <span className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
+                <span className="text-app-label font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
                   選方向看時刻表
                 </span>
-                <span className="text-[11px]" style={{ color: "var(--ink-soft)" }}>
+                <span className="text-app-label" style={{ color: "var(--ink-soft)" }}>
                   {routeMatches.length} 筆
                 </span>
               </div>
@@ -426,14 +426,14 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
                       }}
                     >
                       <span className="min-w-0">
-                        <span className="block text-[13px] font-black" style={{ color: "var(--ink)" }}>
+                        <span className="block text-app-body font-black" style={{ color: "var(--ink)" }}>
                           {route.routeName} 路
                         </span>
-                        <span className="mt-0.5 block truncate text-[11.5px] font-semibold" style={{ color: "var(--river-teal)" }}>
+                        <span className="mt-0.5 block truncate text-app-label font-semibold" style={{ color: "var(--river-teal)" }}>
                           {routeDirectionLabel(route)}
                         </span>
                       </span>
-                      <span className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+                      <span className="shrink-0 rounded-full px-2.5 py-1 text-app-label font-bold" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
                         時刻
                       </span>
                     </button>
@@ -451,35 +451,35 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
       <div className={compact ? "relative h-[240px] min-h-0 sm:h-[300px]" : "relative h-[300px] min-h-[42vh]"}>
         <div ref={mapNodeRef} className="absolute inset-0" aria-label="以目前位置為中心的大溪周邊公車即時地圖" />
         <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-wrap gap-2">
-          <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
+          <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
             {filteredBuses.length > 0 ? `${filteredBuses.length} 輛` : state === "loading" ? "定位中" : "無符合公車"}
           </span>
-          <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
+          <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
             每 {REFRESH_SECONDS} 秒更新
           </span>
           {activeLocation ? (
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
+            <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
               {demoLocation ? "目前位置・大溪老街" : "目前位置"}
             </span>
           ) : null}
           {updatedAt ? (
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+            <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
               同步 {formatTime(updatedAt)}
             </span>
           ) : null}
         </div>
         {state === "error" ? (
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--daxi-red)" }}>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--daxi-red)" }}>
             即時公車位置暫時無法載入
           </div>
         ) : null}
         {state === "empty" ? (
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
             方圓 5 公里內目前沒有公車在路上
           </div>
         ) : null}
         {state === "ready" && query.trim() && filteredBuses.length === 0 ? (
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
             {routeMatches.length > 0 ? "符合的路線目前沒有車在路上" : `找不到符合「${query}」的公車路線`}
           </div>
         ) : null}
@@ -490,14 +490,14 @@ export default function BusMap({ compact = false }: { compact?: boolean }) {
           {filteredBuses.map((bus) => (
             <div key={bus.id} className="flex items-center justify-between px-4 py-3 border-b last:border-b-0" style={{ borderColor: "var(--line)" }}>
               <div>
-                <div className="text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
+                <div className="text-app-label font-semibold" style={{ color: "var(--ink)" }}>
                   {bus.route} 路
                 </div>
-                <div className="text-[11px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+                <div className="text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
                   距你 {bus.distanceMeters < 1000 ? `${Math.round(bus.distanceMeters)}m` : `${(bus.distanceMeters / 1000).toFixed(1)}km`}
                 </div>
               </div>
-              <div className="text-right text-[11px]" style={{ color: "var(--ink-soft)" }}>
+              <div className="text-right text-app-label" style={{ color: "var(--ink-soft)" }}>
                 <div>{bus.speedKmh} km/h</div>
                 <div className="mt-0.5">{bus.gpsTime ? `GPS ${formatTime(bus.gpsTime)}` : "即時位置"}</div>
               </div>

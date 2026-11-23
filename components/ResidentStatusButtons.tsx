@@ -37,7 +37,7 @@ export default function ResidentStatusButtons({ items }: { items: StatusButton[]
         }}
       >
         <div className="shrink-0">
-          <div className="text-[10px] font-black tracking-[0.12em]" style={{ color: "var(--block-wood-deep)" }}>
+          <div className="text-app-label font-black tracking-[0.12em]" style={{ color: "var(--block-wood-deep)" }}>
             大溪今日動態
           </div>
         </div>
@@ -58,12 +58,12 @@ export default function ResidentStatusButtons({ items }: { items: StatusButton[]
               >
                 <span className="w-3 h-3 shrink-0">{item.icon}</span>
                 <span
-                  className="text-[15px] font-black leading-none tabular-nums"
+                  className="text-app-heading font-black leading-none tabular-nums"
                   style={{ color: unknown ? "var(--ink-soft)" : "var(--ink)" }}
                 >
                   {unknown ? "—" : item.count}
                 </span>
-                <span className="truncate text-[10.5px] font-bold" style={{ color: "var(--ink-soft)" }}>
+                <span className="truncate text-app-label font-bold" style={{ color: "var(--ink-soft)" }}>
                   {compactLabel(item.label)}
                 </span>
               </Link>

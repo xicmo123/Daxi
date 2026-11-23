@@ -1,16 +1,33 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import HomeExperience, { type FeedSpot } from "@/components/HomeExperience";
+import TouristHomeHeader from "@/components/TouristHomeHeader";
 import type { CouponWithBusiness } from "@/components/CouponList";
-import { getCachedAnnouncements, getCachedBuses, getCachedEvents, getCachedParking, getCachedWeather } from "@/lib/cachedSources";
+import { getCachedEvents, getCachedWeather } from "@/lib/cachedSources";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
+import { isEventExpired } from "@/lib/eventsFeed";
 import { weatherMood } from "@/lib/cwa";
-import { walkTimeLabel, isIndoorSpot } from "@/lib/experience";
+import { isIndoorSpot } from "@/lib/experience";
 import { getAllPlaces, filterVisiblePlaces, readDetails, readPhotos } from "@/lib/placesStore";
 import { categoryLabel } from "@/lib/placeDetails";
 import { listActiveCoupons } from "@/lib/coupons";
 import { readHomeSpotOrder, sortByHomeSpotOrder } from "@/lib/homeSpotOrder";
-import type { TodayStat } from "@/components/TodayPanel";
+import { jsonLdString } from "@/lib/seo";
+import { SITE_URL } from "@/lib/siteUrl";
+
+// The place this site is about, so search engines can tie the home page to
+// 大溪 (and 大溪老街) as a tourist destination. Coordinates: 和平老街.
+const DESTINATION_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "TouristDestination",
+  name: "桃園大溪",
+  alternateName: ["大溪老街", "大溪區", "Daxi"],
+  description: "桃園市大溪區，以和平老街的巴洛克立面、豆干、木藝與每年的大溪大禧（關聖帝君聖誕遶境）聞名。",
+  url: `${SITE_URL}/`,
+  geo: { "@type": "GeoCoordinates", latitude: 24.8847, longitude: 121.28867 },
+  address: { "@type": "PostalAddress", addressLocality: "大溪區", addressRegion: "桃園市", addressCountry: "TW" },
+  touristType: ["文化觀光", "美食"],
+};
 
 // Carousel content is now admin-editable — force-dynamic so edits show up
 // immediately instead of waiting out a 60s ISR window (same as /businesses, /spots).
@@ -23,12 +40,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
-  month: "numeric",
-  day: "numeric",
-  weekday: "short",
-});
-
 // The home carousel is prime real estate — one slide is visible at a time and
 // it is the second thing on the page. Two rules keep it that way:
 //
@@ -38,11 +49,16 @@ const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
 //   2. At most five. It was rendering eleven dots, which stop working as a
 //      position indicator long before that and just read as clutter.
 const MAX_HERO_SLIDES = 5;
+const HOME_TRIP_THEMES = [
+  { placeId: "custom-tycg-1003", title: "到大溪橋看河景", description: "走上橋面，望向大漢溪河谷。" },
+  { placeId: "custom-tycg-392", title: "走進木藝老城", description: "從武德殿看大溪的歷史建築。" },
+  { placeId: "custom-tycg-963", title: "老茶廠裡尋茶香", description: "順著製茶老屋，認識大溪的茶產業。" },
+];
 
 // During the festival, prefer today's or the ongoing milestone over always
 // the first slide.
 async function pickInitialSlide() {
-  const upcoming = (await getCachedEvents()).filter((s) => s.showInCarousel && s.phase !== "past");
+  const upcoming = (await getCachedEvents()).filter((s) => s.showInCarousel && !isEventExpired(s));
   // Ongoing first, then upcoming — both already in date order from the feed.
   const slides = [
     ...upcoming.filter((s) => s.phase === "ongoing"),
@@ -50,7 +66,6 @@ async function pickInitialSlide() {
   ].slice(0, MAX_HERO_SLIDES);
   const isFestivalMode = getFestivalTiming().phase === "during";
   const todaysMilestone = findTodaysMilestone(slides);
-  const nextMilestone = todaysMilestone ?? slides.find((m) => m.phase === "ongoing") ?? slides.find((m) => m.phase === "upcoming") ?? slides[0];
   const initialSlideIndex = isFestivalMode
     ? (() => {
         if (todaysMilestone) {
@@ -63,96 +78,25 @@ async function pickInitialSlide() {
         return upcomingIdx >= 0 ? upcomingIdx : 0;
       })()
     : 0;
-  return { slides, initialSlideIndex, nextMilestone };
-}
-
-/**
- * The four live readings behind 「今天的大溪」.
- *
- * Each source is wrapped on its own: these are third-party feeds (中央氣象署,
- * 桃園市停車場, TDX) that fail independently and regularly, and one of them
- * being down must degrade a single tile rather than empty the panel or, worse,
- * take out the home page. A tile with no data says so instead of showing a
- * stale or invented number — for parking in particular, "剩 40 位" when the
- * feed is down would send someone driving to a full car park.
- */
-async function buildTodayStats(weather: { icon: string; temp: number; text: string } | null): Promise<TodayStat[]> {
-  const [parking, buses, events] = await Promise.all([
-    getCachedParking().catch(() => null),
-    getCachedBuses().catch(() => null),
-    getCachedEvents().catch(() => null),
-  ]);
-
-  const stats: TodayStat[] = [];
-
-  stats.push(
-    weather
-      ? { key: "weather", href: "/weather", label: "天氣", value: `${weather.temp}°`, hint: weather.text, tone: "river" }
-      : { key: "weather", href: "/weather", label: "天氣", value: "—", hint: "暫時取得不到", tone: "muted" },
-  );
-
-  const ongoing = events?.filter((e) => e.phase === "ongoing").length ?? 0;
-  stats.push(
-    events
-      ? {
-          key: "events",
-          href: "/events",
-          label: "今日活動",
-          value: ongoing > 0 ? `${ongoing} 場` : "沒有活動",
-          hint: ongoing > 0 ? "正在進行中" : "看看即將登場的",
-          tone: ongoing > 0 ? "wood" : "muted",
-        }
-      : { key: "events", href: "/events", label: "今日活動", value: "—", hint: "暫時取得不到", tone: "muted" },
-  );
-
-  if (parking && parking.length > 0) {
-    // Open-access lots report no surplus figure, so they are counted as lots
-    // rather than folded into the space count as a zero.
-    const counted = parking.filter((lot) => typeof lot.surplus === "number" && lot.status !== "full");
-    const free = counted.reduce((sum, lot) => sum + (lot.surplus ?? 0), 0);
-    stats.push({
-      key: "parking",
-      href: "/parking",
-      label: "停車位",
-      value: free > 0 ? `${free} 位` : "幾乎滿了",
-      hint: free > 0 ? `${counted.length} 座停車場有空位` : "建議改搭公車前往",
-      tone: free > 0 ? "moss" : "muted",
-    });
-  } else {
-    stats.push({ key: "parking", href: "/parking", label: "停車位", value: "—", hint: "暫時取得不到", tone: "muted" });
-  }
-
-  // fetchNearbyBuses returns every vehicle in 桃園市 — the map wants them all
-  // (see lib/busPositions.ts) but a home-page tile reading 「542 台正在大溪行駛」
-  // would be plainly false, so the count is bounded to the area a resident
-  // would call 大溪.
-  const nearbyBuses = buses?.filter((bus) => bus.distanceMeters <= 5000).length ?? 0;
-  stats.push(
-    buses
-      ? {
-          key: "bus",
-          href: "/bus",
-          label: "公車",
-          value: nearbyBuses > 0 ? `${nearbyBuses} 台` : "目前無車",
-          hint: nearbyBuses > 0 ? "在大溪周邊行駛" : "查看路線與時刻",
-          tone: nearbyBuses > 0 ? "wood" : "muted",
-        }
-      : { key: "bus", href: "/bus", label: "公車", value: "—", hint: "暫時取得不到", tone: "muted" },
-  );
-
-  return stats;
+  return { slides, initialSlideIndex };
 }
 
 async function HomeFeed() {
-  const [rawPlaces, details, activeCoupons, photos, homeSpotOrder] = await Promise.all([
+  const [rawPlaces, details, activeCoupons, photos, homeSpotOrder, weather, hero] = await Promise.all([
     getAllPlaces(),
     readDetails(),
     listActiveCoupons(),
     readPhotos(),
     readHomeSpotOrder(),
+    getCachedWeather().catch(() => null),
+    pickInitialSlide().catch(() => ({ slides: [], initialSlideIndex: 0 })),
   ]);
   const places = filterVisiblePlaces(rawPlaces, details);
   const byId = new Map(places.map((p) => [p.placeId, p]));
+  const themes = HOME_TRIP_THEMES.flatMap((theme) => {
+    const photo = photos[theme.placeId];
+    return photo && byId.has(theme.placeId) ? [{ ...theme, photo }] : [];
+  });
 
   const spotPlaces = places.filter((p) => p.tag === "景點");
   const spots: FeedSpot[] = sortByHomeSpotOrder(
@@ -160,27 +104,13 @@ async function HomeFeed() {
       placeId: p.placeId,
       name: p.name,
       category: categoryLabel(details[p.placeId]?.category, p.googleType, "景點"),
-      walkTime: walkTimeLabel(p.distanceMeters),
-      distanceMeters: p.distanceMeters,
-      lat: p.lat,
-      lng: p.lng,
+      distanceLabel: p.distanceLabel,
       featured: Boolean(details[p.placeId]?.featured),
       photoSrc: photos[p.placeId]?.src,
       indoor: isIndoorSpot(p.name, details[p.placeId]?.category),
     })),
     homeSpotOrder,
-  );
-
-  let mood: "hot" | "rain" | "normal" = "normal";
-  let weatherSummary: { icon: string; temp: number; text: string } | null = null;
-  try {
-    const weather = await getCachedWeather();
-    mood = weatherMood(weather);
-    weatherSummary = { icon: weather.currentIcon, temp: weather.currentTemp, text: weather.weatherText };
-  } catch {
-    mood = "normal";
-    weatherSummary = null;
-  }
+  ).slice(0, 8);
 
   const coupons: CouponWithBusiness[] = activeCoupons
     .map((c): CouponWithBusiness | null => {
@@ -188,39 +118,16 @@ async function HomeFeed() {
       if (!place) return null;
       return { ...c, businessName: place.name, distanceLabel: place.distanceLabel, lat: place.lat, lng: place.lng };
     })
-    .filter((c): c is CouponWithBusiness => c !== null);
-
-  let hasRecentAnnouncement = false;
-  try {
-    const [latest] = await getCachedAnnouncements(1);
-    hasRecentAnnouncement = Boolean(latest && new Date().getTime() - latest.publishedAt < 7 * 24 * 60 * 60 * 1000);
-  } catch {
-    hasRecentAnnouncement = false;
-  }
-
-  let heroSlides: Awaited<ReturnType<typeof pickInitialSlide>>["slides"] = [];
-  let initialSlideIndex = 0;
-  try {
-    const picked = await pickInitialSlide();
-    heroSlides = picked.slides;
-    initialSlideIndex = picked.initialSlideIndex;
-  } catch {
-    heroSlides = [];
-  }
-
-  const todayLabel = dateFormatter.format(new Date());
-  const todayStats = await buildTodayStats(weatherSummary);
+    .filter((c): c is CouponWithBusiness => c !== null)
+    .slice(0, 6);
 
   return (
     <HomeExperience
-      todayLabel={todayLabel}
-      todayStats={todayStats}
-      hasRecentAnnouncement={hasRecentAnnouncement}
       spots={spots}
+      themes={themes}
       coupons={coupons}
-      weatherMood={mood}
-      weatherSummary={weatherSummary}
-      heroSlides={heroSlides.map((s) => ({
+      weatherMood={weather ? weatherMood(weather) : "normal"}
+      heroSlides={hero.slides.map((s) => ({
         key: s.id,
         phase: s.phase,
         date: s.date,
@@ -234,34 +141,30 @@ async function HomeFeed() {
         ctaUrl: s.ctaUrl,
         photoSrc: s.photoSrc,
         photoHistorical: s.photoHistorical,
+        source: s.source,
       }))}
-      initialSlideIndex={initialSlideIndex}
+      initialSlideIndex={hero.initialSlideIndex}
     />
   );
 }
 
 function HomeFeedSkeleton() {
   return (
-    <div className="safe-page-x pt-6">
-      <div className="h-9 w-40 rounded-full skeleton mb-4" style={{ background: "var(--line)" }} />
-      <div className="h-11 rounded-full skeleton mb-3" style={{ background: "var(--line)" }} />
-      <div className="h-16 rounded-2xl skeleton" style={{ background: "var(--line)" }} />
+    <div className="safe-page-x pb-8" aria-hidden>
+      <div className="mb-4 h-7 w-32 rounded-lg skeleton" style={{ background: "var(--line)" }} />
+      <div className="h-36 w-full rounded-2xl skeleton" style={{ background: "var(--line)" }} />
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <div>
-      {/* Hero (town headline, weather, search), event carousel, and quick
-          actions all live inside HomeExperience now — reorders itself
-          client-side by explore/local mode. Data is fetched here on the
-          server. */}
+    <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(DESTINATION_JSON_LD) }} />
+      <TouristHomeHeader />
       <Suspense fallback={<HomeFeedSkeleton />}>
         <HomeFeed />
       </Suspense>
-
-      <div className="pb-8" />
-    </div>
+    </main>
   );
 }

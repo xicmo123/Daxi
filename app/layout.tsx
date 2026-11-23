@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Figtree } from "next/font/google";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { SITE_URL } from "@/lib/siteUrl";
+import { jsonLdString } from "@/lib/seo";
 import ClientErrorReporter from "@/components/ClientErrorReporter";
 import ExternalLinkHandler from "@/components/ExternalLinkHandler";
 import PushListener from "@/components/PushListener";
@@ -61,6 +62,31 @@ export const metadata: Metadata = {
     locale: "zh_TW",
     url: SITE_URL,
   },
+  twitter: { card: "summary_large_image" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  category: "travel",
+  // Search Console / Bing ownership tokens, set in .env.local once the
+  // properties are created. Omitted entirely while unset.
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
+    ...(process.env.BING_SITE_VERIFICATION ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } } : {}),
+  },
+};
+
+// Tells search engines the site's name (shown above the URL in Google
+// results) and that 大溪通 / 我是大溪人 are the same site.
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "大溪通",
+  alternateName: ["我是大溪人", "Daxi Tong"],
+  url: `${SITE_URL}/`,
+  inLanguage: "zh-Hant-TW",
+  description: "桃園大溪在地生活與旅遊資訊：即時停車、公車動態、老街景點與商家、活動，以及居民需要的停水停電、道路施工、垃圾清運與診所輪值。",
 };
 
 export const viewport: Viewport = {
@@ -96,6 +122,7 @@ export default function RootLayout({
         <ExternalLinkHandler />
         <PushListener />
         <AppUrlListener />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(WEBSITE_JSON_LD) }} />
         {children}
       </body>
     </html>

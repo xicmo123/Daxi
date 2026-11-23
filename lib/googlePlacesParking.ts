@@ -3,9 +3,6 @@ import { fetchWithTimeout } from "./fetchWithTimeout";
 
 const RADIUS_METERS = 3000;
 const MAX_RESULTS = 20;
-// How close a Google result has to be to a known public lot before we treat
-// it as the same physical lot and drop it (avoids listing the same place twice).
-const DEDUPE_RADIUS_METERS = 40;
 
 // Basic Data SKU only (id/displayName/formattedAddress/location/businessStatus) —
 // keeps every call on Places API (New)'s cheapest pricing tier. Adding fields
@@ -48,16 +45,14 @@ function toLot(p: GooglePlace): NearbyParkingLot {
     lng,
     distanceMeters,
     distanceLabel: formatDistance(distanceMeters),
-    mapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${p.id}`,
+    mapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${p.id}&travelmode=driving`,
   };
 }
 
 // Places API (New) — Nearby Search. Does not expose live or total space
 // counts for most privately operated lots, only location/name/address. This
 // is a "where can I try" list, not a live-availability one.
-export async function fetchNearbyParking(
-  excludeCoords: { lat: number; lng: number }[] = []
-): Promise<NearbyParkingLot[]> {
+export async function fetchNearbyParking(): Promise<NearbyParkingLot[]> {
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) return [];
 
@@ -89,7 +84,6 @@ export async function fetchNearbyParking(
 
   return (data.places ?? [])
     .filter((p) => p.businessStatus !== "CLOSED_PERMANENTLY")
-    .filter((p) => !excludeCoords.some((c) => haversineMeters({ lat: p.location.latitude, lng: p.location.longitude }, c) < DEDUPE_RADIUS_METERS))
     .map(toLot)
     .sort((a, b) => a.distanceMeters - b.distanceMeters);
 }

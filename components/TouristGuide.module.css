@@ -1,0 +1,847 @@
+.topbar,
+.homeHero,
+.guideSearch,
+.shortcuts,
+.homeFeed,
+.walkPage {
+  --guide-gutter: clamp(1rem, 3vw, 2.25rem);
+}
+
+.topbar,
+.homeHero,
+.homeFeed,
+.walkPage,
+.storyDialog {
+  --guide-serif: "Noto Serif CJK TC", "Songti TC", "PMingLiU", var(--font-app-sans);
+}
+
+.topbar {
+  min-height: 66px;
+  padding: 0.5rem var(--guide-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.wordmark {
+  font-family: var(--guide-serif);
+  font-size: 1.4rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.headerLinks {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.2rem, 2vw, 1.2rem);
+}
+
+.headerLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: 0.35rem;
+  color: var(--ink);
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.headerLink:hover,
+.sectionLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.homeHero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(20.5rem, 90vw, 26rem);
+  overflow: hidden;
+  isolation: isolate;
+  background: #3a241f;
+  color: #fff8ed;
+  border-radius: 1.5rem;
+  margin-inline: var(--guide-gutter);
+}
+
+.heroPhoto,
+.storyPhoto,
+.stopPhoto,
+.spotPhoto,
+.themePhoto {
+  position: relative;
+  overflow: hidden;
+}
+
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+  background: #51342b;
+}
+
+.heroPhoto::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #231610 0%, #231610e5 26%, #2316105c 63%, transparent 88%);
+  content: "";
+  pointer-events: none;
+}
+
+.heroPhoto img,
+.storyPhoto img,
+.stopPhoto img,
+.spotPhoto img,
+.themePhoto img {
+  object-fit: cover;
+}
+
+.storyPhoto img {
+  object-position: center 55%;
+}
+
+.heroPhoto img {
+  object-position: 50% 44%;
+}
+
+.heroCredit {
+  position: absolute;
+  z-index: 1;
+  inset: 0.65rem 0.65rem auto auto;
+  padding: 0.15rem 0.46rem;
+  border-radius: 0.3rem;
+  background: #251813e8;
+  color: #fff8ed;
+  font-size: 0.69rem;
+}
+
+.heroCredit a:hover,
+.credits a:hover {
+  text-decoration: underline;
+}
+
+.heroBody {
+  z-index: 1;
+  padding: 4.75rem clamp(1.05rem, 5vw, 4.5rem) 1.4rem;
+}
+
+.heroBody h1,
+.storyBody h2,
+.sectionHeading h2 {
+  font-family: var(--guide-serif);
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.16;
+}
+
+.heroBody h1 {
+  color: inherit;
+  font-size: clamp(2rem, 8vw, 3.15rem);
+}
+
+.heroBody p {
+  margin-top: 0.65rem;
+  color: #f8ecdc;
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.7rem;
+  row-gap: 0.15rem;
+  margin-top: 0.65rem;
+  font-size: 0.78rem;
+  color: #e8cdb8;
+}
+
+.heroMeta span + span {
+  padding-left: 0.7rem;
+  border-left: 1px solid #ad8e7c;
+}
+
+.heroActions,
+.storyActions,
+.stopActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.85rem;
+  margin-top: 1rem;
+}
+
+.heroPrimary,
+.heroSecondary,
+.primaryAction,
+.quietAction {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.52rem 0.9rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: filter 140ms ease, background-color 140ms ease;
+}
+
+.heroPrimary {
+  background: #fff2da;
+  color: #3a241f;
+}
+
+.heroSecondary {
+  padding-inline: 0.2rem;
+  color: #fff8ed;
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+}
+
+.heroPrimary:hover,
+.primaryAction:hover {
+  filter: brightness(0.94);
+}
+
+.heroSecondary:hover {
+  color: #f0cda9;
+}
+
+.primaryAction {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.quietAction {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.quietAction:hover {
+  background: var(--cognac-tint);
+}
+
+.guideSearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 57px;
+  margin: 0.75rem var(--guide-gutter) 0;
+  padding: 0.3rem 0.35rem 0.3rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.95rem;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
+.guideSearch svg {
+  flex: none;
+  color: var(--ink-soft);
+}
+
+.guideSearch input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.guideSearch input::placeholder {
+  color: var(--ink-soft);
+}
+
+.guideSearch button {
+  min-height: 44px;
+  flex: none;
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.65rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guideSearch:focus-within {
+  outline: 2px solid var(--river-teal);
+  outline-offset: 2px;
+}
+
+.guideSearch input:focus {
+  outline: none;
+}
+
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0.9rem var(--guide-gutter) 1.8rem;
+}
+
+.shortcut,
+.coupon {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--card);
+  color: var(--ink);
+  min-width: 0;
+}
+
+.shortcut:hover,
+.coupon:hover,
+.spotCard:hover {
+  border-color: var(--cognac);
+}
+
+.shortcutIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.65rem;
+  background: var(--daxi-red-soft);
+  color: var(--ink);
+}
+
+.shortcut:nth-child(2) .shortcutIcon {
+  background: var(--river-teal-soft);
+}
+
+.shortcut strong,
+.coupon strong {
+  display: block;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.shortcut small,
+.coupon small {
+  display: block;
+  margin-top: 0.17rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.homeFeed {
+  display: grid;
+  gap: 2rem;
+  padding: 0 var(--guide-gutter) 2.5rem;
+}
+
+.homeFeed > section {
+  min-width: 0;
+}
+
+.themeGrid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78%, 18rem);
+  gap: 0.8rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.4rem;
+}
+
+.themeCard {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--card);
+  scroll-snap-align: start;
+}
+
+.themeLink {
+  display: block;
+}
+
+.themeLink:hover h3,
+.themeCredit:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.themePhoto {
+  aspect-ratio: 16 / 10;
+  background: var(--paper-2);
+}
+
+.themeBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.85rem 0.45rem;
+}
+
+.themeBody h3 {
+  font-family: var(--guide-serif);
+  font-size: 1.18rem;
+  font-weight: 750;
+}
+
+.themeBody p {
+  margin-top: 0.25rem;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.themeArrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--paper-2);
+}
+
+.themeCredit {
+  display: block;
+  padding: 0 0.85rem 0.7rem;
+  color: var(--ink-soft);
+  font-size: 0.69rem;
+}
+
+.sectionHeading {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.sectionHeading h2 {
+  color: var(--ink);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+}
+
+.sectionLink {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.83rem;
+  color: var(--ink);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.spotRail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(55%, 12rem);
+  gap: 0.7rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.4rem;
+}
+
+.spotCard {
+  min-width: 0;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--card);
+  scroll-snap-align: start;
+}
+
+.spotPhoto {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 8 / 5;
+  background: var(--paper-2);
+}
+
+.indoorBadge {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  border-radius: 0.45rem;
+  padding: 0.12rem 0.42rem;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.spotBody {
+  padding: 0.65rem 0.75rem;
+}
+
+.spotBody h3 {
+  font-size: 0.94rem;
+  color: var(--ink);
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.spotBody p {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  margin-top: 0.25rem;
+}
+
+.couponGrid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.coupon {
+  min-height: 60px;
+  justify-content: space-between;
+  padding-inline: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.storyDialog.storyDialog {
+  width: 100%;
+  max-width: 510px;
+}
+
+.storyPhoto {
+  height: clamp(9rem, 34dvh, 16rem);
+  background: #51342b;
+}
+
+.storyClose {
+  position: absolute;
+  inset: 0.65rem 0.65rem auto auto;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.storyClose:focus-visible {
+  border-radius: 50%;
+}
+
+.storyBody {
+  padding: clamp(1.15rem, 4vw, 2rem);
+  color: var(--ink);
+}
+
+.storyBody h2 {
+  font-size: clamp(1.75rem, 5vw, 2.6rem);
+}
+
+.storyBody p {
+  margin-top: 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.credits {
+  margin-top: 0.85rem;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.walkPage {
+  padding: 0 var(--guide-gutter) 2.5rem;
+}
+
+.walkMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  margin-top: 0.6rem;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.walkLayout {
+  display: grid;
+  align-items: start;
+  gap: 1rem;
+  grid-template-areas: "map" "stop" "stops";
+}
+
+.walkMap {
+  grid-area: map;
+}
+
+.walkStop {
+  grid-area: stop;
+}
+
+.walkStops {
+  grid-area: stops;
+}
+
+
+.mapCard,
+.stopCard {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.map {
+  position: relative;
+  height: clamp(13rem, 48vw, 23rem);
+  isolation: isolate;
+  background: #e9e1d2;
+}
+
+.map :global(.leaflet-tile-pane) {
+  opacity: 0.82;
+}
+
+.mapMarker {
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff8ed;
+  border-radius: 50%;
+  background: #fff8ed;
+  color: #3a241f;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 1px 5px #26181380;
+}
+
+.mapMarker:global(.walk-marker-active) {
+  background: #6f3027;
+  color: #fff8ed;
+}
+
+.stopList {
+  padding: 0.5rem 0.65rem;
+  margin: 0;
+  list-style: none;
+}
+
+.stopList li + li {
+  border-top: 1px solid var(--line);
+}
+
+.stopButton {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 45px;
+  border-radius: 0.5rem;
+  text-align: left;
+  padding: 0.25rem 0.32rem;
+  color: var(--ink);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.stopButton:hover,
+.stopButton[aria-current="step"] {
+  background: var(--paper-2);
+}
+
+.stopNumber {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.stopButton[aria-current="step"] .stopNumber {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.stopName {
+  flex: 1;
+  font-weight: 700;
+}
+
+.stopLeg {
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+
+.stopPhoto {
+  aspect-ratio: 2.1 / 1;
+  background: var(--paper-2);
+}
+
+.stopBody {
+  padding: clamp(0.95rem, 3vw, 1.55rem);
+}
+
+.stopProgress {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.stopBody h2 {
+  color: var(--ink);
+  font-family: var(--guide-serif);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 750;
+  line-height: 1.2;
+  margin-top: 0.15rem;
+}
+
+.stopAddress {
+  margin-top: 0.2rem;
+  color: var(--ink-soft);
+  font-size: 0.83rem;
+}
+
+.stopDescription {
+  margin-top: 0.85rem;
+  color: var(--ink);
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+
+.walkPage .credits {
+  margin-top: 1rem;
+}
+
+.routeEntry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  color: var(--ink);
+  background: var(--paper-2);
+}
+
+.routeEntry strong,
+.routeEntry small {
+  display: block;
+}
+
+.routeEntry small {
+  margin-top: 0.16rem;
+  color: var(--ink-soft);
+}
+
+.topbar :focus-visible,
+.homeHero :focus-visible,
+.shortcuts :focus-visible,
+.homeFeed :focus-visible,
+.walkPage :focus-visible,
+.storyDialog :focus-visible,
+.routeEntry:focus-visible {
+  outline: 2px solid var(--river-teal);
+  outline-offset: 3px;
+}
+
+.spotRail :focus-visible,
+.themeGrid :focus-visible,
+.heroCredit :focus-visible,
+.storyPhoto :focus-visible {
+  outline-offset: -3px;
+}
+
+@media (min-width: 768px) {
+  .homeHero {
+    min-height: clamp(24rem, 36vw, 32rem);
+  }
+
+  .heroPhoto::after {
+    background: linear-gradient(90deg, #231610e8 0%, #231610a8 36%, #23161044 65%, transparent 95%),
+      linear-gradient(0deg, #23161075, transparent 32%);
+  }
+
+  .heroBody {
+    padding-bottom: 3.35rem;
+  }
+
+  .heroBody h1 {
+    font-size: clamp(3rem, 5.1vw, 4.85rem);
+  }
+
+  .guideSearch {
+    z-index: 2;
+    max-width: 42rem;
+    margin: -1.65rem auto 0;
+  }
+
+  .themeGrid {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .shortcuts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .spotRail {
+    grid-auto-columns: calc((100% - 2.1rem) / 4);
+  }
+
+  .couponGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .walkLayout {
+    grid-template-columns: 1.25fr 1fr;
+    grid-template-areas: "map stop" "stops stop";
+  }
+}
+
+@media (max-width: 359px) {
+  .shortcut small {
+    font-size: 0.68rem;
+  }
+
+  .shortcutIcon {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .stopPhoto {
+    height: clamp(7rem, 34vw, 10rem);
+    aspect-ratio: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroPrimary,
+  .heroSecondary,
+  .primaryAction,
+  .quietAction {
+    transition: none;
+  }
+}

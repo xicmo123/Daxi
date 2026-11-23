@@ -21,7 +21,7 @@ export default function LiveCams() {
               setThumbLoaded(false);
             }}
             aria-pressed={i === active}
-            className="shrink-0 text-[12.5px] font-semibold rounded-full px-3.5 py-1.5 transition-transform active:scale-95"
+            className="shrink-0 text-app-label font-semibold rounded-full px-3.5 py-1.5 transition-transform active:scale-95"
             style={
               i === active
                 ? { background: "var(--accent)", color: "var(--accent-fg)" }
@@ -74,7 +74,7 @@ export default function LiveCams() {
                 </svg>
               </span>
               <span
-                className="absolute left-3 bottom-3 text-[12px] font-medium text-white rounded-full px-3 py-1"
+                className="absolute left-3 bottom-3 text-app-label font-medium text-white rounded-full px-3 py-1"
                 style={{
                   background: "rgba(15,17,22,0.35)",
                   backdropFilter: "blur(8px)",
@@ -87,14 +87,14 @@ export default function LiveCams() {
           )}
         </div>
         <div className="flex items-center justify-between mt-2 px-0.5">
-          <span className="text-[12px]" style={{ color: "var(--ink-soft)" }}>
+          <span className="text-app-label" style={{ color: "var(--ink-soft)" }}>
             {cam.location}
           </span>
           <a
             href={`https://www.youtube.com/watch?v=${cam.youtubeId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[12px] underline"
+            className="text-app-label underline"
             style={{ color: "var(--ink-soft)" }}
           >
             在 YouTube 開啟

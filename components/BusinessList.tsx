@@ -13,6 +13,7 @@ import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
+import styles from "./TouristInterior.module.css";
 
 const tabIcon = {
   全部: (
@@ -84,9 +85,10 @@ export default function BusinessList({
   const searchParams = useSearchParams();
   const userLocation = useUserLocation();
   const initialCat = searchParams.get("cat");
+  const requestedPlaceId = searchParams.get("place");
   const [active, setActive] = useState<BusinessTag | "全部">(isBusinessTag(initialCat) ? initialCat : "全部");
   const [sort, setSort] = useState<SortKey>("default");
-  const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
+  const [openBusiness, setOpenBusiness] = useState<Business | null>(() => businesses.find((business) => business.placeId === requestedPlaceId) ?? null);
   const locatedBusinesses = useMemo(() => businesses.map((business) => withUserDistance(business, userLocation)), [businesses, userLocation]);
   const filtered = active === "全部" ? locatedBusinesses : locatedBusinesses.filter((b) => b.tag === active);
   const rows =
@@ -118,18 +120,15 @@ export default function BusinessList({
       <button
         key={`${b.placeId}-${i}`}
         onClick={() => setOpenBusiness(b)}
-        className="w-[72vw] max-w-[220px] shrink-0 text-left transition-transform active:scale-[0.98] sm:w-[210px] md:w-full md:max-w-none"
+        className={styles.placeCard}
       >
-        <div
-          className="relative h-[132px] w-full overflow-hidden rounded-2xl sm:h-[142px] md:h-[158px]"
-          style={{ background: "var(--card)", border: "1px solid var(--line)" }}
-        >
+        <div className={styles.placePhoto}>
           {photo ? (
             <Image
               src={photo.src}
               alt={b.name}
               fill
-              sizes="(max-width: 768px) 72vw, (max-width: 1200px) 33vw, 260px"
+              sizes="(max-width: 364px) 92vw, (max-width: 1023px) 46vw, 350px"
               className="object-cover"
               style={{ filter: "saturate(0.96) contrast(0.98)" }}
             />
@@ -144,23 +143,17 @@ export default function BusinessList({
               <PlaceholderIcon kind={b.tag} />
             </div>
           )}
-          <div
-            className="absolute left-2.5 top-2.5 max-w-[150px] rounded-md px-2 py-1 text-[11px] font-bold leading-none"
-            style={{ background: "var(--accent)", color: "var(--accent-fg)" }}
-          >
-            {promo}
-          </div>
           <div className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1">
             {queueBadge ? (
               <div
-                className="rounded-md px-2 py-1 text-[11px] font-bold leading-none"
+                className="rounded-md px-2 py-1 text-app-label font-bold leading-none"
                 style={{ background: queueBadge.bg, color: queueBadge.fg }}
               >
                 {liveStatus?.queueStatus}
               </div>
             ) : statusBadge ? (
               <div
-                className="rounded-md px-2 py-1 text-[11px] font-bold leading-none"
+                className="rounded-md px-2 py-1 text-app-label font-bold leading-none"
                 style={{ background: liveStatus?.soldOut ? "var(--ink)" : "var(--daxi-red)", color: "#fff" }}
               >
                 {statusBadge}
@@ -168,7 +161,7 @@ export default function BusinessList({
             ) : null}
             {acceptsLuggage ? (
               <div
-                className="flex h-6 w-6 items-center justify-center rounded-full text-[12px] shadow-sm"
+                className="flex h-6 w-6 items-center justify-center rounded-full text-app-label shadow-sm"
                 style={{ background: "rgba(255,255,255,0.92)" }}
                 aria-label="提供寄放服務"
                 title="提供寄放服務"
@@ -178,21 +171,13 @@ export default function BusinessList({
             ) : null}
           </div>
         </div>
-        <div className="pt-2.5">
-          <h3 className="truncate text-[17px] font-black leading-tight" style={{ color: "var(--ink)" }}>
-            {b.name}
-          </h3>
-          <div className="mt-1 flex items-center gap-1 text-[12.5px]" style={{ color: "var(--daxi-red)" }}>
-            <span>{b.distanceLabel}</span>
-            <span style={{ color: "var(--ink-soft)" }}>・</span>
-            <span style={{ color: "var(--ink-soft)" }}>{b.rating !== null ? `${b.rating.toFixed(1)} 分` : "地圖導航"}</span>
-          </div>
-          <div className="mt-1 flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: "var(--ink)" }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6-5.9-3.3-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z" />
-            </svg>
-            <span>{categoryLabel(details[b.placeId]?.category, b.googleType, b.tag)}</span>
-          </div>
+        <div className={styles.placeBody}>
+          <h3>{b.name}</h3>
+          <p>
+            {userLocation ? "距你" : "距老街"} {b.distanceLabel}
+            {b.rating !== null ? ` · Google 評分 ${b.rating.toFixed(1)}` : ""}
+          </p>
+          <div className={styles.placeTags}><span>{promo}</span></div>
         </div>
       </button>
     );
@@ -207,7 +192,7 @@ export default function BusinessList({
               key={tab.value}
               onClick={() => setActive(tab.value)}
               aria-pressed={active === tab.value}
-              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-black transition-transform active:scale-95"
+              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-app-body font-black transition-transform active:scale-95"
               style={
                 active === tab.value
                   ? { background: "var(--paper-2)", color: "var(--ink)" }
@@ -223,7 +208,7 @@ export default function BusinessList({
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
           aria-label="排序方式"
-          className="w-full shrink-0 rounded-full px-3 py-2 text-[13px] font-bold outline-none sm:w-auto"
+          className="w-full shrink-0 rounded-full px-3 py-2 text-app-body font-bold outline-none sm:w-auto"
           style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
         >
           {SORTS.map((s) => (
@@ -251,7 +236,7 @@ export default function BusinessList({
                 </svg>
               </span>
             </div>
-            <div className="flex gap-4 overflow-x-auto safe-page-x pb-1 no-scrollbar md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 safe-page-x min-[365px]:grid-cols-2 lg:grid-cols-3">
               {section.rows.map(renderCard)}
             </div>
           </section>

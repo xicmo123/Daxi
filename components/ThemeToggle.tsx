@@ -26,7 +26,7 @@ export default function ThemeToggle() {
 
   return (
     <div>
-      <div className="text-[12.5px] font-semibold mb-2" style={{ color: "var(--ink)" }}>
+      <div className="text-app-label font-semibold mb-2" style={{ color: "var(--ink)" }}>
         外觀
       </div>
       <div
@@ -44,7 +44,7 @@ export default function ThemeToggle() {
               role="radio"
               aria-checked={active}
               onClick={() => select(option.value)}
-              className="flex items-center justify-center rounded-xl text-[12.5px] font-bold transition-opacity active:opacity-75"
+              className="flex items-center justify-center rounded-xl text-app-label font-bold transition-opacity active:opacity-75"
               style={{
                 minHeight: 40,
                 background: active ? "var(--card)" : "transparent",

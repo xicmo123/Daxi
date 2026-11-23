@@ -38,25 +38,25 @@ function OutageCard({ o, highlighted }: { o: Outage; highlighted: boolean }) {
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[10.5px] font-semibold rounded-full px-2.5 py-1" style={iconStyle}>
+          <span className="text-app-label font-semibold rounded-full px-2.5 py-1" style={iconStyle}>
             {o.type === "water" && o.severity === "lowPressure" ? "水壓降低" : outageTypeLabel[o.type]}
           </span>
-          <span className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+          <span className="text-app-label" style={{ color: "var(--ink-soft)" }}>
             {o.date}・{o.timeRange}
           </span>
           {highlighted ? (
-            <span className="text-[10.5px] font-semibold rounded-full px-2 py-0.5" style={{ background: "var(--river-teal)", color: "#fff" }}>
+            <span className="text-app-label font-semibold rounded-full px-2 py-0.5" style={{ background: "var(--river-teal)", color: "#fff" }}>
               與你相關
             </span>
           ) : null}
         </div>
-        <div className="text-[14px] font-semibold" style={{ color: "var(--ink)" }}>
+        <div className="text-app-body font-semibold" style={{ color: "var(--ink)" }}>
           {o.areas.join("、")}
         </div>
-        <div className="text-[12.5px] mt-1" style={{ color: "var(--ink-soft)" }}>
+        <div className="text-app-label mt-1" style={{ color: "var(--ink-soft)" }}>
           {o.reason}
         </div>
-        <div className="text-[11px] mt-2" style={{ color: "var(--ink-soft)" }}>
+        <div className="text-app-label mt-2" style={{ color: "var(--ink-soft)" }}>
           資料來源：{o.source}
         </div>
       </div>
@@ -92,10 +92,10 @@ export default function OutagesList({ outages }: { outages: Outage[] }) {
             <circle cx="12" cy="12" r="9" />
           </svg>
         </div>
-        <div className="text-[15px] font-semibold" style={{ color: "var(--ink)" }}>
+        <div className="text-app-heading font-semibold" style={{ color: "var(--ink)" }}>
           目前沒有預告中的停水停電
         </div>
-        <p className="mt-2 text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+        <p className="mt-2 text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
           有新公告會顯示在這裡。
         </p>
       </div>

@@ -1,54 +1,54 @@
-import PageHeader from "@/components/PageHeader";
 import OutagesList from "@/components/OutagesList";
+import ResidentIcon from "@/components/resident/ResidentIcon";
+import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
+import styles from "@/components/resident/ResidentSkin.module.css";
 import { listUpcomingOutages } from "@/lib/outages";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/resident/outages",
+  title: "大溪停水停電公告",
+  description: "台灣自來水公司停水、降壓與台電計畫性停電預告，只列出影響桃園市大溪區的路段與時間。",
+});
 
 export const dynamic = "force-dynamic";
 
-const badgeStyle = {
-  outage: { background: "var(--river-teal-soft)", color: "var(--river-teal)" },
-  lowPressure: { background: "var(--cognac-tint)", color: "var(--cognac-deep)" },
-  power: { background: "var(--daxi-red-soft)", color: "var(--daxi-red)" },
-};
-
 export default async function OutagesPage() {
   const outages = await listUpcomingOutages();
-  const outageCount = outages.filter((o) => o.type === "water" && o.severity !== "lowPressure").length;
-  const lowPressureCount = outages.filter((o) => o.type === "water" && o.severity === "lowPressure").length;
-  const powerCount = outages.filter((o) => o.type === "power").length;
+  const stats = [
+    { label: "停水", value: outages.filter((o) => o.type === "water" && o.severity !== "lowPressure").length },
+    { label: "水壓降低", value: outages.filter((o) => o.type === "water" && o.severity === "lowPressure").length },
+    { label: "停電", value: outages.filter((o) => o.type === "power").length },
+  ];
 
   return (
-    <div className="pt-2">
-      <PageHeader title="民生示警看板" subtitle="影響大溪區的停水、降壓、停電預告" tint="river" />
+    <main>
+      <ResidentPageHeader href="/resident/outages" title="停水停電" lead="影響大溪區的停水、降壓與停電預告，一次看完。" />
 
-      <div className="safe-page-x pb-4 fade-in">
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { label: "停水", value: outageCount, style: badgeStyle.outage },
-            { label: "水壓降低", value: lowPressureCount, style: badgeStyle.lowPressure },
-            { label: "停電", value: powerCount, style: badgeStyle.power },
-          ].map((item) => (
-            <div key={item.label} className="rounded-xl px-3 py-3 text-center" style={{ background: item.style.background }}>
-              <div className="text-[20px] font-bold tabular-nums" style={{ color: item.style.color }}>
-                {item.value}
-              </div>
-              <div className="text-[10.5px] font-semibold mt-0.5" style={{ color: item.style.color }}>
-                {item.label}
-              </div>
+      <div className={styles.body}>
+        <div className={styles.stats}>
+          {stats.map((item) => (
+            <div key={item.label} className={styles.stat} data-alert={item.value > 0 ? "true" : undefined}>
+              <span className={styles.statIcon}>
+                <ResidentIcon name="outage" size={18} />
+              </span>
+              <span>
+                <span className={styles.statLabel}>{item.label}</span>
+                <span className={styles.statValue} style={{ display: "block" }}>
+                  {item.value}
+                  <small>則</small>
+                </span>
+              </span>
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="safe-page-x pb-10 fade-in">
-        <div
-          className="mb-4 rounded-xl px-4 py-3 text-[11.5px] leading-relaxed"
-          style={{ background: "var(--river-teal-soft)", border: "1px solid var(--line)", color: "var(--ink-soft)" }}
-        >
-          即時串接台灣自來水公司停水公告與台灣電力公司計畫性工作停電資料，僅篩選影響大溪區的項目；水壓降低由公告文字自動判斷，正式時間與範圍仍以官方公告為準。
-        </div>
 
         <OutagesList outages={outages} />
+
+        <p className={styles.note}>
+          即時串接<b>台灣自來水公司</b>停水公告與<b>台灣電力公司</b>計畫性工作停電資料，僅篩選影響大溪區的項目；水壓降低由公告文字自動判斷，正式時間與範圍仍以官方公告為準。
+        </p>
       </div>
-    </div>
+    </main>
   );
 }

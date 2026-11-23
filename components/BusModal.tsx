@@ -27,10 +27,10 @@ export default function BusModal({ onClose }: { onClose: () => void }) {
       <div className="relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl shadow-2xl sm:rounded-3xl" style={{ background: "var(--paper)" }}>
         <div className="flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3" style={{ borderColor: "var(--line)" }}>
           <div className="min-w-0">
-            <div className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
+            <div className="text-app-label font-bold tracking-[0.18em] uppercase" style={{ color: "var(--block-wood-deep)" }}>
               客運資訊
             </div>
-            <h2 id="bus-map-title" className="text-[15px] font-black leading-tight" style={{ color: "var(--ink)" }}>
+            <h2 id="bus-map-title" className="text-app-heading font-black leading-tight" style={{ color: "var(--ink)" }}>
               即時公車位置
             </h2>
           </div>

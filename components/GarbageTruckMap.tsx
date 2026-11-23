@@ -246,15 +246,15 @@ export default function GarbageTruckMap() {
       <div className="border-b px-3 py-3" style={{ borderColor: "var(--line)" }}>
         <div className="mb-2 flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
+            <div className="text-app-label font-bold tracking-[0.14em]" style={{ color: "var(--block-wood-deep)" }}>
               清運車即時位置
             </div>
-            <div className="mt-0.5 text-[14px] font-bold leading-tight" style={{ color: "var(--ink)" }}>
+            <div className="mt-0.5 text-app-body font-bold leading-tight" style={{ color: "var(--ink)" }}>
               {statusText}
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-bold" style={{ background: vehicleCount > 0 ? "var(--river-teal-soft)" : "var(--cognac-tint)", color: vehicleCount > 0 ? "var(--river-teal)" : "var(--ink-soft)" }}>
+            <span className="rounded-full px-2.5 py-1 text-app-label font-bold" style={{ background: vehicleCount > 0 ? "var(--river-teal-soft)" : "var(--cognac-tint)", color: vehicleCount > 0 ? "var(--river-teal)" : "var(--ink-soft)" }}>
               {state === "loading" ? "載入中" : vehicleCount > 0 ? `${vehicleCount} 車` : "目前無車"}
             </span>
             <button
@@ -280,29 +280,29 @@ export default function GarbageTruckMap() {
       <div className="relative h-[420px] min-h-[60vh]">
         <div ref={mapNodeRef} className="absolute inset-0" aria-label="大溪垃圾車即時地圖" />
         <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-wrap gap-2">
-          <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
+          <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink)" }}>
             {state === "loading" ? "載入中" : vehicleCount > 0 ? `${vehicleCount} 車` : emptyText}
           </span>
-          <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
+          <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--river-teal)" }}>
             每 {REFRESH_SECONDS} 秒更新
           </span>
           {activeLocation ? (
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
+            <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--block-wood-deep)" }}>
               {oldStreetDemo ? "目前位置・大溪老街" : "目前位置"}
             </span>
           ) : null}
           {latestGpsTime ? (
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+            <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
               GPS {formatTime(latestGpsTime)}
             </span>
           ) : syncedAt ? (
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
+            <span className="rounded-full px-2.5 py-1 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
               同步 {formatTime(syncedAt)}
             </span>
           ) : null}
         </div>
         {state === "error" ? (
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-[12.5px] font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--daxi-red)" }}>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl px-4 py-3 text-app-label font-semibold shadow-sm" style={{ background: "var(--card)", color: "var(--daxi-red)" }}>
             即時位置暫時無法載入
           </div>
         ) : null}
@@ -314,22 +314,22 @@ export default function GarbageTruckMap() {
             {vehicles.map((vehicle) => (
               <div key={vehicle.id} className="rounded-2xl px-3 py-2.5" style={{ background: "var(--river-teal-soft)" }}>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 text-[12.5px] font-bold" style={{ color: "var(--ink)" }}>
+                  <span className="min-w-0 text-app-label font-bold" style={{ color: "var(--ink)" }}>
                     {vehicle.routeName ? `${vehicle.routeName}・` : ""}
                     {vehicle.type} {vehicle.id.includes(":") ? vehicle.id.split(":").pop() : vehicle.id}
                   </span>
-                  <span className="shrink-0 text-[11px] font-semibold" style={{ color: "var(--river-teal)" }}>
+                  <span className="shrink-0 text-app-label font-semibold" style={{ color: "var(--river-teal)" }}>
                     {activeLocation
                       ? `距你 ${formatDistance(calculateDistance(activeLocation.lat, activeLocation.lng, vehicle.lat, vehicle.lng))}`
                       : vehicle.status ?? "即時位置"}
                   </span>
                 </div>
                 {vehicle.address ? (
-                  <div className="mt-0.5 text-[11px]" style={{ color: "var(--ink-soft)" }}>
+                  <div className="mt-0.5 text-app-label" style={{ color: "var(--ink-soft)" }}>
                     目前約在 {vehicle.address}
                   </div>
                 ) : null}
-                <div className="mt-0.5 flex flex-wrap gap-x-3 text-[11px]" style={{ color: "var(--ink-soft)" }}>
+                <div className="mt-0.5 flex flex-wrap gap-x-3 text-app-label" style={{ color: "var(--ink-soft)" }}>
                   <span>{vehicle.status ?? "即時位置"}</span>
                   {vehicle.speed !== null ? <span>{vehicle.speed} km/h</span> : null}
                   {vehicle.gpsTime ? <span>GPS {formatTime(vehicle.gpsTime)}</span> : null}
@@ -338,7 +338,7 @@ export default function GarbageTruckMap() {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl px-3 py-2.5 text-[12.5px] font-semibold" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
+          <div className="rounded-2xl px-3 py-2.5 text-app-label font-semibold" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>
             {emptyText}
           </div>
         )}

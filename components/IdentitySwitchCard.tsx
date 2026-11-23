@@ -22,10 +22,10 @@ export default function IdentitySwitchCard({
   return (
     <div className="rounded-2xl border px-4 py-4" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
       <IdentityTransitionOverlay to={switching ? switchToIdentity : null} />
-      <div className="text-[11px] font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--river-teal)" }}>
+      <div className="text-app-label font-semibold tracking-[0.18em] uppercase mb-1" style={{ color: "var(--river-teal)" }}>
         目前身份
       </div>
-      <div className="text-[16px] font-bold mb-3" style={{ color: "var(--ink)" }}>
+      <div className="text-app-heading font-bold mb-3" style={{ color: "var(--ink)" }}>
         {currentLabel}
       </div>
       <button
@@ -36,7 +36,7 @@ export default function IdentitySwitchCard({
           writeIdentity(switchToIdentity);
           window.setTimeout(() => router.push(switchToHref), 550);
         }}
-        className="w-full rounded-full py-2.5 text-[13px] font-semibold transition-opacity active:opacity-70"
+        className="w-full rounded-full py-2.5 text-app-body font-semibold transition-opacity active:opacity-70"
         style={{ background: "var(--river-teal)", color: "#fff", opacity: switching ? 0.6 : 1 }}
       >
         {switching ? "切換中…" : switchToLabel}

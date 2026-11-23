@@ -90,16 +90,16 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
             </svg>
           </button>
           {slide.photoHistorical ? (
-            <span className="absolute left-3 top-3 text-[10px] text-white/85 rounded-full px-2 py-0.5 bg-black/30">
+            <span className="absolute left-3 top-3 text-app-label text-white/85 rounded-full px-2 py-0.5 bg-black/30">
               示意圖・舊照
             </span>
           ) : null}
-          <span className="absolute left-4 bottom-3 font-serif font-semibold text-[15px] text-white">{slide.date}</span>
+          <span className="absolute left-4 bottom-3 font-serif font-semibold text-app-heading text-white">{slide.date}</span>
         </div>
 
         <div className="p-5 sm:p-6 lg:p-7">
           <div
-            className="inline-flex items-center gap-1.5 text-[11px] rounded-full px-2.5 py-1 mb-4"
+            className="inline-flex items-center gap-1.5 text-app-label rounded-full px-2.5 py-1 mb-4"
             style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
           >
             <span
@@ -114,7 +114,7 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
             {slide.badges?.map((b) => (
               <span
                 key={b}
-                className="ml-2 text-[10.5px] font-normal rounded-full px-2 py-0.5 align-middle"
+                className="ml-2 text-app-label font-normal rounded-full px-2 py-0.5 align-middle"
                 style={{ border: "1px solid var(--line)", color: "var(--ink-soft)" }}
               >
                 {badgeLabel[b]}
@@ -137,10 +137,10 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
               <path d="M12 7.5V12l3 2" />
             </svg>
             <div>
-              <div className="text-[10.5px] tracking-[0.15em] uppercase mb-0.5" style={{ color: "var(--ink-soft)" }}>
+              <div className="text-app-label tracking-[0.15em] uppercase mb-0.5" style={{ color: "var(--ink-soft)" }}>
                 活動時間
               </div>
-              <div className="text-[13.5px] font-medium" style={{ color: "var(--ink)" }}>
+              <div className="text-app-body font-medium" style={{ color: "var(--ink)" }}>
                 {slide.date}
                 {slide.time ? `・${slide.time}` : ""}
               </div>
@@ -152,16 +152,16 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
               className="mb-4 pl-3.5 py-0.5"
               style={{ borderLeft: "2px solid var(--line)" }}
             >
-              <div className="text-[10.5px] tracking-[0.15em] uppercase mb-1" style={{ color: "var(--ink-soft)" }}>
+              <div className="text-app-label tracking-[0.15em] uppercase mb-1" style={{ color: "var(--ink-soft)" }}>
                 {slide.history ? "歷史沿革" : "活動主軸"}
               </div>
-              <p className="font-serif text-[13.5px] leading-relaxed" style={{ color: "var(--ink)" }}>
+              <p className="font-serif text-app-body leading-relaxed" style={{ color: "var(--ink)" }}>
                 {slide.history ?? slide.theme}
               </p>
             </div>
           ) : null}
 
-          <p className="text-[13.5px] leading-relaxed mb-5" style={{ color: "var(--ink-soft)" }}>
+          <p className="text-app-body leading-relaxed mb-5" style={{ color: "var(--ink-soft)" }}>
             {slide.desc}
           </p>
           {slide.ctaUrl ? (
@@ -169,7 +169,7 @@ export default function EventModal({ slide, onClose }: { slide: HeroSlide; onClo
               href={slide.ctaUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[13px] font-medium transition-opacity active:opacity-60"
+              className="inline-flex items-center gap-1 text-app-body font-medium transition-opacity active:opacity-60"
               style={{ color: "var(--ink)", borderBottom: "1px solid var(--ink)" }}
             >
               {slide.ctaLabel ?? "了解更多 →"}

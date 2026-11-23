@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 // Last line of defence: this replaces the root layout, so it must render its
 // own <html>/<body> and cannot rely on globals.css class names being applied
 // by anything above it. Styles are inline for that reason.
@@ -10,6 +12,29 @@ export default function GlobalError({
   error: Error & { digest?: string };
   unstable_retry: () => void;
 }) {
+  // Unlike route-level error boundaries, this one replaces the root layout,
+  // so ClientErrorReporter is no longer mounted. Keep a tiny self-contained
+  // beacon here; otherwise the exact crash shown to the user is invisible.
+  useEffect(() => {
+    try {
+      const payload = JSON.stringify({
+        kind: "error",
+        source: "render",
+        message: error.message || "Root render error",
+        stack: [error.digest ? `digest: ${error.digest}` : null, error.stack].filter(Boolean).join("\n").slice(0, 4000),
+        path: window.location.pathname,
+        version: process.env.NEXT_PUBLIC_APP_VERSION || "dev",
+      });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon("/api/track", new Blob([payload], { type: "application/json" }));
+      } else {
+        void fetch("/api/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: payload, keepalive: true });
+      }
+    } catch {
+      // The fallback must remain renderable even when telemetry is unavailable.
+    }
+  }, [error]);
+
   return (
     <html lang="zh-Hant">
       <body

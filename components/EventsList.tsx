@@ -22,7 +22,8 @@ const filters: { label: string; value: HeroSlide["phase"] | "all" }[] = [
 export default function EventsList({ events }: { events: HeroSlide[] }) {
   const [openEvent, setOpenEvent] = useState<HeroSlide | null>(null);
   const [activeFilter, setActiveFilter] = useState<HeroSlide["phase"] | "all">("all");
-  const filteredEvents = activeFilter === "all" ? events : events.filter((event) => event.phase === activeFilter);
+  // "全部" means useful-now, not a graveyard of last month's promotions.
+  const filteredEvents = activeFilter === "all" ? events.filter((event) => event.phase !== "past") : events.filter((event) => event.phase === activeFilter);
   const sections = filters
     .filter((filter) => filter.value !== "all")
     .map((filter) => ({
@@ -33,7 +34,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
     .filter((section) => (activeFilter === "all" ? section.rows.length > 0 : section.value === activeFilter));
 
   return (
-    <div className="safe-page-x pb-10 fade-in">
+    <div className="safe-page-x page-after-header pb-10 fade-in">
       <div className="mb-5 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {filters.map((filter) => (
           <button
@@ -41,7 +42,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
             type="button"
             onClick={() => setActiveFilter(filter.value)}
             aria-pressed={activeFilter === filter.value}
-            className="shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition-transform active:scale-95"
+            className="shrink-0 rounded-full px-4 py-2 text-app-body font-semibold transition-transform active:scale-95"
             style={
               activeFilter === filter.value
                 ? { background: "var(--accent)", color: "var(--accent-fg)" }
@@ -53,14 +54,18 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
         ))}
       </div>
 
+      <p className="-mt-2 mb-5 text-app-label" style={{ color: "var(--ink-soft)" }}>
+        優先顯示進行中與即將登場活動；資料每日同步自觀光署，並補充區公所精選內容。
+      </p>
+
       <div className="flex flex-col gap-7">
         {sections.map((section) => (
           <section key={section.title}>
             <div className="mb-3 flex items-end justify-between">
-              <h2 className="font-serif text-[18px] font-semibold" style={{ color: "var(--ink)" }}>
+              <h2 className="font-serif text-app-title font-semibold" style={{ color: "var(--ink)" }}>
                 {section.title}
               </h2>
-              <span className="text-[11.5px]" style={{ color: "var(--ink-soft)" }}>
+              <span className="text-app-label" style={{ color: "var(--ink-soft)" }}>
                 {section.rows.length} 個活動
               </span>
             </div>
@@ -100,7 +105,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
                     />
                     <div className="absolute left-4 right-4 bottom-4">
                       <div
-                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] mb-2"
+                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-app-label mb-2"
                         style={{ background: "rgba(244,236,226,0.15)", border: "1px solid rgba(244,236,226,0.3)", color: "#f4ece2" }}
                       >
                         <span
@@ -109,16 +114,21 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
                         />
                         {event.date}・{phaseLabel[event.phase]}
                       </div>
+                      {event.source === "official" ? (
+                        <span className="ml-1 inline-flex rounded-full px-2 py-1 text-app-micro font-bold" style={{ background: "rgba(244,236,226,0.88)", color: "#2b2420" }}>
+                          觀光署同步
+                        </span>
+                      ) : null}
                       <h3 className="font-serif text-[22px] font-semibold leading-tight" style={{ color: "#f4ece2" }}>
                         {event.title}
                       </h3>
                     </div>
                   </div>
                   <div className="px-4 py-4">
-                    <div className="text-[12px] mb-2" style={{ color: "var(--ink-soft)" }}>
+                    <div className="text-app-label mb-2" style={{ color: "var(--ink-soft)" }}>
                       {event.time ? `${event.date}・${event.time}` : event.date}
                     </div>
-                    <p className="text-[13.5px] leading-relaxed line-clamp-2" style={{ color: "var(--ink)" }}>
+                    <p className="text-app-body leading-relaxed line-clamp-2" style={{ color: "var(--ink)" }}>
                       {event.desc}
                     </p>
                   </div>
@@ -130,7 +140,7 @@ export default function EventsList({ events }: { events: HeroSlide[] }) {
       </div>
 
       {filteredEvents.length === 0 ? (
-        <div className="py-16 text-center text-[13px]" style={{ color: "var(--ink-soft)" }}>
+        <div className="py-16 text-center text-app-body" style={{ color: "var(--ink-soft)" }}>
           目前沒有{activeFilter === "all" ? "" : phaseLabel[activeFilter]}活動
         </div>
       ) : null}

@@ -92,6 +92,9 @@ export function nativeMapsUrl(raw: string, platform: string): string | null {
   // navigate, which is what they almost always have installed anyway. Only
   // coordinates go in the path; a bare name has to ride in `q`.
   if (platform === "android") {
+    // The geo: scheme drops the walking mode. Let the external link handler
+    // open the original directions URL so the pedestrian route is retained.
+    if (target.dirflg === "w") return null;
     return target.isCoordinates
       ? `geo:${target.destination}?q=${destination}`
       : `geo:0,0?q=${destination}`;

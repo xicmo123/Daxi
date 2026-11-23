@@ -71,10 +71,10 @@ export default function FavoritesView({
             <path d="M12 20.5s-7.5-4.6-9.8-9.1C.6 8 2 4.6 5.2 3.7c2.1-.6 4.2.3 5.4 2.1l1.4 2 1.4-2c1.2-1.8 3.3-2.7 5.4-2.1 3.2.9 4.6 4.3 3 7.7-2.3 4.5-9.8 9.1-9.8 9.1Z" />
           </svg>
         </div>
-        <div className="text-[15px] font-semibold" style={{ color: "var(--ink)" }}>
+        <div className="text-app-heading font-semibold" style={{ color: "var(--ink)" }}>
           還沒有收藏的地方
         </div>
-        <p className="mt-2 text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+        <p className="mt-2 text-app-body leading-relaxed" style={{ color: "var(--ink-soft)" }}>
           逛景點或商家時點開詳情、按愛心，就會收在這裡。
         </p>
       </div>
@@ -116,8 +116,8 @@ export default function FavoritesView({
                 style={{ background: "linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,0.1) 45%, rgba(15,23,42,0.78) 100%)" }}
               />
               <div className="absolute inset-x-0 bottom-0 p-3">
-                <div className="text-[13px] font-semibold leading-tight text-white truncate">{b.name}</div>
-                <div className="text-[10.5px] mt-1 truncate" style={{ color: "rgba(255,255,255,0.78)" }}>
+                <div className="text-app-body font-semibold leading-tight text-white truncate">{b.name}</div>
+                <div className="text-app-label mt-1 truncate" style={{ color: "rgba(255,255,255,0.78)" }}>
                   {categoryLabel(details[b.placeId]?.category, b.googleType, b.tag)}
                 </div>
               </div>

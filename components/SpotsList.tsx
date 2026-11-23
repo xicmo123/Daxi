@@ -1,18 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
-import { experienceTags, walkTimeLabel, type SuggestedRoute } from "@/lib/experience";
+import { experienceTags, type SuggestedRoute } from "@/lib/experience";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import EmptyState from "./EmptyState";
+import styles from "./TouristInterior.module.css";
 
 function withUserDistance(business: Business, location: ReturnType<typeof useUserLocation>): Business {
   if (!location) return business;
@@ -39,24 +41,13 @@ export default function SpotsList({
   routes?: SuggestedRoute[];
   coupons?: Coupon[];
 }) {
-  const [openBusiness, setOpenBusiness] = useState<Business | null>(null);
+  const searchParams = useSearchParams();
+  const requestedPlaceId = searchParams.get("place");
+  const [openBusiness, setOpenBusiness] = useState<Business | null>(() => spots.find((spot) => spot.placeId === requestedPlaceId) ?? null);
   const userLocation = useUserLocation();
   const locatedSpots = useMemo(() => spots.map((spot) => withUserDistance(spot, userLocation)), [spots, userLocation]);
   const locatedFeaturedSpots = useMemo(() => (featuredSpots ?? []).map((spot) => withUserDistance(spot, userLocation)), [featuredSpots, userLocation]);
   const locatedAllBusinesses = useMemo(() => allBusinesses.map((business) => withUserDistance(business, userLocation)), [allBusinesses, userLocation]);
-  const locatedRoutes = useMemo(
-    () =>
-      routes.map((route) => ({
-        ...route,
-        stops: route.stops.map((stop) => {
-          const business = locatedAllBusinesses.find((candidate) => candidate.placeId === stop.placeId);
-          // Was an inline copy of the old unbounded walking formula; the
-          // shared helper now switches to a driving estimate past 1.5km.
-          return business ? { ...stop, walkTime: walkTimeLabel(business.distanceMeters) } : stop;
-        }),
-      })),
-    [locatedAllBusinesses, routes],
-  );
   const [query, setQuery] = useState("");
   const normalizedQuery = query.trim().toLowerCase();
   const rows = normalizedQuery
@@ -70,124 +61,68 @@ export default function SpotsList({
       })
     : locatedSpots;
 
+  const placeCard = (spot: Business, featured = false) => {
+    const photo = photos[spot.placeId];
+    const detail = details[spot.placeId];
+    const tags = experienceTags(spot, detail).filter((tag) => !tag.startsWith("步行")).slice(0, 2);
+    return (
+      <button
+        key={spot.placeId}
+        type="button"
+        onClick={() => setOpenBusiness(spot)}
+        className={featured ? `${styles.placeCard} ${styles.featuredSpot}` : styles.placeCard}
+      >
+        <div className={styles.placePhoto}>
+          {photo ? (
+            <Image src={photo.src} alt="" fill sizes="(max-width: 767px) 92vw, (max-width: 1023px) 48vw, 350px" />
+          ) : <PlaceholderIcon kind="景點" />}
+        </div>
+        <div className={styles.placeBody}>
+          <h3>{spot.name}</h3>
+          <p>{categoryLabel(detail?.category, spot.googleType, spot.tag)} · {userLocation ? "距你" : "距老街"} {spot.distanceLabel}</p>
+          {tags.length ? <div className={styles.placeTags}>{tags.map((tag) => <span key={tag}>{tag}</span>)}</div> : null}
+        </div>
+      </button>
+    );
+  };
+
   return (
     <div>
-      {locatedFeaturedSpots.length > 0 ? (
-        <>
-          <div className="safe-page-x pt-1 pb-4 fade-in">
-            <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
-              Featured
-            </div>
-            <h2 className="font-serif text-[17px] font-semibold">精選推薦</h2>
-          </div>
-          <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8 fade-in">
-            <div className="flex gap-4 safe-page-x">
-            {locatedFeaturedSpots.map((b, i) => {
-              const photo = photos[b.placeId];
-              const tags = experienceTags(b, details[b.placeId]);
-              return (
-                <button
-                  key={`featured-${b.placeId}`}
-                  onClick={() => setOpenBusiness(b)}
-                  className="group relative h-[210px] w-[82%] max-w-[330px] shrink-0 snap-center overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99] sm:h-[240px] sm:max-w-[390px] lg:h-[280px]"
-                  style={{
-                    background: "var(--card)",
-                    boxShadow: "0 14px 34px rgba(15, 23, 42, 0.12)",
-                    animationDelay: `${Math.min(i, 4) * 40}ms`,
-                  }}
-                >
-                  {photo ? (
-                    <Image
-                      src={photo.src}
-                      alt={b.name}
-                      fill
-                      sizes="(max-width: 768px) 82vw, (max-width: 1200px) 390px, 430px"
-                      className="object-cover transition-transform duration-500 group-active:scale-[1.02]"
-                      style={{ filter: "saturate(0.9) contrast(0.98)" }}
-                    />
-                  ) : (
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)",
-                      }}
-                    >
-                      <PlaceholderIcon kind="景點" />
-                    </div>
-                  )}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(15,23,42,0.06) 0%, rgba(15,23,42,0.18) 45%, rgba(15,23,42,0.86) 100%)",
-                    }}
-                  />
-                  <div
-                    className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-semibold backdrop-blur-md"
-                    style={{ background: "rgba(255,255,255,0.82)", color: "var(--ink)" }}
-                  >
-                    {b.distanceLabel}
-                  </div>
-                  {locatedFeaturedSpots.length > 1 ? (
-                    <div
-                      className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md"
-                      style={{ background: "rgba(15,23,42,0.2)", color: "#fff" }}
-                    >
-                      {i + 1}/{locatedFeaturedSpots.length}
-                    </div>
-                  ) : null}
-                  <div className="absolute inset-x-0 bottom-0 p-5">
-                    <h3 className="font-serif text-[24px] font-bold leading-tight text-white">{b.name}</h3>
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <span className="text-[12px] font-semibold" style={{ color: "rgba(255,255,255,0.86)" }}>
-                        {categoryLabel(details[b.placeId]?.category, b.googleType, b.tag)}
-                      </span>
-                      {tags.slice(0, 2).map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                          style={{ background: "rgba(255,255,255,0.18)", color: "#fff" }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-            </div>
-          </div>
-        </>
+      {locatedFeaturedSpots.length ? (
+        <section className="safe-page-x pb-6" aria-labelledby="featured-spots">
+          <h2 className={styles.sectionTitle} id="featured-spots">精選景點</h2>
+          <div className={styles.featuredRail}>{locatedFeaturedSpots.map((spot) => placeCard(spot, true))}</div>
+        </section>
       ) : null}
 
-      {locatedRoutes.length > 0 ? (
+      {routes.length > 0 ? (
         <div className="safe-page-x pt-1 pb-5 fade-in flex flex-col gap-3">
-          <div className="text-[11px] font-normal tracking-[0.2em] uppercase" style={{ color: "var(--ink-soft)" }}>
+          <div className="text-app-label font-normal tracking-[0.2em] uppercase" style={{ color: "var(--ink-soft)" }}>
             建議路線
           </div>
-          {locatedRoutes.map((r) => (
+          {routes.map((r) => (
             <div key={r.id} className="rounded-2xl border px-4 py-3.5" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
-              <div className="text-[14px] font-bold" style={{ color: "var(--ink)" }}>
+              <div className="text-app-body font-bold" style={{ color: "var(--ink)" }}>
                 {r.title}
               </div>
-              <div className="text-[11.5px] mt-0.5" style={{ color: "var(--ink-soft)" }}>
+              <div className="text-app-label mt-0.5" style={{ color: "var(--ink-soft)" }}>
                 {r.desc}
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                {r.stops.map((s, i) => (
-                  <span key={s.placeId} className="flex items-center gap-1.5">
-                    <span className="rounded-full px-2.5 py-1 text-[11.5px] font-medium" style={{ background: "var(--paper-2)", color: "var(--ink)" }}>
-                      {s.name}
+                {r.stops.map((stop, index) => {
+                  const place = locatedAllBusinesses.find((candidate) => candidate.placeId === stop.placeId);
+                  const classes = "rounded-full px-2.5 py-1 text-app-label font-medium";
+                  const style = { background: "var(--paper-2)", color: "var(--ink)" };
+                  return (
+                    <span key={stop.placeId} className="flex items-center gap-1.5">
+                      {place ? (
+                        <button type="button" className={`${classes} min-h-9 cursor-pointer underline underline-offset-2`}
+                          style={style} onClick={() => setOpenBusiness(place)}>{stop.name}</button>
+                      ) : <span className={classes} style={style}>{stop.name}</span>}
+                      {index < r.stops.length - 1 ? <span aria-hidden>→</span> : null}
                     </span>
-                    {i < r.stops.length - 1 ? (
-                      <span className="text-[11px]" style={{ color: "var(--ink-soft)" }}>
-                        →
-                      </span>
-                    ) : null}
-                  </span>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -195,10 +130,7 @@ export default function SpotsList({
       ) : null}
 
       <div className="safe-page-x pt-2 pb-4 fade-in">
-        <div className="text-[11px] font-normal tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--ink-soft)" }}>
-          More
-        </div>
-        <h2 className="font-serif text-[17px] font-semibold">全部景點</h2>
+        <h2 className={styles.sectionTitle}>全部景點</h2>
       </div>
 
       <div className="safe-page-x pb-4 fade-in">
@@ -209,8 +141,10 @@ export default function SpotsList({
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="輸入想查尋的名稱"
-            className="min-w-0 flex-1 bg-transparent text-[14px] font-medium outline-none"
+            type="search"
+            aria-label="搜尋景點"
+            placeholder="搜尋景點、地址或分類"
+            className="min-w-0 flex-1 bg-transparent text-app-body font-medium outline-none"
             style={{ color: "var(--ink)" }}
           />
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--daxi-red)" strokeWidth="1.8">
@@ -219,87 +153,13 @@ export default function SpotsList({
           </svg>
         </label>
 
-        <div className="pt-5 text-[13px] font-semibold" style={{ color: "var(--ink-soft)" }}>
+        <div className="pt-5 text-app-body font-semibold" style={{ color: "var(--ink-soft)" }}>
           共 {rows.length} 個景點
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 safe-page-x pb-10 fade-in md:grid-cols-2 lg:grid-cols-3">
-        {rows.map((b, i) => {
-          const photo = photos[b.placeId];
-          const tags = experienceTags(b, details[b.placeId]);
-          return (
-            <button
-              key={b.placeId}
-              onClick={() => setOpenBusiness(b)}
-              className="group relative h-[224px] w-full overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99] sm:h-[250px] md:h-[230px] lg:h-[250px]"
-              style={{
-                background: "var(--card)",
-                boxShadow: "0 14px 34px rgba(15, 23, 42, 0.12)",
-                animationDelay: `${Math.min(i, 8) * 40}ms`,
-              }}
-            >
-              {photo ? (
-                <Image
-                  src={photo.src}
-                  alt={b.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-active:scale-[1.02]"
-                  style={{ filter: "saturate(0.9) contrast(0.98)" }}
-                />
-              ) : (
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)",
-                  }}
-                >
-                  <PlaceholderIcon kind="景點" />
-                </div>
-              )}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(15,23,42,0.08) 0%, rgba(15,23,42,0.2) 44%, rgba(15,23,42,0.86) 100%)",
-                }}
-              />
-              <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-semibold backdrop-blur-md"
-                style={{ background: "rgba(255,255,255,0.82)", color: "var(--ink)" }}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                  <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
-                  <circle cx="12" cy="9.5" r="2.2" />
-                </svg>
-                {b.distanceLabel}
-              </div>
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <h3 className="font-serif text-[24px] font-bold leading-tight text-white">
-                  {b.name}
-                </h3>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span
-                  className="text-[12px] font-semibold"
-                  style={{ color: "rgba(255,255,255,0.86)" }}
-                >
-                  {categoryLabel(details[b.placeId]?.category, b.googleType, b.tag)}
-                </span>
-                  {tags.slice(0, 2).map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                      style={{ background: "rgba(255,255,255,0.18)", color: "#fff" }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </button>
-          );
-        })}
+        {rows.map((spot) => placeCard(spot))}
         {rows.length === 0 ? (
           <div className="col-span-full">
             <EmptyState

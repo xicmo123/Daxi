@@ -22,8 +22,28 @@ export type Coupon = {
 export type Redemption = {
   couponId: string;
   token: string;
+  /** An anonymous, device-scoped claim — never a resident's name or profile. */
+  claimId?: string;
   redeemedAt: string;
 };
+
+const TAIPEI_TIME_ZONE = "Asia/Taipei";
+
+/** YYYY-MM-DD in the place where these offers can actually be redeemed. */
+export function taipeiDateKey(now = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TAIPEI_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const value = (kind: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === kind)?.value ?? "";
+  return `${value("year")}-${value("month")}-${value("day")}`;
+}
+
+export function isCouponRedeemable(coupon: Coupon, now = new Date()): boolean {
+  return coupon.active && coupon.validUntil >= taipeiDateKey(now);
+}
 
 export async function readCoupons(): Promise<Coupon[]> {
   const coupons = await readJsonFile<unknown>(COUPONS_PATH, []);
@@ -32,8 +52,7 @@ export async function readCoupons(): Promise<Coupon[]> {
 
 export async function listActiveCoupons(): Promise<Coupon[]> {
   const coupons = await readCoupons();
-  const todayKey = new Date().toISOString().slice(0, 10);
-  return coupons.filter((c) => c.active && c.validUntil >= todayKey);
+  return coupons.filter((coupon) => isCouponRedeemable(coupon));
 }
 
 export async function getCouponsForPlace(placeId: string): Promise<Coupon[]> {
@@ -86,45 +105,58 @@ function tokenSecret(): string {
   return "daxi-coupon-dev-secret";
 }
 
-async function signToken(couponId: string, issuedAtBucket: number): Promise<string> {
+async function signToken(couponId: string, claimId: string, expiresAt: number, nonce: string): Promise<string> {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey("raw", enc.encode(tokenSecret()), { name: "HMAC", hash: "SHA-256" }, false, [
     "sign",
   ]);
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(`${couponId}:${issuedAtBucket}`));
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(`${couponId}:${claimId}:${expiresAt}:${nonce}`));
   return Array.from(new Uint8Array(sig))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("")
     .slice(0, 16);
 }
 
-export async function generateRedemptionToken(couponId: string): Promise<{ token: string; issuedAt: number; expiresAt: number }> {
-  const bucket = Math.floor(Date.now() / TOKEN_WINDOW_MS);
-  const token = await signToken(couponId, bucket);
-  return { token, issuedAt: bucket * TOKEN_WINDOW_MS, expiresAt: (bucket + 1) * TOKEN_WINDOW_MS };
+export async function generateRedemptionToken(couponId: string, claimId: string): Promise<{ token: string; issuedAt: number; expiresAt: number }> {
+  const issuedAt = Date.now();
+  const expiresAt = issuedAt + TOKEN_WINDOW_MS;
+  const nonce = crypto.randomUUID();
+  const signature = await signToken(couponId, claimId, expiresAt, nonce);
+  // A token is unique per display, so one customer's scan can never consume
+  // another customer's offer merely because they opened it in the same minute.
+  return { token: `${expiresAt.toString(36)}.${nonce}.${signature}`, issuedAt, expiresAt };
+}
+
+function parseToken(token: string): { expiresAt: number; nonce: string; signature: string } | null {
+  const [expiresRaw, nonce, signature, ...extra] = token.split(".");
+  if (extra.length > 0 || !expiresRaw || !nonce || !signature || !/^[0-9a-f-]{36}$/i.test(nonce) || !/^[0-9a-f]{16}$/i.test(signature)) return null;
+  const expiresAt = Number.parseInt(expiresRaw, 36);
+  return Number.isFinite(expiresAt) ? { expiresAt, nonce, signature } : null;
 }
 
 export async function redeemCoupon(
   couponId: string,
-  token: string
+  token: string,
+  claimId: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const coupons = await readCoupons();
   const coupon = coupons.find((c) => c.id === couponId);
-  if (!coupon || !coupon.active) return { ok: false, error: "優惠券不存在或已下架" };
+  if (!coupon || !isCouponRedeemable(coupon)) return { ok: false, error: "優惠券已過期、下架或不存在" };
 
-  const bucket = Math.floor(Date.now() / TOKEN_WINDOW_MS);
-  const validTokens = await Promise.all([bucket, bucket - 1].map((b) => signToken(couponId, b)));
-  if (!validTokens.includes(token)) return { ok: false, error: "核銷碼已過期，請店家重新出示" };
+  const parsed = parseToken(token);
+  if (!parsed || Date.now() > parsed.expiresAt) return { ok: false, error: "核銷碼已過期，請顧客重新開啟優惠券" };
+  const validSignature = await signToken(couponId, claimId, parsed.expiresAt, parsed.nonce);
+  if (parsed.signature !== validSignature) return { ok: false, error: "核銷碼無效，請顧客重新開啟優惠券" };
 
   // The "already used?" check and the write of the redemption record have to
   // be one locked step. Previously they were a separate read and write, so two
   // scans of the same code landing together both saw an empty result and both
   // wrote — the same coupon could be redeemed twice.
   return mutateJsonList<Redemption, { ok: true } | { ok: false; error: string }>(REDEMPTIONS_PATH, (redemptions) => {
-    const alreadyUsed = redemptions.some((r) => r.couponId === couponId && r.token === token);
-    if (alreadyUsed) return { next: redemptions, result: { ok: false, error: "此核銷碼已使用過" } };
+    const alreadyUsed = redemptions.some((r) => r.couponId === couponId && r.claimId === claimId);
+    if (alreadyUsed) return { next: redemptions, result: { ok: false, error: "這張優惠券已在此裝置使用過" } };
     return {
-      next: [...redemptions, { couponId, token, redeemedAt: new Date().toISOString() }],
+      next: [...redemptions, { couponId, token, claimId, redeemedAt: new Date().toISOString() }],
       result: { ok: true },
     };
   });
