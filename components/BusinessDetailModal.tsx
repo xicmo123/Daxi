@@ -5,6 +5,7 @@ import type React from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import type { Coupon } from "@/lib/coupons";
@@ -14,6 +15,7 @@ import { statusBarColor } from "@/lib/status";
 import { experienceTags } from "@/lib/experience";
 import { calculateDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
+import { placeHref } from "@/lib/placePages";
 import PlaceholderIcon from "./PlaceholderIcon";
 import ReservationBooking from "./ReservationBooking";
 import FavoriteButton from "./FavoriteButton";
@@ -517,6 +519,14 @@ export default function BusinessDetailModal({
               <path d="M7 17 17 7M9 7h8v8" />
             </svg>
           </a>
+          <Link
+            href={placeHref(business)}
+            onClick={onClose}
+            className="mt-2 flex items-center justify-center rounded-xl px-4 py-3 text-app-body font-semibold transition-opacity active:opacity-80"
+            style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
+          >
+            查看完整介紹
+          </Link>
         </div>
 
         {/* Explore nearby — geographic proximity, not a curated theme */}

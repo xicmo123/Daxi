@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
@@ -11,6 +12,7 @@ import type { Coupon } from "@/lib/coupons";
 import { experienceTags, type SuggestedRoute } from "@/lib/experience";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
+import { placeHref, quickLookClick } from "@/lib/placePages";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import EmptyState from "./EmptyState";
@@ -66,10 +68,10 @@ export default function SpotsList({
     const detail = details[spot.placeId];
     const tags = experienceTags(spot, detail).filter((tag) => !tag.startsWith("步行")).slice(0, 2);
     return (
-      <button
+      <Link
         key={spot.placeId}
-        type="button"
-        onClick={() => setOpenBusiness(spot)}
+        href={placeHref(spot)}
+        onClick={quickLookClick(() => setOpenBusiness(spot))}
         className={featured ? `${styles.placeCard} ${styles.featuredSpot}` : styles.placeCard}
       >
         <div className={styles.placePhoto}>
@@ -82,7 +84,7 @@ export default function SpotsList({
           <p>{categoryLabel(detail?.category, spot.googleType, spot.tag)} · {userLocation ? "距你" : "距老街"} {spot.distanceLabel}</p>
           {tags.length ? <div className={styles.placeTags}>{tags.map((tag) => <span key={tag}>{tag}</span>)}</div> : null}
         </div>
-      </button>
+      </Link>
     );
   };
 

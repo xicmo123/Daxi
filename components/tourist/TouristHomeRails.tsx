@@ -25,7 +25,7 @@ export function SpotRail({ spots, preferIndoor }: { spots: HomeSpot[]; preferInd
       {spots.map((spot) => (
         <Link
           key={spot.placeId}
-          href={{ pathname: "/spots", query: { place: spot.placeId } }}
+          href={`/spots/${encodeURIComponent(spot.placeId)}`}
           className={styles.eventCard}
           role="listitem"
           onClick={() => trackClick("spot", spot.placeId, spot.name, "tourist")}

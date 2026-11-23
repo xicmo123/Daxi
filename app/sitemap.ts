@@ -1,10 +1,14 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/siteUrl";
 import { daxiWalkHref } from "@/lib/daxiWalk";
+import { placeHref } from "@/lib/placePages";
+import { filterVisiblePlaces, getAllPlaces, readDetails } from "@/lib/placesStore";
+
+// Read per request: places are added and hidden through /admin at runtime.
+export const dynamic = "force-dynamic";
 
 // Hand-maintained rather than derived from the route tree: only the pages
-// worth ranking belong here. Detail views are modals over these lists, not
-// separate URLs, so there is nothing deeper to enumerate.
+// worth ranking belong here, plus one page per visible spot and shop.
 const routes: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }> = [
   { path: "/", changeFrequency: "daily", priority: 1 },
   { path: "/spots", changeFrequency: "weekly", priority: 0.9 },
@@ -32,9 +36,16 @@ const routes: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[numbe
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  return routes.map(({ path, changeFrequency, priority }) => ({
+  const [all, details] = await Promise.all([getAllPlaces(), readDetails()]);
+  const places = filterVisiblePlaces(all, details).map((place) => ({
+    path: placeHref(place),
+    changeFrequency: "weekly" as const,
+    // Places with an editor-written story are the ones worth ranking first.
+    priority: details[place.placeId]?.story ? 0.7 : 0.5,
+  }));
+  return [...routes, ...places].map(({ path, changeFrequency, priority }) => ({
     url: `${SITE_URL}${path}`,
     lastModified,
     changeFrequency,

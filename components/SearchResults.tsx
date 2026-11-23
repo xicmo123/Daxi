@@ -7,6 +7,7 @@ import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import { trackClick } from "@/lib/trackClient";
+import { placeHref } from "@/lib/placePages";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
 import EmptyState from "@/components/EmptyState";
@@ -74,7 +75,7 @@ export default function SearchResults({
           {results.map((p) => (
             <Link
               key={p.placeId}
-              href={`${p.tag === "景點" ? "/spots" : "/businesses"}?place=${encodeURIComponent(p.placeId)}`}
+              href={placeHref(p)}
               onClick={() => trackClick(p.tag === "景點" ? "spot" : "business", p.placeId, p.name)}
               className="flex min-h-16 items-center gap-3 rounded-xl border px-3 py-2.5 transition-opacity active:opacity-70"
               style={{ background: "var(--card)", borderColor: "var(--line)" }}

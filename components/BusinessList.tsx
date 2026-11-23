@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import type { Business, BusinessTag } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
 import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/placeDetails";
@@ -11,6 +12,7 @@ import type { Coupon } from "@/lib/coupons";
 import { experienceTags } from "@/lib/experience";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
+import { placeHref, quickLookClick } from "@/lib/placePages";
 import BusinessDetailModal from "./BusinessDetailModal";
 import PlaceholderIcon from "./PlaceholderIcon";
 import styles from "./TouristInterior.module.css";
@@ -117,9 +119,10 @@ export default function BusinessList({
         : null;
 
     return (
-      <button
+      <Link
         key={`${b.placeId}-${i}`}
-        onClick={() => setOpenBusiness(b)}
+        href={placeHref(b)}
+        onClick={quickLookClick(() => setOpenBusiness(b))}
         className={styles.placeCard}
       >
         <div className={styles.placePhoto}>
@@ -179,7 +182,7 @@ export default function BusinessList({
           </p>
           <div className={styles.placeTags}><span>{promo}</span></div>
         </div>
-      </button>
+      </Link>
     );
   };
 

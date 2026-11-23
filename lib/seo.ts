@@ -13,14 +13,19 @@ export function pageMetadata({
   title,
   description,
   noindex = false,
+  image: ownImage,
 }: {
   path: string;
   title: string;
   description: string;
   noindex?: boolean;
+  /** A page-specific share image (e.g. the place photo) instead of the section default. */
+  image?: { url: string; alt: string };
 }): Metadata {
   const resident = path === "/resident" || path.startsWith("/resident/");
-  const image = resident
+  const image = ownImage
+    ? ownImage
+    : resident
     ? { url: "/resident/opengraph-image.png", width: 1200, height: 630, alt: "我是大溪人：大溪居民每天要用的生活資訊" }
     : { url: "/opengraph-image.png", width: 1200, height: 630, alt: "大溪通：走進大溪老街，停車、景點、美食一次看" };
   return {

@@ -222,7 +222,7 @@ async function Themes() {
         <div key={theme.placeId} className={`${styles.guideFeature} ${styles.themeCard}`}>
           <Image src={theme.photo.src} alt="" fill sizes="(max-width: 767px) 100vw, 380px" unoptimized={theme.photo.src.startsWith("http")} />
           <h3>
-            <Link href={{ pathname: "/spots", query: { place: theme.placeId } }} className={styles.stretchedLink}>
+            <Link href={`/spots/${encodeURIComponent(theme.placeId)}`} className={styles.stretchedLink}>
               {theme.title}
             </Link>
           </h3>

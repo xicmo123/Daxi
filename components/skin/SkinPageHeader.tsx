@@ -11,6 +11,7 @@ import styles from "./Skin.module.css";
 export default function SkinPageHeader({
   groups,
   root,
+  parent,
   href,
   title,
   lead,
@@ -23,6 +24,8 @@ export default function SkinPageHeader({
   groups: SiteNavGroup[];
   /** The section home: first breadcrumb and the JSON-LD root. */
   root: { name: string; href: string };
+  /** The list page a detail page belongs to (e.g. 大溪景點 for one spot): an extra crumb. */
+  parent?: { name: string; href: string };
   /** This page's own href — used to find its group for the breadcrumb and tabs. */
   href: string;
   title: string;
@@ -34,7 +37,7 @@ export default function SkinPageHeader({
   tabs?: Array<{ href: string; label: string }>;
   children?: ReactNode;
 }) {
-  const { group } = navTrail(groups, href);
+  const { group } = navTrail(groups, parent?.href ?? href);
   const siblings =
     tabs?.map((t) => ({ key: t.href, href: t.href, label: t.label })) ??
     group?.items.filter((i, idx, arr) => arr.findIndex((x) => x.href === i.href) === idx) ??
@@ -49,6 +52,7 @@ export default function SkinPageHeader({
             breadcrumbJsonLd([
               { name: root.name, path: root.href },
               ...(group ? [{ name: group.label }] : []),
+              ...(parent ? [{ name: parent.name, path: parent.href }] : []),
               { name: title, path: href },
             ]),
           ),
@@ -59,6 +63,11 @@ export default function SkinPageHeader({
           <Link href={root.href}>首頁</Link>
         </li>
         {group ? <li>{group.label}</li> : null}
+        {parent ? (
+          <li>
+            <Link href={parent.href}>{parent.name}</Link>
+          </li>
+        ) : null}
         <li aria-current="page">{title}</li>
       </ol>
       <div className={styles.pageTitleRow}>
