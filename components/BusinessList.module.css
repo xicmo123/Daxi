@@ -322,6 +322,24 @@
   content: "·";
 }
 
+.open {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.open[data-tone="ok"] {
+  color: var(--status-ok);
+}
+
+.open[data-tone="warn"] {
+  color: #b7791f;
+}
+
+.open[data-tone="closed"] {
+  color: var(--daxi-red);
+}
+
 .lead {
   display: -webkit-box;
   overflow: hidden;

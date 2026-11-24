@@ -1,0 +1,239 @@
+/* A shop/spot page laid out like Google Maps and 愛食記: status line and a
+   row of round actions under the name, then a 店家資訊 list with icons,
+   hours for the week, and what's nearby. */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.status[data-tone="ok"] {
+  color: var(--rj-ok);
+}
+
+.status[data-tone="warn"] {
+  color: #b7791f;
+}
+
+.status[data-tone="closed"] {
+  color: var(--rj-alert);
+}
+
+.status small {
+  color: var(--rj-ink-soft);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
+  gap: 6px;
+  margin: 4px 0 6px;
+}
+
+.action {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--rj-ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.actionIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--rj-line-strong);
+  border-radius: 999px;
+  color: var(--rj-main);
+  background: var(--rj-bg);
+  transition: transform 0.12s ease;
+}
+
+.action:active .actionIcon {
+  transform: scale(0.94);
+}
+
+.actionIcon[data-primary="true"],
+.action[aria-pressed="true"] .actionIcon {
+  border-color: var(--rj-main);
+  background: var(--rj-main);
+  color: var(--rj-on-main);
+}
+
+.actionLabel {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.summary {
+  margin: 0;
+  color: var(--rj-ink);
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.info {
+  display: grid;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: start;
+  gap: 12px;
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--rj-line);
+  color: var(--rj-ink);
+  text-decoration: none;
+}
+
+.infoRow:last-child {
+  border-bottom: 0;
+}
+
+.infoRow > svg {
+  margin-top: 1px;
+  color: var(--rj-main);
+}
+
+.infoRow strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.infoRow small {
+  display: block;
+  margin-top: 2px;
+  color: var(--rj-ink-soft);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.infoRow .go {
+  align-self: center;
+  color: var(--rj-ink-soft);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hours {
+  margin-top: 8px;
+}
+
+.hours summary {
+  cursor: pointer;
+  color: var(--rj-main);
+  font-size: 13.5px;
+  font-weight: 800;
+  list-style: none;
+}
+
+.hours summary::-webkit-details-marker {
+  display: none;
+}
+
+.hours table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.hours td {
+  padding: 4px 0;
+  color: var(--rj-ink-soft);
+  vertical-align: top;
+}
+
+.hours td:first-child {
+  width: 52px;
+  font-weight: 700;
+}
+
+.hours tr[data-today="true"] td {
+  color: var(--rj-ink);
+  font-weight: 900;
+}
+
+.facts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.facts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--rj-surface);
+  color: var(--rj-ink);
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.facts .star {
+  color: #e8a317;
+}
+
+/* Phones: one column in reading order. Wide screens: story on the left,
+   店家資訊 as a sticky card on the right. */
+.layout {
+  display: grid;
+  gap: inherit;
+}
+
+.main1,
+.side,
+.main2 {
+  display: grid;
+  gap: inherit;
+  min-width: 0;
+  align-content: start;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 380px;
+    grid-template-areas:
+      "main1 side"
+      "main2 side";
+    align-items: start;
+    column-gap: 28px;
+  }
+
+  .main1 {
+    grid-area: main1;
+  }
+
+  .main2 {
+    grid-area: main2;
+  }
+
+  .side {
+    grid-area: side;
+    position: sticky;
+    top: 84px;
+  }
+
+  .actions {
+    grid-template-columns: repeat(5, 72px);
+    justify-content: start;
+  }
+}

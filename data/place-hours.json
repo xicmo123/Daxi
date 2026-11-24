@@ -1,0 +1,4799 @@
+{
+  "generatedAt": "2026-11-24T04:54:30.675Z",
+  "places": {
+    "ChIJuwRV3SEYaDQRiEQnq6NCVw4": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 19,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 09:00 – 18:00",
+        "星期二: 09:00 – 18:00",
+        "星期三: 09:00 – 18:00",
+        "星期四: 09:00 – 18:00",
+        "星期五: 09:00 – 18:00",
+        "星期六: 08:30 – 19:00",
+        "星期日: 08:00 – 19:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": "專賣傳統中式葷素料理的平實小吃攤。",
+      "website": "https://www.facebook.com/%E5%A4%A7%E6%BA%AA%E8%80%81%E8%A1%97-%E8%80%81%E9%98%BF%E4%BC%AF%E7%8F%BE%E6%BB%B7%E8%B1%86%E5%B9%B2-226364234099971/"
+    },
+    "ChIJe219kIYXaDQRSxfVBOBkgaQ": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 17,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 17:30",
+        "星期二: 11:00 – 17:30",
+        "星期三: 11:00 – 17:30",
+        "星期四: 11:00 – 17:30",
+        "星期五: 11:00 – 17:30",
+        "星期六: 11:00 – 17:30",
+        "星期日: 11:00 – 17:30"
+      ],
+      "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+      "priceMin": 600,
+      "priceMax": 800,
+      "summary": null,
+      "website": "http://www.tinakitchen.com.tw/"
+    },
+    "ChIJ41uO6hIYaDQR8dtlUzyilAQ": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 10:00 – 20:00",
+        "星期二: 10:00 – 20:00",
+        "星期三: 10:00 – 20:00",
+        "星期四: 10:00 – 20:00",
+        "星期五: 10:00 – 20:00",
+        "星期六: 10:00 – 20:00",
+        "星期日: 10:00 – 20:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://daxilaidouhua.weebly.com/"
+    },
+    "ChIJRU1SRgUYaDQRTtdqosWQG4s": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 20:30",
+        "星期二: 11:00 – 20:30",
+        "星期三: 11:00 – 20:30",
+        "星期四: 11:00 – 20:30",
+        "星期五: 11:00 – 20:30",
+        "星期六: 11:00 – 20:30",
+        "星期日: 11:00 – 20:30"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 400,
+      "priceMax": 600,
+      "summary": "老字號的樸實餐廳，供應家常傳統餐點。",
+      "website": "https://discover.matterport.com/space/YRgmRtfur53"
+    },
+    "ChIJR_kyrBEYaDQRtdeFRfZrnTI": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 0,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 0,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 0,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 0,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 0,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 0,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 06:00 – 00:00",
+        "星期二: 06:00 – 00:00",
+        "星期三: 06:00 – 00:00",
+        "星期四: 06:00 – 00:00",
+        "星期五: 06:00 – 00:00",
+        "星期六: 06:00 – 00:00",
+        "星期日: 06:00 – 00:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": "老字號的經典連鎖速食店，以漢堡和薯條聞名。",
+      "website": "https://www.mcdonalds.com/tw/zh-tw.html"
+    },
+    "ChIJe219kIYXaDQRJfw1ERCEgeM": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 0,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 14:00, 16:30 – 20:00",
+        "星期二: 11:00 – 14:00, 16:30 – 20:00",
+        "星期三: 11:00 – 14:00, 16:30 – 20:00",
+        "星期四: 11:00 – 14:00, 16:30 – 20:00",
+        "星期五: 11:00 – 14:00, 16:30 – 20:00",
+        "星期六: 11:00 – 14:00, 16:30 – 20:00",
+        "星期日: 11:00 – 14:00, 16:30 – 20:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 200,
+      "priceMax": 400,
+      "summary": "充滿懷舊氛圍的寬敞餐廳，供應傳統佳餚。",
+      "website": "https://www.hakka-family.com.tw/"
+    },
+    "ChIJu6ih3yMYaDQRD1tMK9wiPD0": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 20
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 20
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 20:00",
+        "星期二: 11:00 – 20:00",
+        "星期三: 11:00 – 20:00",
+        "星期四: 休息",
+        "星期五: 11:00 – 20:00",
+        "星期六: 11:00 – 20:20",
+        "星期日: 11:00 – 20:20"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": "質樸的餐廳，供應各種當地家常菜，包括湯品、麵食和肉類料理。",
+      "website": "https://www.facebook.com/%E4%B9%BE%E9%BA%B5%E5%B1%85-189377954454979/"
+    },
+    "ChIJfeldlAEYaDQRIuP3M3OjXpQ": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 17:00",
+        "星期二: 08:00 – 17:00",
+        "星期三: 08:00 – 17:00",
+        "星期四: 08:00 – 17:00",
+        "星期五: 08:00 – 17:00",
+        "星期六: 08:00 – 17:00",
+        "星期日: 08:00 – 17:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 200,
+      "priceMax": 400,
+      "summary": null,
+      "website": null
+    },
+    "ChIJUzGqYiEYaDQR1LT76BztB4A": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 19,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 19:00",
+        "星期二: 休息",
+        "星期三: 08:00 – 19:00",
+        "星期四: 08:00 – 19:00",
+        "星期五: 08:00 – 19:00",
+        "星期六: 08:00 – 19:00",
+        "星期日: 08:00 – 19:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": "質樸的餐廳，提供傳統鴨肉料理、麵食和湯品。",
+      "website": "https://www.facebook.com/%E9%99%B3%E5%B8%AB%E5%85%84%E7%B4%A0%E8%82%89%E5%9C%93-164977900347140/"
+    },
+    "ChIJt7oeKTkXaDQR3ZSqC8vmgUE": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 休息",
+        "星期三: 11:00 – 20:00",
+        "星期四: 11:00 – 20:00",
+        "星期五: 11:00 – 20:00",
+        "星期六: 08:30 – 20:00",
+        "星期日: 08:30 – 20:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 400,
+      "priceMax": 600,
+      "summary": "迷人的歐式餐廳，提供咖啡、茶飲和輕食，並設有鮮花盛開的露台。",
+      "website": "https://inline.app/booking/-MW25x0kvub420ysTg-2:inline-live-2?language=zh-tw"
+    },
+    "ChIJNW-PBSEYaDQRdNsv21FxI-E": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 06:00 – 23:00",
+        "星期二: 06:00 – 23:00",
+        "星期三: 06:00 – 23:00",
+        "星期四: 06:00 – 23:00",
+        "星期五: 06:00 – 23:00",
+        "星期六: 06:00 – 23:00",
+        "星期日: 06:00 – 23:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": "老字號的經典連鎖速食店，以漢堡和薯條聞名。",
+      "website": "https://www.mcdonalds.com/tw/zh-tw.html"
+    },
+    "ChIJb7rCACIYaDQR3yvcEznYI3A": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 14,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 0,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 14,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 16,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:30 – 14:00, 17:00 – 20:00",
+        "星期二: 休息",
+        "星期三: 11:30 – 14:00, 17:00 – 20:00",
+        "星期四: 11:30 – 14:00, 17:00 – 20:00",
+        "星期五: 11:30 – 14:00, 17:00 – 20:00",
+        "星期六: 11:30 – 14:30, 16:30 – 20:30",
+        "星期日: 11:30 – 14:30, 16:30 – 20:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 400,
+      "priceMax": 600,
+      "summary": null,
+      "website": "http://www.3877769.com/"
+    },
+    "ChIJETB2Z6wXaDQRKdaKMX5mD9c": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 18,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 17:00",
+        "星期二: 休息",
+        "星期三: 11:00 – 17:00",
+        "星期四: 11:00 – 17:00",
+        "星期五: 11:00 – 17:00",
+        "星期六: 11:00 – 18:00",
+        "星期日: 11:00 – 18:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 400,
+      "priceMax": 600,
+      "summary": null,
+      "website": "https://www.spring-vegetarian.com/about-us?utm_campaign=google_ad&utm_medium=cpc&utm_source=google&utm_term=20240122"
+    },
+    "ChIJR01hKyIYaDQRQCD0hbGmyUA": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 19,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 19:00",
+        "星期二: 休息",
+        "星期三: 休息",
+        "星期四: 11:00 – 19:00",
+        "星期五: 11:00 – 19:00",
+        "星期六: 11:00 – 19:00",
+        "星期日: 11:00 – 19:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": null,
+      "website": "https://www.facebook.com/BaiNianYouFan/"
+    },
+    "ChIJ9Xxo9hMZaDQRaPyz8G1-cgE": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 20:00",
+        "星期二: 11:00 – 20:00",
+        "星期三: 休息",
+        "星期四: 休息",
+        "星期五: 11:00 – 20:00",
+        "星期六: 10:00 – 20:00",
+        "星期日: 10:00 – 20:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 600,
+      "priceMax": 800,
+      "summary": null,
+      "website": "https://yinhuayuan.weebly.com/"
+    },
+    "ChIJE-FbxUIYaDQRqGzBAoTo7MQ": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 21,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 14:00, 17:00 – 21:00",
+        "星期二: 11:00 – 14:00, 17:00 – 21:00",
+        "星期三: 11:00 – 14:00, 17:00 – 21:00",
+        "星期四: 11:00 – 14:00, 17:00 – 21:00",
+        "星期五: 11:00 – 14:00, 17:00 – 21:00",
+        "星期六: 11:00 – 14:00, 17:00 – 21:00",
+        "星期日: 11:00 – 14:00, 17:00 – 21:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 200,
+      "priceMax": 800,
+      "summary": null,
+      "website": null
+    },
+    "ChIJsc7L-DAYaDQRwGC5O-ODg9Y": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 14:00, 17:00 – 20:30",
+        "星期二: 11:00 – 14:00, 17:00 – 20:30",
+        "星期三: 休息",
+        "星期四: 11:00 – 14:00, 17:00 – 20:30",
+        "星期五: 11:00 – 14:00, 17:00 – 20:30",
+        "星期六: 11:00 – 14:00, 17:00 – 20:30",
+        "星期日: 11:00 – 14:00, 17:00 – 20:30"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 400,
+      "priceMax": 600,
+      "summary": "設有露台的高檔餐廳，供應採用有機產品烹製的台式及融合菜餚。",
+      "website": "https://www.facebook.com/GreenTurnRestaurant"
+    },
+    "ChIJ7dUTVjQZaDQRxn9hBGDZyuw": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 14,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 14,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 14,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 14,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 11:00 – 14:30, 17:00 – 20:30",
+        "星期二: 休息",
+        "星期三: 11:00 – 14:30, 17:00 – 20:30",
+        "星期四: 11:00 – 14:30, 17:00 – 20:30",
+        "星期五: 11:00 – 14:30, 17:00 – 20:30",
+        "星期六: 11:00 – 20:00",
+        "星期日: 11:00 – 20:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 600,
+      "priceMax": 1000,
+      "summary": null,
+      "website": null
+    },
+    "ChIJdfL8PAAZaDQRorBkH3I0-mg": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 07:00 – 19:00",
+        "星期二: 07:00 – 19:00",
+        "星期三: 07:00 – 19:00",
+        "星期四: 07:00 – 19:00",
+        "星期五: 07:00 – 19:00",
+        "星期六: 07:00 – 20:00",
+        "星期日: 07:00 – 20:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": null,
+      "website": "http://starbucks.com.tw/"
+    },
+    "ChIJT_aqYmkYaDQR427DjxHNCcU": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "寬敞的綠地空間，設有兒童遊樂設施與障礙遊戲，另有林蔭步道、草坪和運動場。",
+      "website": "https://travel.tycg.gov.tw/zh-tw/travel/attraction/1001"
+    },
+    "ChIJzRhetRcYaDQRF1DpSokjfjM": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "沿著河堤鋪設的步道，有落羽松、公共藝術、美食餐車和街頭藝人表演。",
+      "website": null
+    },
+    "ChIJwSedXToYaDQRRzDG24ZPDzc": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 09:30 – 17:00",
+        "星期三: 09:30 – 17:00",
+        "星期四: 09:30 – 17:00",
+        "星期五: 09:30 – 17:00",
+        "星期六: 09:30 – 17:00",
+        "星期日: 09:30 – 17:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "19 世紀商人家族的故宅，擁有保存良好的裝飾和大型庭院。",
+      "website": "http://wem.tycg.gov.tw/"
+    },
+    "ChIJA7odaOQZaDQROJIHrBxLEEI": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://travel.tycg.gov.tw/zh-tw/travel/attraction/1644"
+    },
+    "ChIJAcbxQSIYaDQRY-uNQ8Xq704": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "這座景觀公園設有天然池塘區、表演台、神社和紀念碑。",
+      "website": "https://www.scenic.tycg.gov.tw/"
+    },
+    "ChIJ7QuhMh8YaDQRC4idli6CBik": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "設有長椅的行人吊橋，可悠閒地欣賞城市和山脈景緻。",
+      "website": "https://travel.tycg.gov.tw/zh-tw/travel/attraction/1003"
+    },
+    "ChIJDQDEhlwZaDQRejZFHhM9iKo": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://wrb.tycg.gov.tw/home.jsp?id=390&parentpath=0,3&mcustomize=onemessages_view.jsp&dataserno=201810030001&aplistdn=ou=data,ou=bigimg,ou=chwater,ou=ap_root,o=tycg,c=tw&toolsflag=Y"
+    },
+    "ChIJgYuMHPAZaDQRGLuAoxbKEBc": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 17:00",
+        "星期二: 08:00 – 17:00",
+        "星期三: 08:00 – 17:00",
+        "星期四: 08:00 – 17:00",
+        "星期五: 08:00 – 17:00",
+        "星期六: 08:00 – 17:00",
+        "星期日: 08:00 – 17:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://wrb.tycg.gov.tw/home.jsp?id=390&parentpath=0,3&mcustomize=onemessages_view.jsp&dataserno=201810030001&aplistdn=ou=data,ou=bigimg,ou=chwater,ou=ap_root,o=tycg,c=tw&toolsflag=Y"
+    },
+    "ChIJbQaltEUYaDQRkMQ2Cry-FjM": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "這片河畔草地在初秋之時開滿著白色韭菜花，在當地素有「九月雪」之稱。",
+      "website": null
+    },
+    "ChIJ1WQEXWUZaDQRtmlHfLnTe3U": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    },
+    "ChIJ3wk98XUZaDQRRfVk59fXvlk": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    },
+    "ChIJ0bcpLxQYaDQRm0TakXa1I7A": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 08:00 – 17:00",
+        "星期三: 08:00 – 17:00",
+        "星期四: 08:00 – 17:00",
+        "星期五: 08:00 – 17:00",
+        "星期六: 08:00 – 17:00",
+        "星期日: 08:00 – 17:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://zh-tw.facebook.com/tcicc"
+    },
+    "ChIJ59rofCIYaDQRNJ9N7g5dCQ4": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 21,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 5,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 21,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 05:00 – 21:00",
+        "星期二: 05:00 – 21:00",
+        "星期三: 05:00 – 21:00",
+        "星期四: 05:00 – 21:00",
+        "星期五: 05:00 – 21:00",
+        "星期六: 05:00 – 21:00",
+        "星期日: 05:00 – 21:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.pujitang.tw/"
+    },
+    "ChIJYzcTXx8YaDQRmoxhDCnC3Aw": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 09:30 – 17:00",
+        "星期三: 09:30 – 17:00",
+        "星期四: 09:30 – 17:00",
+        "星期五: 09:30 – 17:00",
+        "星期六: 09:30 – 17:00",
+        "星期日: 09:30 – 17:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "涵蓋博物館及重建房舍的社區建築群，設有傳統工藝與文化展覽。",
+      "website": "http://wem.tycg.gov.tw/"
+    },
+    "ChIJS-0RFyUYaDQRr6-oJNVQcqI": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 0,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 12,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 13,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 16,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 09:30 – 12:00, 13:30 – 16:00",
+        "星期二: 09:30 – 12:00, 13:30 – 16:00",
+        "星期三: 09:30 – 12:00, 13:30 – 16:00",
+        "星期四: 09:30 – 12:00, 13:30 – 16:00",
+        "星期五: 09:30 – 12:00, 13:30 – 16:00",
+        "星期六: 09:30 – 12:00, 13:30 – 16:00",
+        "星期日: 09:30 – 12:00, 13:30 – 16:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.music4fun.com.tw/"
+    },
+    "ChIJTcY5OiAYaDQRajctdjMUaH0": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 09:30 – 17:00",
+        "星期三: 09:30 – 17:00",
+        "星期四: 09:30 – 17:00",
+        "星期五: 09:30 – 17:00",
+        "星期六: 09:30 – 17:00",
+        "星期日: 09:30 – 17:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://wem.tycg.gov.tw/"
+    },
+    "ChIJa3TldjQZaDQRve2IXpVU5B4": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 09:30 – 17:00",
+        "星期三: 09:30 – 17:00",
+        "星期四: 09:30 – 17:00",
+        "星期五: 09:30 – 17:00",
+        "星期六: 09:30 – 17:00",
+        "星期日: 09:30 – 17:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://www.facebook.com/FeiFeiStoryHouse"
+    },
+    "ChIJ_46l74oXaDQRJ_gMsGzcgHg": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 08:00 – 17:00",
+        "星期三: 08:00 – 17:00",
+        "星期四: 08:00 – 17:00",
+        "星期五: 08:00 – 17:00",
+        "星期六: 08:00 – 17:00",
+        "星期日: 08:00 – 11:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.tcfsc.org.tw/"
+    },
+    "ChIJW-1AA7gZaDQRfAhvuPXyygU": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 15,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 15,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 15,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 15,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 7,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 15,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 休息",
+        "星期三: 07:00 – 15:00",
+        "星期四: 07:00 – 15:00",
+        "星期五: 07:00 – 15:00",
+        "星期六: 07:00 – 15:00",
+        "星期日: 07:00 – 15:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    },
+    "ChIJKyFr8yEYaDQRBl0Q5V97N2Y": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 18,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 09:00 – 18:00",
+        "星期二: 09:00 – 18:00",
+        "星期三: 09:00 – 18:00",
+        "星期四: 09:00 – 18:00",
+        "星期五: 09:00 – 18:00",
+        "星期六: 09:00 – 18:00",
+        "星期日: 09:00 – 18:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "簡樸的臨櫃點餐式商店，於 1971 年創立，供應有著各式配料的豆花。",
+      "website": "https://www.facebook.com/LaiMaMatofupuddingstore/"
+    },
+    "ChIJVQoafpUZaDQRxDtVpQ352y8": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 19,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 19:00",
+        "星期二: 08:00 – 19:00",
+        "星期三: 08:00 – 19:00",
+        "星期四: 08:00 – 19:00",
+        "星期五: 08:00 – 19:00",
+        "星期六: 08:00 – 19:00",
+        "星期日: 08:00 – 19:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    },
+    "ChIJ_R5-JScYaDQRIJgn9T-ysM0": {
+      "periods": [
+        {
+          "open": {
+            "day": 4,
+            "hour": 17,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 21,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 休息",
+        "星期三: 休息",
+        "星期四: 17:00 – 21:30",
+        "星期五: 休息",
+        "星期六: 休息",
+        "星期日: 休息"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    },
+    "ChIJlyHEx2sYaDQRN9uwPj4GOu4": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 10,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 22,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 10:00 – 22:00",
+        "星期二: 10:00 – 22:00",
+        "星期三: 10:00 – 22:00",
+        "星期四: 10:00 – 22:00",
+        "星期五: 10:00 – 22:00",
+        "星期六: 10:00 – 22:00",
+        "星期日: 10:00 – 22:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://shimamura.com.tw/"
+    },
+    "ChIJVZ-7-e8ZaDQRRiwBGgXqimw": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 11,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 18,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 休息",
+        "星期三: 11:00 – 18:00",
+        "星期四: 11:00 – 18:00",
+        "星期五: 11:00 – 18:00",
+        "星期六: 11:00 – 18:00",
+        "星期日: 11:00 – 18:00"
+      ],
+      "priceLevel": "PRICE_LEVEL_MODERATE",
+      "priceMin": 400,
+      "priceMax": 600,
+      "summary": null,
+      "website": "https://www.facebook.com/p/%E9%BB%83%E8%89%B2%E5%B0%8F%E5%B1%8B-%E5%92%96%E5%95%A1%E8%8E%8A%E5%9C%92-100064144717911/?locale=zh_TW&checkpoint_src=any"
+    },
+    "ChIJpWj5jiYYaDQRh6kbeGlR_UE": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 22,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 23:00",
+        "星期二: 08:00 – 23:00",
+        "星期三: 08:00 – 23:00",
+        "星期四: 08:00 – 23:00",
+        "星期五: 08:00 – 23:00",
+        "星期六: 08:00 – 23:00",
+        "星期日: 08:00 – 22:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.pxmart.com.tw/"
+    },
+    "ChIJReoEmswZaDQRBJ-4CXMNgaI": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 23:00",
+        "星期二: 08:00 – 23:00",
+        "星期三: 08:00 – 23:00",
+        "星期四: 08:00 – 23:00",
+        "星期五: 08:00 – 23:00",
+        "星期六: 08:00 – 23:00",
+        "星期日: 08:00 – 23:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.pxmart.com.tw/"
+    },
+    "ChIJ4_1IMhUYaDQRtdLAY6hUU5k": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 13,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 13,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 13,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 13,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 13,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 13,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 18,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 休息",
+        "星期二: 13:00 – 18:00",
+        "星期三: 13:00 – 18:00",
+        "星期四: 13:00 – 18:00",
+        "星期五: 13:00 – 18:00",
+        "星期六: 13:00 – 18:00",
+        "星期日: 13:00 – 18:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    },
+    "ChIJUyeauCEYaDQRio0igIJZatg": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 18,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 18,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 18,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 18,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 18,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 18,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 18,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:30 – 18:30",
+        "星期二: 08:30 – 18:30",
+        "星期三: 08:30 – 18:30",
+        "星期四: 08:30 – 18:30",
+        "星期五: 08:30 – 18:30",
+        "星期六: 08:30 – 18:30",
+        "星期日: 08:30 – 18:30"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.shingfangpastry.com/"
+    },
+    "ChIJCyhLTRkYaDQRV9Efd0_h8us": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 19,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 19,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 19,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 19,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 19,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 19,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 15,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 19,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 15:00 – 19:30",
+        "星期二: 15:00 – 19:30",
+        "星期三: 15:00 – 19:30",
+        "星期四: 15:00 – 19:30",
+        "星期五: 15:00 – 19:30",
+        "星期六: 15:00 – 19:30",
+        "星期日: 15:00 – 19:30"
+      ],
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "priceMin": 1,
+      "priceMax": 200,
+      "summary": null,
+      "website": "https://www.facebook.com/profile.php?id=100057295216571&mibextid=LQQJ4d"
+    },
+    "ChIJq-gpOWofaDQRezfM7vz8G4E": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 20,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 20,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 10,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 20,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 10:30 – 20:30",
+        "星期二: 10:30 – 20:30",
+        "星期三: 10:30 – 20:30",
+        "星期四: 10:30 – 20:30",
+        "星期五: 10:30 – 20:30",
+        "星期六: 10:30 – 20:30",
+        "星期日: 10:30 – 20:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "http://www.morv.com.tw/"
+    },
+    "ChIJ__CmUwUYaDQRiXxnuNp02tY": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://www.family.com.tw/"
+    },
+    "ChIJJakS7aciaDQRlFjLB49RCx0": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "Pit stop for snacks, drinks & daily essentials",
+      "website": "https://www.7-11.com.tw/"
+    },
+    "ChIJyyaZ-6ciaDQRLIA1FI3GTlY": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 0,
+            "minute": 0
+          },
+          "close": null
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 24 小時營業",
+        "星期二: 24 小時營業",
+        "星期三: 24 小時營業",
+        "星期四: 24 小時營業",
+        "星期五: 24 小時營業",
+        "星期六: 24 小時營業",
+        "星期日: 24 小時營業"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://www.family.com.tw/"
+    },
+    "ChIJl6Y6i08ZaDQRj9G5GaKpG8Q": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 8,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 08:00 – 23:00",
+        "星期二: 08:00 – 23:00",
+        "星期三: 08:00 – 23:00",
+        "星期四: 08:00 – 23:00",
+        "星期五: 08:00 – 23:00",
+        "星期六: 08:00 – 23:00",
+        "星期日: 08:00 – 23:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": "https://www.pxmart.com.tw/"
+    },
+    "ChIJOQIomCEYaDQRTEWCoh5KYpg": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 0,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 1,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 2,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 3,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 4,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 5,
+            "hour": 23,
+            "minute": 0
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 6,
+            "minute": 0
+          },
+          "close": {
+            "day": 6,
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 06:00 – 23:00",
+        "星期二: 06:00 – 23:00",
+        "星期三: 06:00 – 23:00",
+        "星期四: 06:00 – 23:00",
+        "星期五: 06:00 – 23:00",
+        "星期六: 06:00 – 23:00",
+        "星期日: 06:00 – 23:00"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": "Pit stop for snacks, drinks & daily essentials",
+      "website": "https://www.7-11.com.tw/"
+    },
+    "ChIJp2LTaGoYaDQRirEGRl9Qjfw": {
+      "periods": [
+        {
+          "open": {
+            "day": 0,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 0,
+            "hour": 21,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 1,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 1,
+            "hour": 21,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 2,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 2,
+            "hour": 21,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 3,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 3,
+            "hour": 21,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 4,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 4,
+            "hour": 21,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 5,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 5,
+            "hour": 21,
+            "minute": 30
+          }
+        },
+        {
+          "open": {
+            "day": 6,
+            "hour": 9,
+            "minute": 30
+          },
+          "close": {
+            "day": 6,
+            "hour": 21,
+            "minute": 30
+          }
+        }
+      ],
+      "weekdayDescriptions": [
+        "星期一: 09:30 – 21:30",
+        "星期二: 09:30 – 21:30",
+        "星期三: 09:30 – 21:30",
+        "星期四: 09:30 – 21:30",
+        "星期五: 09:30 – 21:30",
+        "星期六: 09:30 – 21:30",
+        "星期日: 09:30 – 21:30"
+      ],
+      "priceLevel": null,
+      "priceMin": null,
+      "priceMax": null,
+      "summary": null,
+      "website": null
+    }
+  }
+}

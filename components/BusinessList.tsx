@@ -13,6 +13,7 @@ import { experienceTags } from "@/lib/experience";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
 import { placeHref, quickLookClick, shortPlaceName } from "@/lib/placePages";
+import { openStatus, priceLabel, type PlaceHours } from "@/lib/openingHours";
 import BusinessDetailModal from "./BusinessDetailModal";
 import styles from "./BusinessList.module.css";
 
@@ -120,7 +121,9 @@ export default function BusinessList({
   lots = [],
   couponPlaceIds = [],
   coupons = [],
+  hours = {},
 }: {
+  hours?: Record<string, PlaceHours>;
   businesses: Business[];
   photos: Record<string, PhotoCredit>;
   details: Record<string, PlaceDetail>;
@@ -136,6 +139,7 @@ export default function BusinessList({
   const [query, setQuery] = useState("");
   const [dealsOnly, setDealsOnly] = useState(false);
   const [topRated, setTopRated] = useState(false);
+  const [openNow, setOpenNow] = useState(false);
   const [sort, setSort] = useState<SortKey>("recommended");
   const [openBusiness, setOpenBusiness] = useState<Business | null>(() => businesses.find((b) => b.placeId === requestedPlaceId) ?? null);
 
@@ -154,6 +158,7 @@ export default function BusinessList({
       if (group !== "全部" && groups.get(b.placeId) !== group) return false;
       if (dealsOnly && !deals.has(b.placeId)) return false;
       if (topRated && (b.rating ?? 0) < 4.5) return false;
+      if (openNow && !openStatus(hours[b.placeId])?.open) return false;
       if (q) {
         const d = details[b.placeId];
         const hay = `${b.name} ${d?.category ?? ""} ${categoryLabel(d?.category, b.googleType, b.tag)} ${b.address ?? ""}`.toLowerCase();
@@ -164,23 +169,24 @@ export default function BusinessList({
     if (sort === "rating") return list.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1) || b.reviewCount - a.reviewCount);
     if (sort === "distance") return list.sort((a, b) => a.distanceMeters - b.distanceMeters);
     return list.sort((a, b) => Number(Boolean(photos[b.placeId])) - Number(Boolean(photos[a.placeId])) || score(b) - score(a));
-  }, [located, group, groups, dealsOnly, deals, topRated, q, details, sort, photos]);
+  }, [located, group, groups, dealsOnly, deals, topRated, openNow, hours, q, details, sort, photos]);
 
   // Editor's picks: hand-picked first, then shops with a written story or a
   // coupon — only when browsing everything, so filters show plain results.
   const picks = useMemo(() => {
-    if (group !== "全部" || q || dealsOnly || topRated) return [];
+    if (group !== "全部" || q || dealsOnly || topRated || openNow) return [];
     return located
       .filter((b) => details[b.placeId]?.featured || details[b.placeId]?.story || deals.has(b.placeId))
       .sort((a, b) => Number(Boolean(details[b.placeId]?.featured)) - Number(Boolean(details[a.placeId]?.featured)) || score(b) - score(a))
       .slice(0, 8);
-  }, [located, details, deals, group, q, dealsOnly, topRated]);
+  }, [located, details, deals, group, q, dealsOnly, topRated, openNow]);
 
   const resetFilters = () => {
     setGroup("全部");
     setQuery("");
     setDealsOnly(false);
     setTopRated(false);
+    setOpenNow(false);
   };
 
   const card = (b: Business, wide = false) => {
@@ -190,6 +196,8 @@ export default function BusinessList({
     const category = categoryLabel(detail?.category, b.googleType, b.tag);
     const live = detail?.liveStatus;
     const tags = experienceTags(b, detail).filter((t) => !t.startsWith("步行")).slice(0, 2);
+    const open = openStatus(hours[b.placeId]);
+    const price = priceLabel(hours[b.placeId]);
     const walk = b.distanceMeters <= 450 ? "步行 5 分" : b.distanceMeters <= 900 ? "步行 10 分" : null;
     const status = live?.soldOut
       ? { text: "今日完售", tone: "alert" }
@@ -240,7 +248,18 @@ export default function BusinessList({
               </>
             ) : null}
             <span>{category}</span>
+            {price ? (
+              <>
+                <span className={styles.dot} aria-hidden />
+                <span>{price.replace("均消 ", "")}</span>
+              </>
+            ) : null}
           </div>
+          {open ? (
+            <div className={styles.open} data-tone={open.tone}>
+              {open.label}
+            </div>
+          ) : null}
           <div className={styles.meta}>
             <span>
               {userLocation ? "距你" : "距老街"} {b.distanceLabel}
@@ -290,6 +309,9 @@ export default function BusinessList({
 
         <div className={styles.filterRow}>
           <div className={styles.toggles}>
+            <button type="button" className={styles.toggle} aria-pressed={openNow} onClick={() => setOpenNow((v) => !v)}>
+              營業中
+            </button>
             {deals.size > 0 ? (
               <button type="button" className={styles.toggle} aria-pressed={dealsOnly} onClick={() => setDealsOnly((v) => !v)}>
                 有優惠券
