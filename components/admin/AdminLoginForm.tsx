@@ -61,7 +61,7 @@ function LoginForm() {
           後台登入
         </h1>
         <p className="text-[12.5px] mb-6" style={{ margin: "0 0 24px", color: "#766a5d", fontSize: 13 }}>
-          大溪通商家／景點管理
+          嗨大溪商家／景點管理
         </p>
         <input
           type="password"

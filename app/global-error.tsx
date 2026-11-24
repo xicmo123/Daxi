@@ -56,7 +56,7 @@ export default function GlobalError({
           <div style={{ fontSize: 40, marginBottom: 8 }} aria-hidden>
             🛠️
           </div>
-          <h1 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>大溪通暫時無法顯示</h1>
+          <h1 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>嗨大溪暫時無法顯示</h1>
           <p style={{ fontSize: 13, color: "#7d6a58", margin: "0 0 20px" }}>
             App 遇到未預期的錯誤。請重新載入，若持續發生請稍後再試。
           </p>

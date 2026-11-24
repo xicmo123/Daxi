@@ -1,4 +1,4 @@
-// 關於大溪通 as a row inside 我的 — a link to the popup (AboutModalHost).
+// 關於嗨大溪 as a row inside 我的 — a link to the popup (AboutModalHost).
 import { ABOUT_HREF } from "@/lib/aboutOwner";
 
 export default function AboutLinkCard() {
@@ -10,7 +10,7 @@ export default function AboutLinkCard() {
     >
       <span>
         <span className="block text-app-body font-bold" style={{ color: "var(--ink)" }}>
-          關於大溪通
+          關於嗨大溪
         </span>
         <span className="mt-0.5 block text-app-caption" style={{ color: "var(--ink-soft)" }}>
           網站的由來與聯絡方式

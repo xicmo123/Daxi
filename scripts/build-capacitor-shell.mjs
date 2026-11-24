@@ -21,7 +21,7 @@ const INDEX_HTML = `<!doctype html>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="refresh" content="0; url=https://daxi.zequo.net/" />
-    <title>大溪通</title>
+    <title>嗨大溪</title>
   </head>
   <body></body>
 </html>

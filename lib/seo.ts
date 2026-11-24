@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "./siteUrl";
 
-export const SITE_NAME = "大溪通";
+export const SITE_NAME = "嗨大溪";
 
 // Child segments replace the parent's openGraph object wholesale (metadata is
 // merged shallowly), so every page that sets its own og:title must also carry
@@ -27,7 +27,7 @@ export function pageMetadata({
     ? ownImage
     : resident
     ? { url: "/resident/opengraph-image.png", width: 1200, height: 630, alt: "我是大溪人：大溪居民每天要用的生活資訊" }
-    : { url: "/opengraph-image.png", width: 1200, height: 630, alt: "大溪通：走進大溪老街，停車、景點、美食一次看" };
+    : { url: "/opengraph-image.png", width: 1200, height: 630, alt: "嗨大溪：走進大溪老街，停車、景點、美食一次看" };
   return {
     title,
     description,

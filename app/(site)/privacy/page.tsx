@@ -4,7 +4,7 @@ import TouristPageHeader from "@/components/TouristPageHeader";
 export const metadata = pageMetadata({
   path: "/privacy",
   title: "隱私權政策",
-  description: "大溪通的資料收集、使用、保存與刪除說明。",
+  description: "嗨大溪的資料收集、使用、保存與刪除說明。",
 });
 
 const updatedAt = "2026-07-28";
@@ -17,7 +17,7 @@ export default function PrivacyPage() {
       <main className="safe-page-x page-after-header pb-24 fade-in">
         <div className="rounded-2xl border px-5 py-5 text-app-body leading-relaxed" style={{ background: "var(--card)", borderColor: "var(--line)", color: "var(--ink)" }}>
           <p>
-            大溪通提供桃園大溪周邊活動、景點、停車、交通、居民生活資訊與商家優惠。本政策說明我們在提供服務時可能收集、使用與保存的資料。
+            嗨大溪提供桃園大溪周邊活動、景點、停車、交通、居民生活資訊與商家優惠。本政策說明我們在提供服務時可能收集、使用與保存的資料。
           </p>
 
           <h2 className="mt-5 mb-2 text-app-heading font-bold">我們會收集的資料</h2>

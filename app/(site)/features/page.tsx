@@ -7,7 +7,7 @@ import TouristPageHeader from "@/components/TouristPageHeader";
 export const metadata = pageMetadata({
   path: "/features",
   title: "功能總覽",
-  description: "大溪通目前提供的功能與資料來源一覽。",
+  description: "嗨大溪目前提供的功能與資料來源一覽。",
   noindex: true,
 });
 
@@ -217,7 +217,7 @@ function FeatureCard({ item }: { item: FeatureItem }) {
 export default function FeaturesPage() {
   return (
     <div className="overflow-x-hidden">
-      <TouristPageHeader href="/features" title="大溪通功能總覽" subtitle="查看遊客、大溪人、商家與營運後台的功能。" />
+      <TouristPageHeader href="/features" title="嗨大溪功能總覽" subtitle="查看遊客、大溪人、商家與營運後台的功能。" />
       <div className="safe-page-x grid grid-cols-2 gap-2 sm:grid-cols-4">
           {totals.map((total) => (
             <div key={total.label} className="min-w-0 rounded-2xl px-2 py-3 text-center" style={{ background: "var(--card)", border: "1px solid var(--line)" }}>

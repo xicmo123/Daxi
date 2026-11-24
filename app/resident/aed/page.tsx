@@ -36,7 +36,7 @@ export default async function ResidentAEDPage() {
           <div className={styles.panel}>
             <h2 className={styles.panelTitle}>AED 資料暫時連不上</h2>
             <p className={styles.panelLead}>
-              衛福部的 AED 資料目前無法從大溪通讀取。請直接開啟衛福部的全國 AED 地圖找最近的一台；撥打 119 時，派遣員也會告訴你最近的 AED 在哪裡。
+              衛福部的 AED 資料目前無法從嗨大溪讀取。請直接開啟衛福部的全國 AED 地圖找最近的一台；撥打 119 時，派遣員也會告訴你最近的 AED 在哪裡。
             </p>
             <div className={styles.btnRow} style={{ marginTop: 14 }}>
               <a className={styles.btn} href={OFFICIAL_MAP} target="_blank" rel="noopener noreferrer">

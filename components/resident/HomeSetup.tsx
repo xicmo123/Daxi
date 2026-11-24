@@ -161,7 +161,7 @@ export default function HomeSetup({
         ) : null}
       </div>
       <p className={styles.panelLead} style={{ margin: "12px 2px 0", fontSize: 13 }}>
-        設定只存在這支手機或這個瀏覽器，大溪通不會收到你的住址。
+        設定只存在這支手機或這個瀏覽器，嗨大溪不會收到你的住址。
         {editing && (initial.village || initial.stop) ? (
           <>
             {" "}

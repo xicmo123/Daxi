@@ -86,7 +86,7 @@ export default async function PlacePage({ section, placeId }: { section: "/spots
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <SkinPageHeader
         groups={TOURIST_NAV}
-        root={{ name: "大溪通", href: "/" }}
+        root={{ name: "嗨大溪", href: "/" }}
         parent={{ name: SECTION_NAME[section], href: section }}
         href={placeHref(place)}
         title={name}
@@ -248,8 +248,8 @@ export default async function PlacePage({ section, placeId }: { section: "/spots
         ) : null}
 
         <p className={styles.note}>
-          地點資料來源：{place.placeId.startsWith("custom-") ? "大溪通編輯整理" : "Google Maps Places API（每週更新，非即時）"}
-          {detail?.story ? "；推薦重點由大溪通編輯撰寫" : ""}。
+          地點資料來源：{place.placeId.startsWith("custom-") ? "嗨大溪編輯整理" : "Google Maps Places API（每週更新，非即時）"}
+          {detail?.story ? "；推薦重點由嗨大溪編輯撰寫" : ""}。
           {photo?.author ? (
             <>
               {" "}圖片：

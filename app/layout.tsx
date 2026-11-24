@@ -40,18 +40,18 @@ export const metadata: Metadata = {
   // Required for sitemap/OpenGraph to emit absolute URLs.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "大溪通 — 桃園大溪在地生活與旅遊資訊",
-    template: "%s ｜ 大溪通",
+    default: "嗨大溪 — 桃園大溪在地生活與旅遊資訊",
+    template: "%s ｜ 嗨大溪",
   },
   description:
-    "大溪通整合桃園大溪的即時停車位、公車動態、老街景點與商家、活動資訊，以及居民需要的停水停電、道路施工、垃圾清運與診所輪值。",
-  applicationName: "大溪通",
+    "嗨大溪整合桃園大溪的即時停車位、公車動態、老街景點與商家、活動資訊，以及居民需要的停水停電、道路施工、垃圾清運與診所輪值。",
+  applicationName: "嗨大溪",
   keywords: ["大溪", "大溪老街", "桃園大溪", "大溪停車", "大溪景點", "大溪美食", "大溪活動", "大溪大禧"],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "大溪通",
+    title: "嗨大溪",
   },
   icons: {
     // Google's result favicon wants a square multiple of 48px on the home page.
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: "大溪通",
+    siteName: "嗨大溪",
     locale: "zh_TW",
     url: SITE_URL,
   },
@@ -84,12 +84,13 @@ export const metadata: Metadata = {
 };
 
 // Tells search engines the site's name (shown above the URL in Google
-// results) and that 大溪通 / 我是大溪人 are the same site.
+// results) and that 嗨大溪 / 我是大溪人 / the old name 大溪通 are the same site.
 const WEBSITE_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "大溪通",
-  alternateName: ["我是大溪人", "Daxi Tong"],
+  name: "嗨大溪",
+  // 大溪通 was the name until 2026-11; kept so Google ties the two together.
+  alternateName: ["Hi Daxi", "我是大溪人", "大溪通"],
   url: `${SITE_URL}/`,
   inLanguage: "zh-Hant-TW",
   description: "桃園大溪在地生活與旅遊資訊：即時停車、公車動態、老街景點與商家、活動，以及居民需要的停水停電、道路施工、垃圾清運與診所輪值。",

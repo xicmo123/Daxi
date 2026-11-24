@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { writeIdentity, type Identity } from "@/lib/identity";
@@ -11,6 +12,9 @@ import styles from "./Skin.module.css";
 
 export type SkinHeaderProps = {
   brand: string;
+  /** How the name is drawn in the header when it differs from the plain
+   *  name — 「嗨！大溪」 is the logo, 「嗨大溪」 the name in text. */
+  logo?: string;
   sub: string;
   homeHref: string;
   /** Desktop top-bar links; the ☰ menu holds everything. */
@@ -21,9 +25,9 @@ export type SkinHeaderProps = {
   switchTo: { identity: Identity; href: string; label: string; menuLabel: string };
 };
 
-// Sticky Visit Jeju-style header shared by 大溪通 and 我是大溪人: wordmark,
+// Sticky Visit Jeju-style header shared by 嗨大溪 and 我是大溪人: wordmark,
 // desktop GNB, a mode-switch pill and the full menu (전체메뉴) drawer.
-export default function SkinHeader({ brand, sub, homeHref, gnb, groups, menuExtras, switchTo }: SkinHeaderProps) {
+export default function SkinHeader({ brand, logo, sub, homeHref, gnb, groups, menuExtras, switchTo }: SkinHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,10 +57,20 @@ export default function SkinHeader({ brand, sub, homeHref, gnb, groups, menuExtr
       <header className={styles.header}>
         <Link href={homeHref} className={styles.brand} aria-label={`${brand}首頁`}>
           <span className={styles.brandMark} aria-hidden>
-            溪
+            <Image src="/icon-96.png" alt="" width={34} height={34} priority />
           </span>
           <span className={styles.brandText}>
-            <strong>{brand}</strong>
+            <strong>
+              {(logo ?? brand).split(/(！)/).map((part, i) =>
+                part === "！" ? (
+                  <span key={i} style={{ color: "var(--rj-main)" }}>
+                    {part}
+                  </span>
+                ) : (
+                  part
+                ),
+              )}
+            </strong>
             <small>{sub}</small>
           </span>
         </Link>

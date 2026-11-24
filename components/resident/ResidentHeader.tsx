@@ -6,7 +6,7 @@ export default function ResidentHeader() {
   return (
     <SkinHeader
       brand="我是大溪人"
-      sub="大溪通 · 居民生活資訊"
+      sub="嗨大溪 · 居民生活資訊"
       homeHref="/resident"
       gnb={[
         { href: "/resident/outages", label: "民生示警" },

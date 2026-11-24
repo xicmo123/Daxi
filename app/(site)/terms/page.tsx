@@ -4,7 +4,7 @@ import TouristPageHeader from "@/components/TouristPageHeader";
 export const metadata = pageMetadata({
   path: "/terms",
   title: "服務條款",
-  description: "大溪通的使用條款、資料來源限制與責任說明。",
+  description: "嗨大溪的使用條款、資料來源限制與責任說明。",
 });
 
 const updatedAt = "2026-07-28";
@@ -17,7 +17,7 @@ export default function TermsPage() {
       <main className="safe-page-x page-after-header pb-24 fade-in">
         <div className="rounded-2xl border px-5 py-5 text-app-body leading-relaxed" style={{ background: "var(--card)", borderColor: "var(--line)", color: "var(--ink)" }}>
           <p>
-            歡迎使用大溪通。使用本服務即表示你理解並同意以下條款。本服務由熱愛大溪的民間開發者維護，並非政府機關或官方單位。
+            歡迎使用嗨大溪。使用本服務即表示你理解並同意以下條款。本服務由熱愛大溪的民間開發者維護，並非政府機關或官方單位。
           </p>
 
           <h2 className="mt-5 mb-2 text-app-heading font-bold">資訊僅供參考</h2>

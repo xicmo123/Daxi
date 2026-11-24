@@ -1,4 +1,4 @@
-// Feature map for the tourist half (大溪通). Same shape as lib/residentNav.ts
+// Feature map for the tourist half (嗨大溪). Same shape as lib/residentNav.ts
 // so the shared skin components (header menu, finder, page-header trail,
 // footer) drive both halves the same way.
 import { daxiWalkHref, oldStreetPhoto } from "./daxiWalk";
@@ -124,7 +124,7 @@ export const TOURIST_NAV: SiteNavGroup[] = [
   },
   {
     key: "about",
-    label: "關於大溪通",
+    label: "關於嗨大溪",
     intro: "一個大溪孩子做給大溪的平台。",
     photo: { src: oldStreetPhoto.src, author: oldStreetPhoto.author, sourceUrl: oldStreetPhoto.sourceUrl },
     items: [

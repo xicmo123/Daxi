@@ -64,13 +64,13 @@ export default function NotificationSettings() {
       if (result === "granted") {
         setLocalTopics(readTopics());
       } else if (result === "denied") {
-        window.alert("通知權限被拒絕了。可以到手機的「設定 → 大溪通 → 通知」重新開啟。");
+        window.alert("通知權限被拒絕了。可以到手機的「設定 → 嗨大溪 → 通知」重新開啟。");
       } else {
         // "unsupported" on a device that reports as native means the installed
         // binary predates the push plugin — the web app updates with the
         // server, the shell only updates through the store. Sending this user
         // to Settings would have them hunting for a switch that isn't there.
-        window.alert("這個版本的大溪通還不支援通知，請到 App Store / Play 商店更新後再試。");
+        window.alert("這個版本的嗨大溪還不支援通知，請到 App Store / Play 商店更新後再試。");
       }
     } finally {
       setBusy(false);
@@ -88,7 +88,7 @@ export default function NotificationSettings() {
       <div>
         <SectionLabel className="mb-2">通知設定</SectionLabel>
         <div className="rounded-2xl px-4 py-3.5 text-app-body" style={{ background: "var(--card)", color: "var(--ink-soft)" }}>
-          停水停電、道路施工等即時提醒需要在「大溪通」App 中開啟。
+          停水停電、道路施工等即時提醒需要在「嗨大溪」App 中開啟。
         </div>
       </div>
     );

@@ -20,7 +20,7 @@ export default function TouristPageHeader({
   children?: ReactNode;
 }) {
   return (
-    <SkinPageHeader groups={TOURIST_NAV} root={{ name: "大溪通", href: "/" }} href={href} title={title} lead={subtitle} photo={photo}>
+    <SkinPageHeader groups={TOURIST_NAV} root={{ name: "嗨大溪", href: "/" }} href={href} title={title} lead={subtitle} photo={photo}>
       {children}
     </SkinPageHeader>
   );

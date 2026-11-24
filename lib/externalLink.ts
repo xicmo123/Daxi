@@ -169,7 +169,7 @@ export async function openExternal(href: string): Promise<void> {
     // The plugin is missing or failed. This is not hypothetical: the web app
     // updates the instant the server does (server.url points at the remote
     // origin), but @capacitor/browser only exists in a binary built after it
-    // was added — so every already-installed copy of 大溪通 runs this code
+    // was added — so every already-installed copy of 嗨大溪 runs this code
     // against a shell that has no Browser plugin, and the call rejects.
     //
     // The caller has already preventDefault()ed by this point, so without

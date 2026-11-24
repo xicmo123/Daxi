@@ -4,12 +4,12 @@ import Link from "next/link";
 import Modal, { ModalHeader } from "./ui/Modal";
 import { ABOUT_CONTACT_EMAIL, ABOUT_PARAGRAPHS } from "@/lib/aboutOwner";
 
-// 關於大溪通: the owner's note, contact, and the small print. A popup rather
+// 關於嗨大溪: the owner's note, contact, and the small print. A popup rather
 // than a page — it is read once, and a page spent a nav slot on a dead end.
 export default function AboutModal({ onClose, resident = false }: { onClose: () => void; resident?: boolean }) {
   return (
-    <Modal onClose={onClose} label="關於大溪通" className="p-6">
-      <ModalHeader title="關於大溪通" onClose={onClose} />
+    <Modal onClose={onClose} label="關於嗨大溪" className="p-6">
+      <ModalHeader title="關於嗨大溪" onClose={onClose} />
 
       <div className="flex flex-col gap-3 text-app-body" style={{ color: "var(--ink)", lineHeight: 1.85 }}>
         {ABOUT_PARAGRAPHS.map((p) => (
@@ -25,7 +25,7 @@ export default function AboutModal({ onClose, resident = false }: { onClose: () 
           {ABOUT_CONTACT_EMAIL}
         </a>
         <a
-          href={`mailto:${ABOUT_CONTACT_EMAIL}?subject=${encodeURIComponent("大溪通意見回饋")}`}
+          href={`mailto:${ABOUT_CONTACT_EMAIL}?subject=${encodeURIComponent("嗨大溪意見回饋")}`}
           className="mt-3 flex min-h-[46px] items-center justify-center rounded-full text-app-body font-bold transition-opacity active:opacity-80"
           style={{ background: "var(--daxi-red)", color: "var(--accent-fg)" }}
         >

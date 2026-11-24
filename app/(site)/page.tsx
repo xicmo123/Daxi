@@ -44,9 +44,9 @@ const DESTINATION_JSON_LD = {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  // Overrides the layout's "%s ｜ 大溪通" template — the home page shouldn't
-  // read "大溪通 ｜ 大溪通".
-  title: { absolute: "大溪通 — 桃園大溪在地生活與旅遊資訊" },
+  // Overrides the layout's "%s ｜ 嗨大溪" template — the home page shouldn't
+  // read "嗨大溪 ｜ 嗨大溪".
+  title: { absolute: "嗨大溪 — 桃園大溪在地生活與旅遊資訊" },
   alternates: { canonical: "/" },
 };
 
@@ -300,7 +300,7 @@ export default function Home() {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(DESTINATION_JSON_LD) }} />
-      <h1 className="sr-only">大溪通：桃園大溪旅遊指南（老街散步、景點、美食、活動與停車）</h1>
+      <h1 className="sr-only">嗨大溪：桃園大溪旅遊指南（老街散步、景點、美食、活動與停車）</h1>
       <Suspense fallback={<HeroSkeleton />}>
         <Hero />
       </Suspense>

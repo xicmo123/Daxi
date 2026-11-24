@@ -5,8 +5,9 @@ import { TOURIST_NAV } from "@/lib/touristNav";
 export default function TouristSkinHeader() {
   return (
     <SkinHeader
-      brand="大溪通"
-      sub="桃園大溪旅遊指南"
+      brand="嗨大溪"
+      logo="嗨！大溪"
+      sub="Hi Daxi · 桃園大溪旅遊指南"
       homeHref="/"
       gnb={[
         { href: "/spots", label: "景點" },
