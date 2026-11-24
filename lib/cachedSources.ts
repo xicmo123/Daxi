@@ -30,6 +30,7 @@ import { fetchNearbyBuses } from "./busPositions";
 import { getMergedEvents } from "./eventsFeed";
 import { fetchDaxiAnnouncements } from "./announcements";
 import { fetchDaxiGarbageSchedule } from "./taoyuanGarbage";
+import { fetchDaxiClinics } from "./nhiClinics";
 
 // TTLs are set by how fast the underlying thing actually changes, not by how
 // fresh it would be nice to be.
@@ -90,4 +91,10 @@ export const getCachedAnnouncements = unstable_cache(
 export const getCachedGarbageSchedule = unstable_cache(async () => fetchDaxiGarbageSchedule(), ["daxi-garbage-schedule-v1"], {
   revalidate: 43200,
   tags: ["garbage"],
+});
+
+/** 健保署 publishes the clinic/pharmacy registry once a day. */
+export const getCachedClinics = unstable_cache(async () => fetchDaxiClinics(), ["nhi-daxi-clinics-v2"], {
+  revalidate: 43200,
+  tags: ["clinics"],
 });

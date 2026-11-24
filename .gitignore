@@ -75,4 +75,6 @@ next-env.d.ts
 /data/session-epochs.json
 # device push tokens — user data written at runtime, never seed content
 /data/push-tokens.json
+# last good AED download (lib/aedService.ts) — runtime cache, not seed content
+/data/aed-stations.json
 /data/coupon-redemptions.json

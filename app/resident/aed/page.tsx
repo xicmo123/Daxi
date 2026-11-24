@@ -1,7 +1,7 @@
 import EmergencyPanel from "@/components/EmergencyPanel";
 import ResidentPageHeader from "@/components/resident/ResidentPageHeader";
 import styles from "@/components/skin/Skin.module.css";
-import { fetchDaxiAEDStations } from "@/lib/aedService";
+import { getDaxiAEDStations } from "@/lib/aedService";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -12,8 +12,16 @@ export const metadata = pageMetadata({
 
 export const dynamic = "force-dynamic";
 
+const OFFICIAL_MAP = "https://tw-aed.mohw.gov.tw/";
+
+function formatFetchedAt(ms: number): string {
+  return new Intl.DateTimeFormat("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(ms);
+}
+
 export default async function ResidentAEDPage() {
-  const stations = await fetchDaxiAEDStations().catch(() => []);
+  // Never waits more than a few seconds on the ministry's feed: an emergency
+  // page that spins is worse than one that points at the official map.
+  const { stations, fetchedAt } = await getDaxiAEDStations();
 
   return (
     <main>
@@ -22,13 +30,27 @@ export default async function ResidentAEDPage() {
         <a href="tel:119" className={styles.btn} data-variant="alert">
           發現有人倒下？先撥 119
         </a>
-        <EmergencyPanel stations={stations} />
+        {stations.length > 0 ? (
+          <EmergencyPanel stations={stations} />
+        ) : (
+          <div className={styles.panel}>
+            <h2 className={styles.panelTitle}>AED 資料暫時連不上</h2>
+            <p className={styles.panelLead}>
+              衛福部的 AED 資料目前無法從大溪通讀取。請直接開啟衛福部的全國 AED 地圖找最近的一台；撥打 119 時，派遣員也會告訴你最近的 AED 在哪裡。
+            </p>
+            <div className={styles.btnRow} style={{ marginTop: 14 }}>
+              <a className={styles.btn} href={OFFICIAL_MAP} target="_blank" rel="noopener noreferrer">
+                開啟衛福部 AED 地圖 ↗
+              </a>
+            </div>
+          </div>
+        )}
         <p className={styles.note}>
           資料來源：
-          <a href="https://tw-aed.mohw.gov.tw/" target="_blank" rel="noopener noreferrer">
+          <a href={OFFICIAL_MAP} target="_blank" rel="noopener noreferrer">
             衛生福利部全國AED急救資訊網 ↗
           </a>
-          （每日自動更新，僅列出大溪區站點）。
+          （僅列出大溪區站點{fetchedAt ? `，資料更新於 ${formatFetchedAt(fetchedAt)}` : ""}）。
         </p>
       </div>
     </main>
