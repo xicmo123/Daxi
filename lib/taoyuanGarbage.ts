@@ -270,7 +270,7 @@ export async function fetchDaxiGarbageRealtime(routeId: string): Promise<Garbage
   };
 }
 
-export type GarbageScheduleStop = { seq: number; name: string; time: string | null };
+export type GarbageScheduleStop = { seq: number; name: string; time: string | null; lat: number | null; lng: number | null };
 export type GarbageScheduleRoute = GarbageRoute & { stops: GarbageScheduleStop[] };
 
 /**
@@ -292,6 +292,9 @@ export async function fetchDaxiGarbageSchedule(): Promise<GarbageScheduleRoute[]
             seq: stop.seq,
             name: stop.poi_name.trim(),
             time: stop.arrive_time && /^\d{1,2}:\d{2}$/.test(stop.arrive_time) ? stop.arrive_time : null,
+            // Lets 我家 measure nearby roadworks from the chosen stop.
+            lat: Number.isFinite(stop.lat) ? stop.lat : null,
+            lng: Number.isFinite(stop.lng) ? stop.lng : null,
           }))
           .filter((stop) => stop.name)
           .sort((a, b) => a.seq - b.seq),

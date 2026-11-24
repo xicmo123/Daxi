@@ -1,10 +1,11 @@
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import Link from "next/link";
 import { permanentRedirect } from "next/navigation";
 import { readSource } from "@/lib/fetchWithTimeout";
 // force-dynamic below zeroes the TTL on every fetch in this segment; the
 // cached wrappers are immune to it. See lib/cachedSources.ts.
-import { getCachedAnnouncements, getCachedWeather } from "@/lib/cachedSources";
+import { getCachedAnnouncements, getCachedClinics, getCachedGarbageSchedule, getCachedWeather } from "@/lib/cachedSources";
+import { currentSession, SESSIONS } from "@/lib/nhiClinics";
 import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
@@ -14,6 +15,8 @@ import SkinHero, { type SkinHeroSlide } from "@/components/skin/SkinHero";
 import ResidentFinder from "@/components/resident/ResidentFinder";
 import ResidentBulletin from "@/components/resident/ResidentBulletin";
 import ResidentLifeGuide from "@/components/resident/ResidentLifeGuide";
+import MyHomeBoard, { type BoardClinics, type BoardOutage, type BoardRoadwork } from "@/components/resident/MyHomeBoard";
+import type { HomeStop } from "@/lib/residentHome";
 import SkinEventsRail from "@/components/skin/SkinEventsRail";
 import SkinWeatherCard from "@/components/skin/SkinWeatherCard";
 import SkinIcon from "@/components/skin/SkinIcon";
@@ -27,6 +30,10 @@ export const metadata = pageMetadata({
   title: "我是大溪人：大溪居民生活資訊",
   description: "大溪居民每天要用的資訊一次看：停水停電、垃圾車即時位置、道路施工、區公所公告、診所輪值、AED 位置與陳情報修管道。",
 });
+
+// TodayStats and 我家 both need these; one upstream call per request.
+const loadOutages = cache(() => readSource(() => listUpcomingOutages()));
+const loadRoadworks = cache(() => readSource(() => fetchDaxiRoadworks()));
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short", timeZone: "Asia/Taipei" });
 
@@ -85,8 +92,8 @@ function HeroSkeleton() {
 async function TodayStats() {
   // A failed source is null, not 0 — "—" means "we don't know", never "none".
   const [outages, roadworks, announcements] = await Promise.all([
-    readSource(() => listUpcomingOutages()),
-    readSource(() => fetchDaxiRoadworks()),
+    loadOutages(),
+    loadRoadworks(),
     readSource(() => getCachedAnnouncements(10)),
   ]);
   const items = [
@@ -122,6 +129,46 @@ function StatsSkeleton() {
       ))}
     </div>
   );
+}
+
+// 我家: everything the board might need, trimmed; the browser picks out the
+// resident's own stop, 里 and nearby works from localStorage.
+async function MyHome() {
+  const [schedule, outages, roadworks, clinics] = await Promise.all([
+    getCachedGarbageSchedule().catch(() => []),
+    loadOutages(),
+    loadRoadworks(),
+    getCachedClinics().catch(() => null),
+  ]);
+  const stops: HomeStop[] = schedule.flatMap((route) =>
+    route.stops.map((s) => ({
+      routeId: route.id,
+      routeLabel: `${route.name}・${route.displayName}`,
+      seq: s.seq,
+      name: s.name,
+      time: s.time,
+      lat: s.lat,
+      lng: s.lng,
+    })),
+  );
+  const boardOutages: BoardOutage[] | null = outages.ok
+    ? outages.data.map((o) => ({ id: o.id, type: o.type, lowPressure: o.severity === "lowPressure", areas: o.areas, date: o.date, timeRange: o.timeRange }))
+    : null;
+  const boardWorks: BoardRoadwork[] | null = roadworks.ok
+    ? roadworks.data.map((w) => ({ id: w.id, name: w.name, location: w.location, points: w.points.filter((_, i) => i % Math.ceil(w.points.length / 24 || 1) === 0) }))
+    : null;
+  let boardClinics: BoardClinics | null = null;
+  if (clinics && clinics.length > 0) {
+    const { day, session } = currentSession();
+    const idx = session ? SESSIONS.indexOf(session) : -1;
+    const open = idx >= 0 ? clinics.filter((c) => c.schedule[day]?.[idx]) : [];
+    boardClinics = {
+      session,
+      clinics: open.filter((c) => c.category !== "藥局").length,
+      pharmacies: open.filter((c) => c.category === "藥局").length,
+    };
+  }
+  return <MyHomeBoard stops={stops} outages={boardOutages} roadworks={boardWorks} clinics={boardClinics} />;
 }
 
 async function Bulletin() {
@@ -210,6 +257,12 @@ export default async function ResidentHome({ searchParams }: PageProps<"/residen
       </Suspense>
 
       <ResidentFinder />
+
+      <section className={styles.section} aria-label="我家" style={{ paddingTop: 8 }}>
+        <Suspense fallback={<BlockSkeleton height={120} />}>
+          <MyHome />
+        </Suspense>
+      </section>
 
       <section className={styles.section} aria-labelledby="today-title">
         <SectionHead id="today-title" eyebrow="TODAY" title="今日大溪快報" lead="即時串接官方資料，數字點進去看細節" />

@@ -88,7 +88,7 @@ export const getCachedAnnouncements = unstable_cache(
 );
 
 /** Route timetables (stops and scheduled times) change a few times a year at most. */
-export const getCachedGarbageSchedule = unstable_cache(async () => fetchDaxiGarbageSchedule(), ["daxi-garbage-schedule-v1"], {
+export const getCachedGarbageSchedule = unstable_cache(async () => fetchDaxiGarbageSchedule(), ["daxi-garbage-schedule-v2"], {
   revalidate: 43200,
   tags: ["garbage"],
 });
