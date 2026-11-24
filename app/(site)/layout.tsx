@@ -1,4 +1,5 @@
 import BottomNav from "@/components/BottomNav";
+import GoogleTagManager from "@/components/GoogleTagManager";
 import PullToRefresh from "@/components/PullToRefresh";
 import TouristSkinHeader from "@/components/tourist/TouristSkinHeader";
 import TouristFooter from "@/components/tourist/TouristFooter";
@@ -18,6 +19,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         </div>
       </div>
       <BottomNav />
+      <GoogleTagManager />
     </>
   );
 }

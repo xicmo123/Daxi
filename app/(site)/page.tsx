@@ -9,11 +9,12 @@ import { photoForTopic } from "@/lib/heroPhotos";
 import SkinFinder from "@/components/skin/SkinFinder";
 import SkinGuide from "@/components/skin/SkinGuide";
 import SkinEventsRail from "@/components/skin/SkinEventsRail";
+import SkinSectionHead from "@/components/skin/SkinSectionHead";
 import SkinWeatherCard from "@/components/skin/SkinWeatherCard";
 import styles from "@/components/skin/Skin.module.css";
 import { CouponRail, SpotRail, type HomeSpot } from "@/components/tourist/TouristHomeRails";
 import { daxiWalkHref, daxiWalkVisitTime, oldStreetPhoto } from "@/lib/daxiWalk";
-import { TOURIST_GUIDE_GROUPS, TOURIST_HASHTAGS, allTouristItems } from "@/lib/touristNav";
+import { TOURIST_GUIDE_GROUPS, TOURIST_SHORTCUTS, allTouristItems } from "@/lib/touristNav";
 import { getCachedEvents, getCachedWeather } from "@/lib/cachedSources";
 import { getFestivalTiming, findTodaysMilestone } from "@/lib/festivalTiming";
 import { isEventExpired } from "@/lib/eventsFeed";
@@ -61,9 +62,9 @@ export const metadata: Metadata = {
 //      position indicator long before that and just read as clutter.
 const MAX_HERO_SLIDES = 5;
 const HOME_TRIP_THEMES = [
-  { placeId: "custom-tycg-1003", title: "到大溪橋看河景", description: "走上橋面，望向大漢溪河谷。" },
-  { placeId: "custom-tycg-392", title: "走進木藝老城", description: "從武德殿看大溪的歷史建築。" },
-  { placeId: "custom-tycg-963", title: "老茶廠裡尋茶香", description: "順著製茶老屋，認識大溪的茶產業。" },
+  { placeId: "custom-tycg-414", title: "老街與牌樓", description: "散步看和平老街的百年商號。" },
+  { placeId: "custom-tycg-392", title: "木藝與老屋", description: "走訪木藝生態博物館武德殿。" },
+  { placeId: "custom-tycg-1003", title: "大漢溪河岸", description: "在大溪橋遠眺大漢溪河谷。" },
 ];
 
 // During the festival, prefer today's or the ongoing milestone over always
@@ -95,25 +96,6 @@ async function pickInitialSlide() {
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short", timeZone: "Asia/Taipei" });
 const phaseTag = { ongoing: "進行中", upcoming: "即將登場", past: "已結束" } as const;
 
-function SectionHead({ id, eyebrow, title, lead, more }: { id: string; eyebrow: string; title: string; lead?: string; more?: string }) {
-  return (
-    <div className={styles.sectionHead}>
-      <div className="min-w-0">
-        <span className={styles.eyebrow}>{eyebrow}</span>
-        <h2 id={id} className={styles.sectionTitle}>
-          {title}
-        </h2>
-        {lead ? <p className={styles.sectionLead}>{lead}</p> : null}
-      </div>
-      {more ? (
-        <Link href={more} className={styles.more}>
-          more <span aria-hidden>+</span>
-        </Link>
-      ) : null}
-    </div>
-  );
-}
-
 function BlockSkeleton({ height = 220 }: { height?: number }) {
   return <div className="skeleton" style={{ height, borderRadius: 20, background: "var(--rj-surface)" }} />;
 }
@@ -130,7 +112,7 @@ async function Hero() {
       id: "walk",
       tag: "推薦路線",
       title: "走進大溪老街",
-      subtitle: `從和平路的老牌樓，走到普濟堂、公園和武德殿。4 站步行導覽，${daxiWalkVisitTime}。`,
+      subtitle: `從和平老街走到武德殿。4 站步行導覽，${daxiWalkVisitTime}。`,
       href: daxiWalkHref,
       ctaLabel: "開始老街散步",
       photo: { src: oldStreetPhoto.src, author: oldStreetPhoto.author, sourceUrl: oldStreetPhoto.sourceUrl },
@@ -205,31 +187,39 @@ const loadHomeData = cache(async () => {
 async function Spots() {
   const { spots, weather } = await loadHomeData();
   if (spots.length === 0) return null;
-  return <SpotRail spots={spots} preferIndoor={weather ? weatherMood(weather) !== "normal" : false} />;
+  return (
+    <section className={styles.section} aria-labelledby="spots-title">
+      <SkinSectionHead id="spots-title" title="熱門景點" more={{ href: "/spots", label: "全部景點" }} />
+      <SpotRail spots={spots} preferIndoor={weather ? weatherMood(weather) !== "normal" : false} />
+    </section>
+  );
 }
 
 async function Themes() {
   const { themes } = await loadHomeData();
   if (themes.length === 0) return null;
   return (
-    <div className={styles.themeGrid}>
-      {themes.map((theme) => (
-        <div key={theme.placeId} className={`${styles.guideFeature} ${styles.themeCard}`}>
-          <Image src={theme.photo.src} alt="" fill sizes="(max-width: 767px) 100vw, 380px" unoptimized={theme.photo.src.startsWith("http")} />
-          <h3>
-            <Link href={`/spots/${encodeURIComponent(theme.placeId)}`} className={styles.stretchedLink}>
-              {theme.title}
-            </Link>
-          </h3>
-          <p>{theme.description}</p>
-          {theme.photo.author && theme.photo.sourceUrl ? (
-            <a className={styles.guideCredit} href={theme.photo.sourceUrl} target="_blank" rel="noreferrer">
-              攝影 {theme.photo.author}
-            </a>
-          ) : null}
-        </div>
-      ))}
-    </div>
+    <section className={`${styles.section} ${styles.sectionTint}`} aria-labelledby="themes-title">
+      <SkinSectionHead id="themes-title" title="主題旅遊" />
+      <div className={styles.themeGrid} data-count={themes.length}>
+        {themes.map((theme) => (
+          <div key={theme.placeId} className={`${styles.guideFeature} ${styles.themeCard}`}>
+            <Image src={theme.photo.src} alt="" fill sizes="(max-width: 767px) 92vw, 33vw" unoptimized={theme.photo.src.startsWith("http")} />
+            <h3>
+              <Link href={`/spots/${encodeURIComponent(theme.placeId)}`} className={styles.stretchedLink}>
+                {theme.title} <span aria-hidden>→</span>
+              </Link>
+            </h3>
+            <p>{theme.description}</p>
+            {theme.photo.author && theme.photo.sourceUrl ? (
+              <a className={styles.guideCredit} href={theme.photo.sourceUrl} target="_blank" rel="noreferrer">
+                攝影 {theme.photo.author}
+              </a>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -238,7 +228,7 @@ async function Coupons() {
   if (coupons.length === 0) return null;
   return (
     <section className={styles.section} aria-labelledby="coupons-title">
-      <SectionHead id="coupons-title" eyebrow="DEALS" title="店家優惠" lead="到店出示核銷碼，店員掃碼即可使用" more="/coupons" />
+      <SkinSectionHead id="coupons-title" title="店家優惠" more={{ href: "/coupons", label: "全部優惠" }} />
       <CouponRail coupons={coupons} />
     </section>
   );
@@ -252,9 +242,8 @@ async function Essentials() {
 
       <div className={styles.essCard}>
         <h3>第一次來大溪？</h3>
-        <p>先認識老街的故事，再照著路線走一圈。</p>
         <div className={styles.essLinks}>
-          <TouristWelcome className={styles.essLink} label={<>讀大溪的故事 <span aria-hidden>→</span></>} />
+          <TouristWelcome autoOpen={false} className={styles.essLink} label={<>讀大溪的故事 <span aria-hidden>→</span></>} />
           <Link href={daxiWalkHref} className={styles.essLink}>
             老街散步路線 <span aria-hidden>→</span>
           </Link>
@@ -266,7 +255,6 @@ async function Essentials() {
 
       <div className={styles.essCard}>
         <h3>交通與停車</h3>
-        <p>假日老街周邊車多，出發前先看空位。</p>
         <div className={styles.essLinks}>
           <Link href="/parking" className={styles.essLink}>
             周邊停車與即時空位 <span aria-hidden>→</span>
@@ -283,53 +271,36 @@ async function Essentials() {
   );
 }
 
-function HeroSkeleton() {
-  return (
-    <div className={styles.heroWrap}>
-      <div className={`${styles.hero} skeleton`} />
-    </div>
-  );
-}
-
 export default function Home() {
   return (
-    <main>
+    <main className={styles.home} data-mode="tourist">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(DESTINATION_JSON_LD) }} />
       <h1 className="sr-only">嗨大溪：桃園大溪旅遊指南（老街散步、景點、美食、活動與停車）</h1>
-      <Suspense fallback={<HeroSkeleton />}>
-        <Hero />
+      <div className={styles.homeLead}>
+        <Suspense fallback={<div className={`${styles.hero} ${styles.heroSkeleton} skeleton`} />}>
+          <Hero />
+        </Suspense>
+        <SkinFinder
+          items={allTouristItems()}
+          shortcuts={TOURIST_SHORTCUTS}
+          title="規劃大溪小旅行"
+          placeholder="搜尋大溪橋、豆干或停車"
+          searchHref="/search"
+          label="搜尋大溪景點與店家"
+        />
+      </div>
+
+      <Suspense fallback={<div className={styles.section}><BlockSkeleton height={220} /></div>}>
+        <Themes />
       </Suspense>
 
-      <SkinFinder
-        items={allTouristItems()}
-        hashtags={TOURIST_HASHTAGS}
-        placeholder="想去哪裡？例如：大溪橋、豆干、停車"
-        searchHref="/search"
-        label="搜尋大溪景點與店家"
-      />
-
-      <section className={styles.section} aria-labelledby="guide-title">
-        <SectionHead id="guide-title" eyebrow="TRAVEL GUIDE" title="大溪怎麼玩" more="/spots" />
-        <SkinGuide groups={TOURIST_GUIDE_GROUPS} label="旅遊指南分類" />
-      </section>
-
-      <section className={styles.section} aria-labelledby="spots-title">
-        <SectionHead id="spots-title" eyebrow="MUST SEE" title="熱門景點" lead="大溪人推薦的必去地點" more="/spots" />
-        <Suspense fallback={<BlockSkeleton height={300} />}>
-          <Spots />
-        </Suspense>
-      </section>
-
-      <section className={styles.section} aria-labelledby="themes-title">
-        <SectionHead id="themes-title" eyebrow="THEMES" title="主題旅遊" lead="挑一個主題，慢慢走" />
-        <Suspense fallback={<BlockSkeleton height={260} />}>
-          <Themes />
-        </Suspense>
-      </section>
+      <Suspense fallback={<div className={styles.section}><BlockSkeleton height={210} /></div>}>
+        <Spots />
+      </Suspense>
 
       <section className={styles.section} aria-labelledby="events-title">
-        <SectionHead id="events-title" eyebrow="EVENTS" title="近期活動" more="/events" />
-        <Suspense fallback={<BlockSkeleton height={300} />}>
+        <SkinSectionHead id="events-title" title="近期活動" more={{ href: "/events", label: "全部活動" }} />
+        <Suspense fallback={<BlockSkeleton height={120} />}>
           <SkinEventsRail href="/events" />
         </Suspense>
       </section>
@@ -338,9 +309,14 @@ export default function Home() {
         <Coupons />
       </Suspense>
 
+      <section className={`${styles.section} ${styles.sectionTint}`} aria-labelledby="guide-title">
+        <SkinSectionHead id="guide-title" title="大溪怎麼玩" />
+        <SkinGuide groups={TOURIST_GUIDE_GROUPS} label="旅遊指南分類" />
+      </section>
+
       <section className={styles.section} aria-labelledby="essentials-title">
-        <SectionHead id="essentials-title" eyebrow="ESSENTIALS" title="旅遊必備資訊" />
-        <Suspense fallback={<BlockSkeleton height={210} />}>
+        <SkinSectionHead id="essentials-title" title="旅遊必備資訊" />
+        <Suspense fallback={<BlockSkeleton height={175} />}>
           <Essentials />
         </Suspense>
       </section>

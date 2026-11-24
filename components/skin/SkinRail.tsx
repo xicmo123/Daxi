@@ -1,14 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import styles from "./Skin.module.css";
 
-// Horizontal snap-scrolling card row with the Jeju festival-swiper footer: a
-// thin progress track showing which part of the row is in view, plus prev /
-// next buttons for mouse users. Native scrolling, so touch flicks just work.
+// Fit short rows in the available width and scroll longer ones.
 export default function SkinRail({ label, children }: { label: string; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [view, setView] = useState({ start: 0, size: 1 });
+  const count = Children.count(children);
 
   const measure = useCallback(() => {
     const el = ref.current;
@@ -24,14 +23,16 @@ export default function SkinRail({ label, children }: { label: string; children:
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [measure]);
+  }, [count, measure]);
 
   const step = (dir: 1 | -1) => {
     const el = ref.current;
     if (!el) return;
     const card = el.firstElementChild as HTMLElement | null;
-    const amount = card ? card.offsetWidth + 12 : el.clientWidth * 0.8;
-    el.scrollBy({ left: amount * dir, behavior: "smooth" });
+    const gap = Number.parseFloat(window.getComputedStyle(el).columnGap) || 0;
+    const amount = card ? card.getBoundingClientRect().width + gap : el.clientWidth * 0.8;
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
+    el.scrollBy({ left: amount * dir, behavior });
   };
 
   const atStart = view.start <= 0.001;
@@ -39,7 +40,7 @@ export default function SkinRail({ label, children }: { label: string; children:
 
   return (
     <div>
-      <div ref={ref} className={styles.rail} onScroll={measure} role="list" aria-label={label}>
+      <div ref={ref} className={styles.rail} data-count={count} onScroll={measure} role="list" aria-label={label}>
         {children}
       </div>
       {view.size < 0.999 ? (

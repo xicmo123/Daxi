@@ -157,6 +157,75 @@
   font-weight: 750;
 }
 
+.parkingSearchResults {
+  max-height: min(16rem, 38vh);
+  overflow-y: auto;
+  border-bottom: 1px solid var(--line);
+}
+
+.parkingSearchResults li + li {
+  border-top: 1px solid var(--line);
+}
+
+.parkingSearchResults button {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.parkingSearchResults button:hover,
+.parkingSearchResults button:focus-visible {
+  background: var(--paper-2);
+  outline-offset: -2px;
+}
+
+.parkingSearchResults small,
+.parkingSearchResults p,
+.parkingSearchSummary small {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.parkingSearchResults p {
+  padding: 0.65rem 0.85rem;
+}
+
+.parkingSearchSummary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 1rem;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+}
+
+.parkingSearchSummary [role="status"] {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  overflow-wrap: anywhere;
+}
+
+.parkingSearchActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.parkingSearchActions button {
+  min-height: 44px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
 .lotList {
   display: grid;
   margin: 0;
@@ -264,6 +333,29 @@
   border-color: var(--cognac);
 }
 
+.spotsGrid {
+  display: grid;
+  gap: clamp(8px, 1.2vw, 16px);
+}
+
+@media (min-width: 360px) {
+  .spotsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .spotsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .spotsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .placePhoto {
   position: relative;
   width: 100%;
@@ -275,12 +367,12 @@
 .placeBody {
   display: grid;
   gap: 0.25rem;
-  padding: 0.8rem 0.9rem;
+  padding: clamp(8px, 1vw, 13px);
 }
 
 .placeBody h3 {
   font-family: var(--font-app-sans);
-  font-size: 1.07rem;
+  font-size: clamp(14px, 1.25vw, 17px);
   font-weight: 750;
   line-height: 1.4;
 }
@@ -306,7 +398,7 @@
 }
 
 .featuredSpot {
-  flex: 0 0 min(82%, 21rem);
+  flex: 0 0 min(68%, 20rem);
   scroll-snap-align: start;
 }
 

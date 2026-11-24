@@ -42,10 +42,10 @@ export default function HomeSetup({
           設定我家
         </h2>
         <p className={styles.panelLead} style={{ margin: "0 0 14px" }}>
-          選好里別和家門口的垃圾車站，這裡就會直接顯示：垃圾車今天幾點來、你家有沒有停水停電、附近有沒有施工。只存在這支手機，不用註冊。
+          設定里別和清運站，就能看到附近的垃圾車時間、停水停電和施工。設定只存在這台裝置。
         </p>
         <button type="button" className={styles.btn} onClick={() => setOpen(true)}>
-          開始設定（約 10 秒）
+          開始設定
         </button>
       </section>
     );

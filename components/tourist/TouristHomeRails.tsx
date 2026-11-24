@@ -32,7 +32,7 @@ export function SpotRail({ spots, preferIndoor }: { spots: HomeSpot[]; preferInd
         >
           <div className={styles.eventPhoto}>
             {spot.photoSrc ? (
-              <Image src={spot.photoSrc} alt="" fill sizes="(max-width: 767px) 82vw, 340px" unoptimized={spot.photoSrc.startsWith("http")} />
+              <Image src={spot.photoSrc} alt="" fill sizes="(max-width: 639px) 48vw, 360px" unoptimized={spot.photoSrc.startsWith("http")} />
             ) : (
               <PlaceholderIcon kind="景點" />
             )}

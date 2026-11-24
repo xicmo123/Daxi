@@ -1,3 +1,5 @@
+import type { Business } from "./businesses";
+
 // Curated place metadata (category/story/tags) now lives in
 // data/place-details.json, edited through the admin backend, and read at
 // runtime via lib/placesStore.ts. This file only keeps the pure display
@@ -98,6 +100,21 @@ export function categoryLabel(curatedCategory: string | undefined, googleType: s
   if (curatedCategory) return curatedCategory;
   if (googleType && GOOGLE_TYPE_LABELS[googleType]) return GOOGLE_TYPE_LABELS[googleType];
   return fallback;
+}
+
+export type BusinessBrowseGroup = "豆干小吃" | "餐廳" | "咖啡甜點" | "市場超市" | "購物";
+
+const SNACK = /豆干|豆乾|豆花|肉圓|油飯|香腸|小吃|麵|滷|粽|餅|食品/;
+const CAFE = /咖啡|甜點|冰|茶|烘焙|蛋糕|Coffee|Cafe|星巴克/i;
+const MARKET = /市場|夜市|花市|全聯|超市|便利/;
+
+export function businessGroupOf({ googleType, name, tag }: Business): BusinessBrowseGroup {
+  const type = googleType ?? "";
+  if (/market|supermarket|convenience|grocery/.test(type) || MARKET.test(name)) return "市場超市";
+  if (/cafe|coffee|dessert|bakery|pastry/.test(type) || CAFE.test(name)) return "咖啡甜點";
+  if (SNACK.test(name) || /meal_takeaway|deli|food$/.test(type)) return "豆干小吃";
+  if (/restaurant/.test(type)) return "餐廳";
+  return tag === "美食" ? "餐廳" : "購物";
 }
 
 export type QueueStatus = NonNullable<PlaceDetail["liveStatus"]>["queueStatus"];

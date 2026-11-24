@@ -19,6 +19,7 @@ import ResidentBulletin from "@/components/resident/ResidentBulletin";
 import ResidentLifeGuide from "@/components/resident/ResidentLifeGuide";
 import MyHomeBoard, { type BoardClinics, type BoardOutage, type BoardRoadwork } from "@/components/resident/MyHomeBoard";
 import SkinEventsRail from "@/components/skin/SkinEventsRail";
+import SkinSectionHead from "@/components/skin/SkinSectionHead";
 import SkinWeatherCard from "@/components/skin/SkinWeatherCard";
 import SkinIcon from "@/components/skin/SkinIcon";
 import styles from "@/components/skin/Skin.module.css";
@@ -69,14 +70,6 @@ async function Hero() {
   );
 }
 
-function HeroSkeleton() {
-  return (
-    <div className={styles.heroWrap}>
-      <div className={`${styles.hero} skeleton`} />
-    </div>
-  );
-}
-
 async function TodayStats() {
   // A failed source is null, not 0 — "—" means "we don't know", never "none".
   const [outages, roadworks, announcements] = await Promise.all([
@@ -98,7 +91,7 @@ async function TodayStats() {
           </span>
           <span>
             <span className={styles.statLabel}>{item.label}</span>
-            <span className={styles.statValue} style={{ display: "block" }}>
+            <span className={styles.statValue}>
               {item.count ?? "—"}
               {item.count !== null ? <small>{item.unit}</small> : null}
             </span>
@@ -153,15 +146,16 @@ async function Bulletin() {
   return <ResidentBulletin posts={sortedBulletinPosts(activeBulletinPosts(posts))} />;
 }
 
-async function Essentials() {
+async function Weather() {
   const weather = await getCachedWeather().catch(() => null);
-  return (
-    <div className={styles.essentials}>
-      <SkinWeatherCard weather={weather} />
+  return <SkinWeatherCard weather={weather} />;
+}
 
+function Essentials() {
+  return (
+    <div className={styles.essentials} data-cols="2">
       <div className={styles.essCard}>
         <h3>緊急聯絡</h3>
-        <p>點一下直接撥號</p>
         <div className={styles.callList}>
           <a className={styles.call} href="tel:110">
             <b>110</b>
@@ -176,14 +170,13 @@ async function Essentials() {
             <small>反詐騙</small>
           </a>
         </div>
-        <Link href="/resident/aed" className={styles.essLink} style={{ marginTop: 8 }}>
+        <Link href="/resident/aed" className={styles.essLink}>
           尋找最近的 AED <span aria-hidden>→</span>
         </Link>
       </div>
 
       <div className={styles.essCard}>
         <h3>陳情與服務</h3>
-        <p>路燈、坑洞、路樹，這樣通報最快</p>
         <div className={styles.essLinks}>
           <a href="tel:1999" className={styles.essLink}>
             撥打市民專線 1999 <span aria-hidden>☎</span>
@@ -200,80 +193,65 @@ async function Essentials() {
   );
 }
 
-function BlockSkeleton({ height = 196 }: { height?: number }) {
+function BlockSkeleton({ height = 130 }: { height?: number }) {
   return <div className="skeleton" style={{ height, borderRadius: 20, background: "var(--rj-surface)" }} />;
-}
-
-function SectionHead({ id, eyebrow, title, lead, more }: { id: string; eyebrow: string; title: string; lead?: string; more?: string }) {
-  return (
-    <div className={styles.sectionHead}>
-      <div className="min-w-0">
-        <span className={styles.eyebrow}>{eyebrow}</span>
-        <h2 id={id} className={styles.sectionTitle}>
-          {title}
-        </h2>
-        {lead ? <p className={styles.sectionLead}>{lead}</p> : null}
-      </div>
-      {more ? (
-        <Link href={more} className={styles.more}>
-          more <span aria-hidden>+</span>
-        </Link>
-      ) : null}
-    </div>
-  );
 }
 
 export default async function ResidentHome({ searchParams }: PageProps<"/resident">) {
   // Old links (menu bookmarks, app pushes) opened the garbage map as a sheet here.
   if ((await searchParams).open === "garbage") permanentRedirect(GARBAGE_HREF);
   return (
-    <main>
+    <main className={styles.home} data-mode="resident">
       <h1 className="sr-only">我是大溪人：大溪居民生活資訊（停水停電、垃圾車、道路施工、公告、診所與 AED）</h1>
-      <Suspense fallback={<HeroSkeleton />}>
-        <Hero />
-      </Suspense>
-
-      <ResidentFinder />
-
-      <section className={styles.section} aria-label="我家" style={{ paddingTop: 8 }}>
-        <Suspense fallback={<BlockSkeleton height={120} />}>
-          <MyHome />
+      <div className={styles.homeLead}>
+        <Suspense fallback={<div className={`${styles.hero} ${styles.heroSkeleton} skeleton`} />}>
+          <Hero />
         </Suspense>
-      </section>
+        <ResidentFinder />
+      </div>
 
-      <section className={styles.section} aria-labelledby="today-title">
-        <SectionHead id="today-title" eyebrow="TODAY" title="今日大溪快報" lead="即時串接官方資料，數字點進去看細節" />
-        <Suspense fallback={<StatsSkeleton />}>
-          <TodayStats />
-        </Suspense>
-      </section>
+      <div className={`${styles.section} ${styles.sectionTint} ${styles.residentOverview}`}>
+        <section className={styles.residentToday} aria-labelledby="today-title">
+          <SkinSectionHead id="today-title" title="今日大溪快報" />
+          <Suspense fallback={<StatsSkeleton />}>
+            <TodayStats />
+          </Suspense>
+        </section>
+        <div className={styles.residentMyHome}>
+          <Suspense fallback={<BlockSkeleton height={120} />}>
+            <MyHome />
+          </Suspense>
+        </div>
 
-      <section id="bulletin" className={styles.section} aria-labelledby="bulletin-title">
-        <SectionHead id="bulletin-title" eyebrow="COMMUNITY" title="社區佈告欄" lead="里長發布的里內消息" />
-        <Suspense fallback={<BlockSkeleton />}>
-          <Bulletin />
-        </Suspense>
-      </section>
+        <section id="bulletin" className={styles.residentBulletin} aria-labelledby="bulletin-title">
+          <SkinSectionHead id="bulletin-title" title="社區佈告欄" />
+          <Suspense fallback={<BlockSkeleton />}>
+            <Bulletin />
+          </Suspense>
+        </section>
 
-      <section className={styles.section} aria-labelledby="guide-title">
-        <SectionHead id="guide-title" eyebrow="LIFE GUIDE" title="大溪生活指南" more="/resident/services" />
-        <Suspense fallback={<BlockSkeleton height={320} />}>
-          <ResidentLifeGuide />
-        </Suspense>
+        <div className={styles.residentWeather}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <Weather />
+          </Suspense>
+        </div>
+      </div>
+
+      <section className={`${styles.section} ${styles.sectionTint}`} aria-labelledby="guide-title">
+        <SkinSectionHead id="guide-title" title="大溪生活指南" more={{ href: "/resident/services", label: "里民服務" }} />
+        <ResidentLifeGuide />
       </section>
 
       <section className={styles.section} aria-labelledby="events-title">
-        <SectionHead id="events-title" eyebrow="EVENTS" title="近期在地活動" more="/resident/events" />
-        <Suspense fallback={<BlockSkeleton height={280} />}>
+        <SkinSectionHead id="events-title" title="近期在地活動" more={{ href: "/resident/events", label: "全部活動" }} />
+        <Suspense fallback={<BlockSkeleton />}>
           <SkinEventsRail href="/resident/events" />
         </Suspense>
       </section>
 
       <section className={styles.section} aria-labelledby="essentials-title">
-        <SectionHead id="essentials-title" eyebrow="ESSENTIALS" title="生活必備資訊" />
-        <Suspense fallback={<BlockSkeleton height={210} />}>
-          <Essentials />
-        </Suspense>
+        <SkinSectionHead id="essentials-title" title="生活必備資訊" />
+        <Essentials />
       </section>
     </main>
   );

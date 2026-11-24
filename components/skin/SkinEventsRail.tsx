@@ -14,35 +14,32 @@ export default async function SkinEventsRail({ href }: { href: string }) {
     return (
       <div className={styles.empty}>
         <strong>近期沒有活動</strong>
-        新活動公布後會出現在這裡
       </div>
     );
   }
   return (
     <SkinRail label="近期活動">
       {events.map((e) => (
-        <Link key={e.id} href={href} className={styles.eventCard} role="listitem">
+        <Link key={e.id} href={href} className={`${styles.eventCard} ${styles.eventPreview}`} role="listitem">
           <div className={styles.eventPhoto}>
             <Image
               src={e.photoSrc ?? "/images/puji-temple.jpg"}
               alt=""
               fill
-              sizes="(max-width: 767px) 82vw, 340px"
+              sizes={events.length <= 2 ? "170px" : "(max-width: 639px) 48vw, 360px"}
               unoptimized={Boolean(e.photoSrc?.startsWith("http"))}
             />
-            <span
-              className={`${styles.badge} ${styles.eventPhase}`}
-              data-tone={e.phase === "ongoing" ? "ok" : "main"}
-              style={{ background: e.phase === "ongoing" ? undefined : "var(--rj-bg)" }}
-            >
+          </div>
+          <div className={styles.eventCopy}>
+            <span className={styles.badge} data-tone={e.phase === "ongoing" ? "ok" : "main"}>
               {phaseLabel[e.phase]}
             </span>
+            <h3>{e.title}</h3>
+            <p>
+              {e.date}
+              {e.time ? ` · ${e.time}` : ""}
+            </p>
           </div>
-          <h3>{e.title}</h3>
-          <p>
-            {e.date}
-            {e.time ? ` · ${e.time}` : ""}
-          </p>
         </Link>
       ))}
     </SkinRail>

@@ -1,4 +1,5 @@
 import ResidentBottomNav from "@/components/ResidentBottomNav";
+import GoogleTagManager from "@/components/GoogleTagManager";
 import PullToRefresh from "@/components/PullToRefresh";
 import ResidentHeader from "@/components/resident/ResidentHeader";
 import ResidentFooter from "@/components/resident/ResidentFooter";
@@ -18,6 +19,7 @@ export default function ResidentLayout({ children }: { children: React.ReactNode
         </div>
       </div>
       <ResidentBottomNav />
+      <GoogleTagManager />
     </>
   );
 }

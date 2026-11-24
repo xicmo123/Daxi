@@ -3,12 +3,14 @@ import Link from "next/link";
 import TouristPageHeader from "@/components/TouristPageHeader";
 import ParkingDirectory from "@/components/ParkingDirectory";
 import ParkingAlertBanner from "@/components/ParkingAlertBanner";
-import type { ParkingMapLandmark, ParkingMapLot } from "@/components/ParkingMap";
+import type { ParkingMapPlace, ParkingMapLot } from "@/components/ParkingMap";
 import { getCachedNearbyParking, getCachedParkingSnapshot } from "@/lib/cachedSources";
 import { parkingCongestion } from "@/lib/experience";
 import { TAOYUAN_PARKING_CATALOG, TDX_PARKING_CATALOG } from "@/lib/parkingFeed";
 import { haversineMeters, parkingAvailabilityLabel } from "@/lib/tycgParking";
 import { getAllPlaces, filterVisiblePlaces, readDetails } from "@/lib/placesStore";
+import { businessGroupOf, categoryLabel } from "@/lib/placeDetails";
+import { shortPlaceName } from "@/lib/placePages";
 import styles from "@/components/TouristInterior.module.css";
 
 export const dynamic = "force-dynamic";
@@ -16,14 +18,27 @@ export const dynamic = "force-dynamic";
 export const metadata = pageMetadata({
   path: "/parking",
   title: "大溪停車場與即時空位",
-  description: "查詢大溪老街周邊停車場位置、空位和開車導航。未回報數字的車場標示空位未知。",
+  description: "搜尋大溪景點、店家或小吃，找離目的地最近的停車場，查即時空位與開車導航。",
 });
 
-async function readLandmarks(): Promise<ParkingMapLandmark[]> {
+async function readDestinations(): Promise<ParkingMapPlace[]> {
   const [places, details] = await Promise.all([getAllPlaces(), readDetails()]);
   return filterVisiblePlaces(places, details)
-    .filter((place) => place.tag === "景點")
-    .map(({ placeId, name, lat, lng }) => ({ id: placeId, name, lat, lng }));
+    .filter(({ lat, lng }) => Number.isFinite(lat) && Math.abs(lat) <= 90 && Number.isFinite(lng) && Math.abs(lng) <= 180)
+    .map((place) => {
+      const { placeId, name, tag, googleType, address, lat, lng } = place;
+      const detail = details[placeId];
+      return {
+        id: placeId,
+        name: shortPlaceName(name),
+        type: tag === "景點" ? "landmark" : "business",
+        address,
+        category: categoryLabel(detail?.category, googleType, tag),
+        keywords: [tag, ...(tag === "景點" ? [] : [businessGroupOf(place)]), ...(detail?.tags ?? [])],
+        lat,
+        lng,
+      };
+    });
 }
 
 function comparableName(name: string) {
@@ -31,10 +46,10 @@ function comparableName(name: string) {
 }
 
 export default async function ParkingPage() {
-  const [snapshot, nearbyLots, landmarks] = await Promise.all([
+  const [snapshot, nearbyLots, destinations] = await Promise.all([
     getCachedParkingSnapshot(),
     getCachedNearbyParking().catch(() => []),
-    readLandmarks().catch(() => []),
+    readDestinations().catch(() => []),
   ]);
   const officialLots = snapshot.lots;
   const mappedLots: ParkingMapLot[] = [
@@ -49,7 +64,7 @@ export default async function ParkingPage() {
 
   return (
     <main>
-      <TouristPageHeader href="/parking" title="周邊停車" subtitle="查看老街周邊停車場、已回報的即時空位和開車導航。" />
+      <TouristPageHeader href="/parking" title="周邊停車" subtitle="搜尋店家或景點，查附近停車場、即時空位和開車導航。" />
       {congestion.isCongested ? (
         <div className="pt-3">
           <ParkingAlertBanner
@@ -60,7 +75,7 @@ export default async function ParkingPage() {
         </div>
       ) : null}
       <div className={styles.content}>
-        <ParkingDirectory lots={mappedLots} landmarks={landmarks} updatedAt={snapshot.updatedAt} source={snapshot.source} />
+        <ParkingDirectory lots={mappedLots} destinations={destinations} updatedAt={snapshot.updatedAt} source={snapshot.source} />
         <nav className={styles.parkingRelated} aria-label="其他交通資訊">
           <Link className={styles.secondaryLink} href="/bus">查公車與到站時間 <span aria-hidden>→</span></Link>
           <Link className={styles.secondaryLink} href="/weather">看天氣與路況 <span aria-hidden>→</span></Link>

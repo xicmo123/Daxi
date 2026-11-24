@@ -179,11 +179,6 @@ export function touristTrail(href: string) {
   return navTrail(TOURIST_NAV, href);
 }
 
-export const TOURIST_HASHTAGS: Array<{ label: string; href: string }> = [
-  { label: "大溪老街", href: daxiWalkHref },
-  { label: "豆干", href: "/search?q=豆干" },
-  { label: "大溪橋", href: "/search?q=大溪橋" },
-  { label: "停車", href: "/parking" },
-  { label: "大溪大禧", href: "/events" },
-  { label: "優惠券", href: "/coupons" },
-];
+export const TOURIST_SHORTCUTS = allTouristItems().filter((item) =>
+  ["spots", "walk", "businesses", "events", "parking", "bus"].includes(item.key),
+);

@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { writeIdentity, type Identity } from "@/lib/identity";
 import type { SiteNavGroup } from "@/lib/siteNav";
 import SkinIcon from "./SkinIcon";
@@ -24,6 +24,31 @@ export type SkinHeaderProps = {
   menuExtras: Array<{ href: string; label: string }>;
   switchTo: { identity: Identity; href: string; label: string; menuLabel: string };
 };
+
+type NavigationProps = { items: SkinHeaderProps["gnb"]; pathname: string };
+
+function NavigationLinks({ items, pathname, search }: NavigationProps & { search?: URLSearchParams | null }) {
+  const active = items.find(({ href }) => {
+    const [path, params] = href.split("?");
+    return path === pathname && params && search &&
+      Array.from(new URLSearchParams(params)).every(([key, value]) => search.get(key) === value);
+  }) ?? items.find((item) => item.href === pathname || item.alsoActiveOn?.includes(pathname));
+
+  return (
+    <nav className={styles.gnb} aria-label="主選單">
+      {items.map((item) => (
+        <Link key={item.href} href={item.href} className={styles.gnbLink} aria-current={item === active ? "page" : undefined}>
+          {item.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function NavigationWithSearch(props: NavigationProps) {
+  const search = useSearchParams();
+  return <NavigationLinks {...props} search={search} />;
+}
 
 // Sticky Visit Jeju-style header shared by 嗨大溪 and 我是大溪人: wordmark,
 // desktop GNB, a mode-switch pill and the full menu (전체메뉴) drawer.
@@ -75,16 +100,9 @@ export default function SkinHeader({ brand, logo, sub, homeHref, gnb, groups, me
           </span>
         </Link>
 
-        <nav className={styles.gnb} aria-label="主選單">
-          {gnb.map((item) => {
-            const active = pathname === item.href || Boolean(item.alsoActiveOn?.includes(pathname));
-            return (
-              <Link key={item.href} href={item.href} className={styles.gnbLink} aria-current={active ? "page" : undefined}>
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <Suspense fallback={<NavigationLinks items={gnb} pathname={pathname} />}>
+          <NavigationWithSearch items={gnb} pathname={pathname} />
+        </Suspense>
 
         <div className={styles.headerActions}>
           <button type="button" className={styles.modeSwitch} onClick={switchMode} disabled={switching}>

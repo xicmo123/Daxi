@@ -40,9 +40,7 @@ function Badges({ post }: { post: BulletinPost }) {
   );
 }
 
-// 社區佈告欄 as a Jeju-style card rail: every post visible at a glance and
-// swipeable, instead of one post at a time on a timer. Village chips filter
-// it; a card opens the full post in a sheet.
+// Village chips filter the feed. Selecting a card opens the full post.
 export default function ResidentBulletin({ posts }: { posts: BulletinPost[] }) {
   const villages = useMemo(() => {
     const present = new Set(posts.map((p) => p.village).filter(Boolean));

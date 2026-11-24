@@ -47,10 +47,10 @@ export default async function SpotsPage() {
   }
 
   return (
-    <div>
+    <main>
       <TouristPageHeader href="/spots" title="探索大溪景點" subtitle="從老街、木藝展館，到大漢溪畔的步道。" photo={photos["custom-tycg-414"]} />
 
-      <div className="safe-page-x pt-4 pb-4">
+      <div className="safe-page-x py-3">
         <Link className={styles.routeEntry} href={daxiWalkHref}>
           <span><strong>{daxiWalkTitle}</strong><small>4 站步行導覽 · {daxiWalkVisitTime}</small></span>
           <span aria-hidden>→</span>
@@ -59,9 +59,10 @@ export default async function SpotsPage() {
       <SpotsList spots={spots} featuredSpots={featuredSpots} allBusinesses={allPlaces} photos={photos} details={details} lots={lots} routes={routes} coupons={coupons} />
 
       {creditedSpots.length > 0 ? (
-        <div className="safe-page-x pb-10 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-          景點圖片來源：Wikimedia Commons（CC BY-SA）／桃園市政府觀光旅遊局，攝影：
-          <>
+        <details className="safe-page-x text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+          <summary className="cursor-pointer py-2 font-semibold">景點照片與資料來源</summary>
+          <p>
+            景點圖片來源：Wikimedia Commons（CC BY-SA）／桃園市政府觀光旅遊局，攝影：
             {creditedSpots.map((b, i) => (
               <span key={b.placeId}>
                 {i > 0 ? "、" : " "}
@@ -76,10 +77,10 @@ export default async function SpotsPage() {
                 )}
               </span>
             ))}
-          </>
-          。其餘景點資料來源：Google Maps Places API，每週更新一次，非即時。
-        </div>
+            。其餘景點資料來源：Google Maps Places API，每週更新一次，非即時。
+          </p>
+        </details>
       ) : null}
-    </div>
+    </main>
   );
 }

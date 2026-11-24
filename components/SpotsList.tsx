@@ -76,7 +76,7 @@ export default function SpotsList({
       >
         <div className={styles.placePhoto}>
           {photo ? (
-            <Image src={photo.src} alt="" fill sizes="(max-width: 767px) 92vw, (max-width: 1023px) 48vw, 350px" />
+            <Image src={photo.src} alt="" fill sizes={featured ? "(max-width: 639px) 68vw, 320px" : "(max-width: 359px) 90vw, (max-width: 1023px) 47vw, 350px"} />
           ) : <PlaceholderIcon kind="景點" />}
         </div>
         <div className={styles.placeBody}>
@@ -98,10 +98,8 @@ export default function SpotsList({
       ) : null}
 
       {routes.length > 0 ? (
-        <div className="safe-page-x pt-1 pb-5 fade-in flex flex-col gap-3">
-          <div className="text-app-label font-normal tracking-[0.2em] uppercase" style={{ color: "var(--ink-soft)" }}>
-            建議路線
-          </div>
+        <section className="safe-page-x grid gap-2 pb-4 sm:grid-cols-2" aria-labelledby="spot-routes-title">
+          <h2 className={`col-span-full ${styles.sectionTitle}`} id="spot-routes-title">建議路線</h2>
           {routes.map((r) => (
             <div key={r.id} className="rounded-2xl border px-4 py-3.5" style={{ background: "var(--card)", borderColor: "var(--line)" }}>
               <div className="text-app-body font-bold" style={{ color: "var(--ink)" }}>
@@ -128,14 +126,14 @@ export default function SpotsList({
               </div>
             </div>
           ))}
-        </div>
+        </section>
       ) : null}
 
-      <div className="safe-page-x pt-2 pb-4 fade-in">
+      <div className="safe-page-x pt-2 pb-2">
         <h2 className={styles.sectionTitle}>全部景點</h2>
       </div>
 
-      <div className="safe-page-x pb-4 fade-in">
+      <div className="safe-page-x pb-3">
         <label
           className="flex items-center gap-3 rounded-full px-4 py-3"
           style={{ background: "var(--card)", border: "1px solid var(--line)" }}
@@ -155,12 +153,12 @@ export default function SpotsList({
           </svg>
         </label>
 
-        <div className="pt-5 text-app-body font-semibold" style={{ color: "var(--ink-soft)" }}>
+        <div className="pt-2 text-app-body font-semibold" style={{ color: "var(--ink-soft)" }}>
           共 {rows.length} 個景點
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 safe-page-x pb-10 fade-in md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className={`safe-page-x pb-5 ${styles.spotsGrid}`}>
         {rows.map((spot) => placeCard(spot))}
         {rows.length === 0 ? (
           <div className="col-span-full">

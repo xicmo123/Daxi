@@ -12,7 +12,8 @@ export default function TouristSkinHeader() {
       gnb={[
         { href: "/spots", label: "景點" },
         { href: daxiWalkHref, label: "老街散步" },
-        { href: "/businesses", label: "美食" },
+        { href: "/businesses?cat=美食", label: "美食" },
+        { href: "/businesses", label: "店家" },
         { href: "/events", label: "活動" },
         { href: "/parking", label: "停車交通", alsoActiveOn: ["/bus"] },
         { href: "/weather", label: "天氣" },

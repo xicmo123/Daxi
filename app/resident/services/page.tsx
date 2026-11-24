@@ -30,7 +30,6 @@ export default async function ResidentServicesPage() {
       <ResidentPageHeader
         href="/resident/services"
         title="里民服務"
-        lead="生活大小事，這裡先找。"
         tabs={[
           { href: "#report", label: "陳情 / 報修" },
           { href: "#emergency", label: "緊急聯絡" },
@@ -38,7 +37,7 @@ export default async function ResidentServicesPage() {
         ]}
       />
 
-      <div className={styles.body}>
+      <div className={`${styles.body} ${styles.serviceGrid}`}>
         <section id="report" className={styles.panel} aria-labelledby="report-title">
           <h2 id="report-title" className={styles.panelTitle}>
             <span>
@@ -77,7 +76,7 @@ export default async function ResidentServicesPage() {
           </Link>
         </section>
 
-        <section id="links" className={styles.panel} aria-labelledby="links-title">
+        <section id="links" className={`${styles.panel} ${styles.serviceLinks}`} aria-labelledby="links-title">
           <h2 id="links-title" className={styles.panelTitle}>
             <span>
               <SkinIcon name="link" size={18} />

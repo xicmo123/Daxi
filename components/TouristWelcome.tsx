@@ -31,7 +31,11 @@ function getServerStatus() {
   return "pending";
 }
 
-export default function TouristWelcome({ className, label = "讀大溪的故事" }: { className?: string; label?: ReactNode } = {}) {
+export default function TouristWelcome({
+  autoOpen = true,
+  className,
+  label = "讀大溪的故事",
+}: { autoOpen?: boolean; className?: string; label?: ReactNode } = {}) {
   const router = useRouter();
   const status = useSyncExternalStore(subscribe, getWelcomeStatus, getServerStatus);
   const [showStory, setShowStory] = useState<boolean | null>(null);
@@ -66,7 +70,7 @@ export default function TouristWelcome({ className, label = "讀大溪的故事"
       >
         {label}
       </button>
-      {status !== "resident" && (showStory ?? status === "new") ? (
+      {status !== "resident" && (showStory ?? (autoOpen && status === "new")) ? (
         <Modal label="大溪的故事" onClose={close} className={styles.storyDialog}>
           <div className={styles.storyPhoto}>
             <Image src={oldStreetPhoto.src} alt={oldStreetPhoto.alt} fill sizes="(max-width: 550px) 94vw, 510px" />

@@ -27,8 +27,10 @@ const updatedLabel = new Intl.DateTimeFormat("zh-TW", {
   minute: "2-digit",
 }).format(new Date(businessesGeneratedAt));
 
-export default async function BusinessesPage() {
-  const [allPlaces, photos, details, hours] = await Promise.all([getAllPlaces(), readPhotos(), readDetails(), readPlaceHours()]);
+export default async function BusinessesPage({ searchParams }: PageProps<"/businesses">) {
+  const [allPlaces, photos, details, hours, { cat }] = await Promise.all([
+    getAllPlaces(), readPhotos(), readDetails(), readPlaceHours(), searchParams,
+  ]);
   // 景點-tagged places live on /spots, alongside the curated highlights —
   // keep this list focused on 美食/市集 so the two pages don't duplicate content.
   const listable = filterVisiblePlaces(allPlaces, details).filter((b) => b.tag !== "景點");
@@ -52,7 +54,7 @@ export default async function BusinessesPage() {
     <div>
       <TouristPageHeader href="/businesses" title="大溪美食與店家" subtitle={`逛市場、找小吃和伴手禮 · ${updatedLabel} 更新`} photo={photos["ChIJR01hKyIYaDQRQCD0hbGmyUA"]} />
       <Suspense fallback={null}>
-        <BusinessList businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} coupons={coupons} hours={hours} />
+        <BusinessList key={Array.isArray(cat) ? cat[0] : cat} businesses={listable} photos={photos} details={details} lots={lots} couponPlaceIds={couponPlaceIds} coupons={coupons} hours={hours} />
       </Suspense>
       <div className="safe-page-x pb-2 text-app-label leading-relaxed" style={{ color: "var(--ink-soft)" }}>
         資料來源：Google 地圖（評分、營業時間與價位每週更新，非即時；國定假日或臨時店休可能不同）

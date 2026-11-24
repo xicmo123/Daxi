@@ -190,15 +190,9 @@ export function findResidentItems(query: string): ResidentNavItem[] {
   return findNavItems(allResidentItems(), query);
 }
 
-/** Hashtag chips under the finder — the things residents look up most. */
-export const RESIDENT_HASHTAGS: Array<{ label: string; href: string }> = [
-  { label: "停水停電", href: "/resident/outages" },
-  { label: "垃圾車", href: GARBAGE_HREF },
-  { label: "道路施工", href: "/resident/roadworks" },
-  { label: "診所輪值", href: "/resident/clinics" },
-  { label: "AED", href: "/resident/aed" },
-  { label: "1999陳情", href: "/resident/services#report" },
-];
+export const RESIDENT_SHORTCUTS = allResidentItems().filter((item) =>
+  ["outages", "garbage", "roadworks", "bus", "clinics", "aed"].includes(item.key),
+);
 
 /** Breadcrumb trail for a resident sub-page, from the nav map. */
 export function residentTrail(href: string): { group?: ResidentNavGroup; item?: ResidentNavItem } {

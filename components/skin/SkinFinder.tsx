@@ -7,19 +7,18 @@ import { findNavItems, type SiteNavItem } from "@/lib/siteNav";
 import SkinIcon from "./SkinIcon";
 import styles from "./Skin.module.css";
 
-// The Jeju search-area: type 「垃圾」「停車」「豆干」 and jump straight to the
-// feature (matched on labels, descriptions and the keyword lists in the nav
-// maps). With `searchHref`, Enter on no match — or the first row — runs a
-// full-text search there instead.
+// Search the site's features and expose common destinations beside the hero.
 export default function SkinFinder({
   items,
-  hashtags,
+  shortcuts,
+  title,
   placeholder,
   searchHref,
   label,
 }: {
   items: SiteNavItem[];
-  hashtags: Array<{ label: string; href: string }>;
+  shortcuts: Array<Pick<SiteNavItem, "label" | "href" | "icon">>;
+  title: string;
   placeholder: string;
   searchHref?: string;
   label: string;
@@ -47,79 +46,87 @@ export default function SkinFinder({
 
   return (
     <div className={styles.finder}>
-      <form
-        role="search"
-        className={styles.finderBox}
-        onSubmit={(e) => {
-          e.preventDefault();
-          const hit = results[active] ?? results[0];
-          if (hit) router.push(hit.href);
-        }}
-      >
-        <label htmlFor={`${listId}-input`} className="sr-only">
-          {label}
-        </label>
-        <input
-          id={`${listId}-input`}
-          type="search"
-          value={query}
-          placeholder={placeholder}
-          autoComplete="off"
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={listId}
-          aria-activedescendant={open && results[active] ? `${listId}-${results[active].key}` : undefined}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setActive(0);
-          }}
-          onFocus={() => setFocused(true)}
-          onBlur={() => window.setTimeout(() => setFocused(false), 150)}
-          onKeyDown={(e) => {
-            if (!open || results.length === 0) return;
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setActive((a) => (a + 1) % results.length);
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setActive((a) => (a - 1 + results.length) % results.length);
+      <h2 className={styles.finderTitle}>{title}</h2>
+      <div className={styles.finderSearch}>
+        <form
+          role="search"
+          className={styles.finderBox}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const hit = results[active] ?? results[0];
+            if (hit) {
+              setFocused(false);
+              router.push(hit.href);
             }
           }}
-        />
-        <button type="submit" className={styles.finderSubmit} aria-label="搜尋">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-            <circle cx="10.5" cy="10.5" r="6" />
-            <path d="m15 15 5 5" />
-          </svg>
-        </button>
-      </form>
+        >
+          <label htmlFor={`${listId}-input`} className="sr-only">
+            {label}
+          </label>
+          <input
+            id={`${listId}-input`}
+            type="search"
+            value={query}
+            placeholder={placeholder}
+            autoComplete="off"
+            role="combobox"
+            aria-expanded={open}
+            aria-controls={listId}
+            aria-activedescendant={open && results[active] ? `${listId}-${results[active].key}` : undefined}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActive(0);
+            }}
+            onFocus={() => setFocused(true)}
+            onBlur={() => window.setTimeout(() => setFocused(false), 150)}
+            onKeyDown={(e) => {
+              if (!open || results.length === 0) return;
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActive((a) => (a + 1) % results.length);
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActive((a) => (a - 1 + results.length) % results.length);
+              }
+            }}
+          />
+          <button type="submit" className={styles.finderSubmit} aria-label="搜尋">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <circle cx="10.5" cy="10.5" r="6" />
+              <path d="m15 15 5 5" />
+            </svg>
+          </button>
+        </form>
 
-      {open ? (
-        <ul id={listId} role="listbox" className={styles.finderResults}>
-          {results.length === 0 ? (
-            <li className={styles.finderEmpty}>找不到「{trimmed}」，換個關鍵字試試</li>
-          ) : (
-            results.map((item, i) => (
-              <li key={item.key} id={`${listId}-${item.key}`} role="option" aria-selected={i === active}>
-                <Link href={item.href} className={styles.finderResult} data-active={i === active} onMouseEnter={() => setActive(i)}>
-                  <span className={styles.statIcon}>
-                    <SkinIcon name={item.icon} size={18} />
-                  </span>
-                  <span>
-                    <strong>{item.label}</strong>
-                    <small>{item.desc}</small>
-                  </span>
-                </Link>
-              </li>
-            ))
-          )}
-        </ul>
-      ) : null}
+        {open ? (
+          <ul id={listId} role="listbox" className={styles.finderResults}>
+            {results.length === 0 ? (
+              <li className={styles.finderEmpty}>找不到「{trimmed}」，換個關鍵字試試</li>
+            ) : (
+              results.map((item, i) => (
+                <li key={item.key} id={`${listId}-${item.key}`} role="option" aria-selected={i === active}>
+                  <Link href={item.href} className={styles.finderResult} data-active={i === active} onMouseEnter={() => setActive(i)}>
+                    <span className={styles.statIcon}>
+                      <SkinIcon name={item.icon} size={18} />
+                    </span>
+                    <span>
+                      <strong>{item.label}</strong>
+                      <small>{item.desc}</small>
+                    </span>
+                  </Link>
+                </li>
+              ))
+            )}
+          </ul>
+        ) : null}
+      </div>
 
-      <nav className={styles.tags} aria-label="熱門查詢">
-        {hashtags.map((tag) => (
-          <Link key={tag.label} href={tag.href} className={styles.tag}>
-            {tag.label}
+      <nav className={styles.shortcuts} aria-label={title}>
+        {shortcuts.map((item) => (
+          <Link key={item.href} href={item.href} className={styles.shortcut}>
+            <span className={styles.shortcutIcon}><SkinIcon name={item.icon} size={20} /></span>
+            <span>{item.label}</span>
+            <span className={styles.shortcutArrow} aria-hidden>→</span>
           </Link>
         ))}
       </nav>

@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
-import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
+import { businessGroupOf, categoryLabel, type BusinessBrowseGroup as Group, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
 import { experienceTags } from "@/lib/experience";
@@ -18,8 +18,8 @@ import BusinessDetailModal from "./BusinessDetailModal";
 import styles from "./BusinessList.module.css";
 
 // Shop categories as people browse them, not as Google types them.
-type Group = "豆干小吃" | "餐廳" | "咖啡甜點" | "市場超市" | "購物";
 const GROUPS: Group[] = ["豆干小吃", "餐廳", "咖啡甜點", "市場超市", "購物"];
+const FOOD_GROUPS = new Set<Group>(["豆干小吃", "餐廳", "咖啡甜點"]);
 
 const ICON: Record<Group | "全部", ReactNode> = {
   全部: (
@@ -76,19 +76,6 @@ const TILE: Record<Group, CSSProperties> = {
   購物: { ["--tile-bg" as string]: "#e3e8f1", ["--tile-ink" as string]: "#45577a" },
 };
 
-const SNACK = /豆干|豆乾|豆花|肉圓|油飯|香腸|小吃|麵|滷|粽|餅|食品/;
-const CAFE = /咖啡|甜點|冰|茶|烘焙|蛋糕|Coffee|Cafe|星巴克/i;
-const MARKET = /市場|夜市|花市|全聯|超市|便利/;
-
-function groupOf(b: Business): Group {
-  const t = b.googleType ?? "";
-  if (/market|supermarket|convenience|grocery/.test(t) || MARKET.test(b.name)) return "市場超市";
-  if (/cafe|coffee|dessert|bakery|pastry/.test(t) || CAFE.test(b.name)) return "咖啡甜點";
-  if (SNACK.test(b.name) || /meal_takeaway|deli|food$/.test(t)) return "豆干小吃";
-  if (/restaurant/.test(t)) return "餐廳";
-  return b.tag === "美食" ? "餐廳" : "購物";
-}
-
 type SortKey = "recommended" | "rating" | "distance";
 const SORTS: { label: string; value: SortKey }[] = [
   { label: "推薦", value: "recommended" },
@@ -135,7 +122,9 @@ export default function BusinessList({
   const userLocation = useUserLocation();
   const requestedPlaceId = searchParams.get("place");
   const initialCat = searchParams.get("cat");
-  const [group, setGroup] = useState<Group | "全部">(GROUPS.includes(initialCat as Group) ? (initialCat as Group) : "全部");
+  const [group, setGroup] = useState<Group | "全部" | "美食">(
+    initialCat === "美食" ? initialCat : GROUPS.find((g) => g === initialCat) ?? "全部",
+  );
   const [query, setQuery] = useState("");
   const [dealsOnly, setDealsOnly] = useState(false);
   const [topRated, setTopRated] = useState(false);
@@ -145,17 +134,20 @@ export default function BusinessList({
 
   const deals = useMemo(() => new Set(couponPlaceIds), [couponPlaceIds]);
   const located = useMemo(() => businesses.map((b) => withUserDistance(b, userLocation)), [businesses, userLocation]);
-  const groups = useMemo(() => new Map(located.map((b) => [b.placeId, groupOf(b)])), [located]);
+  const groups = useMemo(() => new Map(located.map((b) => [b.placeId, businessGroupOf(b)])), [located]);
   const counts = useMemo(() => {
     const c = new Map<Group, number>();
     for (const g of groups.values()) c.set(g, (c.get(g) ?? 0) + 1);
     return c;
   }, [groups]);
+  const foodCount = Array.from(FOOD_GROUPS).reduce((total, foodGroup) => total + (counts.get(foodGroup) ?? 0), 0);
 
   const q = query.trim().toLowerCase();
   const rows = useMemo(() => {
     const list = located.filter((b) => {
-      if (group !== "全部" && groups.get(b.placeId) !== group) return false;
+      const businessGroup = groups.get(b.placeId);
+      if (group === "美食" && (!businessGroup || !FOOD_GROUPS.has(businessGroup))) return false;
+      if (group !== "全部" && group !== "美食" && businessGroup !== group) return false;
       if (dealsOnly && !deals.has(b.placeId)) return false;
       if (topRated && (b.rating ?? 0) < 4.5) return false;
       if (openNow && !openStatus(hours[b.placeId])?.open) return false;
@@ -296,13 +288,13 @@ export default function BusinessList({
         </label>
 
         <div className={styles.chips} role="group" aria-label="店家分類">
-          {(["全部", ...GROUPS] as const)
-            .filter((g) => g === "全部" || (counts.get(g) ?? 0) > 0)
+          {(["全部", "美食", ...GROUPS] as const)
+            .filter((g) => g === "全部" || (g === "美食" ? foodCount > 0 : (counts.get(g) ?? 0) > 0))
             .map((g) => (
               <button key={g} type="button" className={styles.chip} aria-pressed={group === g} onClick={() => setGroup(g)}>
-                <span style={{ width: 17, height: 17, display: "inline-flex" }}>{ICON[g]}</span>
+                <span style={{ width: 17, height: 17, display: "inline-flex" }}>{ICON[g === "美食" ? "餐廳" : g]}</span>
                 {g}
-                <small>{g === "全部" ? located.length : counts.get(g)}</small>
+                <small>{g === "全部" ? located.length : g === "美食" ? foodCount : counts.get(g)}</small>
               </button>
             ))}
         </div>
