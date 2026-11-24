@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { CouponWithBusiness } from "@/components/CouponList";
 import TouristWelcome from "@/components/TouristWelcome";
 import SkinHero, { type SkinHeroSlide } from "@/components/skin/SkinHero";
+import { photoForTopic } from "@/lib/heroPhotos";
 import SkinFinder from "@/components/skin/SkinFinder";
 import SkinGuide from "@/components/skin/SkinGuide";
 import SkinEventsRail from "@/components/skin/SkinEventsRail";
@@ -94,13 +95,6 @@ async function pickInitialSlide() {
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short", timeZone: "Asia/Taipei" });
 const phaseTag = { ongoing: "進行中", upcoming: "即將登場", past: "已結束" } as const;
 
-// Scenic backgrounds for the event slides of the hero, in order.
-const FALLBACK_PHOTOS = [
-  { src: "/images/puji-temple.jpg", author: "Taiwankengo", sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_Daxi_Puji_Temple.jpg" },
-  { src: "/images/daxi-bridge.jpg", author: "Taiwankengo", sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_Daxi_Bridge.jpg" },
-  { src: "/images/tea-factory.jpg", author: "Taiwankengo", sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_Daxi_Tea_Factory_i.jpg" },
-];
-
 function SectionHead({ id, eyebrow, title, lead, more }: { id: string; eyebrow: string; title: string; lead?: string; more?: string }) {
   return (
     <div className={styles.sectionHead}>
@@ -149,8 +143,9 @@ async function Hero() {
       href: "/events",
       ctaLabel: "看活動資訊",
       // Event posters are full of their own lettering, which fights the
-      // hero title; the hero uses scenery and the posters stay in the rail.
-      photo: FALLBACK_PHOTOS[i % FALLBACK_PHOTOS.length],
+      // hero title; the hero uses a photo of what the event is about (豆干,
+      // 石門水庫, 遶境…) and the posters stay in the rail.
+      photo: photoForTopic(s.title, i + 1),
     })),
   ];
   // During the festival, open on today's milestone (shifted by the walk slide).

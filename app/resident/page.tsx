@@ -11,7 +11,8 @@ import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
 import { listActiveResidentSlides } from "@/lib/residentCarousel";
-import { GARBAGE_HREF, RESIDENT_NAV } from "@/lib/residentNav";
+import { GARBAGE_HREF } from "@/lib/residentNav";
+import { photoForResidentSlide } from "@/lib/heroPhotos";
 import SkinHero, { type SkinHeroSlide } from "@/components/skin/SkinHero";
 import ResidentFinder from "@/components/resident/ResidentFinder";
 import ResidentBulletin from "@/components/resident/ResidentBulletin";
@@ -37,20 +38,6 @@ const loadRoadworks = cache(() => readSource(() => fetchDaxiRoadworks()));
 
 const dateFormatter = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", weekday: "short", timeZone: "Asia/Taipei" });
 
-// Hero photos, assigned by slide position — admins edit slide text in the
-// resident-carousel admin, not imagery.
-const HERO_PHOTOS = [
-  RESIDENT_NAV[0].photo,
-  {
-    src: "/images/old-street-crowd.jpg",
-    author: "Andrewhaimerl",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daxi_Old_Street_Crowd.jpg",
-  },
-  RESIDENT_NAV[3].photo,
-  RESIDENT_NAV[1].photo,
-  RESIDENT_NAV[2].photo,
-];
-
 const FALLBACK_SLIDES = [
   { id: "f-outages", tag: "緊急", title: "停水停電通知", subtitle: "預告中的停水停電整理", href: "/resident/outages" },
   { id: "f-garbage", tag: "一般", title: "垃圾車即時地圖", subtitle: "查看附近的清運車", href: GARBAGE_HREF },
@@ -70,7 +57,8 @@ async function Hero() {
     subtitle: s.subtitle,
     // Slides saved before the garbage page existed still point at /resident.
     href: "featureKey" in s && s.featureKey === "garbage" ? GARBAGE_HREF : s.href,
-    photo: HERO_PHOTOS[i % HERO_PHOTOS.length],
+    // Chosen by topic (garbage truck for 垃圾車, …), not slide position.
+    photo: photoForResidentSlide({ featureKey: "featureKey" in s ? s.featureKey : undefined, href: s.href, title: s.title, subtitle: s.subtitle }, i),
   }));
   return (
     <SkinHero
