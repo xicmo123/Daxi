@@ -8,7 +8,7 @@ export type ResidentIconKey = SiteIconKey;
 export type ResidentNavItem = SiteNavItem;
 export type ResidentNavGroup = SiteNavGroup;
 
-export const GARBAGE_SHEET_HREF = "/resident?open=garbage";
+export const GARBAGE_HREF = "/resident/garbage";
 
 export const RESIDENT_NAV: ResidentNavGroup[] = [
   {
@@ -33,10 +33,9 @@ export const RESIDENT_NAV: ResidentNavGroup[] = [
         key: "garbage",
         label: "垃圾清運",
         desc: "附近垃圾車、資源回收車即時位置",
-        href: GARBAGE_SHEET_HREF,
+        href: GARBAGE_HREF,
         icon: "garbage",
-        keywords: ["垃圾", "垃圾車", "回收", "資源回收", "清運", "清潔隊"],
-        sheet: "garbage",
+        keywords: ["垃圾", "垃圾車", "回收", "資源回收", "清運", "清潔隊", "幾點", "時間"],
       },
       {
         key: "roadworks",
@@ -194,7 +193,7 @@ export function findResidentItems(query: string): ResidentNavItem[] {
 /** Hashtag chips under the finder — the things residents look up most. */
 export const RESIDENT_HASHTAGS: Array<{ label: string; href: string }> = [
   { label: "停水停電", href: "/resident/outages" },
-  { label: "垃圾車", href: GARBAGE_SHEET_HREF },
+  { label: "垃圾車", href: GARBAGE_HREF },
   { label: "道路施工", href: "/resident/roadworks" },
   { label: "診所輪值", href: "/resident/clinics" },
   { label: "AED", href: "/resident/aed" },

@@ -269,3 +269,36 @@ export async function fetchDaxiGarbageRealtime(routeId: string): Promise<Garbage
     updatedAt: new Date().toISOString(),
   };
 }
+
+export type GarbageScheduleStop = { seq: number; name: string; time: string | null };
+export type GarbageScheduleRoute = GarbageRoute & { stops: GarbageScheduleStop[] };
+
+/**
+ * Every Daxi route with its stops in order and the scheduled time at each —
+ * the timetable behind /resident/garbage. Only the stop list is fetched (no
+ * vehicles or trace), and callers cache it for hours: it changes rarely.
+ * Throws when no route could be read, so a cache wrapper doesn't keep an
+ * empty timetable.
+ */
+export async function fetchDaxiGarbageSchedule(): Promise<GarbageScheduleRoute[]> {
+  const routes = await fetchDaxiGarbageRoutes();
+  const results = await Promise.allSettled(
+    routes.map(async (route) => {
+      const stops = await officialPost<OfficialStop[]>("lagifRealtimeRouteDetailByRoute", { routing_id: route.id });
+      return {
+        ...route,
+        stops: stops
+          .map((stop) => ({
+            seq: stop.seq,
+            name: stop.poi_name.trim(),
+            time: stop.arrive_time && /^\d{1,2}:\d{2}$/.test(stop.arrive_time) ? stop.arrive_time : null,
+          }))
+          .filter((stop) => stop.name)
+          .sort((a, b) => a.seq - b.seq),
+      };
+    }),
+  );
+  const schedule = results.flatMap((r) => (r.status === "fulfilled" && r.value.stops.length > 0 ? [r.value] : []));
+  if (schedule.length === 0) throw new Error("No Daxi garbage route timetable could be read.");
+  return schedule;
+}

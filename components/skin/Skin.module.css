@@ -2026,3 +2026,36 @@
     font-size: 17px;
   }
 }
+
+/* ───────── Collapsible rows (垃圾車路線) ───────── */
+
+.disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.disclosure::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure::after {
+  content: "";
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin: -4px 2px 0 0;
+  border-right: 2px solid var(--rj-ink-soft);
+  border-bottom: 2px solid var(--rj-ink-soft);
+  transform: rotate(45deg);
+  transition: transform var(--rj-fast);
+}
+
+details[open] > .disclosure::after {
+  margin-top: 4px;
+  transform: rotate(-135deg);
+}

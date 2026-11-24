@@ -310,7 +310,8 @@ export default function GarbageTruckMap() {
 
       <div className="flex flex-col gap-3 border-t px-3 py-3" style={{ borderColor: "var(--line)" }}>
         {vehicles.length > 0 ? (
-          <div className="grid gap-2">
+          // 20-odd trucks run at peak; scroll inside so the timetable below stays in reach.
+          <div className="grid max-h-[340px] gap-2 overflow-y-auto overscroll-contain md:grid-cols-2 xl:grid-cols-3">
             {vehicles.map((vehicle) => (
               <div key={vehicle.id} className="rounded-2xl px-3 py-2.5" style={{ background: "var(--river-teal-soft)" }}>
                 <div className="flex items-center justify-between gap-2">

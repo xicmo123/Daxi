@@ -24,6 +24,7 @@ const routes: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[numbe
   { path: "/resident", changeFrequency: "daily", priority: 0.8 },
   { path: "/resident/announcements", changeFrequency: "daily", priority: 0.7 },
   { path: "/resident/outages", changeFrequency: "daily", priority: 0.7 },
+  { path: "/resident/garbage", changeFrequency: "daily", priority: 0.8 },
   { path: "/resident/roadworks", changeFrequency: "daily", priority: 0.6 },
   { path: "/resident/clinics", changeFrequency: "daily", priority: 0.6 },
   { path: "/resident/aed", changeFrequency: "monthly", priority: 0.6 },

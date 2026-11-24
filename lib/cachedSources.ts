@@ -29,6 +29,7 @@ import { fetchNearbyParking } from "./googlePlacesParking";
 import { fetchNearbyBuses } from "./busPositions";
 import { getMergedEvents } from "./eventsFeed";
 import { fetchDaxiAnnouncements } from "./announcements";
+import { fetchDaxiGarbageSchedule } from "./taoyuanGarbage";
 
 // TTLs are set by how fast the underlying thing actually changes, not by how
 // fresh it would be nice to be.
@@ -84,3 +85,9 @@ export const getCachedAnnouncements = unstable_cache(
   ["daxi-announcements"],
   { revalidate: TTL.announcements, tags: ["announcements"] },
 );
+
+/** Route timetables (stops and scheduled times) change a few times a year at most. */
+export const getCachedGarbageSchedule = unstable_cache(async () => fetchDaxiGarbageSchedule(), ["daxi-garbage-schedule-v1"], {
+  revalidate: 43200,
+  tags: ["garbage"],
+});

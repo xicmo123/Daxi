@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { permanentRedirect } from "next/navigation";
 import { readSource } from "@/lib/fetchWithTimeout";
 // force-dynamic below zeroes the TTL on every fetch in this segment; the
 // cached wrappers are immune to it. See lib/cachedSources.ts.
@@ -8,7 +9,7 @@ import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
 import { activeBulletinPosts, readBulletinPosts, sortedBulletinPosts } from "@/lib/bulletinData";
 import { listActiveResidentSlides } from "@/lib/residentCarousel";
-import { GARBAGE_SHEET_HREF, RESIDENT_NAV } from "@/lib/residentNav";
+import { GARBAGE_HREF, RESIDENT_NAV } from "@/lib/residentNav";
 import SkinHero, { type SkinHeroSlide } from "@/components/skin/SkinHero";
 import ResidentFinder from "@/components/resident/ResidentFinder";
 import ResidentBulletin from "@/components/resident/ResidentBulletin";
@@ -45,7 +46,7 @@ const HERO_PHOTOS = [
 
 const FALLBACK_SLIDES = [
   { id: "f-outages", tag: "緊急", title: "停水停電通知", subtitle: "預告中的停水停電整理", href: "/resident/outages" },
-  { id: "f-garbage", tag: "一般", title: "垃圾車即時地圖", subtitle: "查看附近的清運車", href: GARBAGE_SHEET_HREF },
+  { id: "f-garbage", tag: "一般", title: "垃圾車即時地圖", subtitle: "查看附近的清運車", href: GARBAGE_HREF },
   { id: "f-roadworks", tag: "一般", title: "道路施工地圖", subtitle: "查看今日道路申挖與施工位置", href: "/resident/roadworks" },
 ];
 
@@ -60,8 +61,8 @@ async function Hero() {
     tag: s.tag,
     title: s.title,
     subtitle: s.subtitle,
-    // The garbage map has no route of its own — point it at the home sheet.
-    href: "featureKey" in s && s.featureKey === "garbage" ? GARBAGE_SHEET_HREF : s.href,
+    // Slides saved before the garbage page existed still point at /resident.
+    href: "featureKey" in s && s.featureKey === "garbage" ? GARBAGE_HREF : s.href,
     photo: HERO_PHOTOS[i % HERO_PHOTOS.length],
   }));
   return (
@@ -198,7 +199,9 @@ function SectionHead({ id, eyebrow, title, lead, more }: { id: string; eyebrow: 
   );
 }
 
-export default function ResidentHome() {
+export default async function ResidentHome({ searchParams }: PageProps<"/resident">) {
+  // Old links (menu bookmarks, app pushes) opened the garbage map as a sheet here.
+  if ((await searchParams).open === "garbage") permanentRedirect(GARBAGE_HREF);
   return (
     <main>
       <h1 className="sr-only">我是大溪人：大溪居民生活資訊（停水停電、垃圾車、道路施工、公告、診所與 AED）</h1>
