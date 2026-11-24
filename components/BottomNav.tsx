@@ -43,7 +43,7 @@ const tabs: NavTab[] = [
   {
     href: "/spots",
     label: "探索",
-    alsoActiveOn: ["/businesses", daxiWalkHref],
+    alsoActiveOn: [daxiWalkHref],
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 21s6.4-5.9 6.4-10.7a6.4 6.4 0 0 0-12.8 0C5.6 15.1 12 21 12 21Z" />
@@ -54,13 +54,16 @@ const tabs: NavTab[] = [
     ),
   },
   {
-    href: "/parking",
-    label: "停車",
+    // 店家 took 停車's slot (2026-11): shops are what visitors browse most;
+    // parking stays one tap away in the header's 停車交通 and the home page.
+    href: "/businesses",
+    label: "店家",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4.5" y="4" width="15" height="15" rx="4" />
-        <path d="M10 15.8V8.2h3.1a2.45 2.45 0 1 1 0 4.9H10" />
-        <path d="M17.6 18.7 19.2 21l1.6-2.3" />
+        <path d="M4.5 9.5 6 4.5h12l1.5 5" />
+        <path d="M5.2 11.6v7.9h13.6v-7.9" />
+        <path d="M4.5 9.5a2.6 2.6 0 0 0 5 1.3 2.6 2.6 0 0 0 5 0 2.6 2.6 0 0 0 5-1.3" />
+        <path d="M10 19.5v-4.8h4v4.8" />
       </svg>
     ),
   },

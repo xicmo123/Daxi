@@ -90,7 +90,13 @@ export default async function PlacePage({ section, placeId }: { section: "/spots
         parent={{ name: SECTION_NAME[section], href: section }}
         href={placeHref(place)}
         title={name}
-        lead={`${category} · 距大溪老街 ${place.distanceLabel}`}
+        lead={[
+          place.rating !== null && place.reviewCount > 0 ? `★ ${place.rating.toFixed(1)}（${place.reviewCount.toLocaleString()} 則 Google 評論）` : null,
+          category,
+          `距大溪老街 ${place.distanceLabel}`,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
         showSiblings={false}
         photo={photo}
       >

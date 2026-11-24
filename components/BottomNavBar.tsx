@@ -48,7 +48,11 @@ export default function BottomNavBar({
         style={{ borderColor: "var(--line)", gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
       >
         {tabs.map((tab) => {
-          const active = pathname === tab.href || Boolean(tab.alsoActiveOn?.includes(pathname));
+          // A section's own sub-pages (/businesses/<shop>) keep its tab lit.
+          const active =
+            pathname === tab.href ||
+            Boolean(tab.alsoActiveOn?.includes(pathname)) ||
+            (tab.href.startsWith("/") && tab.href !== "/" && pathname.startsWith(`${tab.href}/`));
           return (
             <Link
               key={tab.href}

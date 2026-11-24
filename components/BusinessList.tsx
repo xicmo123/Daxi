@@ -1,72 +1,116 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import type { Business, BusinessTag } from "@/lib/businesses";
+import type { Business } from "@/lib/businesses";
 import type { PhotoCredit } from "@/lib/data";
-import { categoryLabel, QUEUE_STATUS_BADGE, type PlaceDetail } from "@/lib/placeDetails";
+import { categoryLabel, type PlaceDetail } from "@/lib/placeDetails";
 import type { LiveParkingLot } from "@/lib/tycgParking";
 import type { Coupon } from "@/lib/coupons";
 import { experienceTags } from "@/lib/experience";
 import { calculateDistance, formatDistance } from "@/lib/geo";
 import { useUserLocation } from "@/lib/useUserLocation";
-import { placeHref, quickLookClick } from "@/lib/placePages";
+import { placeHref, quickLookClick, shortPlaceName } from "@/lib/placePages";
 import BusinessDetailModal from "./BusinessDetailModal";
-import PlaceholderIcon from "./PlaceholderIcon";
-import styles from "./TouristInterior.module.css";
+import styles from "./BusinessList.module.css";
 
-const tabIcon = {
+// Shop categories as people browse them, not as Google types them.
+type Group = "豆干小吃" | "餐廳" | "咖啡甜點" | "市場超市" | "購物";
+const GROUPS: Group[] = ["豆干小吃", "餐廳", "咖啡甜點", "市場超市", "購物"];
+
+const ICON: Record<Group | "全部", ReactNode> = {
   全部: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4.5" y="4.5" width="6.5" height="6.5" rx="1.3" />
       <rect x="13" y="4.5" width="6.5" height="6.5" rx="1.3" />
       <rect x="4.5" y="13" width="6.5" height="6.5" rx="1.3" />
       <rect x="13" y="13" width="6.5" height="6.5" rx="1.3" />
     </svg>
   ),
-  美食: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+  豆干小吃: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5.5 12.2h13a6.5 6.5 0 0 1-13 0Z" />
       <path d="M8.2 18.7h7.6" />
       <path d="M7.3 9.2 16.8 4" />
       <path d="M10.1 9.2 19.5 4" />
     </svg>
   ),
-  市集: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round">
+  餐廳: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 3.5v7.5M4.5 3.5v4.5a2.5 2.5 0 0 0 5 0V3.5M7 11v9.5" />
+      <path d="M17 20.5V3.5c-2 1.2-3 3.6-3 6.5v3.5h3" />
+    </svg>
+  ),
+  咖啡甜點: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 9.5h11v4.5a5.5 5.5 0 0 1-11 0V9.5Z" />
+      <path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16" />
+      <path d="M8.5 3.5c-.8 1 .8 2-.1 3.2M12 3.5c-.8 1 .8 2-.1 3.2" />
+    </svg>
+  ),
+  市場超市: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4.5 9.5 6 4.5h12l1.5 5" />
       <path d="M4.5 9.5v9.8h15V9.5" />
       <path d="M4.5 9.5a2.6 2.6 0 0 0 5 1.3 2.6 2.6 0 0 0 5 0 2.6 2.6 0 0 0 5-1.3" />
       <path d="M10 19.3v-5.5h4v5.5" />
     </svg>
   ),
-} as const;
+  購物: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5.5 8h13l-1 12h-11l-1-12Z" />
+      <path d="M9 10V7a3 3 0 0 1 6 0v3" />
+    </svg>
+  ),
+};
 
-const TABS: { label: string; value: BusinessTag | "全部" }[] = [
-  { label: "全部", value: "全部" },
-  { label: "美食", value: "美食" },
-  { label: "市集", value: "市集" },
-];
+// Tinted tiles for shops without a photo, one hue per category.
+const TILE: Record<Group, CSSProperties> = {
+  豆干小吃: { ["--tile-bg" as string]: "#f6e7d3", ["--tile-ink" as string]: "#8a5a2b" },
+  餐廳: { ["--tile-bg" as string]: "#f3e1dc", ["--tile-ink" as string]: "#93453a" },
+  咖啡甜點: { ["--tile-bg" as string]: "#efe6dc", ["--tile-ink" as string]: "#6b4e37" },
+  市場超市: { ["--tile-bg" as string]: "#e2ede4", ["--tile-ink" as string]: "#3f6b4b" },
+  購物: { ["--tile-bg" as string]: "#e3e8f1", ["--tile-ink" as string]: "#45577a" },
+};
 
-const SORTS: { label: string; value: SortKey }[] = [
-  { label: "預設", value: "default" },
-  { label: "評分最高", value: "rating" },
-  { label: "距離最近", value: "distance" },
-];
+const SNACK = /豆干|豆乾|豆花|肉圓|油飯|香腸|小吃|麵|滷|粽|餅|食品/;
+const CAFE = /咖啡|甜點|冰|茶|烘焙|蛋糕|Coffee|Cafe|星巴克/i;
+const MARKET = /市場|夜市|花市|全聯|超市|便利/;
 
-type SortKey = "default" | "rating" | "distance";
-type BusinessSection = { title: string; rows: Business[] };
-
-function isBusinessTag(value: string | null): value is BusinessTag {
-  return value === "美食" || value === "市集";
+function groupOf(b: Business): Group {
+  const t = b.googleType ?? "";
+  if (/market|supermarket|convenience|grocery/.test(t) || MARKET.test(b.name)) return "市場超市";
+  if (/cafe|coffee|dessert|bakery|pastry/.test(t) || CAFE.test(b.name)) return "咖啡甜點";
+  if (SNACK.test(b.name) || /meal_takeaway|deli|food$/.test(t)) return "豆干小吃";
+  if (/restaurant/.test(t)) return "餐廳";
+  return b.tag === "美食" ? "餐廳" : "購物";
 }
+
+type SortKey = "recommended" | "rating" | "distance";
+const SORTS: { label: string; value: SortKey }[] = [
+  { label: "推薦", value: "recommended" },
+  { label: "評分", value: "rating" },
+  { label: "距離", value: "distance" },
+];
 
 function withUserDistance(business: Business, location: ReturnType<typeof useUserLocation>): Business {
   if (!location) return business;
   const distanceMeters = calculateDistance(location.lat, location.lng, business.lat, business.lng);
   return { ...business, distanceMeters, distanceLabel: formatDistance(distanceMeters) };
+}
+
+// Recommended order: a review-weighted rating, so 4.8 from 12 reviews doesn't
+// outrank 4.4 from 10,000 (the usual Bayesian average, prior 4.0 × 50).
+function score(b: Business): number {
+  const r = b.rating ?? 0;
+  const n = b.reviewCount ?? 0;
+  return (r * n + 4.0 * 50) / (n + 50);
+}
+
+function reviews(n: number): string {
+  return n >= 10000 ? `${(n / 10000).toFixed(1)} 萬` : n.toLocaleString();
 }
 
 export default function BusinessList({
@@ -86,165 +130,212 @@ export default function BusinessList({
 }) {
   const searchParams = useSearchParams();
   const userLocation = useUserLocation();
-  const initialCat = searchParams.get("cat");
   const requestedPlaceId = searchParams.get("place");
-  const [active, setActive] = useState<BusinessTag | "全部">(isBusinessTag(initialCat) ? initialCat : "全部");
-  const [sort, setSort] = useState<SortKey>("default");
-  const [openBusiness, setOpenBusiness] = useState<Business | null>(() => businesses.find((business) => business.placeId === requestedPlaceId) ?? null);
-  const locatedBusinesses = useMemo(() => businesses.map((business) => withUserDistance(business, userLocation)), [businesses, userLocation]);
-  const filtered = active === "全部" ? locatedBusinesses : locatedBusinesses.filter((b) => b.tag === active);
-  const rows =
-    sort === "rating"
-      ? [...filtered].sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1))
-      : sort === "distance"
-        ? [...filtered].sort((a, b) => a.distanceMeters - b.distanceMeters)
-        : filtered;
-  const manualFeatured = rows.filter((b) => details[b.placeId]?.featured);
-  const sections: BusinessSection[] = [
-    { title: "大溪精選推薦", rows: manualFeatured },
-    { title: "全部商家", rows },
-  ].filter((section) => section.rows.length > 0);
+  const initialCat = searchParams.get("cat");
+  const [group, setGroup] = useState<Group | "全部">(GROUPS.includes(initialCat as Group) ? (initialCat as Group) : "全部");
+  const [query, setQuery] = useState("");
+  const [dealsOnly, setDealsOnly] = useState(false);
+  const [topRated, setTopRated] = useState(false);
+  const [sort, setSort] = useState<SortKey>("recommended");
+  const [openBusiness, setOpenBusiness] = useState<Business | null>(() => businesses.find((b) => b.placeId === requestedPlaceId) ?? null);
 
-  const renderCard = (b: Business, i: number) => {
+  const deals = useMemo(() => new Set(couponPlaceIds), [couponPlaceIds]);
+  const located = useMemo(() => businesses.map((b) => withUserDistance(b, userLocation)), [businesses, userLocation]);
+  const groups = useMemo(() => new Map(located.map((b) => [b.placeId, groupOf(b)])), [located]);
+  const counts = useMemo(() => {
+    const c = new Map<Group, number>();
+    for (const g of groups.values()) c.set(g, (c.get(g) ?? 0) + 1);
+    return c;
+  }, [groups]);
+
+  const q = query.trim().toLowerCase();
+  const rows = useMemo(() => {
+    const list = located.filter((b) => {
+      if (group !== "全部" && groups.get(b.placeId) !== group) return false;
+      if (dealsOnly && !deals.has(b.placeId)) return false;
+      if (topRated && (b.rating ?? 0) < 4.5) return false;
+      if (q) {
+        const d = details[b.placeId];
+        const hay = `${b.name} ${d?.category ?? ""} ${categoryLabel(d?.category, b.googleType, b.tag)} ${b.address ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    if (sort === "rating") return list.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1) || b.reviewCount - a.reviewCount);
+    if (sort === "distance") return list.sort((a, b) => a.distanceMeters - b.distanceMeters);
+    return list.sort((a, b) => Number(Boolean(photos[b.placeId])) - Number(Boolean(photos[a.placeId])) || score(b) - score(a));
+  }, [located, group, groups, dealsOnly, deals, topRated, q, details, sort, photos]);
+
+  // Editor's picks: hand-picked first, then shops with a written story or a
+  // coupon — only when browsing everything, so filters show plain results.
+  const picks = useMemo(() => {
+    if (group !== "全部" || q || dealsOnly || topRated) return [];
+    return located
+      .filter((b) => details[b.placeId]?.featured || details[b.placeId]?.story || deals.has(b.placeId))
+      .sort((a, b) => Number(Boolean(details[b.placeId]?.featured)) - Number(Boolean(details[a.placeId]?.featured)) || score(b) - score(a))
+      .slice(0, 8);
+  }, [located, details, deals, group, q, dealsOnly, topRated]);
+
+  const resetFilters = () => {
+    setGroup("全部");
+    setQuery("");
+    setDealsOnly(false);
+    setTopRated(false);
+  };
+
+  const card = (b: Business, wide = false) => {
     const photo = photos[b.placeId];
-    const tags = experienceTags(b, details[b.placeId]);
-    const promo = tags[0] ?? categoryLabel(details[b.placeId]?.category, b.googleType, b.tag);
-    const liveStatus = details[b.placeId]?.liveStatus;
-    const acceptsLuggage = details[b.placeId]?.acceptsLuggage;
-    const queueBadge = liveStatus?.queueStatus ? QUEUE_STATUS_BADGE[liveStatus.queueStatus] : null;
-    const statusBadge = liveStatus?.soldOut
-      ? "已完售"
-      : liveStatus?.queueMinutes
-        ? `需等 ${liveStatus.queueMinutes} 分`
-        : null;
+    const detail = details[b.placeId];
+    const g = groups.get(b.placeId) ?? "餐廳";
+    const category = categoryLabel(detail?.category, b.googleType, b.tag);
+    const live = detail?.liveStatus;
+    const tags = experienceTags(b, detail).filter((t) => !t.startsWith("步行")).slice(0, 2);
+    const walk = b.distanceMeters <= 450 ? "步行 5 分" : b.distanceMeters <= 900 ? "步行 10 分" : null;
+    const status = live?.soldOut
+      ? { text: "今日完售", tone: "alert" }
+      : live?.queueStatus
+        ? { text: live.queueStatus, tone: live.queueStatus === "免排隊" ? "ok" : "alert" }
+        : live?.queueMinutes
+          ? { text: `需等 ${live.queueMinutes} 分`, tone: "alert" }
+          : null;
 
     return (
-      <Link
-        key={`${b.placeId}-${i}`}
-        href={placeHref(b)}
-        onClick={quickLookClick(() => setOpenBusiness(b))}
-        className={styles.placeCard}
-      >
-        <div className={styles.placePhoto}>
+      <Link key={b.placeId} href={placeHref(b)} onClick={quickLookClick(() => setOpenBusiness(b))} className={styles.card}>
+        <div className={styles.photo} style={wide ? { aspectRatio: "16 / 10" } : undefined}>
           {photo ? (
-            <Image
-              src={photo.src}
-              alt={b.name}
-              fill
-              sizes="(max-width: 364px) 92vw, (max-width: 1023px) 46vw, 350px"
-              className="object-cover"
-              style={{ filter: "saturate(0.96) contrast(0.98)" }}
-            />
+            <Image src={photo.src} alt={shortPlaceName(b.name)} fill sizes={wide ? "320px" : "(max-width: 767px) 46vw, (max-width: 1179px) 31vw, 300px"} />
           ) : (
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(160deg, var(--bordeaux-surface) 0%, var(--bordeaux-surface-deep) 100%)",
-              }}
-            >
-              <PlaceholderIcon kind={b.tag} />
+            <div className={styles.noPhoto} style={TILE[g]} aria-hidden>
+              {ICON[g]}
+              <b>{category}</b>
             </div>
           )}
-          <div className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1">
-            {queueBadge ? (
-              <div
-                className="rounded-md px-2 py-1 text-app-label font-bold leading-none"
-                style={{ background: queueBadge.bg, color: queueBadge.fg }}
-              >
-                {liveStatus?.queueStatus}
-              </div>
-            ) : statusBadge ? (
-              <div
-                className="rounded-md px-2 py-1 text-app-label font-bold leading-none"
-                style={{ background: liveStatus?.soldOut ? "var(--ink)" : "var(--daxi-red)", color: "#fff" }}
-              >
-                {statusBadge}
-              </div>
-            ) : null}
-            {acceptsLuggage ? (
-              <div
-                className="flex h-6 w-6 items-center justify-center rounded-full text-app-label shadow-sm"
-                style={{ background: "rgba(255,255,255,0.92)" }}
-                aria-label="提供寄放服務"
-                title="提供寄放服務"
-              >
-                🎒
-              </div>
-            ) : null}
+          <div className={styles.badges}>
+            <span>{deals.has(b.placeId) ? <span className={styles.badge} data-tone="deal">優惠券</span> : null}</span>
+            <span style={{ display: "flex", gap: 6 }}>
+              {status ? (
+                <span className={styles.badge} data-tone={status.tone}>
+                  {status.text}
+                </span>
+              ) : null}
+              {detail?.acceptsLuggage ? (
+                <span className={styles.badge} title="可寄放伴手禮">
+                  可寄放
+                </span>
+              ) : null}
+            </span>
           </div>
         </div>
-        <div className={styles.placeBody}>
-          <h3>{b.name}</h3>
-          <p>
-            {userLocation ? "距你" : "距老街"} {b.distanceLabel}
-            {b.rating !== null ? ` · Google 評分 ${b.rating.toFixed(1)}` : ""}
-          </p>
-          <div className={styles.placeTags}><span>{promo}</span></div>
+        <div className={styles.body}>
+          <h3 className={styles.name}>{shortPlaceName(b.name)}</h3>
+          <div className={styles.meta}>
+            {b.rating !== null && b.reviewCount > 0 ? (
+              <>
+                <span className={styles.star} aria-hidden>
+                  ★
+                </span>
+                <span className={styles.rating}>{b.rating.toFixed(1)}</span>
+                <span>({reviews(b.reviewCount)})</span>
+                <span className={styles.dot} aria-hidden />
+              </>
+            ) : null}
+            <span>{category}</span>
+          </div>
+          <div className={styles.meta}>
+            <span>
+              {userLocation ? "距你" : "距老街"} {b.distanceLabel}
+            </span>
+            {walk && !userLocation ? (
+              <>
+                <span className={styles.dot} aria-hidden />
+                <span>{walk}</span>
+              </>
+            ) : null}
+          </div>
+          {wide && detail?.story ? <p className={styles.lead}>{detail.story}</p> : null}
+          {tags.length > 0 ? (
+            <div className={styles.tags}>
+              {tags.map((t) => (
+                <span key={t}>{t}</span>
+              ))}
+            </div>
+          ) : null}
         </div>
       </Link>
     );
   };
 
   return (
-    <div>
-      <div className="flex flex-col gap-3 safe-page-x pb-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 gap-2 overflow-x-auto pb-1 no-scrollbar sm:pb-0">
-          {TABS.map((tab) => (
-            <button
-              key={tab.value}
-              onClick={() => setActive(tab.value)}
-              aria-pressed={active === tab.value}
-              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-app-body font-black transition-transform active:scale-95"
-              style={
-                active === tab.value
-                  ? { background: "var(--paper-2)", color: "var(--ink)" }
-                  : { background: "var(--card)", color: "var(--ink-soft)", border: "1px solid var(--line)" }
-              }
-            >
-              <span className="h-4 w-4 shrink-0">{tabIcon[tab.value as keyof typeof tabIcon]}</span>
-              {tab.label}
-            </button>
-          ))}
+    <div className="safe-page-x pb-8">
+      <div className={styles.toolbar}>
+        <label className={styles.search}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <circle cx="11" cy="11" r="7" />
+            <path d="m16 16 4 4" />
+          </svg>
+          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜尋店名，例如：豆干、豆花、咖啡" aria-label="搜尋店家" />
+        </label>
+
+        <div className={styles.chips} role="group" aria-label="店家分類">
+          {(["全部", ...GROUPS] as const)
+            .filter((g) => g === "全部" || (counts.get(g) ?? 0) > 0)
+            .map((g) => (
+              <button key={g} type="button" className={styles.chip} aria-pressed={group === g} onClick={() => setGroup(g)}>
+                <span style={{ width: 17, height: 17, display: "inline-flex" }}>{ICON[g]}</span>
+                {g}
+                <small>{g === "全部" ? located.length : counts.get(g)}</small>
+              </button>
+            ))}
         </div>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as SortKey)}
-          aria-label="排序方式"
-          className="w-full shrink-0 rounded-full px-3 py-2 text-app-body font-bold outline-none sm:w-auto"
-          style={{ background: "var(--paper-2)", color: "var(--ink)", border: "1px solid var(--line)" }}
-        >
-          {SORTS.map((s) => (
-            <option key={s.value} value={s.value}>
-              {s.label}
-            </option>
-          ))}
-        </select>
+
+        <div className={styles.filterRow}>
+          <div className={styles.toggles}>
+            {deals.size > 0 ? (
+              <button type="button" className={styles.toggle} aria-pressed={dealsOnly} onClick={() => setDealsOnly((v) => !v)}>
+                有優惠券
+              </button>
+            ) : null}
+            <button type="button" className={styles.toggle} aria-pressed={topRated} onClick={() => setTopRated((v) => !v)}>
+              ★ 4.5 以上
+            </button>
+          </div>
+          <div className={styles.sort} role="group" aria-label="排序">
+            {SORTS.map((s) => (
+              <button key={s.value} type="button" aria-pressed={sort === s.value} onClick={() => setSort(s.value)}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-9 pb-10 fade-in">
-        {sections.map((section) => (
-          <section key={section.title}>
-            <div className="mb-4 flex items-center justify-between safe-page-x">
-              <h2 className="text-[22px] font-black tracking-normal sm:text-[25px]" style={{ color: "var(--ink)" }}>
-                {section.title}
-              </h2>
-              <span
-                className="flex h-11 w-11 items-center justify-center rounded-full"
-                style={{ background: "var(--paper-2)", color: "var(--ink)" }}
-                aria-hidden
-              >
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </span>
-            </div>
-            <div className="grid grid-cols-1 gap-3 safe-page-x min-[365px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {section.rows.map(renderCard)}
-            </div>
-          </section>
-        ))}
-      </div>
+      {picks.length > 0 ? (
+        <section style={{ marginTop: 26 }} aria-labelledby="biz-picks">
+          <div className={styles.sectionHead}>
+            <h2 id="biz-picks">編輯推薦</h2>
+            <span>店家故事・優惠</span>
+          </div>
+          <div className={styles.rail}>{picks.map((b) => card(b, true))}</div>
+        </section>
+      ) : null}
+
+      <section style={{ marginTop: 30 }} aria-labelledby="biz-all">
+        <div className={styles.sectionHead}>
+          <h2 id="biz-all">{group === "全部" ? "所有店家" : group}</h2>
+          <span>共 {rows.length} 家</span>
+        </div>
+        {rows.length === 0 ? (
+          <div className={styles.empty}>
+            沒有符合條件的店家
+            <br />
+            <button type="button" onClick={resetFilters}>
+              清除篩選
+            </button>
+          </div>
+        ) : (
+          <div className={styles.grid}>{rows.map((b) => card(b))}</div>
+        )}
+      </section>
 
       {openBusiness ? (
         <BusinessDetailModal
@@ -252,7 +343,7 @@ export default function BusinessList({
           photo={photos[openBusiness.placeId]}
           detail={details[openBusiness.placeId]}
           allDetails={details}
-          allBusinesses={locatedBusinesses}
+          allBusinesses={located}
           photos={photos}
           lots={lots}
           couponPlaceIds={couponPlaceIds}

@@ -9,6 +9,7 @@ import type { LiveParkingLot } from "@/lib/tycgParking";
 // cached wrapper is immune to it. See lib/cachedSources.ts.
 import { getCachedParking } from "@/lib/cachedSources";
 import { listActiveCoupons } from "@/lib/coupons";
+import { shortPlaceName } from "@/lib/placePages";
 
 export const dynamic = "force-dynamic";
 
@@ -64,11 +65,11 @@ export default async function BusinessesPage() {
               {i > 0 ? "、" : " "}
               {photos[b.placeId].sourceUrl ? (
                 <a href={photos[b.placeId].sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">
-                  {b.name} - {photos[b.placeId].author}
+                  {shortPlaceName(b.name)} - {photos[b.placeId].author}
                 </a>
               ) : (
                 <>
-                  {b.name} - {photos[b.placeId].author}
+                  {shortPlaceName(b.name)} - {photos[b.placeId].author}
                 </>
               )}
             </span>
