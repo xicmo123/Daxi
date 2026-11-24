@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useSyncExternalStore } from "react";
 import type { Outage } from "@/lib/outages";
-import { readResidentArea, subscribeResidentArea } from "@/lib/residentArea";
+import { areaMatches, homeKeywords, readLegacyArea, readResidentHome, subscribeResidentHome, type ResidentHome } from "@/lib/residentHome";
 
 const outageTypeLabel: Record<Outage["type"], string> = { water: "停水", power: "停電" };
 
@@ -13,8 +13,10 @@ const badgeStyle: Record<string, { background: string; color: string }> = {
   power: { background: "var(--daxi-red-soft)", color: "var(--daxi-red)" },
 };
 
-function emptyArea() {
-  return "";
+const NO_HOME: ResidentHome = { village: null, stop: null };
+
+function serverHome() {
+  return NO_HOME;
 }
 
 function OutageCard({ o, highlighted }: { o: Outage; highlighted: boolean }) {
@@ -65,19 +67,20 @@ function OutageCard({ o, highlighted }: { o: Outage; highlighted: boolean }) {
 }
 
 export default function OutagesList({ outages }: { outages: Outage[] }) {
-  const area = useSyncExternalStore(subscribeResidentArea, readResidentArea, emptyArea);
+  // Same 我家 setting as the home-page board: its 里 and the roads of its
+  // garbage stop decide which notices go first.
+  const home = useSyncExternalStore(subscribeResidentHome, readResidentHome, serverHome);
 
   const { matched, rest } = useMemo(() => {
-    const keyword = area.trim();
-    if (!keyword) return { matched: [] as Outage[], rest: outages };
+    const keywords = homeKeywords(home, home === NO_HOME ? "" : readLegacyArea());
+    if (keywords.length === 0) return { matched: [] as Outage[], rest: outages };
     const matched: Outage[] = [];
     const rest: Outage[] = [];
     for (const o of outages) {
-      const inArea = o.areas.some((a) => a.includes(keyword) || keyword.includes(a));
-      (inArea ? matched : rest).push(o);
+      (o.areas.some((a) => areaMatches(a, keywords)) ? matched : rest).push(o);
     }
     return { matched, rest };
-  }, [outages, area]);
+  }, [outages, home]);
 
   if (outages.length === 0) {
     return (

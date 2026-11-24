@@ -176,10 +176,10 @@ export const RESIDENT_NAV: ResidentNavGroup[] = [
 export const RESIDENT_PROFILE_ITEM: ResidentNavItem = {
   key: "profile",
   label: "我的設定",
-  desc: "里別、通知與居民卡",
+  desc: "我家、通知與居民卡",
   href: "/resident/profile",
   icon: "profile",
-  keywords: ["設定", "通知", "推播", "我的", "里別", "居民卡"],
+  keywords: ["設定", "通知", "推播", "我的", "里別", "我家", "住址", "居民卡"],
 };
 
 export function allResidentItems(): ResidentNavItem[] {

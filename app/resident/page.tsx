@@ -4,7 +4,8 @@ import { permanentRedirect } from "next/navigation";
 import { readSource } from "@/lib/fetchWithTimeout";
 // force-dynamic below zeroes the TTL on every fetch in this segment; the
 // cached wrappers are immune to it. See lib/cachedSources.ts.
-import { getCachedAnnouncements, getCachedClinics, getCachedGarbageSchedule, getCachedWeather } from "@/lib/cachedSources";
+import { getCachedAnnouncements, getCachedClinics, getCachedWeather } from "@/lib/cachedSources";
+import { loadHomeStops } from "@/lib/homeStops";
 import { currentSession, SESSIONS } from "@/lib/nhiClinics";
 import { listUpcomingOutages } from "@/lib/outages";
 import { fetchDaxiRoadworks } from "@/lib/taoyuanRoadworks";
@@ -16,7 +17,6 @@ import ResidentFinder from "@/components/resident/ResidentFinder";
 import ResidentBulletin from "@/components/resident/ResidentBulletin";
 import ResidentLifeGuide from "@/components/resident/ResidentLifeGuide";
 import MyHomeBoard, { type BoardClinics, type BoardOutage, type BoardRoadwork } from "@/components/resident/MyHomeBoard";
-import type { HomeStop } from "@/lib/residentHome";
 import SkinEventsRail from "@/components/skin/SkinEventsRail";
 import SkinWeatherCard from "@/components/skin/SkinWeatherCard";
 import SkinIcon from "@/components/skin/SkinIcon";
@@ -134,23 +134,12 @@ function StatsSkeleton() {
 // 我家: everything the board might need, trimmed; the browser picks out the
 // resident's own stop, 里 and nearby works from localStorage.
 async function MyHome() {
-  const [schedule, outages, roadworks, clinics] = await Promise.all([
-    getCachedGarbageSchedule().catch(() => []),
+  const [stops, outages, roadworks, clinics] = await Promise.all([
+    loadHomeStops(),
     loadOutages(),
     loadRoadworks(),
     getCachedClinics().catch(() => null),
   ]);
-  const stops: HomeStop[] = schedule.flatMap((route) =>
-    route.stops.map((s) => ({
-      routeId: route.id,
-      routeLabel: `${route.name}・${route.displayName}`,
-      seq: s.seq,
-      name: s.name,
-      time: s.time,
-      lat: s.lat,
-      lng: s.lng,
-    })),
-  );
   const boardOutages: BoardOutage[] | null = outages.ok
     ? outages.data.map((o) => ({ id: o.id, type: o.type, lowPressure: o.severity === "lowPressure", areas: o.areas, date: o.date, timeRange: o.timeRange }))
     : null;

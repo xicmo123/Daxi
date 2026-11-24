@@ -1,6 +1,9 @@
 // 「我家」settings — the resident's 里 and their garbage-truck stop. Kept only
 // in this browser (localStorage): no account, no location permission, and
-// the server never learns where anyone lives.
+// the server never learns where anyone lives. This is the only "where I
+// live" setting; it replaced the free-text 「我住的地方」 keyword
+// (daxi-resident-area), which is read once below as a migration.
+import { DAXI_VILLAGES } from "./daxiVillages";
 
 export type HomeStop = {
   routeId: string;
@@ -18,6 +21,7 @@ export type ResidentHome = {
 };
 
 const STORAGE_KEY = "daxi-home-v1";
+const LEGACY_AREA_KEY = "daxi-resident-area";
 const CHANGE_EVENT = "daxi-home-changed";
 const EMPTY: ResidentHome = { village: null, stop: null };
 
@@ -25,10 +29,26 @@ const EMPTY: ResidentHome = { village: null, stop: null };
 let lastRaw: string | null | undefined;
 let lastValue: ResidentHome = EMPTY;
 
+/** The old free-text 「我住的地方」, until the resident saves 我家. */
+export function readLegacyArea(): string {
+  try {
+    return window.localStorage.getItem(LEGACY_AREA_KEY)?.trim() ?? "";
+  } catch {
+    return "";
+  }
+}
+
 export function readResidentHome(): ResidentHome {
   let raw: string | null = null;
   try {
     raw = window.localStorage.getItem(STORAGE_KEY);
+    // An old 「我住的地方」 that is exactly a 里 carries straight over; a
+    // street name can't become a stop on its own, so the setup form offers
+    // it as the stop search instead (see HomeSetup).
+    if (raw === null) {
+      const legacy = readLegacyArea();
+      if ((DAXI_VILLAGES as readonly string[]).includes(legacy)) raw = JSON.stringify({ village: legacy, stop: null });
+    }
   } catch {
     raw = null;
   }
@@ -50,6 +70,7 @@ export function writeResidentHome(home: ResidentHome) {
   try {
     if (!home.village && !home.stop) window.localStorage.removeItem(STORAGE_KEY);
     else window.localStorage.setItem(STORAGE_KEY, JSON.stringify(home));
+    window.localStorage.removeItem(LEGACY_AREA_KEY);
   } catch {
     // Private mode: the board just stays unset.
   }
@@ -72,6 +93,19 @@ export function stopRoads(address: string): string[] {
   const m = /^(.+?(?:路|街|大道))(?:([一二三四五六七八九十]+段))?/.exec(normalized);
   if (!m) return [];
   return m[2] ? [`${m[1]}${m[2]}`, m[1]] : [m[1]];
+}
+
+/** Words an outage notice would use for this home: its 里 and road names.
+ *  Falls back to the old free-text area until 我家 is saved. */
+export function homeKeywords(home: ResidentHome, legacyArea = ""): string[] {
+  const words = [home.village, ...(home.stop ? stopRoads(home.stop.name) : [])].filter((w): w is string => Boolean(w));
+  return words.length > 0 ? words : legacyArea ? [legacyArea] : [];
+}
+
+/** Does an outage area string concern this home? Short area names like
+ *  「大溪區」 only count when they literally contain the keyword. */
+export function areaMatches(area: string, keywords: string[]): boolean {
+  return keywords.some((k) => area.includes(k) || (area.length >= 3 && k.includes(area)));
 }
 
 export function metersBetween(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {

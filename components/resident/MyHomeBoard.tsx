@@ -4,17 +4,17 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import SkinIcon from "@/components/skin/SkinIcon";
 import styles from "@/components/skin/Skin.module.css";
-import { DAXI_VILLAGES } from "@/lib/daxiVillages";
 import {
+  areaMatches,
+  homeKeywords,
   metersBetween,
   readResidentHome,
-  stopRoads,
   subscribeResidentHome,
-  writeResidentHome,
   type HomeStop,
   type ResidentHome,
 } from "@/lib/residentHome";
 import { GARBAGE_HREF } from "@/lib/residentNav";
+import HomeSetup from "@/components/resident/HomeSetup";
 
 export type BoardOutage = { id: string; type: "water" | "power"; lowPressure: boolean; areas: string[]; date: string; timeRange: string };
 export type BoardRoadwork = { id: string; name: string; location: string; points: Array<[number, number]> };
@@ -80,14 +80,12 @@ export default function MyHomeBoard(props: Props) {
 
 function Board({ home, stops, outages, roadworks, clinics, onEdit }: Props & { home: ResidentHome; onEdit: () => void }) {
   const stop = home.stop;
-  const roads = useMemo(() => (stop ? stopRoads(stop.name) : []), [stop]);
+  const keywords = useMemo(() => homeKeywords(home), [home]);
 
   const myOutages = useMemo(() => {
     if (!outages) return null;
-    return outages.filter((o) =>
-      o.areas.some((a) => (home.village && a.includes(home.village)) || roads.some((r) => a.includes(r) || (a.length >= 3 && r.includes(a)))),
-    );
-  }, [outages, home.village, roads]);
+    return outages.filter((o) => o.areas.some((a) => areaMatches(a, keywords)));
+  }, [outages, keywords]);
 
   const nearbyWorks = useMemo(() => {
     if (!roadworks || !stop || stop.lat === null || stop.lng === null) return null;
@@ -122,7 +120,7 @@ function Board({ home, stops, outages, roadworks, clinics, onEdit }: Props & { h
       {myOutages === null ? (
         <Row icon="outage" title="停水停電" href="/resident/outages" value="—" detail="暫時讀不到台水、台電資料" />
       ) : myOutages.length === 0 ? (
-        <Row icon="outage" title="停水停電" href="/resident/outages" value="✓" tone="ok" detail={home.village || roads.length ? "近期沒有影響你家的停水停電預告" : "設定里別後，會比對影響你家的公告"} />
+        <Row icon="outage" title="停水停電" href="/resident/outages" value="✓" tone="ok" detail={keywords.length ? "近期沒有影響你家的停水停電預告" : "設定里別後，會比對影響你家的公告"} />
       ) : (
         myOutages.slice(0, 2).map((o) => (
           <Row
@@ -249,155 +247,5 @@ function Row({
         {value}
       </span>
     </Link>
-  );
-}
-
-function HomeSetup({
-  stops,
-  initial,
-  firstTime,
-  editing,
-  onDone,
-}: {
-  stops: HomeStop[];
-  initial: ResidentHome;
-  firstTime: boolean;
-  editing: boolean;
-  onDone: () => void;
-}) {
-  const [open, setOpen] = useState(editing);
-  const [village, setVillage] = useState(initial.village ?? "");
-  const [stop, setStop] = useState<HomeStop | null>(initial.stop);
-  const [query, setQuery] = useState("");
-  const q = query.trim().replace(/\s+/g, "");
-  const matches = useMemo(() => (q ? stops.filter((s) => s.name.replace(/\s+/g, "").includes(q)).slice(0, 12) : []), [q, stops]);
-
-  if (!open) {
-    return (
-      <section className={styles.panel} aria-labelledby="myhome-title" style={{ padding: "20px 18px" }}>
-        <h2 className={styles.panelTitle} id="myhome-title" style={{ marginBottom: 6 }}>
-          <span>
-            <SkinIcon name="profile" size={18} />
-          </span>
-          設定我家
-        </h2>
-        <p className={styles.panelLead} style={{ margin: "0 0 14px" }}>
-          選好里別和家門口的垃圾車站，這裡就會直接顯示：垃圾車今天幾點來、你家有沒有停水停電、附近有沒有施工。只存在這支手機，不用註冊。
-        </p>
-        <button type="button" className={styles.btn} onClick={() => setOpen(true)}>
-          開始設定（約 10 秒）
-        </button>
-      </section>
-    );
-  }
-
-  const save = () => {
-    writeResidentHome({ village: village || null, stop });
-    onDone();
-  };
-
-  return (
-    <section className={styles.panel} aria-labelledby="myhome-title" style={{ padding: "20px 18px" }}>
-      <h2 className={styles.panelTitle} id="myhome-title" style={{ marginBottom: 14 }}>
-        <span>
-          <SkinIcon name="profile" size={18} />
-        </span>
-        {firstTime ? "設定我家" : "修改我家"}
-      </h2>
-
-      <label style={{ display: "block", fontWeight: 800, fontSize: 15, marginBottom: 6 }} htmlFor="myhome-village">
-        1. 我住在哪個里
-      </label>
-      <select
-        id="myhome-village"
-        value={village}
-        onChange={(e) => setVillage(e.target.value)}
-        style={{ width: "100%", minHeight: 46, padding: "0 12px", borderRadius: 12, border: "1px solid var(--rj-line-strong)", background: "var(--rj-bg)", color: "var(--rj-ink)", fontSize: 16 }}
-      >
-        <option value="">不確定，先略過</option>
-        {DAXI_VILLAGES.map((v) => (
-          <option key={v} value={v}>
-            {v}
-          </option>
-        ))}
-      </select>
-
-      <label style={{ display: "block", fontWeight: 800, fontSize: 15, margin: "18px 0 6px" }} htmlFor="myhome-stop">
-        2. 我家門口的垃圾車站
-      </label>
-      {stop ? (
-        <div className={styles.row} style={{ gap: 12 }}>
-          <span className="min-w-0" style={{ flex: 1 }}>
-            <strong>{stop.name}</strong>
-            <small>
-              {stop.routeLabel} · 預定 {stop.time ?? "—"}
-            </small>
-          </span>
-          <button type="button" className={styles.more} onClick={() => setStop(null)} style={{ cursor: "pointer", font: "inherit", fontSize: 13, fontWeight: 800 }}>
-            換一站
-          </button>
-        </div>
-      ) : (
-        <>
-          <input
-            id="myhome-stop"
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="輸入路名，例如：員林路、中華路"
-            style={{ width: "100%", minHeight: 46, padding: "0 14px", borderRadius: 12, border: "1px solid var(--rj-line-strong)", background: "var(--rj-bg)", color: "var(--rj-ink)", fontSize: 16 }}
-          />
-          {q ? (
-            <div style={{ marginTop: 6 }}>
-              {matches.length === 0 ? (
-                <p className={styles.panelLead} style={{ margin: "8px 2px" }}>
-                  找不到「{query.trim()}」，試試只輸入路名
-                </p>
-              ) : (
-                matches.map((s) => (
-                  <button
-                    key={`${s.routeId}-${s.seq}`}
-                    type="button"
-                    className={styles.row}
-                    onClick={() => {
-                      setStop(s);
-                      setQuery("");
-                    }}
-                    style={{ width: "100%", textAlign: "left", background: "none", border: 0, borderBottom: "1px solid var(--rj-line)", cursor: "pointer" }}
-                  >
-                    <span className="min-w-0">
-                      <strong>{s.name}</strong>
-                      <small>{s.routeLabel}</small>
-                    </span>
-                    <span className={styles.rowValue} style={{ fontSize: 15 }}>
-                      {s.time ?? "—"}
-                    </span>
-                  </button>
-                ))
-              )}
-            </div>
-          ) : null}
-        </>
-      )}
-
-      <div className={styles.btnRow} style={{ marginTop: 18, gridTemplateColumns: editing ? "1fr 1fr" : "1fr" }}>
-        <button type="button" className={styles.btn} onClick={save} disabled={!village && !stop}>
-          儲存
-        </button>
-        {editing ? (
-          <button
-            type="button"
-            className={styles.btn}
-            data-variant="line"
-            onClick={onDone}
-          >
-            取消
-          </button>
-        ) : null}
-      </div>
-      <p className={styles.panelLead} style={{ margin: "12px 2px 0", fontSize: 13 }}>
-        設定只存在這支手機或這個瀏覽器，大溪通不會收到你的住址。
-      </p>
-    </section>
   );
 }
