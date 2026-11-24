@@ -154,10 +154,13 @@ export default async function PlacePage({ section, placeId }: { section: "/spots
   const url = `${SITE_URL}${placeHref(place)}`;
   const jsonLd = {
     ...placeJsonLd(place, detail, { url, image: photo ? `${SITE_URL}${photo.src}` : undefined }),
+    // A period closing at or after midnight (06:00 → 00:00) keeps its opening
+    // day; schema.org reads a closes earlier than opens as the next day.
     openingHoursSpecification: hours?.periods
-      .filter((p) => p.open && p.close && p.open.day === p.close.day)
+      .filter((p) => p.open && p.close)
       .map((p) => ({ "@type": "OpeningHoursSpecification", dayOfWeek: SCHEMA_DAYS[p.open!.day], opens: hhmm(p.open!), closes: hhmm(p.close!) })),
-    priceRange: hours?.priceMin && hours?.priceMax ? `NT$${hours.priceMin}-${hours.priceMax}` : undefined,
+    // Google's cheapest band comes back as 1–200: say 「NT$200 以內」, as the page does.
+    priceRange: hours?.priceMin && hours?.priceMax ? (hours.priceMin <= 1 ? `NT$${hours.priceMax} 以內` : `NT$${hours.priceMin}-${hours.priceMax}`) : undefined,
   };
 
   const closedFlag =

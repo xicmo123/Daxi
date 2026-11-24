@@ -2,6 +2,7 @@ import { cache } from "react";
 import type { Metadata } from "next";
 import { getAllPlaces, readPhotos, readDetails, filterVisiblePlaces } from "./placesStore";
 import { placeDescription, placeHref, placeTitle, shortPlaceName } from "./placePages";
+import { readPlaceHours } from "./placeHoursStore";
 import { pageMetadata } from "./seo";
 
 // One read per request, shared by generateMetadata and the page body.
@@ -13,14 +14,15 @@ export const loadPlacePage = cache(async (placeId: string) => {
 });
 
 export async function placePageMetadata(placeId: string): Promise<Metadata> {
-  const { place, photos, details } = await loadPlacePage(placeId);
+  const [{ place, photos, details }, hours] = await Promise.all([loadPlacePage(placeId), readPlaceHours()]);
   if (!place) return { title: "找不到這個地點", robots: { index: false, follow: true } };
   const detail = details[place.placeId];
   const photo = photos[place.placeId];
+  const hasHours = (hours[place.placeId]?.periods.length ?? 0) > 0;
   return pageMetadata({
     path: placeHref(place),
-    title: placeTitle(place, detail),
-    description: placeDescription(place, detail),
+    title: placeTitle(place, detail, hasHours),
+    description: placeDescription(place, detail, hasHours),
     image: photo ? { url: photo.src, alt: shortPlaceName(place.name) } : undefined,
   });
 }

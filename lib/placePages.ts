@@ -22,14 +22,15 @@ export function shortPlaceName(name: string): string {
 }
 
 // "大溪" isn't in every shop name, but it is what people search with, so the
-// category carries it: 「老阿伯現滷豆干：大溪蔬食餐廳・地址、停車資訊」.
-export function placeTitle(place: Business, detail: PlaceDetail | undefined): string {
+// category carries it: 「老阿伯現滷豆干：大溪豆干老店・營業時間、地址、停車」.
+// 營業時間 leads when we have hours — 「店名 營業時間」 is the most common search.
+export function placeTitle(place: Business, detail: PlaceDetail | undefined, hasHours = false): string {
   const name = shortPlaceName(place.name);
   const category = categoryLabel(detail?.category, place.googleType, place.tag);
-  return `${name}：大溪${category}・地址、停車資訊`;
+  return `${name}：大溪${category}・${hasHours ? "營業時間、地址、停車" : "地址、停車資訊"}`;
 }
 
-export function placeDescription(place: Business, detail: PlaceDetail | undefined): string {
+export function placeDescription(place: Business, detail: PlaceDetail | undefined, hasHours = false): string {
   const name = shortPlaceName(place.name);
   const category = categoryLabel(detail?.category, place.googleType, place.tag);
   const facts = [
@@ -39,7 +40,7 @@ export function placeDescription(place: Business, detail: PlaceDetail | undefine
     place.rating !== null && place.reviewCount > 0 ? `Google 評分 ${place.rating.toFixed(1)}（${place.reviewCount.toLocaleString()} 則評論）` : null,
   ].filter(Boolean);
   const story = detail?.story?.trim();
-  const text = story ? `${story} ${facts.join("，")}。` : `${facts.join("，")}。附最近停車場、周邊景點美食與導航。`;
+  const text = story ? `${story} ${facts.join("，")}。` : `${facts.join("，")}。附${hasHours ? "每週營業時間、" : ""}最近停車場、周邊景點美食與導航。`;
   return text.length > 150 ? `${text.slice(0, 148)}…` : text;
 }
 
