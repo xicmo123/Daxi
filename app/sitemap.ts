@@ -20,7 +20,6 @@ const routes: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[numbe
   { path: "/bus", changeFrequency: "weekly", priority: 0.7 },
   { path: "/weather", changeFrequency: "hourly", priority: 0.6 },
   { path: "/announcements", changeFrequency: "daily", priority: 0.6 },
-  { path: "/about", changeFrequency: "monthly", priority: 0.3 },
   { path: "/resident", changeFrequency: "daily", priority: 0.8 },
   { path: "/resident/announcements", changeFrequency: "daily", priority: 0.7 },
   { path: "/resident/outages", changeFrequency: "daily", priority: 0.7 },
@@ -32,7 +31,6 @@ const routes: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[numbe
   { path: "/resident/events", changeFrequency: "weekly", priority: 0.5 },
   { path: "/resident/live", changeFrequency: "weekly", priority: 0.4 },
   { path: "/resident/services", changeFrequency: "monthly", priority: 0.5 },
-  { path: "/resident/about", changeFrequency: "monthly", priority: 0.3 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.2 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
 ];

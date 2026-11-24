@@ -3,10 +3,11 @@
 // Resident tab bar — same component as the tourist one, different
 // destinations and accent. See components/BottomNavBar.tsx.
 //
-// The fifth slot is 關於 (/resident/about) — the owner's note and contact.
+// The fifth slot is 關於 — opens the popup with the owner's note and contact.
 // 我的 settings (/resident/profile) are linked from that page and the full
 // menu, and keep this tab lit while open.
 import BottomNavBar, { type NavTab } from "./BottomNavBar";
+import { ABOUT_HREF } from "@/lib/aboutOwner";
 
 const tabs: NavTab[] = [
   {
@@ -55,9 +56,9 @@ const tabs: NavTab[] = [
     ),
   },
   {
-    // 關於 replaces 我的 on the resident side; the personal settings (居民卡、
-    // 里別、通知) are one tap away from the About page and in the full menu.
-    href: "/resident/about",
+    // 關於 replaces 我的 on the resident side and opens the 關於 popup; the
+    // personal settings (居民卡、我家、通知) are linked from it and the menu.
+    href: ABOUT_HREF,
     label: "關於",
     alsoActiveOn: ["/resident/profile"],
     icon: (

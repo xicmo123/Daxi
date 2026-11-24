@@ -3,6 +3,7 @@
 // footer) drive both halves the same way.
 import { daxiWalkHref, oldStreetPhoto } from "./daxiWalk";
 import { allNavItems, findNavItems, navTrail, type SiteNavGroup, type SiteNavItem } from "./siteNav";
+import { ABOUT_HREF } from "./aboutOwner";
 
 export const TOURIST_NAV: SiteNavGroup[] = [
   {
@@ -131,7 +132,7 @@ export const TOURIST_NAV: SiteNavGroup[] = [
         key: "about",
         label: "關於",
         desc: "網站的由來與聯絡方式",
-        href: "/about",
+        href: ABOUT_HREF,
         icon: "info",
         keywords: ["關於", "聯絡", "信箱", "建議"],
       },

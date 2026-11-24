@@ -2,27 +2,46 @@
 
 import Link from "next/link";
 import Modal, { ModalHeader } from "./ui/Modal";
+import { ABOUT_CONTACT_EMAIL, ABOUT_PARAGRAPHS } from "@/lib/aboutOwner";
 
-export default function AboutModal({ onClose }: { onClose: () => void }) {
+// 關於大溪通: the owner's note, contact, and the small print. A popup rather
+// than a page — it is read once, and a page spent a nav slot on a dead end.
+export default function AboutModal({ onClose, resident = false }: { onClose: () => void; resident?: boolean }) {
   return (
-    <Modal onClose={onClose} label="關於" className="p-6">
+    <Modal onClose={onClose} label="關於大溪通" className="p-6">
       <ModalHeader title="關於大溪通" onClose={onClose} />
 
-      <p className="text-app-body leading-relaxed mb-3" style={{ color: "var(--ink)" }}>
-        此 app 非政府相關單位開發，僅為熱愛大溪的居民自行開發的系統，想為大溪盡一份力。
-      </p>
-      <p className="text-app-body leading-relaxed mb-4" style={{ color: "var(--ink)" }}>
-        歡迎大家提供活動／景點照片，相關合作訊息可參考下方聯絡資訊。
-      </p>
+      <div className="flex flex-col gap-3 text-app-body" style={{ color: "var(--ink)", lineHeight: 1.85 }}>
+        {ABOUT_PARAGRAPHS.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </div>
 
-      <div className="rounded-2xl px-4 py-3" style={{ background: "var(--paper-2)" }}>
-        <div className="text-app-label tracking-[0.15em] uppercase mb-1" style={{ color: "var(--ink-soft)" }}>
-          聯絡資訊
+      <div className="mt-5 rounded-2xl px-4 py-4" style={{ background: "var(--paper-2)" }}>
+        <div className="text-app-label mb-1" style={{ color: "var(--ink-soft)" }}>
+          聯絡信箱
         </div>
-        <a href="mailto:xicmo123@gmail.com" className="text-app-body font-semibold" style={{ color: "var(--ink)" }}>
-          xicmo123@gmail.com
+        <a href={`mailto:${ABOUT_CONTACT_EMAIL}`} className="text-app-body font-bold break-all" style={{ color: "var(--ink)" }}>
+          {ABOUT_CONTACT_EMAIL}
+        </a>
+        <a
+          href={`mailto:${ABOUT_CONTACT_EMAIL}?subject=${encodeURIComponent("大溪通意見回饋")}`}
+          className="mt-3 flex min-h-[46px] items-center justify-center rounded-full text-app-body font-bold transition-opacity active:opacity-80"
+          style={{ background: "var(--daxi-red)", color: "var(--accent-fg)" }}
+        >
+          寫信給我
         </a>
       </div>
+
+      <Link
+        href={resident ? "/resident/profile" : "/profile"}
+        onClick={onClose}
+        className="mt-3 flex min-h-[48px] items-center justify-between rounded-2xl px-4 text-app-body font-bold transition-opacity active:opacity-80"
+        style={{ border: "1px solid var(--line)", color: "var(--ink)" }}
+      >
+        {resident ? "我的設定（居民卡・我家・通知）" : "我的收藏（景點・店家）"}
+        <span aria-hidden>→</span>
+      </Link>
 
       <div className="mt-4 flex items-center justify-center gap-4 text-app-label" style={{ color: "var(--ink-soft)" }}>
         <Link href="/privacy" className="underline" onClick={onClose}>
@@ -31,12 +50,8 @@ export default function AboutModal({ onClose }: { onClose: () => void }) {
         <Link href="/terms" className="underline" onClick={onClose}>
           服務條款
         </Link>
-      </div>
-
-      {/* Surfaced here rather than in a settings screen: when someone reports a
-          bug this is the one number support needs, and 關於 is where they look. */}
-      <div className="mt-4 text-center text-app-label" style={{ color: "var(--ink-soft)" }}>
-        版本 {process.env.NEXT_PUBLIC_APP_VERSION || "dev"}
+        {/* The one number support needs when someone reports a bug. */}
+        <span>版本 {process.env.NEXT_PUBLIC_APP_VERSION || "dev"}</span>
       </div>
     </Modal>
   );

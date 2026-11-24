@@ -10,6 +10,7 @@
 // switch modes. That slot is now 關於 on both sides (2026-11).
 import BottomNavBar, { type NavTab } from "./BottomNavBar";
 import { daxiWalkHref } from "@/lib/daxiWalk";
+import { ABOUT_HREF } from "@/lib/aboutOwner";
 
 const tabs: NavTab[] = [
   {
@@ -64,9 +65,9 @@ const tabs: NavTab[] = [
     ),
   },
   {
-    // 關於 replaces 我的: the owner's note and contact. 我的收藏 (/profile)
-    // is linked from the About page and keeps this tab lit while open.
-    href: "/about",
+    // 關於 replaces 我的: opens the 關於 popup (AboutModalHost). 我的收藏
+    // (/profile) is linked from the popup and keeps this tab lit while open.
+    href: ABOUT_HREF,
     label: "關於",
     alsoActiveOn: ["/profile"],
     icon: (

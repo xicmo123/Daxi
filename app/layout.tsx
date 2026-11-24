@@ -7,6 +7,7 @@ import ClientErrorReporter from "@/components/ClientErrorReporter";
 import ExternalLinkHandler from "@/components/ExternalLinkHandler";
 import PushListener from "@/components/PushListener";
 import AppUrlListener from "@/components/AppUrlListener";
+import AboutModalHost from "@/components/AboutModalHost";
 import "./globals.css";
 
 // Latin/numeric only. Traditional Chinese webfonts are several MB even
@@ -127,6 +128,7 @@ export default function RootLayout({
         <ExternalLinkHandler />
         <PushListener />
         <AppUrlListener />
+        <AboutModalHost />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(WEBSITE_JSON_LD) }} />
         {children}
       </body>

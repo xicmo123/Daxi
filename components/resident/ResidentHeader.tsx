@@ -1,5 +1,6 @@
 import SkinHeader from "@/components/skin/SkinHeader";
 import { RESIDENT_NAV, RESIDENT_PROFILE_ITEM } from "@/lib/residentNav";
+import { ABOUT_HREF } from "@/lib/aboutOwner";
 
 export default function ResidentHeader() {
   return (
@@ -17,7 +18,7 @@ export default function ResidentHeader() {
       groups={RESIDENT_NAV}
       menuExtras={[
         { href: RESIDENT_PROFILE_ITEM.href, label: RESIDENT_PROFILE_ITEM.label },
-        { href: "/resident/about", label: "關於" },
+        { href: ABOUT_HREF, label: "關於" },
         { href: "tel:1999", label: "市民專線 1999" },
       ]}
       switchTo={{ identity: "tourist", href: "/", label: "遊客模式", menuLabel: "切換為遊客模式" }}
